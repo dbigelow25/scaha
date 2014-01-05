@@ -18,9 +18,8 @@ public String format(LogRecord rec) {
     buf.append(calcDate(rec.getMillis()));
     buf.append(":");
     buf.append(rec.getLevel());
-    buf.append(":");
-    buf.append(rec.getSourceClassName() + ":>");
-   // buf.append(rec.getSourceMethodName() + ":");
+    buf.append(": ");
+  //  buf.append(rec.getSourceName() + ":>");
     buf.append(rec.getMessage());
     buf.append(NEW_LINE);
     return buf.toString(); 

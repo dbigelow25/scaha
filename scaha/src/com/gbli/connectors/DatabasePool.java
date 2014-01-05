@@ -1,11 +1,6 @@
-/**
- * 
- */
 package com.gbli.connectors;
-
 import java.util.Vector;
 import java.util.logging.Logger;
-
 import com.gbli.context.ContextManager;
 
 /**
@@ -41,6 +36,8 @@ public class DatabasePool implements Runnable {
 			
 			m_sName = _str;
 			
+			// This needs to be moved  to the web.xml file...
+			//
 			if (_str.equals(ScahaDatabase.class.getSimpleName())) {
 				for (int i=0; i < m_iCount;i++) {
 					m_vConnections.add(new ScahaDatabase(i,
@@ -143,15 +140,17 @@ public class DatabasePool implements Runnable {
 				if (!db.isInUse()) {
 					db.checkHeath();
 					db.setInUse();
+					LOGGER.info(db + ": Handing out connection to request...");
 					return db;
 				}
 			}
 			icount++;
 			try {
-            //thread to sleep for the specified number of milliseconds
-             Thread.sleep(1000);
-            } catch ( java.lang.InterruptedException ie) {
-                ie.printStackTrace();
+				//thread to sleep for the specified number of milliseconds
+				LOGGER.info(" All connections busy.. sleeping for a bit...");
+			 	Thread.sleep(2000);
+  		    } catch ( java.lang.InterruptedException ie) {
+				LOGGER.info(" All connections busy.. woke up afer wait...");
             };
 		}
 		return null;
