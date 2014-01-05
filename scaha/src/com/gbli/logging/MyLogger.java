@@ -17,8 +17,7 @@ import com.gbli.context.ContextManager;
  * This handles all aspects of system logging.
  * Currently.. Everything is hard coded
  * We will need a resource/properties file to allow for on the fly configuration
- * 
- * @author dbigelow
+
  *
  */
 public class MyLogger {
