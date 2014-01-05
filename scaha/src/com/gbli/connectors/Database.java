@@ -1,11 +1,11 @@
-package com.gbli.connectors;
+
 /**
  *  This is a basic Databases Connection Object
  *  Based upon how it is Instantiated  It will connect to a database.
  *  
  */
 
-
+package com.gbli.connectors;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
