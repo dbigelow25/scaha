@@ -69,10 +69,15 @@
 	with long lists and you do not want the browser page to always jump to the top
 	if you trigger a link or button action that stays on the same page.
 	Default is 'false'
-</description>
+   </description>
     <param-name>org.apache.myfaces.AUTO_SCROLL</param-name>
     <param-value>true</param-value>
   </context-param>
+  <context-param>
+	<param-name>primefaces.THEME</param-name>
+	<param-value>aristo</param-value>
+</context-param>
+  
   <listener>
     <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
   </listener>

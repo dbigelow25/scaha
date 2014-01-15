@@ -2,7 +2,13 @@
     <wb-module deploy-name="scaha">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <dependent-module archiveName="mysql-connector-java-5.1.22-bin.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/C:/Users/dbigelow/workspace/devjars/mysql-connector-java-5.1.22-bin.jar">
+        <dependent-module archiveName="aristo-1.0.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/scaha/WebContent/WEB-INF/lib/aristo-1.0.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="mysql-connector-java-5.1.22-bin.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/scaha/WebContent/WEB-INF/lib/mysql-connector-java-5.1.22-bin.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="primefaces-4.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/scaha/WebContent/WEB-INF/lib/primefaces-4.0.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="scaha"/>
