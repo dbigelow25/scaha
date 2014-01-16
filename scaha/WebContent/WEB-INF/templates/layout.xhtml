@@ -7,18 +7,32 @@
      xmlns:p="http://primefaces.org/ui"
 >
     <h:head>
-        <title>Title</title>
+        <title>SCAHA iSite </title>
         
         <style>
         	.ui-layout-unit {
         	  border: none
         	}
+        	
+        	.ui-panelgrid tr, .ui-panelgrid td {
+			    border: none;
+			}
+			
+			.ui-growl {   
+ 			   position:fixed;
+			    top: 40%;
+			    left: 37%;
+			    width: 360px;
+			    height: 110px;
+			    z-index:9999; 
+			}
+			
         </style>
         
     </h:head>
     <h:body>
         <p:layout fullPage="true">
-            <p:layoutUnit position="north" size="90" resizable="false" closable="false" collapsible="false">
+            <p:layoutUnit position="north" size="115" resizable="false" closable="false" collapsible="false">
               <ui:insert name="header">
     			<!--  include your header file or uncomment the include below and create header.xhtml in this directory -->
     			<ui:include src="header.xhtml"/> 
