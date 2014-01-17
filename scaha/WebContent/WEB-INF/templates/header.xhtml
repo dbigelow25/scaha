@@ -7,7 +7,7 @@
      xmlns:ui="http://java.sun.com/jsf/facelets"
      xmlns:p="http://primefaces.org/ui"
 >
-
+<body>
 <table width="850px" border="0" cellpadding="0" cellspacing="0"
 	style="border-collapse: collapse;">
 	<tr>
@@ -20,15 +20,15 @@
 			<div align="right" style="font-weight: normal;font-size: 8pt;font-family: Verdana;">
  				<h:form>
  				 <p:growl id="msg" showDetail="true" life="3000" />
-            	<p:panelGrid columns="5" rendered="#{empty loginBean.name}">
-            	<h:outputText  value="Name:"></h:outputText>
-            	<h:inputText style="width:100px;" value="#{loginBean.name}"></h:inputText>
+            	<p:panelGrid columns="5" rendered="#{empty loginBean.getProfile()}">
+            	<h:outputText  value="User:"></h:outputText>
+            	<h:inputText style="width:150px;" value="#{loginBean.name}"></h:inputText>
             	<h:outputText  value="Password:"></h:outputText>
-            	<h:inputSecret style="width:100px;" value="#{loginBean.password}"></h:inputSecret>
+            	<h:inputSecret style="width:125px;" value="#{loginBean.password}"></h:inputSecret>
             	<p:commandButton value="login" actionListener="#{loginBean.login}" ajax="false" /> 
                	</p:panelGrid>
-            	<p:panelGrid columns="5" rendered="#{not empty loginBean.name}">
-                <h:outputText value="Welcome #{loginBean.name}"></h:outputText>
+            	<p:panelGrid columns="2" rendered="#{not empty loginBean.getProfile()}">
+                <h:outputText value="Welcome #{loginBean.getNickName()}"></h:outputText>
                	<p:commandButton value="Logout" actionListener="#{loginBean.logout}" ajax="false"></p:commandButton>
             	</p:panelGrid>
         	</h:form>	
@@ -39,4 +39,5 @@
 		</td>
 	</tr>
 </table>
+</body>
 </html>

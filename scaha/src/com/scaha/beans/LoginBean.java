@@ -1,13 +1,14 @@
 package com.scaha.beans;
 
+import com.scaha.objects.Profile;
+
 import java.io.IOException;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
-import com.gbli.connectors.ScahaDatabase;
-import com.gbli.context.ContextManager;
+import com.scaha.objects.Profile;
 
 /**
  * LoginBean.java
@@ -18,7 +19,7 @@ public class LoginBean
 {
     private String name = null;
     private String password = null;
-	private Boolean isAuth = false;
+	private Profile pro = null;  // This holds all the information regarding a person in the system
 	private String origin = null;
 
     public String getName ()
@@ -32,33 +33,35 @@ public class LoginBean
         this.name = name;
     }
 
-
     public String getPassword ()
     {
         return password;
     }
-
 
     public void setPassword (final String password)
     {
         this.password = password;
     }
     
+    public Profile getProfile() {
+    	return pro;
+    }
+    
+    public String getNickName() {
+    	if (pro == null) return "Not Logged In";
+    	return pro.getNickName();
+    }
+    
     public void login() {
 
-    	ContextManager.getLoggerContext();
-    	ScahaDatabase mydb = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase"); 
     	
-    	mydb.free();
-    	
+    	pro = Profile.verify(name, password);
+		
     	// pull profile into the Login Bean..
-    	
-
     	try {
-    		if (name.equals("dave")) {
-    			this.isAuth = true;
+	    	if (pro != null) {
     			if (origin != null) {
-        			FacesContext context = FacesContext.getCurrentInstance();
+        			//FacesContext context = FacesContext.getCurrentInstance();
         			FacesContext.getCurrentInstance().getExternalContext().redirect(origin);
 //    				origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
     			}
@@ -70,9 +73,10 @@ public class LoginBean
                         "Invalid Login!",
                         "Please Try Again!"));
 
-    			name = null;
+    			// blank out the password
     			password = null;
-    					
+    			
+	    					
     		}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -85,7 +89,7 @@ public class LoginBean
     public void verifyUserLogin(){
 		FacesContext context = FacesContext.getCurrentInstance();
 		try{
-			if(!isAuth){
+			if(pro == null){
 				this.origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
 				context.getExternalContext().redirect("Welcome.xhtml");
 			}
@@ -95,10 +99,13 @@ public class LoginBean
 	}
     
     public String logout() {
-    	this.name = null;
+    	this.pro = null;
     	this.password = null;
-    	this.isAuth = false;
     	this.origin = null;
+    	
+    	//
+    	// Redirect to the Login Screen
+    	//
         try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("Welcome.xhtml");
 		} catch (IOException e) {

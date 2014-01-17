@@ -21,6 +21,12 @@ import org.w3c.dom.ls.LSException;
 public class ScahaDatabase extends Database {
 
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	
+	//
+	// Stored Procedure Strings.
+	//
+	private static String c_sp_profile = "Call scaha.profile(?,?)";
+	private static String c_sp_actionlist = "Call scaha.getActionTree(?)";
 
 	public ScahaDatabase(int _iId, String _sDriver, String _sURL, String _sUser, String _sPwd) {
 		super(_iId, _sDriver, _sURL, _sUser, _sPwd);
@@ -44,7 +50,7 @@ public class ScahaDatabase extends Database {
 		v.add(_sUser);
 		v.add(_sPass);
 
-		return super.getData("", v);
+		return super.getData(c_sp_profile, v);
 
 	}
 
@@ -61,7 +67,7 @@ public class ScahaDatabase extends Database {
 		Vector<Integer> v = new Vector<Integer>();
 		v.add(Integer.valueOf(_ipid));
 
-		return getData("", v);
+		return getData(c_sp_actionlist, v);
 
 	}
 
