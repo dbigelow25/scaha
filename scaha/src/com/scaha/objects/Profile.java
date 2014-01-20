@@ -29,14 +29,18 @@ public class Profile extends ScahaObject {
 	private String m_sPass = null;
 	private String m_sNickName = null;
 	private ActionList m_al = null;
+	private Person m_per = null;
 	
-	private Profile (int _id, String _sNN, String _sUser, String _sPass) {
+	private Profile (int _id, ScahaDatabase _db, String _sNN, String _sUser, String _sPass) {
 		
 		super.setID(_id);
 		m_sNickName = _sNN;
 		m_sUser = _sUser;
 		m_sPass = _sPass;
 		
+		// Lets get the Person...
+		m_per = new Person(_db, this);
+		// Lets get the action List...
 		m_al = new ActionList(this);
 	}
 	
@@ -56,6 +60,7 @@ public class Profile extends ScahaObject {
 		ScahaDatabase db = (ScahaDatabase)ContextManager.getDatabase("ScahaDatabase");
 		
 		ResultSet rs = null;
+		Profile prof = null;
 		boolean bgood = false;
 		
 		//
@@ -70,20 +75,26 @@ public class Profile extends ScahaObject {
 					id = rs.getInt(1);
 					sNickName = rs.getString(2);
 					bgood = true;
+					LOGGER.info("SUCCESS ON LOGIN");
 				}
 			}
+		
 		} catch (SQLException ex) {
 				ex.printStackTrace();
 		} finally {
-			db.free();
+			db.cleanup();
 		}
 		
+		// Lets generate the profile
+		//
+		
 		if (bgood) {
-			
-			return new Profile (id, sNickName, _sUser, _sPass);
-			
+			LOGGER.info("Creating the profile...");
+			prof =  new Profile (id, db, sNickName, _sUser, _sPass);
 		} 
-		return null;
+		
+		db.free();
+		return prof;
 				
 	}
 
@@ -105,6 +116,14 @@ public class Profile extends ScahaObject {
 		return this.m_al;
 	}
 	
+	/**
+	 * This returns the person object from the profile
+	 * 
+	 */
+	public Person getPerson() {
+		return this.m_per;
+		
+	}
 	public String toString() {
 		return this.getID() + ":" + this.getNickName() + ":" + this.m_sUser;
 	}

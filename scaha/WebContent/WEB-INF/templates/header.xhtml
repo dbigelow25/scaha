@@ -20,16 +20,20 @@
 			<div align="right" style="font-weight: normal;font-size: 8pt;font-family: Verdana;">
  				<h:form>
  				 <p:growl id="msg" showDetail="true" life="3000" />
-            	<p:panelGrid columns="5" rendered="#{empty loginBean.getProfile()}">
+            	<p:panelGrid columns="5" rendered="#{empty profileBean.getProfile()}">
             	<h:outputText  value="User:"></h:outputText>
-            	<h:inputText style="width:150px;" value="#{loginBean.name}"></h:inputText>
+            	<h:inputText style="width:150px;" value="#{profileBean.name}"></h:inputText>
             	<h:outputText  value="Password:"></h:outputText>
-            	<h:inputSecret style="width:125px;" value="#{loginBean.password}"></h:inputSecret>
-            	<p:commandButton value="login" actionListener="#{loginBean.login}" ajax="false" /> 
+            	<h:inputSecret style="width:125px;" value="#{profileBean.password}"></h:inputSecret>
+            	<p:commandButton value="login" actionListener="#{profileBean.login}" ajax="false" /> 
                	</p:panelGrid>
-            	<p:panelGrid columns="2" rendered="#{not empty loginBean.getProfile()}">
-                <h:outputText value="Welcome #{loginBean.getNickName()}"></h:outputText>
-               	<p:commandButton value="Logout" actionListener="#{loginBean.logout}" ajax="false"></p:commandButton>
+            	<p:panelGrid columns="2" rendered="#{not empty profileBean.getProfile()}">
+                <h:outputText value="Welcome #{profileBean.getNickName()}"></h:outputText>
+				    <p:menuButton style="font-size: 10px;" value="Options">  
+        				<p:menuitem style="font-size: 10px;" value="Manage Profile"  url="manageprofile.xhtml" icon="ui-icon-extlink"/>  
+        				<p:separator />  
+        				<p:menuitem style="font-size: 10px;" value="Logout" actionListener="#{profileBean.logout}" ajax="false"/>  
+    				</p:menuButton>  
             	</p:panelGrid>
         	</h:form>	
 			</div>

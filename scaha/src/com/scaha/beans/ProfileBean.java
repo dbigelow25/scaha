@@ -1,11 +1,14 @@
 package com.scaha.beans;
 
+import com.scaha.objects.FamilyMember;
 import com.scaha.objects.Profile;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
 
 import com.scaha.objects.Profile;
@@ -15,7 +18,7 @@ import com.scaha.objects.Profile;
  * 
  */
 
-public class LoginBean
+public class ProfileBean
 {
     private String name = null;
     private String password = null;
@@ -116,4 +119,48 @@ public class LoginBean
         
         return "login";
      }
+    
+    public String getCompleteName() {
+    	
+    	if (pro != null)  {
+    		return pro.getPerson().getsFirstName() + " " + pro.getPerson().getsLastName();
+    	} else {
+    		return "No Name Found!";
+    	}
+    }
+    
+ public String getCompleteAddress() {
+    	
+    	if (pro != null)  {
+    		return pro.getPerson().getsAddress1()  + " " + pro.getPerson().getsAddress2() +", " + pro.getPerson().getsCity() + ", " + pro.getPerson().getsState() + " " + pro.getPerson().getiZipCode();
+    	} else {
+    		return "No Address Found!";
+    	}
+    }
+ 
+ public String getEmail() {
+ 	if (pro != null)  {
+		return pro.getPerson().getsEmail();
+ 	} else {
+		return "No Address Found!";
+	}
+	 
+ }
+ 
+ public String getPhoneNumber() {
+ 	if (pro != null)  {
+		return pro.getPerson().getsPhone();
+ 	} else {
+		return "No Phone Found!";
+	}
+	 
+	 }
+ 
+ public List<FamilyMember> getFamilyMembers() {
+	 if (pro != null) {
+		 return pro.getPerson().getFamily().getFamilyMembers();
+	 } 
+	 return null;
+ }
+ 
 }

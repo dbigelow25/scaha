@@ -1,0 +1,65 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+>
+
+<f:metadata>
+<f:event type="preRenderView" listener="#{profileBean.verifyUserLogin()}" />
+</f:metadata>
+
+
+<ui:define name="content">
+  
+    <h3>Manage your Profile:</h3>
+    <p:growl id="growl" showDetail="true" />  
+    
+    <p:panel id="pnl-personal" style="font-size: 12px;" header="Personal Information" toggleable="true" closable="false" toggleSpeed="500" closeSpeed="500" widgetVar="panel-personal">  
+  
+        <p:ajax event="toggle" listener="#{panelBean.handleToggle}" update="growl" />  
+  
+         <h:panelGrid columns="2" cellpadding="2">  
+            	<h:outputText value="Name:" />
+            	<h:outputText value="#{profileBean.getCompleteName()}" />
+            	<h:outputText value="e-mail:" />
+            	<h:outputText value="#{profileBean.getEmail()}" />
+            	<h:outputText value="Nick Name:" />
+            	<h:outputText value="#{profileBean.getNickName()}" />
+            	<h:outputText value="Phone Number:" />
+            	<h:outputText value="#{profileBean.getPhoneNumber()}"/>
+            	<h:outputText value="Address:" />
+            	<h:outputText value="#{profileBean.getCompleteAddress()}" />
+            </h:panelGrid>  
+  
+        <f:facet name="options">  
+            <p:menu>  
+                <p:menuitem style="font-size: 12px;" value="Edit" url="#" icon="ui-icon-newwin" onclick="panel-personal.toggle()"/>  
+                <p:menuitem style="font-size: 12px;" value="Toggle" url="#" icon="ui-icon-newwin" onclick="panel-personal.toggle()"/>  
+            </p:menu>  
+        </f:facet>  
+    </p:panel>  
+    <p:panel id="pnl-family" style="font-size: 12px;" header="Family Member Management..." toggleable="true" closable="false" toggleSpeed="500" closeSpeed="500" widgetVar="panel-family">  
+		<h:form id="fam">  
+		<p:dataTable var="familymember" value="#{profileBean.getFamilyMembers()}">  
+        <p:column headerText="First Name">  
+            <h:outputText value="#{familymember.getsFirstName()}" />  
+        </p:column>  
+        <p:column headerText="Last Name">  
+            <h:outputText value="#{familymember.getsLastName()}" />  
+        </p:column>  
+        <p:column headerText="Relationship">  
+            <h:outputText value="#{familymember.getRelationship()}" />  
+        </p:column>  
+    </p:dataTable>  
+    </h:form>
+    </p:panel>  
+    <p:panel id="pnl-roles" style="font-size: 12px;" header="Accessability and Roles..." toggleable="true" closable="false" toggleSpeed="500" closeSpeed="500" widgetVar="panel-roles">  
+    </p:panel>  
+    </ui:define>
+</ui:composition>
