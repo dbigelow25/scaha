@@ -2,28 +2,45 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <ui:composition template="/WEB-INF/templates/layout.xhtml"
-     xmlns="http://www.w3.org/1999/xhtml"
-     xmlns:f="http://java.sun.com/jsf/core"
-     xmlns:h="http://java.sun.com/jsf/html"
-     xmlns:ui="http://java.sun.com/jsf/facelets"
-     xmlns:p="http://primefaces.org/ui"
->
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
 
-<ui:define name="content">
-    <h:form>  
-    <p:panel header="Member Registration Information:">  
-        <p:panelGrid columns="2" cellpadding="5">  
-        	<h:outputText  value=" UserName "></h:outputText>
-		    <p:inputText id="username" value="#{registrationBean.email}">
-    			<f:validator validatorId="validateUserName" />
-    			<f:ajax event="blur" render="m_username" />
-			</p:inputText>
-				
-			<p:message id="m_username" for="username" />
-		 
-        </p:panelGrid>  
-    </p:panel>  
-    </h:form>
-    
-    </ui:define>
+	<ui:define name="content">
+		<h:form>
+			<p:panel header="Member Registration Information:">
+				<p:panelGrid columns="3" cellpadding="5">
+
+					<h:outputLabel value="User Name"></h:outputLabel>
+					<p:inputText id="username" style="width:150px;" value="#{registrationBean.username}" required = "true" requiredMessage="User Name cannot be blank.">
+						<f:validator validatorId="validateUserName" />
+						<f:ajax event="blur" render="m_username" />
+					</p:inputText>
+					<p:message id="m_username" for="username" />
+
+					<h:outputLabel for="password" value="Password:" />
+					<h:inputSecret id="password" style="width:150px;" value="#{registrationBean.password}"
+						required="true" requiredMessage="Password cannot be blank.">
+						<f:validator validatorId="confirmPasswordValidator" />
+						<f:attribute name="confirm"
+							value="#{confirmPassword.submittedValue}" />
+						<f:ajax event="blur" execute="password confirm"
+							render="m_password" />
+					</h:inputSecret>
+					<p:message id="m_password" for="password" />
+
+					<h:outputLabel for="confirm" value="Password (again):" />
+					<h:inputSecret id="confirm" style="width:150px;" binding="#{confirmPassword}">
+						<f:ajax event="blur" execute="password confirm"
+							render="m_password m_confirm" />
+					</h:inputSecret>
+					<p:message id="m_confirm" for="confirm" />
+
+				</p:panelGrid>
+			</p:panel>
+		</h:form>
+
+	</ui:define>
 </ui:composition>

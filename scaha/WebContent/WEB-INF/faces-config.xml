@@ -13,7 +13,7 @@
 	<managed-bean>
 		<managed-bean-name>registrationBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.RegistrationBean</managed-bean-class>
-		<managed-bean-scope>view</managed-bean-scope>
+		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 	<render-kit>
 	</render-kit>
@@ -22,5 +22,11 @@
 		<display-name>User Name Validator</display-name>
 		<validator-id>validateUserName</validator-id>
 		<validator-class>com.scaha.validators.UserNameValidator</validator-class>
+	</validator>
+	<validator>
+		<description>This validates the Password.. it has to match two input fields</description>
+		<display-name>Password Confirmation Validator</display-name>
+		<validator-id>confirmPasswordValidator</validator-id>
+		<validator-class>com.scaha.validators.ConfirmPasswordValidator</validator-class>
 	</validator>
 </faces-config>
