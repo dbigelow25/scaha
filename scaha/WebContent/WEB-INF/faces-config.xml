@@ -10,4 +10,17 @@
 		<managed-bean-class>com.scaha.beans.ProfileBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>registrationBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.RegistrationBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
+	<render-kit>
+	</render-kit>
+	<validator>
+		<description>This will validate the Username to ensure its unique in the system</description>
+		<display-name>User Name Validator</display-name>
+		<validator-id>validateUserName</validator-id>
+		<validator-class>com.scaha.validators.UserNameValidator</validator-class>
+	</validator>
 </faces-config>

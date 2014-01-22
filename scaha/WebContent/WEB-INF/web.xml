@@ -70,7 +70,7 @@
   </context-param>
   <context-param>
 	<param-name>primefaces.THEME</param-name>
-	<param-value>aristo</param-value>
+	<param-value>bluesky</param-value>
 </context-param>
   <listener>
     <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>

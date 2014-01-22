@@ -4,6 +4,7 @@ import com.scaha.objects.FamilyMember;
 import com.scaha.objects.Profile;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -18,7 +19,7 @@ import com.scaha.objects.Profile;
  * 
  */
 
-public class ProfileBean
+public class ProfileBean implements Serializable 
 {
     private String name = null;
     private String password = null;
