@@ -9,18 +9,34 @@
 	xmlns:p="http://primefaces.org/ui">
 
 	<ui:define name="content">
-		<h:form>
-			<p:panel header="Member Registration Information:">
-				<p:panelGrid columns="3" cellpadding="5">
+	
+	<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top">  
+    	<h:outputText value="What PrimeFaces has so far is just the beginning!" style="color:#FFCC00;font-size:36px;" />  
+	</p:notificationBar>  
+  
+	<h:form>
+			<p:panel id ="panel" header="Member Registration Information:">
+				<p:panelGrid columns="4" cellpadding="3">
 
-					<h:outputLabel value="User Name"></h:outputLabel>
+					<p:outputLabel for="firstname" value="First Name" />
+					<p:inputText id="firstname" style="width:150px;" value="#{registrationBean.firstname}" required = "true" requiredMessage="First Name cannot be blank."/>
+					<p:tooltip for="firstname" value="The First name you want to be called by" showEffect="fade" hideEffect="fade" />  
+					<p:message id="m_firstname" for="firstname" />
+
+					<p:outputLabel for="lastname" value="Last Name" />
+					<p:inputText id="lastname" style="width:150px;" value="#{registrationBean.lastname}" required = "true" requiredMessage="Last Name cannot be blank."/>
+					<p:tooltip for="lastname" value="The Last name you want to be called by" showEffect="fade" hideEffect="fade" />  
+					<p:message id="m_lastname" for="lastname" />
+
+					<p:outputLabel for="username" value="User Name (e-mail)"/>
 					<p:inputText id="username" style="width:150px;" value="#{registrationBean.username}" required = "true" requiredMessage="User Name cannot be blank.">
 						<f:validator validatorId="validateUserName" />
 						<f:ajax event="blur" render="m_username" />
 					</p:inputText>
+					<p:tooltip for="username" value="Your Usercode is your e-mail.  It needs to be unique to our system" showEffect="fade" hideEffect="fade" />  
 					<p:message id="m_username" for="username" />
 
-					<h:outputLabel for="password" value="Password:" />
+					<p:outputLabel for="password" value="Password:" />
 					<h:inputSecret id="password" style="width:150px;" value="#{registrationBean.password}"
 						required="true" requiredMessage="Password cannot be blank.">
 						<f:validator validatorId="confirmPasswordValidator" />
@@ -29,16 +45,71 @@
 						<f:ajax event="blur" execute="password confirm"
 							render="m_password" />
 					</h:inputSecret>
+					<p:outputLabel value="" />
 					<p:message id="m_password" for="password" />
 
-					<h:outputLabel for="confirm" value="Password (again):" />
+					<p:outputLabel for="confirm" value="Password (again):" />
 					<h:inputSecret id="confirm" style="width:150px;" binding="#{confirmPassword}">
 						<f:ajax event="blur" execute="password confirm"
 							render="m_password m_confirm" />
 					</h:inputSecret>
+					<p:outputLabel value="" />
 					<p:message id="m_confirm" for="confirm" />
+					
+					<p:outputLabel for="phone"  value="Mobile Phone" />
+					<p:inputMask id="phone" value="#{registrationBean.phone}" style="width:150px;" mask="(999) 999-9999" required="true" requiredMessage="A mobile phone is needed"/>  
+					<p:message id="m_phone" for="phone" />
+					<p:tooltip for="phone" value="Put the mobile phone number you want to be contacted with and have alerts sent to" showEffect="fade" hideEffect="fade" /> 
 
-				</p:panelGrid>
+					<p:outputLabel for="address" value="Address"/>
+					<p:inputText id="address" style="width:150px;" value="#{registrationBean.address}" required = "true" requiredMessage="Address Cannot be blank." />
+					<p:tooltip for="address" value="Your Street Address in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
+					<p:message id="m_address" for="address" />
+
+			</p:panelGrid>
+					
+			<p:spacer width="200" height="10" />
+
+			<p:panelGrid columns="3" cellpadding="3">
+					<p:outputLabel for="city" value="City"/>
+					<p:outputLabel for="state" value="State"/>
+					<p:outputLabel for="zip" value="Zip"/>
+					<p:inputText id="city" style="width:175px;" value="#{registrationBean.city}" required = "true" requiredMessage="City cannot be blank." />
+					<p:inputText id="state" style="width:10px;" value="#{registrationBean.state}" required = "true" requiredMessage="State cannot be blank." />
+					<p:inputText id="zip" style="width:10px;" value="#{registrationBean.zip}" required = "true" requiredMessage="State cannot be blank." />
+					<p:tooltip for="city" value="The city you live in in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
+					<p:tooltip for="state" value="The state you live in in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
+					<p:tooltip for="zip" value="The Zipcode you live in in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
+					<p:message id="m_city" for="city" />
+					<p:message id="m_state" for="state" />
+					<p:message id="m_zip" for="zip" />
+
+			</p:panelGrid>
+			<p:panelGrid columns="4" cellpadding="3">
+	
+					<p:outputLabel for="email" value="alternate e-mail" />
+					<p:inputText id="email" style="width:150px;" value="#{registrationBean.email}" />
+					<p:tooltip for="email" value="An alternate e-mail to contact you in case your primary e-mail has been corrupted" showEffect="fade" hideEffect="fade" />  
+					<p:message id="m_email" for="email" />					
+					
+					<p:outputLabel for="nickname" value="Nick Name" />
+					<p:inputText id="nickname" style="width:150px;" value="#{registrationBean.nickname}"/>
+					<p:tooltip for="nickname" value="What will be shown on the site screen.  If blank, your first and last name will be used" showEffect="fade" hideEffect="fade" />  
+					<p:message id="m_nickname" for="nickname" />	
+
+
+			</p:panelGrid>
+
+			<p:spacer width="200" height="10" />
+
+			<p:panelGrid columns="3" cellpadding="20" style="align:right;">
+			
+				<p:spacer width="250" height="10" />
+				<p:commandButton value="Reset" >  
+        			<p:ajax update="panel" resetValues="true" />  
+    			</p:commandButton>  				
+			    <p:commandButton value="Submit" actionListener="#{registrationBean.createRegistration()}"  ajax="true" />  
+			   </p:panelGrid>
 			</p:panel>
 		</h:form>
 

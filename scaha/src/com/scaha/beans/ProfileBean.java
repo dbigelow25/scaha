@@ -1,11 +1,13 @@
 package com.scaha.beans;
 
+import com.gbli.context.ContextManager;
 import com.scaha.objects.FamilyMember;
 import com.scaha.objects.Profile;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -19,9 +21,14 @@ import com.scaha.objects.Profile;
  * 
  */
 
-public class ProfileBean implements Serializable 
-{
-    private String name = null;
+public class ProfileBean implements Serializable  { 
+
+	//
+	// Class Level Variables
+	private static final long serialVersionUID = 1L;
+	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+
+	private String name = null;
     private String password = null;
 	private Profile pro = null;  // This holds all the information regarding a person in the system
 	private String origin = null;

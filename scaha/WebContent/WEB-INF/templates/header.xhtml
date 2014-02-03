@@ -35,6 +35,10 @@
             	<h:outputLink id="reglink" value="/scaha/faces/register.xhtml">
 				    <h:outputText value="Create New Account" />
 				</h:outputLink>
+					<h:outputText  value=" / " />
+            	<h:outputLink id="newpasslink" value="/scaha/faces/newpassword.xhtml">
+				    <h:outputText value="Forgot Password?" />
+				</h:outputLink>
                	</p:panel>
                	<p:panel rendered="#{not empty profileBean.getProfile()}">
                 <p:toolbar>	 	 

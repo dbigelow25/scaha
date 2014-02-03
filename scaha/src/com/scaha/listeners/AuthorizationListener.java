@@ -7,10 +7,15 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.servlet.http.HttpSession;
 
+/**
+ * This is an artifact from various versions of login approaches
+ * @author dbigelow
+ *
+ */
 public class AuthorizationListener implements PhaseListener {
 
 	/**
-	 * 
+	 *  
 	 */
 	private static final long serialVersionUID = 1L;
 

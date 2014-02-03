@@ -13,7 +13,7 @@
 	<managed-bean>
 		<managed-bean-name>registrationBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.RegistrationBean</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
+		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
 	<render-kit>
 	</render-kit>

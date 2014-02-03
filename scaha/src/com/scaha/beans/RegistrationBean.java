@@ -1,8 +1,18 @@
 package com.scaha.beans;
 
 import java.io.Serializable;
+import java.util.logging.Logger;
+
+import com.gbli.context.ContextManager;
 
 public class RegistrationBean implements Serializable  {
+	
+
+	//
+	// Class Level Variables
+	private static final long serialVersionUID = 1L;
+	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+
 	
 	private String username = null;
 	private String password = null;
@@ -10,6 +20,12 @@ public class RegistrationBean implements Serializable  {
 	private String firstname = null;
 	private String lastname = null;
 	private String nickname = null;
+	private String phone = null;
+	private String email = null;
+	private String address = null;
+	private String city = null;
+	private String state = null;
+	private String zip = null;
 	/**
 	 * @return the username
 	 */
@@ -83,4 +99,89 @@ public class RegistrationBean implements Serializable  {
 		this.nickname = nickname;
 	}
 
+	/**
+	 * @return the phone
+	 */
+	public String getPhone() {
+		return phone;
+	}
+	/**
+	 * @param phone the phone to set
+	 */
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	/**
+	 * 
+	 */
+	public void setDefaultUserName() {
+	    username = email;
+	}
+	
+	/**
+	 * @return the address
+	 */
+	public String getAddress() {
+		return address;
+	}
+	/**
+	 * @param address the address to set
+	 */
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	/**
+	 * @return the city
+	 */
+	public String getCity() {
+		return city;
+	}
+	/**
+	 * @param city the city to set
+	 */
+	public void setCity(String city) {
+		this.city = city;
+	}
+	/**
+	 * @return the state
+	 */
+	public String getState() {
+		return state;
+	}
+	/**
+	 * @param state the state to set
+	 */
+	public void setState(String state) {
+		this.state = state;
+	}
+	/**
+	 * @return the zip
+	 */
+	public String getZip() {
+		return zip;
+	}
+	/**
+	 * @param zip the zip to set
+	 */
+	public void setZip(String zip) {
+		this.zip = zip;
+	}
+	public void createRegistration() {
+		
+		LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM REGISTRATION..");
+		
+	}
 }
