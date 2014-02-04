@@ -61,32 +61,6 @@
 					<p:message id="m_phone" for="phone" />
 					<p:tooltip for="phone" value="Put the mobile phone number you want to be contacted with and have alerts sent to" showEffect="fade" hideEffect="fade" /> 
 
-					<p:outputLabel for="address" value="Address"/>
-					<p:inputText id="address" style="width:150px;" value="#{registrationBean.address}" required = "true" requiredMessage="Address Cannot be blank." />
-					<p:tooltip for="address" value="Your Street Address in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
-					<p:message id="m_address" for="address" />
-
-			</p:panelGrid>
-					
-			<p:spacer width="200" height="10" />
-
-			<p:panelGrid columns="3" cellpadding="3">
-					<p:outputLabel for="city" value="City"/>
-					<p:outputLabel for="state" value="State"/>
-					<p:outputLabel for="zip" value="Zip"/>
-					<p:inputText id="city" style="width:175px;" value="#{registrationBean.city}" required = "true" requiredMessage="City cannot be blank." />
-					<p:inputText id="state" style="width:10px;" value="#{registrationBean.state}" required = "true" requiredMessage="State cannot be blank." />
-					<p:inputText id="zip" style="width:10px;" value="#{registrationBean.zip}" required = "true" requiredMessage="State cannot be blank." />
-					<p:tooltip for="city" value="The city you live in in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
-					<p:tooltip for="state" value="The state you live in in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
-					<p:tooltip for="zip" value="The Zipcode you live in in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
-					<p:message id="m_city" for="city" />
-					<p:message id="m_state" for="state" />
-					<p:message id="m_zip" for="zip" />
-
-			</p:panelGrid>
-			<p:panelGrid columns="4" cellpadding="3">
-	
 					<p:outputLabel for="email" value="alternate e-mail" />
 					<p:inputText id="email" style="width:150px;" value="#{registrationBean.email}" />
 					<p:tooltip for="email" value="An alternate e-mail to contact you in case your primary e-mail has been corrupted" showEffect="fade" hideEffect="fade" />  
@@ -97,18 +71,43 @@
 					<p:tooltip for="nickname" value="What will be shown on the site screen.  If blank, your first and last name will be used" showEffect="fade" hideEffect="fade" />  
 					<p:message id="m_nickname" for="nickname" />	
 
+			</p:panelGrid>
+			
+			<p:separator id="customSeparator" style="width:800px;height:2px" />    
+			<p:panelGrid columns="3" cellpadding="3">
+
+					<p:outputLabel for="address" value="Address"/>
+					<p:spacer width="200" height="10" />
+					<p:spacer width="200" height="10" />
+					<p:inputText id="address" style="width:175px;" value="#{registrationBean.address}" required = "true" requiredMessage="Address Cannot be blank." />
+					<p:tooltip for="address" value="Your Street Address in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
+					<p:message id="m_address" for="address" />
+					
+			</p:panelGrid>
+					
+			<p:panelGrid columns="3" cellpadding="3">
+					<p:outputLabel for="city" value="City"/>
+					<p:outputLabel for="state" value="State"/>
+					<p:outputLabel for="zip" value="Zip"/>
+					<p:inputText id="city" style="width:175px;" value="#{registrationBean.city}" required = "true" requiredMessage="City cannot be blank." />
+					<p:inputText id="state" style="width:25px;" maxlength="2" value="#{registrationBean.state}" required = "true" requiredMessage="State cannot be blank." />
+					<p:inputText id="zip" style="width:75px;" maxlength="5" value="#{registrationBean.zip}" required = "true" requiredMessage="State cannot be blank." />
+					<p:tooltip for="city" value="The city you live in in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
+					<p:tooltip for="state" value="The state you live in in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
+					<p:tooltip for="zip" value="The Zipcode you live in in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
+					<p:message id="m_city" for="city" />
+					<p:message id="m_state" for="state" />
+					<p:message id="m_zip" for="zip" />
 
 			</p:panelGrid>
 
 			<p:spacer width="200" height="10" />
 
-			<p:panelGrid columns="3" cellpadding="20" style="align:right;">
-			
-				<p:spacer width="250" height="10" />
+			<p:panelGrid columns="2" cellpadding="20" style="align:right;">
 				<p:commandButton value="Reset" >  
         			<p:ajax update="panel" resetValues="true" />  
     			</p:commandButton>  				
-			    <p:commandButton value="Submit" actionListener="#{registrationBean.createRegistration()}"  ajax="true" />  
+			    <p:commandButton id="register" value="Submit" actionListener="#{registrationBean.createRegistration}"  ajax="true" />
 			   </p:panelGrid>
 			</p:panel>
 		</h:form>

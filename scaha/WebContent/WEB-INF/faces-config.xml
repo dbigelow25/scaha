@@ -15,6 +15,16 @@
 		<managed-bean-class>com.scaha.beans.RegistrationBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
+	<navigation-rule>
+		<display-name>register.xhtml</display-name>
+		<from-view-id>/register.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>#{registrationBean.createRegistration}</from-action>
+			<from-outcome>True</from-outcome>
+			<to-view-id>/Welcome.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+	</navigation-rule>
 	<render-kit>
 	</render-kit>
 	<validator>

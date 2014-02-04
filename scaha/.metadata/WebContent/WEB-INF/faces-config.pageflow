@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pageflow:Pageflow xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf13894530625120" configfile="/scaha/WebContent/WEB-INF/faces-config.xml"/>
+<pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf13894530625120" configfile="/scaha/WebContent/WEB-INF/faces-config.xml">
+  <nodes xsi:type="pageflow:PFPage" name="register.xhtml" x="172" y="101" id="pf13914658296550" outlinks="pf13914658296551" path="/register.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="Welcome.xhtml" x="451" y="233" id="pf13914658296552" inlinks="pf13914658296551" path="/Welcome.xhtml"/>
+  <links id="pf13914658296551" target="pf13914658296552" source="pf13914658296550" outcome="True" redirect="true" fromaction="#{registrationBean.createRegistration}"/>
+</pageflow:Pageflow>

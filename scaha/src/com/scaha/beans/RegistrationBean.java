@@ -3,9 +3,11 @@ package com.scaha.beans;
 import java.io.Serializable;
 import java.util.logging.Logger;
 
+import com.gbli.common.SendMailSSL;
 import com.gbli.context.ContextManager;
+import com.scaha.objects.MailableObject;
 
-public class RegistrationBean implements Serializable  {
+public class RegistrationBean implements Serializable, MailableObject  {
 	
 
 	//
@@ -179,9 +181,67 @@ public class RegistrationBean implements Serializable  {
 	public void setZip(String zip) {
 		this.zip = zip;
 	}
-	public void createRegistration() {
+	/**
+	 * This method will create all the required database records to create a "registered User".
+	 * 
+	 * Typically, the database maintenance is done in business objects.. this one touches a few tables..
+	 * so we want to make sure its tight...
+	 * 
+	 */
+	public String createRegistration() {
+		
+		
+		//
+		// Lets check how unique and clean the data is first.
+		// if we pass everything.. then we insert everyrthing..
+		//
+		//
+		// We create a profile record
+		// we create a person record
+		// and we create a default roleset record that gives this person the default role of FAMILY
+		//
+		//
+		// Then at the end of this.. we fire off an e-mail.  we have to pull all the profiles that have register admin roles...
+		//  and make sure they are in the blind carbon copy section of the e-mail.
+		//
+		
+		//
+		// If everything works.. then we return a "True" back.. so the faces can reroute to a succesffully registered page..
+		//
+		// otherwise.. we send back a false.. which will keep the user parked on the page with an error message.. 
+		//
+		// we will need the general msg to fill out that there was some sort of error.. and that if it continues.. to call support.
+		//
 		
 		LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM REGISTRATION..");
+		LOGGER.info("Sending Test mail here...");
+		SendMailSSL mail = new SendMailSSL(this);
+		LOGGER.info("Finished creating mail object for " + this.getUsername());
+		mail.sendMail();
+
+		return "True";
 		
+	}
+
+	@Override
+	public String getSubject() {
+		// TODO Auto-generated method stub
+		return "SCAHA iSite Wecomes you as a new registered user";
+	}
+	@Override
+	public String getTextBody() {
+		// TODO Auto-generated method stub
+		return "You have succesfully registered.." + this.getFirstname() + " " + this.getLastname();
+	}
+	
+	@Override
+	public String getPreApprovedCC() {
+		// TODO Auto-generated method stub
+		return "";
+	}
+	@Override
+	public String getToMailAddress() {
+		// TODO Auto-generated method stub
+		return this.username + "," + ((this.email == null || this.email.isEmpty()) ? "" : this.email);
 	}
 }
