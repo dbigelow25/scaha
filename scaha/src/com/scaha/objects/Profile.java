@@ -1,8 +1,12 @@
 package com.scaha.objects;
 
+import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Vector;
 import java.util.logging.Logger;
+
+import org.primefaces.expression.impl.ThisExpressionResolver;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
@@ -20,7 +24,6 @@ public class Profile extends ScahaObject {
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
-	
 
 	//
 	// Member Variables
@@ -43,8 +46,26 @@ public class Profile extends ScahaObject {
 		// Lets get the action List...
 		m_al = new ActionList(this);
 	}
+
+	/**
+	 *  This is used to create a shell of a profile
+	 *  
+	 *  This will be saved eventually..
+	 *  
+	 * @param _sUser
+	 * @param _sPass
+	 * @param _sNN
+	 */
+	public Profile(String _sUser, String _sPass, String _sNN) {
+
+		m_sNickName = _sNN;
+		m_sUser = _sUser;
+		m_sPass = _sPass;
+		super.setID(0);
+
+	}
 	
-	
+
 	/**
 	 * verify - Gathers the profile information from the target system
 	 * If it returns false.. authentication failed.
@@ -128,4 +149,36 @@ public class Profile extends ScahaObject {
 		return this.getID() + ":" + this.getNickName() + ":" + this.m_sUser;
 	}
 	
+	
+	/**
+	 * This guy will take an existing database connection and update and or insert the record..
+	 * 
+	 * @param db
+	 */
+	public void update(ScahaDatabase db) throws SQLException {
+		
+		// 
+		// is it an object that is not in the database yet..
+		//
+		
+		CallableStatement cs = db.prepareCall("call scaha.updateprofile(?,?,?,?,?,?,?)");
+		
+		cs.setInt(1, getID());
+		cs.setString(2, this.m_sUser);
+		cs.setString(3, this.m_sPass);
+		cs.setString(4, this.m_sNickName);
+		cs.setInt(5,1);
+		cs.setString(6,null);
+		cs.registerOutParameter(7, java.sql.Types.INTEGER);
+		cs.execute();
+		
+		//
+		// Update the new ID from the database...
+		//
+		this.setID(cs.getInt(7));
+		cs.close();
+
+		LOGGER.info("HERE IS THE NEW ID:" + this.getID());
+
+	}
 }

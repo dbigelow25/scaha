@@ -1,11 +1,18 @@
 package com.scaha.beans;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import com.gbli.common.SendMailSSL;
+import com.gbli.connectors.Database;
+import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.MailableObject;
+import com.scaha.objects.Profile;
+import com.sun.org.apache.bcel.internal.generic.DDIV;
 
 public class RegistrationBean implements Serializable, MailableObject  {
 	
@@ -14,7 +21,6 @@ public class RegistrationBean implements Serializable, MailableObject  {
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
-
 	
 	private String username = null;
 	private String password = null;
@@ -194,6 +200,9 @@ public class RegistrationBean implements Serializable, MailableObject  {
 		//
 		// Lets check how unique and clean the data is first.
 		// if we pass everything.. then we insert everyrthing..
+		
+		// The screen checked the uniqueness of the user.. 
+		// we just need to check in once again prior to creating the basic profile
 		//
 		//
 		// We create a profile record
@@ -213,15 +222,61 @@ public class RegistrationBean implements Serializable, MailableObject  {
 		// we will need the general msg to fill out that there was some sort of error.. and that if it continues.. to call support.
 		//
 		
-		LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM REGISTRATION..");
-		LOGGER.info("Sending Test mail here...");
-		SendMailSSL mail = new SendMailSSL(this);
-		LOGGER.info("Finished creating mail object for " + this.getUsername());
-		mail.sendMail();
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
 
-		return "True";
+			if (db.setAutoCommit(false)) {
+			
+				
+				Vector<String> v = new Vector<String>();
+				v.add(this.username);
+ 				db.getData("CALL scaha.checkforuser(?)", v);
+			        
+ 				if (db.getResultSet() != null && db.getResultSet().next()){
+					if (db.getResultSet().getInt(1) > 0) {
+						// We already have this username.. 
+						// we need to exit and fill the message in the context on the screen.
+						return "False";
+					}
+				}
+ 				
+ 				db.cleanup();
+
+				//
+				// we are good to go here..
+				//
+
+				Profile pro = new Profile(this.username,this.password, this.nickname);
+				pro.update(db);
+				LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM REGISTRATION..");
+				LOGGER.info("Sending Test mail here...");
+				SendMailSSL mail = new SendMailSSL(this);
+				LOGGER.info("Finished creating mail object for " + this.getUsername());
+				mail.sendMail();
+				db.commit();
+				return "True";
+			
+			} else {
+				return "False";
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			db.rollback();
+		} finally {
+			//
+			// always clean up after yourself..
+			//
+			db.setAutoCommit(true);
+			db.free();
+		}
+		
+		return "False";
 		
 	}
+		
 
 	@Override
 	public String getSubject() {

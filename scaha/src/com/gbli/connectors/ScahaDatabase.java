@@ -25,9 +25,11 @@ public class ScahaDatabase extends Database {
 	//
 	// Stored Procedure Strings.
 	//
-	private static String c_sp_profile = "Call scaha.profile(?,?)";
-	private static String c_sp_actionlist = "Call scaha.getActionTree(?)";
-
+	public static String c_sp_profile = "Call scaha.profile(?,?)";
+	public static String c_sp_actionlist = "Call scaha.getActionTree(?)";
+	public static String c_PS_CHECK_FOR_USER = "Call scaha.checkForUser(?)";
+	
+	
 	public ScahaDatabase(int _iId, String _sDriver, String _sURL, String _sUser, String _sPwd) {
 		super(_iId, _sDriver, _sURL, _sUser, _sPwd);
 	}
