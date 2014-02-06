@@ -252,13 +252,14 @@ public class RegistrationBean implements Serializable, MailableObject  {
 				Person per = new Person(0,pro);
 				per.setsAddress1(this.address);
 				per.setsFirstName(this.firstname);
+				per.setsLastName(this.lastname);
 				per.setsCity(city);
 				per.setsState(this.state);
 				per.setiZipCode(Integer.valueOf(this.zip));
 				per.setsPhone(this.phone);
 				per.setsEmail(this.email);
 				pro.update(db);
-				//per.update(db);
+				per.update(db);
 				
 				// We want to create a family called the <lastname> family...
 				LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM REGISTRATION..");
@@ -275,17 +276,18 @@ public class RegistrationBean implements Serializable, MailableObject  {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
+			LOGGER.info("ERROR IN REGISTRATION PROCESS FOR " + this.getUsername());
 			e.printStackTrace();
 			db.rollback();
 		} finally {
 			//
 			// always clean up after yourself..
 			//
-			db.setAutoCommit(true);
 			db.free();
 		}
 		
 		return "False";
+
 		
 	}
 		

@@ -1,6 +1,7 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
+import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
@@ -238,5 +239,56 @@ public class Person extends ScahaObject implements Serializable {
 		return this.fam;
 	}
 
+	/**
+	 * This guy will take an existing database connection and update and or insert the record..
+	 * 
+	 * @param db
+	 */
+	public void update(ScahaDatabase db) throws SQLException {
+		
+		// 
+		// is it an object that is not in the database yet..
+		//
+		
+		CallableStatement cs = db.prepareCall("call scaha.updatePerson(?,?,?,?,?,?,?,?,?,?,?,?)");
+
+		//		INOUT in_idPerson INT(10),
+		//		IN in_idProfile INT(10),
+		//	    IN in_fname VARCHAR(50),
+		//	    IN in_lname VARCHAR(50),
+		//	    IN in_altemail VARCHAR(75),
+		//	    IN in_phone VARCHAR(10),
+		//	    IN in_address VARCHAR(75),
+		//	    IN in_city VARCHAR(50),
+		//	    IN in_state VARCHAR(2),
+		//	    IN in_zipcode INT(10),
+		//		IN in_isactive tinyint,
+		//		IN in_updated timestamp,
+
+		int i = 1;
+		cs.registerOutParameter(1, java.sql.Types.INTEGER);
+		cs.setInt(i++, getID());
+		cs.setInt(i++, getProfile().getID());
+		cs.setString(i++, this.sFirstName);
+		cs.setString(i++, this.sLastName);
+		cs.setString(i++, this.sEmail);
+		cs.setString(i++, this.sPhone);
+		cs.setString(i++, this.sAddress1);
+		cs.setString(i++, this.sCity);
+		cs.setString(i++, this.sState);
+		cs.setInt(i++, this.iZipCode);
+		cs.setInt(i++,1);
+		cs.setString(i++,null);
+		cs.execute();
+		
+		//
+		// Update the new ID from the database...
+		//
+		this.setID(cs.getInt(1));
+		cs.close();
+
+		LOGGER.info("HERE IS THE NEW ID:" + this.getID());
+
+	}
 	
 }

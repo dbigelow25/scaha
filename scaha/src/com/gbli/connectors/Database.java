@@ -51,7 +51,6 @@ public class Database {
 	private CallableStatement m_cstmt = null;
 	private ResultSet m_rs = null;
 	private ResultSetMetaData m_rsmd = null;
-	private Savepoint m_sp = null;
 	
 	/**
 	 * Cannot simply create this object w/o the required parms
@@ -149,6 +148,7 @@ public class Database {
 			if (m_cstmt != null) {
 				m_cstmt.close();
 			}
+			m_con.setAutoCommit(true); // Always set it back.. caller may have been lazy
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 			LOGGER.info(this + "DB Free SNAFU");
@@ -378,7 +378,6 @@ public class Database {
 	public void commit() throws SQLException {
 		if (!this.m_con.getAutoCommit())
 			this.m_con.commit();
-			this.setSavePoint();  // Set a new save point... 
 		if (this.m_stmt != null) {
 			this.m_stmt.close();
 			this.m_stmt = null;
@@ -413,41 +412,31 @@ public class Database {
 		LOGGER.info(this + "Setting autocommit to (" + _val + ")");
 			try {
 			m_con.setAutoCommit(_val);
-			LOGGER.info(this + "Setting autocommit completed successfully");
+			LOGGER.info(this + "Setting autocommit completed successfully to (" + m_con.getAutoCommit() + ")");
 			return true;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		LOGGER.info(this + "Setting autocommit failed..");
-		if (!_val) return this.setSavePoint();
-		return true;
+		return false;
 		
 	}
 	
 	public boolean rollback() {
 		try {
-			m_con.rollback(m_sp);
+			LOGGER.info(this + "ROLLBACK INITIATED!!!");
+			m_con.rollback();
+			LOGGER.info(this + "ROLLBACK COMPLETE!!!");
 			return true;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
+			LOGGER.info(this + "#### ERROR IN ROLLBACK!!!");
 			e.printStackTrace();
 		}
 		return false;
 	}
 
-	public boolean setSavePoint() {
-		try {
-			m_sp = m_con.setSavepoint(this.m_iId + "");
-			return true;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return false;
-	}
-	
 	private void primeConnection() {
 
 		try {
