@@ -76,10 +76,10 @@ public class Person extends ScahaObject implements Serializable {
 	 * @param _id
 	 * @param _pro
 	 */
-	public Person (int _id) {
+	public Person (int _id, Profile _pro) {
 		
 		this.setID(_id);
-		
+		this.setProfile(_pro);
 	}
 
 	

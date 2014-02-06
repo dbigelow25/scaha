@@ -11,6 +11,7 @@ import com.gbli.connectors.Database;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.MailableObject;
+import com.scaha.objects.Person;
 import com.scaha.objects.Profile;
 import com.sun.org.apache.bcel.internal.generic.DDIV;
 
@@ -248,7 +249,18 @@ public class RegistrationBean implements Serializable, MailableObject  {
 				//
 
 				Profile pro = new Profile(this.username,this.password, this.nickname);
+				Person per = new Person(0,pro);
+				per.setsAddress1(this.address);
+				per.setsFirstName(this.firstname);
+				per.setsCity(city);
+				per.setsState(this.state);
+				per.setiZipCode(Integer.valueOf(this.zip));
+				per.setsPhone(this.phone);
+				per.setsEmail(this.email);
 				pro.update(db);
+				//per.update(db);
+				
+				// We want to create a family called the <lastname> family...
 				LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM REGISTRATION..");
 				LOGGER.info("Sending Test mail here...");
 				SendMailSSL mail = new SendMailSSL(this);

@@ -53,7 +53,7 @@ public class Family extends ScahaObject implements Serializable  {
 					//
 					// ok.. now lets make a family member .. by sticking a person and a responsibility together..
 					//
-					FamilyMember mem = new FamilyMember(rs.getInt(5), rs.getInt(3), rs.getString(4));
+					FamilyMember mem = new FamilyMember(this.getProfile(), rs.getInt(5), rs.getInt(3), rs.getString(4));
 					
 					mem.setsFirstName(rs.getString(6));
 					mem.setsLastName(rs.getString(7));
