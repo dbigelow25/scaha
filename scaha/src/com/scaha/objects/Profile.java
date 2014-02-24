@@ -3,6 +3,8 @@ package com.scaha.objects;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -30,6 +32,7 @@ public class Profile extends ScahaObject {
 	//
 	private String m_sUser = null;
 	private String m_sPass = null;
+	private RoleCollection m_rc = null;
 	private String m_sNickName = null;
 	private ActionList m_al = null;
 	private Person m_per = null;
@@ -40,11 +43,21 @@ public class Profile extends ScahaObject {
 		m_sNickName = _sNN;
 		m_sUser = _sUser;
 		m_sPass = _sPass;
+
 		
-		// Lets get the Person...
-		m_per = new Person(_db, this);
-		// Lets get the action List...
-		m_al = new ActionList(this);
+		try {
+
+			// Lets get the Person...
+			m_per = new Person(_db, this);
+			// Lets get the action List...
+			m_al = new ActionList(this);
+			// What roles do they have ?  Non hierarchical
+			m_rc = new RoleCollection(_db, this);
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -145,6 +158,12 @@ public class Profile extends ScahaObject {
 		return this.m_per;
 		
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Role> getRoles() {
+		return this.m_rc.getList();
+	}
+	
 	public String toString() {
 		return this.getID() + ":" + this.getNickName() + ":" + this.m_sUser;
 	}

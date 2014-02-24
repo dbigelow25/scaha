@@ -19,5 +19,6 @@
 			<attribute name="owner.project.facets" value="jst.jsf"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jaxws-tools-2.2.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

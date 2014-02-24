@@ -11,6 +11,16 @@
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
+		<managed-bean-name>roletreeBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.RoleTreeBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>picklistRoleBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.PicklistRoleBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
 		<managed-bean-name>registrationBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.RegistrationBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>

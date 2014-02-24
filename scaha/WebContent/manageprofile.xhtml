@@ -60,6 +60,19 @@
     </h:form>
     </p:panel>  
     <p:panel id="pnl-roles" style="font-size: 12px;" header="Accessability and Roles..." toggleable="true" closable="false" toggleSpeed="500" closeSpeed="500" widgetVar="panel-roles">  
+    <h:form id="roles">  
+		<p:dataTable var="role" value="#{profileBean.getRoles()}">  
+        <p:column headerText="Role Name">  
+            <h:outputText value="#{role.getName()}" />  
+        </p:column>  
+        <p:column headerText="Role Description">  
+            <h:outputText value="#{role.getDesc()}" />  
+        </p:column>  
+        <p:column headerText="Default?">  
+            <h:outputText value="#{role.isDefaultRole()}" />  
+        </p:column>  
+    </p:dataTable>  
+    </h:form>
     </p:panel>  
     </ui:define>
 </ui:composition>

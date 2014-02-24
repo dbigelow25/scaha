@@ -3,6 +3,7 @@ package com.scaha.beans;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.FamilyMember;
 import com.scaha.objects.Profile;
+import com.scaha.objects.Role;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -161,14 +162,17 @@ public class ProfileBean implements Serializable  {
  	} else {
 		return "No Phone Found!";
 	}
-	 
-	 }
+ }
  
  public List<FamilyMember> getFamilyMembers() {
 	 if (pro != null) {
 		 return pro.getPerson().getFamily().getFamilyMembers();
 	 } 
 	 return null;
+ }
+ 
+public List<Role> getRoles() {
+	 return pro.getRoles();
  }
  
 }
