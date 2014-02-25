@@ -25,6 +25,11 @@
 		<managed-bean-class>com.scaha.beans.RegistrationBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>forgotpasswordBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.ForgotPasswordBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
 	<navigation-rule>
 		<display-name>register.xhtml</display-name>
 		<from-view-id>/register.xhtml</from-view-id>
@@ -48,5 +53,11 @@
 		<display-name>Password Confirmation Validator</display-name>
 		<validator-id>confirmPasswordValidator</validator-id>
 		<validator-class>com.scaha.validators.ConfirmPasswordValidator</validator-class>
+	</validator>
+	<validator>
+		<description>This validates the Email to ensure it (username) is already in the system</description>
+		<display-name>Email Validator</display-name>
+		<validator-id>validateEmail</validator-id>
+		<validator-class>com.scaha.validators.EmailValidator</validator-class>
 	</validator>
 </faces-config>

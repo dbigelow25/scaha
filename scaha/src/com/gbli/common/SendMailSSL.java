@@ -26,8 +26,8 @@ public class SendMailSSL {
 	MailableObject m_mo = null;
 	Session m_sess = null;
 	
-	final String username = "dbigelow25@gmail.com";
-	final String password = "25Silvrcap";
+	static String username = null;
+	static String password = null;
 	
 	
 	public SendMailSSL(MailableObject _mo)  {
@@ -73,9 +73,8 @@ public class SendMailSSL {
  			LOGGER.info("Instansiating a new message for e-mail...");
  			
 			Message message = new MimeMessage(m_sess);
-			message.setFrom(new InternetAddress("dbigelow25@gmail.com"));
-			message.setRecipients(Message.RecipientType.TO,
-				InternetAddress.parse(m_mo.getToMailAddress()));
+			message.setFrom(new InternetAddress(SendMailSSL.getUsername()));
+			message.setRecipients(Message.RecipientType.TO,	InternetAddress.parse(m_mo.getToMailAddress()));
 			//
 			// Add the Blind CC's
 			//
@@ -107,5 +106,37 @@ public class SendMailSSL {
 		
 		m_sess = null;
 		
+	}
+
+
+	/**
+	 * @return the username
+	 */
+	public static String getUsername() {
+		return username;
+	}
+
+
+	/**
+	 * @param username the username to set
+	 */
+	public static void setUsername(String username) {
+		SendMailSSL.username = username;
+	}
+
+
+	/**
+	 * @return the password
+	 */
+	public static String getPassword() {
+		return password;
+	}
+
+
+	/**
+	 * @param password the password to set
+	 */
+	public static void setPassword(String password) {
+		SendMailSSL.password = password;
 	}
 }

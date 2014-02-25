@@ -11,6 +11,11 @@
     <env-entry-type>java.lang.Integer</env-entry-type>
     <env-entry-value>5</env-entry-value>
   </env-entry>
+   <env-entry>
+    <env-entry-name>scaha/emailauth</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>dbigelow25@gmail.com:cam25mak</env-entry-value>
+  </env-entry>
   <welcome-file-list>
     <welcome-file>Welcome.xhtml</welcome-file>
   </welcome-file-list>

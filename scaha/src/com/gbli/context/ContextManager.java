@@ -15,6 +15,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 
+import com.gbli.common.SendMailSSL;
 import com.gbli.connectors.Database;
 import com.gbli.connectors.DatabasePool;
 import com.gbli.connectors.ScahaDatabase;
@@ -38,7 +39,6 @@ public class ContextManager implements ServletContextListener {
 	private static String c_sLoggerContext = null;	// Used to determine logger Name
 	private static Logger c_Logger = null;  // Used to initailize the logger
 	private static Hashtable<String, DatabasePool> c_hDBPools = new Hashtable<String, DatabasePool>();  // Used to hold a map of database pools
-
 	
 	/*
 	 * (non-Javadoc)
@@ -87,7 +87,13 @@ public class ContextManager implements ServletContextListener {
 					Context ic;
 					ic = new InitialContext();
 					ipc = (Integer) ic.lookup("java:comp/env/scaha/dbpoolcount");
-					c_Logger.info("Pool Count is..." + ipc);
+					c_Logger.info("**** Pool Count is..." + ipc);
+					
+					String sMailAuth = (String)ic.lookup("java:comp/env/scaha/emailauth");
+					String[] saMailAuth = sMailAuth.split(":");
+					SendMailSSL.setUsername(saMailAuth[0]);
+					SendMailSSL.setPassword(saMailAuth[1]);
+					c_Logger.info("***** Mail Info is:" + SendMailSSL.getUsername() + ", " + SendMailSSL.getPassword());
 					ic.close();
 				} catch (NamingException e) {
 					// TODO Auto-generated catch block
