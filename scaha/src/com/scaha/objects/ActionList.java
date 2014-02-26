@@ -63,20 +63,23 @@ public class ActionList extends ScahaObject{
 		//
 		
 		try {
-			db.getActionData(super.getProfile().getID());
-			rs = db.getResultSet();
-			//
-			// These are all the actions for the given profile.. We need to stuff them to preserve the parent child relationship
-			// This is a flattened set of actions.. Ste
-			while (rs.next()) {
-				Action act = new Action(rs.getInt(1), rs.getInt(2), rs.getString(3),rs.getString(4), rs.getString(5), rs.getString(6));
-				LOGGER.info(this + ":ACTIONS:" + act.toString());
+			if (db.getActionData(super.getProfile().getID())) {
+				rs = db.getResultSet();
 				//
-				// if this is a top level action.. lets put it in the top level list as well as the normal list
-				if (rs.getInt(2) == 0) {
-					this.putTopLevelAction(act);
-				} 
-				this.putAction(act);
+				// These are all the actions for the given profile.. We need to stuff them to preserve the parent child relationship
+				// This is a flattened set of actions.. Ste
+				while (rs.next()) {
+					Action act = new Action(rs.getInt(1), rs.getInt(2), rs.getString(3),rs.getString(4), rs.getString(5), rs.getString(6));
+					LOGGER.info(this + ":ACTIONS:" + act.toString());
+					//
+					// if this is a top level action.. lets put it in the top level list as well as the normal list
+					if (rs.getInt(2) == 0) {
+						this.putTopLevelAction(act);
+					} 
+					this.putAction(act);
+				}
+			} else {
+				LOGGER.info("refresh action list... did not pull any action data... for profile id=" + super.getProfile().getID());
 			}
 		} catch (SQLException ex) {
 				ex.printStackTrace();
