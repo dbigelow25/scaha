@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf13894530625120" configfile="/scaha/WebContent/WEB-INF/faces-config.xml">
-  <nodes xsi:type="pageflow:PFPage" name="register.xhtml" x="172" y="101" id="pf13914658296550" referenceLink="//@navigationRule.0/@fromViewId|" outlinks="pf13914658296551" path="/register.xhtml"/>
-  <nodes xsi:type="pageflow:PFPage" name="Welcome.xhtml" x="451" y="233" id="pf13914658296552" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf13914658296551" path="/Welcome.xhtml"/>
-  <links id="pf13914658296551" target="pf13914658296552" source="pf13914658296550" outcome="True" redirect="true" fromaction="#{registrationBean.createRegistration}"/>
+  <nodes xsi:type="pageflow:PFPage" name="register.xhtml" id="pf13934447904783" referenceLink="//@navigationRule.0/@fromViewId|" outlinks="pf13934447904784" path="/register.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="scaha/aWelcome.xhtml" id="pf13934447904785" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf13934447904784" path="/scaha/aWelcome.xhtml"/>
+  <links id="pf13934447904784" target="pf13934447904785" source="pf13934447904783" outcome="true" redirect="true" fromaction="#{registrationBean.createRegistration}"/>
 </pageflow:Pageflow>

@@ -32,6 +32,8 @@ public class RegistrationBean implements Serializable, MailableObject  {
 	private String phone = null;
 	private String email = null;
 	private String address = null;
+	private String DOB = null;
+	private String gender = null;
 	private String city = null;
 	private String state = null;
 	private String zip = null;
@@ -258,19 +260,25 @@ public class RegistrationBean implements Serializable, MailableObject  {
 				per.setiZipCode(Integer.valueOf(this.zip));
 				per.setsPhone(this.phone);
 				per.setsEmail(this.email);
+				per.setGender(this.gender);
+				per.setDob(this.DOB);
+				
 				pro.update(db);
 				per.update(db);
-				
+
+				db.commit();
+				db.free();
+
 				// We want to create a family called the <lastname> family...
 				LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM REGISTRATION..");
 				LOGGER.info("Sending Test mail here...");
 				SendMailSSL mail = new SendMailSSL(this);
 				LOGGER.info("Finished creating mail object for " + this.getUsername());
 				mail.sendMail();
-				db.commit();
 				return "True";
 			
 			} else {
+				LOGGER.info(" ** Cannot set autocommit to false *** ERROR IN REGISTRATION PROCESS FOR " + this.getUsername());
 				return "False";
 			}
 			
@@ -279,10 +287,6 @@ public class RegistrationBean implements Serializable, MailableObject  {
 			LOGGER.info("ERROR IN REGISTRATION PROCESS FOR " + this.getUsername());
 			e.printStackTrace();
 			db.rollback();
-		} finally {
-			//
-			// always clean up after yourself..
-			//
 			db.free();
 		}
 		
@@ -312,5 +316,29 @@ public class RegistrationBean implements Serializable, MailableObject  {
 	public String getToMailAddress() {
 		// TODO Auto-generated method stub
 		return this.username + "," + ((this.email == null || this.email.isEmpty()) ? "" : this.email);
+	}
+	/**
+	 * @return the dOB
+	 */
+	public String getDOB() {
+		return DOB;
+	}
+	/**
+	 * @param dOB the dOB to set
+	 */
+	public void setDOB(String dOB) {
+		DOB = dOB;
+	}
+	/**
+	 * @return the gender
+	 */
+	public String getGender() {
+		return gender;
+	}
+	/**
+	 * @param gender the gender to set
+	 */
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 }

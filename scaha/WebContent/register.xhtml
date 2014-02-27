@@ -56,6 +56,25 @@
 					<p:outputLabel value="" />
 					<p:message id="m_confirm" for="confirm" />
 					
+					<p:outputLabel for="nickname" value="Nick Name" />
+					<p:inputText id="nickname" style="width:150px;" value="#{registrationBean.nickname}"/>
+					<p:tooltip for="nickname" value="What will be shown on the site screen.  If blank, your first and last name will be used" showEffect="fade" hideEffect="fade" />  
+					<p:message id="m_nickname" for="nickname" />	
+
+					<p:outputLabel for="dob"  value="Date of Birth" />
+					<p:inputMask id="dob" value="#{registrationBean.DOB}" style="width:150px;" mask="9999/99/99" />  
+					<p:tooltip for="dob" value="When were you born?  " showEffect="fade" hideEffect="fade" />  
+					<p:message id="m_dob" for="dob" />	
+
+					<p:outputLabel for="gender" value="Gender" />
+				    <p:selectOneRadio id="gender" value="#{registrationBean.gender}">  
+			            <f:selectItem itemLabel="Male" itemValue="M" />  
+           				<f:selectItem itemLabel="Female" itemValue="F" />  
+      				</p:selectOneRadio> 
+      				
+					<p:message id="m_gender" for="gender" />
+					<p:tooltip for="gender" value="You are either a (M)ale, or a (F)emale" showEffect="fade" hideEffect="fade" /> 
+
 					<p:outputLabel for="phone"  value="Mobile Phone" />
 					<p:inputMask id="phone" value="#{registrationBean.phone}" style="width:150px;" mask="(999) 999-9999" required="true" requiredMessage="A mobile phone is needed"/>  
 					<p:message id="m_phone" for="phone" />
@@ -66,10 +85,6 @@
 					<p:tooltip for="email" value="An alternate e-mail to contact you in case your primary e-mail has been corrupted" showEffect="fade" hideEffect="fade" />  
 					<p:message id="m_email" for="email" />					
 					
-					<p:outputLabel for="nickname" value="Nick Name" />
-					<p:inputText id="nickname" style="width:150px;" value="#{registrationBean.nickname}"/>
-					<p:tooltip for="nickname" value="What will be shown on the site screen.  If blank, your first and last name will be used" showEffect="fade" hideEffect="fade" />  
-					<p:message id="m_nickname" for="nickname" />	
 
 			</p:panelGrid>
 			

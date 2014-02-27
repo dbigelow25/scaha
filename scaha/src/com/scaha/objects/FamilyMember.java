@@ -24,5 +24,4 @@ public class FamilyMember extends Person implements Serializable {
 		return Relationship;
 	}
 	
-	
 }

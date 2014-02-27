@@ -2,9 +2,10 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
   <display-name>SCAHA iSite</display-name>
   <listener>
-    <listener-class>
-  		com.gbli.context.ContextManager
-  	</listener-class>
+    <listener-class>com.gbli.context.ContextManager</listener-class>
+  </listener>
+   <listener>
+    <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
   </listener>
   <env-entry>
     <env-entry-name>scaha/dbpoolcount</env-entry-name>
@@ -77,8 +78,4 @@
 	<param-name>primefaces.THEME</param-name>
 	<param-value>bluesky</param-value>
 </context-param>
-  <listener>
-    <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
-  </listener>
-
 </web-app>

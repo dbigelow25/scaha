@@ -21,46 +21,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class Simple3Des {
 
 
-    private static byte [] vctBytes = new byte [] {
-	(byte) 0x00, 
-	(byte) 0x00, 
-	(byte) 0x00, 
-	(byte) 0x00,
-    (byte) 0x00, 
-    (byte) 0x00, 
-    (byte) 0x00, 
-    (byte) 0x00
-    };
-    
-    private static byte [] keyBytes = new byte [] { 
-    		(byte) 0x00, 
-    		(byte) 0x10, 
-    		(byte) 0x50, 
-    		(byte) 0x10,
-            (byte) 0x60, 
-            (byte) 0x10, 
-            (byte) 0x70, 
-            (byte) 0x10,
-            (byte) 0x80,
-            (byte) 0x10,
-            (byte) 0x90,
-            (byte) 0x10,
-            (byte) 0xA0,
-            (byte) 0x10,
-            (byte) 0xB0,
-            (byte) 0x10,
-            (byte) 0xC0,
-            (byte) 0x10,
-            (byte) 0xD0,
-            (byte) 0x10,
-            (byte) 0xE0,
-            (byte) 0x10,
-            (byte) 0xF0,
-            (byte) 0x10
-            };
-
-    
-  
+ 
     private String key = "123456789012345678901234";
     private String initializationVector = "iloveyou";
     public Simple3Des()

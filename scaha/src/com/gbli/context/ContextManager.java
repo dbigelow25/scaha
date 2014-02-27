@@ -51,7 +51,7 @@ public class ContextManager implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent _contextEvent) {
 		// TODO Auto-generated method stub
 		
-		synchronized (this) {
+		 synchronized (this) {
 
 			if (!c_bLoaded) {
 

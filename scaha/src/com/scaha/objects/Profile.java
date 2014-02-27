@@ -140,6 +140,15 @@ public class Profile extends ScahaObject {
 		return this.m_sNickName;
 	}
 	
+	
+	public final String getUserName() {
+		return this.m_sUser;
+	}
+	
+	public void setNickName(String _sNickName) {
+		this.m_sNickName = _sNickName;
+	}
+	
 	/**
 	 * gets the actionlist associated with the given Profile.
 	 * THe user can peruse this structure to find out what actions 

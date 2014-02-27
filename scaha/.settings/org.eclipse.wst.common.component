@@ -2,36 +2,7 @@
     <wb-module deploy-name="scaha">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <dependent-module archiveName="aristo-1.0.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/scaha/WebContent/WEB-INF/lib/aristo-1.0.1.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="mysql-connector-java-5.1.22-bin.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/scaha/WebContent/WEB-INF/lib/mysql-connector-java-5.1.22-bin.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="primefaces-4.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/scaha/WebContent/WEB-INF/lib/primefaces-4.0.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="smtp.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/scaha/WebContent/WEB-INF/lib/smtp.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="dsn.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/scaha/WebContent/WEB-INF/lib/dsn.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="bluesky-1.0.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/scaha/WebContent/WEB-INF/lib/bluesky-1.0.1.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="pop3.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/scaha/WebContent/WEB-INF/lib/pop3.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="imap.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/scaha/WebContent/WEB-INF/lib/imap.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="gimap.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/scaha/WebContent/WEB-INF/lib/gimap.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="mailapi.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/scaha/WebContent/WEB-INF/lib/mailapi.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
+        <wb-resource deploy-path="/WEB-INF/lib" source-path="/WebContent/WEB-INF/lib"/>
         <property name="context-root" value="scaha"/>
         <property name="java-output-path" value="/scaha/build/classes"/>
     </wb-module>

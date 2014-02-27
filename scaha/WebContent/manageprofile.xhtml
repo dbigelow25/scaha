@@ -2,77 +2,152 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<ui:composition template="/WEB-INF/templates/layout.xhtml"
-     xmlns="http://www.w3.org/1999/xhtml"
-     xmlns:f="http://java.sun.com/jsf/core"
-     xmlns:h="http://java.sun.com/jsf/html"
-     xmlns:ui="http://java.sun.com/jsf/facelets"
-     xmlns:p="http://primefaces.org/ui"
->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <f:metadata>
 <f:event type="preRenderView" listener="#{profileBean.verifyUserLogin()}" />
 </f:metadata>
+      
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
 
 
 <ui:define name="content">
   
-    <h3>Manage your Profile:</h3>
-    <p:growl id="growl" showDetail="true" />  
+	<h3>My Scaha Account for #{profileBean.getNickName()}</h3>
+    <p:growl id="growl" showDetail="true" /> 
+    <h:form>
     
-    <p:panel id="pnl-personal" style="font-size: 12px;" header="Personal Information" toggleable="true" closable="false" toggleSpeed="500" closeSpeed="500" widgetVar="panel-personal">  
+    <p:tabView id="tabView">    
   
-        <p:ajax event="toggle" listener="#{panelBean.handleToggle}" update="growl" />  
+    	<p:tab title="My Information">  
   
-         <h:panelGrid columns="2" cellpadding="5">  
+  
+  		<p:panel id="view-pers" rendered="#{not profileBean.isEditPerson()}">
+  		
+         	<h:panelGrid columns="2" cellpadding="10">  
+            	<h:outputText value="User Name (e-mail):" />
+            	<h:outputText value="#{profileBean.getUserName()}" />
             	<h:outputText value="Name:" />
             	<h:outputText value="#{profileBean.getCompleteName()}" />
-            	<h:outputText value="e-mail:" />
-            	<h:outputText value="#{profileBean.getEmail()}" />
             	<h:outputText value="Nick Name:" />
             	<h:outputText value="#{profileBean.getNickName()}" />
+            	<h:outputText value="Gender:" />
+            	<h:outputText value="#{profileBean.getGender()}"/>
+            	<h:outputText value="Birth Day:" />
+            	<h:outputText value="#{profileBean.getDOB()}"/>
             	<h:outputText value="Phone Number:" />
             	<h:outputText value="#{profileBean.getPhoneNumber()}"/>
+            	<h:outputText value="Alt Email:" />
+            	<h:outputText value="#{profileBean.getAltemail()}"/>
             	<h:outputText value="Address:" />
             	<h:outputText value="#{profileBean.getCompleteAddress()}" />
             </h:panelGrid>  
-  
-        <f:facet name="options">  
-            <p:menu>  
-                <p:menuitem style="font-size: 12px;" value="Edit" url="#" icon="ui-icon-newwin" onclick="panel-personal.toggle()"/>  
-                <p:menuitem style="font-size: 12px;" value="Toggle" url="#" icon="ui-icon-newwin" onclick="panel-personal.toggle()"/>  
-            </p:menu>  
-        </f:facet>  
-    </p:panel>  
-    <p:panel id="pnl-family" style="font-size: 12px;" header="Family Member Management..." toggleable="true" closable="false" toggleSpeed="500" closeSpeed="500" widgetVar="panel-family">  
-		<h:form id="fam">  
-		<p:dataTable var="familymember" value="#{profileBean.getFamilyMembers()}">  
-        <p:column headerText="First Name">  
-            <h:outputText value="#{familymember.getsFirstName()}" />  
-        </p:column>  
-        <p:column headerText="Last Name">  
-            <h:outputText value="#{familymember.getsLastName()}" />  
-        </p:column>  
-        <p:column headerText="Relationship">  
-            <h:outputText value="#{familymember.getRelationship()}" />  
-        </p:column>  
-    </p:dataTable>  
-    </h:form>
-    </p:panel>  
-    <p:panel id="pnl-roles" style="font-size: 12px;" header="Accessability and Roles..." toggleable="true" closable="false" toggleSpeed="500" closeSpeed="500" widgetVar="panel-roles">  
-    <h:form id="roles">  
-		<p:dataTable var="role" value="#{profileBean.getRoles()}">  
-        <p:column headerText="Role Name">  
-            <h:outputText value="#{role.getName()}" />  
-        </p:column>  
-        <p:column headerText="Role Description">  
-            <h:outputText value="#{role.getDesc()}" />  
-        </p:column>  
-        <p:column headerText="Default?">  
-            <h:outputText value="#{role.isDefaultRole()}" />  
-        </p:column>  
-    </p:dataTable>  
-    </h:form>
-    </p:panel>  
-    </ui:define>
+            <p:spacer width="40" height="30" />
+             (<p:commandLink value="Edit This Data" update="view-pers,edit-per" id="show-edit-per" ajax="false"  
+             actionListener="#{profileBean.setEditPerson()}"/>) 
+            
+             <p:spacer width="10" height="10" />
+             
+             (<p:commandLink value="Change your password" update="view-pers" id="show-edit-pass" ajax="false"  
+             actionListener="#{profileBean.setEditPassword()}"/>)  
+
+            </p:panel>
+
+			<p:panel id="edit-pers" rendered="#{profileBean.isEditPerson()}">
+			
+			The following information can be changed about your account.  Please change what you want, then click the update link to save
+			your changes back to iSite.
+  		
+         	<h:panelGrid columns="2" cellpadding="3">  
+
+					<p:outputLabel for="firstname" value="First Name" />
+					<p:inputText id="firstname" style="width:150px;" value="#{profileBean.chgFirstName}" />
+
+					<p:outputLabel for="lastname" value="Last Name" />
+					<p:inputText id="lastname" style="width:150px;" value="#{profileBean.chgLastName}" />
+					
+					<p:outputLabel for="nickname" value="Nick Name" />
+					<p:inputText id="nickname" style="width:150px;" value="#{profileBean.chgNickName}"/>
+
+					<p:outputLabel for="dob"  value="Date of Birth" />
+					<p:inputMask id="dob" value="#{profileBean.chgDOB}" style="width:150px;" mask="9999/99/99" />  
+
+					<p:outputLabel for="gender" value="Gender" />
+					    <p:selectOneRadio id="gender" value="#{profileBean.chgGender}">  
+				            <f:selectItem itemLabel="Male" itemValue="M" />  
+            				<f:selectItem itemLabel="Female" itemValue="F" />  
+       				 	</p:selectOneRadio> 
+
+					<p:outputLabel for="email" value="alternate e-mail" />
+					<p:inputText id="email" style="width:150px;" value="#{profileBean.chgAltEmail}" />
+
+					<p:outputLabel for="phone"  value="Mobile Phone" />
+					<p:inputMask id="phone" value="#{profileBean.chgPhone}" style="width:150px;" mask="(999) 999-9999" />  
+					
+			</h:panelGrid>
+
+
+			<p:panelGrid columns="3" cellpadding="3">
+
+					<p:outputLabel for="address" value="Address"/>
+					<p:spacer width="200" height="10" />
+					<p:spacer width="200" height="10" />
+					<p:inputText id="address" style="width:175px;" value="#{profileBean.chgAddress}" />
+					
+			</p:panelGrid>
+					
+			<p:panelGrid columns="3" cellpadding="3">
+					<p:outputLabel for="city" value="City"/>
+					<p:outputLabel for="state" value="State"/>
+					<p:outputLabel for="zip" value="Zip"/>
+					<p:inputText id="city" style="width:175px;" value="#{profileBean.chgCity}" />
+					<p:inputText id="state" style="width:25px;" maxlength="2" value="#{profileBean.chgState}" />
+					<p:inputText id="zip" style="width:75px;" maxlength="5" value="#{profileBean.chgZip}" />
+			</p:panelGrid>
+
+			<p:spacer width="40" height="30" />
+
+			(<p:commandLink value="Cancel" update="edit-pers,view-pers" id="cancel-edit-per" ajax="false"  
+             actionListener="#{profileBean.setNotEditPerson()}">
+             	<p:ajax update="edit-pers" resetValues="true" />   
+             </p:commandLink>)
+             
+			<p:spacer width="10" height="10" />
+             (<p:commandLink value="Update Info" update="edit-pers,view-pers" id="finish-edit-per" ajax="false"  
+             actionListener="#{profileBean.updatePersonInfo()}"/>)    
+
+            </p:panel>  
+            
+        </p:tab>
+        
+        <p:tab title="Scaha Registration Members">  
+        
+        	
+        
+ 			<p:dataTable var="familymember" value="#{profileBean.getFamilyMembers()}">  
+    		    <p:column headerText="First Name"><h:outputText value="#{familymember.getsFirstName()}" /></p:column>  
+        		<p:column headerText="Last Name"><h:outputText value="#{familymember.getsLastName()}" /></p:column>  
+        		<p:column headerText="Relationship"><h:outputText value="#{familymember.getRelationship()}" /></p:column>
+        		<p:column headerText="SCAHA Registered?"><h:outputText value="#{familymember.getRelationship()}" /></p:column>  
+    		</p:dataTable> 
+
+  		</p:tab>
+
+    	<p:tab title="Accessability Roles">  
+	
+			<p:dataTable var="role" value="#{profileBean.getRoles()}">  
+        		<p:column headerText="Role Name"><h:outputText value="#{role.getName()}" /></p:column>  
+        		<p:column headerText="Role Description"><h:outputText value="#{role.getDesc()}" /></p:column>  
+        		<p:column headerText="Default?"><h:outputText value="#{role.isDefaultRole()}" /></p:column>  
+    		</p:dataTable>  
+   		</p:tab>
+	</p:tabView>
+    </h:form>		
+</ui:define>
 </ui:composition>
+</html>

@@ -22,9 +22,11 @@ public class Person extends ScahaObject implements Serializable {
 	private String sEmail = null;
 	private String sPhone = null;
 	private String sAddress1 = null;
-	private String sAddress2 = null;
 	private String sCity = null;
 	private String sState = null;
+	private String gender = null;
+	private String dob = null;
+	
 	private int iZipCode = 0;
 	private Family fam = null;
 	
@@ -51,11 +53,12 @@ public class Person extends ScahaObject implements Serializable {
 					this.setsEmail(rs.getString(i++));
 					this.setsPhone(rs.getString(i++));
 					this.setsAddress1(rs.getString(i++));
-					this.setsAddress2(rs.getString(i++));
 					this.setsCity(rs.getString(i++));
 					this.setsState(rs.getString(i++));
 					this.setiZipCode(rs.getInt(i++));
-					LOGGER.info("Successfully Created the Person...");
+					this.setGender(rs.getString(i++));
+					this.setDob(rs.getString(i++));
+					LOGGER.info("Successfully Created the Person Object...");
 
 				}
 			}
@@ -167,23 +170,7 @@ public class Person extends ScahaObject implements Serializable {
 		this.sAddress1 = sAddress1;
 	}
 
-
-	/**
-	 * @return the sAddress2
-	 */
-	public String getsAddress2() {
-		return sAddress2;
-	}
-
-
-	/**
-	 * @param sAddress2 the sAddress2 to set
-	 */
-	public void setsAddress2(String sAddress2) {
-		this.sAddress2 = sAddress2;
-	}
-
-
+	
 	/**
 	 * @return the sCity
 	 */
@@ -250,7 +237,7 @@ public class Person extends ScahaObject implements Serializable {
 		// is it an object that is not in the database yet..
 		//
 		
-		CallableStatement cs = db.prepareCall("call scaha.updatePerson(?,?,?,?,?,?,?,?,?,?,?,?)");
+		CallableStatement cs = db.prepareCall("call scaha.updatePerson(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		//		INOUT in_idPerson INT(10),
 		//		IN in_idProfile INT(10),
@@ -262,6 +249,8 @@ public class Person extends ScahaObject implements Serializable {
 		//	    IN in_city VARCHAR(50),
 		//	    IN in_state VARCHAR(2),
 		//	    IN in_zipcode INT(10),
+		//	    IN in_gender VARCHAR(1),
+		//	    IN in_dob VARCHAR(10),
 		//		IN in_isactive tinyint,
 		//		IN in_updated timestamp,
 
@@ -277,6 +266,8 @@ public class Person extends ScahaObject implements Serializable {
 		cs.setString(i++, this.sCity);
 		cs.setString(i++, this.sState);
 		cs.setInt(i++, this.iZipCode);
+		cs.setString(i++, this.gender);
+		cs.setString(i++, this.dob);
 		cs.setInt(i++,1);
 		cs.setString(i++,null);
 		cs.execute();
@@ -289,6 +280,34 @@ public class Person extends ScahaObject implements Serializable {
 
 		LOGGER.info("HERE IS THE NEW ID:" + this.getID());
 
+	}
+
+	/**
+	 * @return the gender
+	 */
+	public String getGender() {
+		return gender;
+	}
+
+	/**
+	 * @param gender the gender to set
+	 */
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	/**
+	 * @return the dob
+	 */
+	public String getDob() {
+		return dob;
+	}
+
+	/**
+	 * @param dob the dob to set
+	 */
+	public void setDob(String dob) {
+		this.dob = dob;
 	}
 	
 }
