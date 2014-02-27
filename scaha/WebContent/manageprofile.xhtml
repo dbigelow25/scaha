@@ -91,20 +91,12 @@
 					
 			</h:panelGrid>
 
-
-			<p:panelGrid columns="3" cellpadding="3">
-
+			<p:panelGrid columns="4" cellpadding="3">
 					<p:outputLabel for="address" value="Address"/>
-					<p:spacer width="200" height="10" />
-					<p:spacer width="200" height="10" />
-					<p:inputText id="address" style="width:175px;" value="#{profileBean.chgAddress}" />
-					
-			</p:panelGrid>
-					
-			<p:panelGrid columns="3" cellpadding="3">
 					<p:outputLabel for="city" value="City"/>
 					<p:outputLabel for="state" value="State"/>
 					<p:outputLabel for="zip" value="Zip"/>
+					<p:inputText id="address" style="width:175px;" value="#{profileBean.chgAddress}" />
 					<p:inputText id="city" style="width:175px;" value="#{profileBean.chgCity}" />
 					<p:inputText id="state" style="width:25px;" maxlength="2" value="#{profileBean.chgState}" />
 					<p:inputText id="zip" style="width:75px;" maxlength="5" value="#{profileBean.chgZip}" />
