@@ -16,6 +16,8 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
@@ -35,13 +37,21 @@ public class ProfileBean implements Serializable  {
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 
 	private String name = null;
-    private String password = null;
+    private String live_password = null;  // This is the live password they used to login..
 	private Profile pro = null;  // This holds all the information regarding a person in the system
 	private String origin = null;
 	
+	private String cur_password = null;   // Holds the screen info for a current password
+	private String new_password = null;   // Holds the screen info for the new password
+	private String con_password = null;   // Holds the screen info for confirming the new password
+	
+	
 	private boolean EditPerson = false;
 	private boolean EditPassword = false;
+	private boolean EditMember = false;
+	private boolean AddMember = false;
 
+	
 	//
 	// Very archaic way to track changes.. 
 	// profiles are tricky because they are rarely changed..
@@ -72,12 +82,12 @@ public class ProfileBean implements Serializable  {
 
     public String getPassword ()
     {
-        return password;
+        return live_password;
     }
 
     public void setPassword (final String password)
     {
-        this.password = password;
+        this.live_password = password;
     }
     
     public Profile getProfile() {
@@ -99,11 +109,12 @@ public class ProfileBean implements Serializable  {
     	return pro.getPerson().getsLastName();
     }
 
-    
+ 
+
     public void login() {
 
     	
-    	pro = Profile.verify(name, password);
+    	pro = Profile.verify(name, live_password);
 		
     	// pull profile into the Login Bean..
     	try {
@@ -120,7 +131,7 @@ public class ProfileBean implements Serializable  {
                         "Please Try Again!"));
 
     			// blank out the password
-    			password = null;
+    			live_password = null;
     			
 	    					
     		}
@@ -146,7 +157,7 @@ public class ProfileBean implements Serializable  {
     
     public String logout() {
     	this.pro = null;
-    	this.password = null;
+    	this.live_password = null;
     	this.origin = null;
     	
     	//
@@ -290,6 +301,37 @@ public boolean isEditPerson() {
 	return EditPerson;
 }
 
+
+/**
+ * @return 
+ */
+public boolean isAddMember() {
+	return AddMember;
+}
+
+/**
+ * @return 
+ */
+public boolean isEditMember() {
+	return EditMember;
+}
+
+
+/**
+ * @return the editPerson
+ */
+public boolean isViewPerson() {
+	return !EditPerson && !EditPassword;
+}
+
+/**
+ * @return the editPerson
+ */
+public boolean isViewMembers() {
+	return !EditMember && !AddMember;
+}
+
+
 /**
  * @return the editPerson
  */
@@ -319,13 +361,14 @@ public void setEditPerson() {
 	this.chgGender = this.getGender();
 	
 	EditPerson = true;
+	EditPassword = false;
 }
 
 /**
  * @param editPerson the editPerson to set
  */
 public void setNotEditPerson() {
-	EditPerson =false;
+	EditPerson = false;
 }
 
 /**
@@ -334,25 +377,52 @@ public void setNotEditPerson() {
 public void setEditPassword() {
 	LOGGER.info("About to edit password information..");
 	
-	//
-	// Initialize everything
-	//
-	this.chgAddress = this.getAddress();
-	this.chgFirstName = this.getFirstName();
-	this.chgLastName = this.getLastName();
-	this.chgAltEmail = this.getAltemail();
-	this.chgCity = this.getCity();
-	this.chgState = this.getState();
-
 	EditPassword = true;
+	EditPerson = false;
 }
 
 /**
  * @param editPerson the editPerson to set
  */
 public void setNotEditPassword() {
-	EditPerson =false;
+	EditPassword =false;
 }
+
+/**
+ * @param editPerson the editPerson to set
+ */
+public void setEditMembers() {
+	LOGGER.info("About to edit password information..");
+	
+	EditMember = true;
+	AddMember = false;
+}
+
+/**
+ * @param editPerson the editPerson to set
+ */
+public void setNotEditMembers() {
+	EditMember =false;
+}
+
+/**
+ * @param editPerson the editPerson to set
+ */
+public void setAddMembers() {
+	LOGGER.info("About to edit password information..");
+	
+	AddMember = true;
+	EditMember = false;
+}
+
+/**
+ * @param editPerson the editPerson to set
+ */
+public void setNotAddMembers() {
+	AddMember =false;
+}
+
+
 
 	/**
 	 * here we want to change complete the person info changes
@@ -394,7 +464,8 @@ public void setNotEditPassword() {
 				pro.getPerson().update(db);
 				db.commit();
 				db.free();
-	
+				FacesContext context = FacesContext.getCurrentInstance();  
+				context.addMessage(null, new FacesMessage("Successful", "Your Changes have been successfully posted and saved..."));  
 				LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM the manage Profile Page..");
 				LOGGER.info("Sending Test mail here...");
 				//SendMailSSL mail = new SendMailSSL(this);
@@ -411,6 +482,68 @@ public void setNotEditPassword() {
 	
 		
 		setNotEditPerson();
+		
+	}
+	
+	
+	/**
+	 * here we want to change complete the person info changes
+	 * 
+	 * They can change: 
+	 * 
+	 * 		Here is what they can change
+	 * 			1) First Name
+	 * 			2) Last Name
+	 * 			3) Phone Number
+	 * 			4) alternate e-mail
+	 * 			5) Address
+	 * 
+	 */
+	public void updatePasswordInfo() {
+	
+		//
+		// in the end.. we simply turn off the edit so that edit screen will dissappear
+		//
+
+		if (!this.new_password.equals(this.con_password)) {
+			
+			
+			UIComponent component =	UIComponent.getCurrentComponent(FacesContext.getCurrentInstance());
+					 
+			String clientId = component.getClientId();
+					
+			FacesContext.getCurrentInstance().addMessage(
+					clientId,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Confirmation Password Error",
+                    "Confirmation Password does not match your new password entered... Please Try Again!"));
+			return;
+		}
+
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
+			pro.setLivePassword(this.new_password);
+			pro.update(db);
+			this.setLive_password(this.new_password);
+			db.free();
+            FacesContext context = FacesContext.getCurrentInstance();  
+            context.addMessage(null, new FacesMessage("Successful", "Your Password has been successfully changed..."));  
+
+			LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM the manage Profile Page..");
+			LOGGER.info("Sending Test mail here...");
+			//SendMailSSL mail = new SendMailSSL(this);
+			//LOGGER.info("Finished creating mail object for " + this.getUsername());
+			//mail.sendMail();
+		} catch (SQLException e) {
+		// TODO Auto-generated catch block
+			LOGGER.info("ERROR IN Profile Change User Attributes PROCESS FOR " + this.getCompleteName());
+			e.printStackTrace();
+			db.rollback();
+			db.free();
+		}
+	
+		this.setNotEditPassword();
 		
 	}
 
@@ -617,6 +750,70 @@ public String getChgGender() {
  */
 public void setChgGender(String chgGender) {
 	this.chgGender = chgGender;
+}
+
+
+/**
+ * @return the cur_password
+ */
+public String getCur_password() {
+	return cur_password;
+}
+
+
+/**
+ * @param cur_password the cur_password to set
+ */
+public void setCur_password(String cur_password) {
+	this.cur_password = cur_password;
+}
+
+
+/**
+ * @return the new_password
+ */
+public String getNew_password() {
+	return new_password;
+}
+
+
+/**
+ * @param new_password the new_password to set
+ */
+public void setNew_password(String new_password) {
+	this.new_password = new_password;
+}
+
+
+/**
+ * @return the con_passwrod
+ */
+public String getCon_password() {
+	return con_password;
+}
+
+
+/**
+ * @param con_passwrod the con_passwrod to set
+ */
+public void setCon_password(String con_password) {
+	this.con_password = con_password;
+}
+
+
+/**
+ * @return the live_password
+ */
+public String getLive_password() {
+	return live_password;
+}
+
+
+/**
+ * @param live_password the live_password to set
+ */
+public void setLive_password(String live_password) {
+	this.live_password = live_password;
 }
  
 }

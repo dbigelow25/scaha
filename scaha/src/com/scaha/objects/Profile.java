@@ -149,6 +149,10 @@ public class Profile extends ScahaObject {
 		this.m_sNickName = _sNickName;
 	}
 	
+	public void setLivePassword(String _sNP) {
+		this.m_sPass = _sNP;
+	}
+	
 	/**
 	 * gets the actionlist associated with the given Profile.
 	 * THe user can peruse this structure to find out what actions 

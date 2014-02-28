@@ -21,6 +21,11 @@
 		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
+		<managed-bean-name>usahBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.UsaHockeyBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
 		<managed-bean-name>registrationBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.RegistrationBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
@@ -47,5 +52,11 @@
 		<display-name>Email Validator</display-name>
 		<validator-id>validateEmail</validator-id>
 		<validator-class>com.scaha.validators.EmailValidator</validator-class>
+	</validator>
+	<validator>
+		<description>This checks to see that the current password matches what is being typed on the screen</description>
+		<display-name>Current Password Checker</display-name>
+		<validator-id>validateLivePassword</validator-id>
+		<validator-class>com.scaha.validators.LivePasswordValidator</validator-class>
 	</validator>
 </faces-config>

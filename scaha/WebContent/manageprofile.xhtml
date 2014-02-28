@@ -19,15 +19,20 @@
 <ui:define name="content">
   
 	<h3>My Scaha Account for #{profileBean.getNickName()}</h3>
-    <p:growl id="growl" showDetail="true" /> 
-    <h:form>
+
+	<h:form id="mess">
+    
+		<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />    
+
+	</h:form>        
+	
+    <h:form id="mp-form">
     
     <p:tabView id="tabView">    
   
     	<p:tab title="My Information">  
   
-  
-  		<p:panel id="view-pers" rendered="#{not profileBean.isEditPerson()}">
+  		<p:panel id="view-pers" rendered="#{profileBean.isViewPerson()}">
   		
          	<h:panelGrid columns="2" cellpadding="10">  
             	<h:outputText value="User Name (e-mail):" />
@@ -115,11 +120,48 @@
 
             </p:panel>  
             
+            <p:panel id="edit-pass" rendered="#{profileBean.isEditPassword()}">
+            
+            <h:panelGrid columns="3" cellpadding="3">  
+			
+				<p:outputLabel for="cur-pass" value="Current Password:" />
+				<h:inputSecret id="cur-pass" style="width:150px;" value="#{profileBean.cur_password}" 
+						required="true" requiredMessage="Current Password cannot be blank.">
+						<f:validator validatorId="validateLivePassword" />
+						<f:ajax event="blur" render="m_current" />
+				</h:inputSecret>
+				<p:message id="m_current" for="cur-pass" />
+				
+				<p:outputLabel for="new-pass" value="New Password:" />
+				<p:password id="new-pass" style="width:150px;" value="#{profileBean.new_password}" 
+						required="true" requiredMessage="New Password cannot be blank." />
+				<p:spacer width="40" height="10" />
+
+				<p:outputLabel for="con-pass" value="Confirm New Password:" />
+				<p:password id="con-pass" style="width:150px;" value="#{profileBean.con_password}"
+					required="true" requiredMessage="Confirm Password cannot be blank."  />
+				<p:message id="m_confirm" for="finish-edit-pass" />
+
+			</h:panelGrid>					
+
+			<p:spacer width="40" height="30" />
+			
+			(<p:commandLink value="Cancel" update="edit-pass,view-pers" id="cancel-edit-pass" ajax="false"  immediate="true"
+             actionListener="#{profileBean.setNotEditPassword()}">
+                 <p:resetInput target="edit-pass" /> 
+            </p:commandLink>)
+  
+    		<p:spacer width="10" height="10" />
+             (<p:commandLink global="false" value="Save Changes" update="edit-pass,view-pers" id="finish-edit-pass" ajax="false"  
+             actionListener="#{profileBean.updatePasswordInfo()}"/>)    
+
+            </p:panel>  
+            
         </p:tab>
         
-        <p:tab title="Scaha Registration Members">  
+        <p:tab title="Scaha Membership">  
         
-        	
+        	<p:panel id="view-members" rendered="#{profileBean.isViewMembers()}">
         
  			<p:dataTable var="familymember" value="#{profileBean.getFamilyMembers()}">  
     		    <p:column headerText="First Name"><h:outputText value="#{familymember.getsFirstName()}" /></p:column>  
@@ -127,7 +169,53 @@
         		<p:column headerText="Relationship"><h:outputText value="#{familymember.getRelationship()}" /></p:column>
         		<p:column headerText="SCAHA Registered?"><h:outputText value="#{familymember.getRelationship()}" /></p:column>  
     		</p:dataTable> 
-
+    		
+   			<p:spacer width="40" height="30" />
+            (<p:commandLink value="Add A Member" update="view-members, add-member" id="show-add-members" ajax="false"  
+             actionListener="#{profileBean.setAddMembers()}"/>) 
+             
+    		</p:panel>
+    		
+  			<p:panel id="add-member" rendered="#{profileBean.isAddMember()}">
+			
+            <h:panelGrid columns="3" cellpadding="3">  
+				<p:outputLabel for="usah-reg" value="USA Hockey Registration #:" />
+				<h:inputText id="usah-reg" style="width:150px;" value="#{usahBean.regnumber}" 
+						required="true" requiredMessage="Usa Hockey Number cannot be blank." />
+				<p:spacer width="10" height="10" />
+				
+				<p:outputLabel for="usah-dob"  value="Date of Birth" />
+				<p:inputMask id="usah-dob" value="#{usahBean.dob}" style="width:150px;" mask="99/99/9999" required="true" requiredMessage="Please Enter the DOB of the USA Hockey member." />  
+				<p:commandButton global="false" value="Seach USAH" update="add-mem" id="search-usah" ajax="false" actionListener="#{usahBean.fetchUSAHockey()}"/>
+			</h:panelGrid>					
+   
+			<p:spacer width="10" height="15" />
+			
+			<h:panelGrid columns="2" cellpadding="3">  
+            	<h:outputText value="First Name:" />
+            	<h:outputText value="#{usahBean.getUsar().getFirstName()}" />
+            	<h:outputText value="Last Name:" />
+            	<h:outputText value="#{usahBean.getUsar().getLastName()}" />
+            	<h:outputText value="Middle Init:" />
+            	<h:outputText value="#{usahBean.getUsar().getMiddleInit()}" />
+				<h:outputText value="Address:" />
+            	<h:outputText value="#{usahBean.getUsar().getAddress()}" />
+				<h:outputText value="City:" />
+            	<h:outputText value="#{usahBean.getUsar().getCity()}" />
+				<h:outputText value="State:" />
+            	<h:outputText value="#{usahBean.getUsar().getState()}" />
+            	<h:outputText value="Zipcode:" />
+            	<h:outputText value="#{usahBean.getUsar().getZipcode()}" />
+            	</h:panelGrid>  
+			(<p:commandLink value="Cancel" update="add-mem, view-mem" id="cancel-add-mem" ajax="false"  immediate="true"
+             actionListener="#{profileBean.setNotAddMembers()}">
+                 <p:resetInput target="edit-pass" /> 
+            </p:commandLink>)
+  
+    		<p:spacer width="10" height="10" />
+             (<p:commandLink global="false" value="Save Mew Member" update="add-mem,view-mem" id="finish-add-mem" ajax="false"  
+             actionListener="#{profileBean.addUSAHMember()}"/>)    
+            </p:panel>  
   		</p:tab>
 
     	<p:tab title="Accessability Roles">  

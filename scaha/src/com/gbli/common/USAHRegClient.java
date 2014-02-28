@@ -39,7 +39,7 @@ public class USAHRegClient {
         String [] ans = cyph.split("\\|");
         
         UsaHockeyRegistration myUSAHockey =  new UsaHockeyRegistration(0);
-        int i = 1;
+        int i = 2;
         myUSAHockey.setLastName(ans[i++]);
         myUSAHockey.setFirstName(ans[i++]);
         myUSAHockey.setMiddleInit(ans[i++]);
