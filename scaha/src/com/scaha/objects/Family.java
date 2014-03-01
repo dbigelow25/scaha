@@ -63,6 +63,8 @@ public class Family extends ScahaObject implements Serializable  {
 					mem.setsCity(rs.getString(11));
 					mem.setsState(rs.getString(12));
 					mem.setiZipCode(rs.getInt(13));
+					mem.setGender(rs.getString(14));
+					mem.setDob(rs.getString(15));
 					FamilyMembers.add(mem);
 				}	
 					

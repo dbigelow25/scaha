@@ -13,7 +13,6 @@ import com.gbli.context.ContextManager;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Person;
 import com.scaha.objects.Profile;
-import com.sun.org.apache.bcel.internal.generic.DDIV;
 
 public class RegistrationBean implements Serializable, MailableObject  {
 	
