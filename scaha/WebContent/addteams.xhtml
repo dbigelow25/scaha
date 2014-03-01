@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="content">
+	<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top">  
+    	<h:outputText value="SCAHA" style="color:#FFCC00;font-size:36px;" />  
+	</p:notificationBar>  
+  
+	<h:form>
+			<p:panel id ="panel" header="Add Team:">
+				
+				<h:panelGrid columns="2" cellpadding="5">
+					<h:column><b>Division:</b></h:column>
+					<h:column>
+						<p:selectOneMenu value="#{teamBean.selecteddivision}" required="true" requiredMessage="Division team will play in required.">
+					    	<f:selectItem itemLabel="Select One" itemValue=""/>
+					    	<f:selectItems value="#{teamBean.getListofDivisions()}" var="division" itemLabel="#{division.getDivisionname()}" itemValue="#{division.getIddivision()}"/>
+					    </p:selectOneMenu>
+					</h:column>
+					<h:column><b>Skill Level:</b></h:column>
+					<h:column>
+						<p:selectOneMenu value="#{teamBean.selectedskilllevel}" required="true" requiredMessage="Skill level team will play is required.">
+					    	<f:selectItem itemLabel="Select One" itemValue=""/>
+					    	<f:selectItems value="#{teamBean.getListofSkillLevels()}" var="skilllevel" itemLabel="#{skilllevel.getSkilllevelname()}" itemValue="#{skilllevel.getIdskilllevel()}"/>
+					    </p:selectOneMenu>
+					</h:column>
+					<h:column><b>Team Name:</b></h:column>
+					<h:column><p:inputText id="teamname" style="width:150px;" value="#{teamBean.teamname}" required="true" requiredMessage="Team name required."/>&nbsp;&nbsp;(Ex.  "Jr Ducks (1)", "Red Wings", "Lady Ducks"....)</h:column>
+					<h:column>
+						<p:commandButton id="saveteam" value="Create Team" actionListener="#{teamBean.saveTeam()}" ajax="true" update="panel"/>
+						<p:messages id="saveteammessage" showDetail="false" autoUpdate="true" closable="false" /> 
+					</h:column>
+				</h:panelGrid>
+				<br></br>	
+					<p:dataTable id="teamlist" var="team" value="#{teamBean.getTeamdatamodel()}" selection="#{teamBean.selectedteam}" paginator="true" rows="10" autoupdate="false">
+                 		<f:facet name="header">  
+				            <h:outputText value="#{teamBean.getTeamstabletitle()}" />
+				        </f:facet> 
+				         <p:column headerText="Team ID">  
+				            <h:outputText value="#{team.getIdteam()}" />  
+				        </p:column>  
+				        <p:column headerText="Team Name">  
+				            <h:outputText value="#{team.getTeamname()}" />  
+				        </p:column>  
+				        <p:column headerText="Division">  
+				            <h:outputText value="#{team.getDivisionname()}" />  
+				        </p:column>
+				        <p:column headerText="Skill Level">  
+				            <h:outputText value="#{team.getSkillname()}" />  
+				        </p:column>
+				    </p:dataTable>
+			</p:panel>
+			
+			<p:separator id="customSeparator" style="width:800px;height:2px" />    
+	</h:form>
+	<h:form>
+			<div align="center"><p:commandButton id="closeaddteams" value="Close" ajax="false" actionListener="#{teamBean.closePage()}"/></div>
+	</h:form>
+	</ui:define>
+</ui:composition>
