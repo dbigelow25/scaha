@@ -55,6 +55,9 @@ public class Family extends ScahaObject implements Serializable  {
 					//
 					FamilyMember mem = new FamilyMember(this.getProfile(), rs.getInt(5), rs.getInt(3), rs.getString(4));
 					
+					//
+					// Need gender information.. along with Date Of Birth.. it all goes here as well..
+					// 
 					mem.setsFirstName(rs.getString(6));
 					mem.setsLastName(rs.getString(7));
 					mem.setsEmail(rs.getString(8));
