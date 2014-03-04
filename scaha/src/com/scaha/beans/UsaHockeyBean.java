@@ -30,6 +30,8 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 	private UsaHockeyRegistration usar = null;
 	private String regnumber = null;
 	private String dob = null;
+	private String membertype = null;
+	private String relationship = null;
 	
 	/**
 	 * @return the usar
@@ -73,11 +75,20 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 	 */
 	public String fetchUSAHockey() {
 		
+		//
+		// clear it out first!!
+		//
+		this.usar = null;
 		try {
 			this.usar = USAHRegClient.pullRegistartionRecord(this.getRegnumber());
-			
+
+			if (usar.getFirstName().length()== 0) {
+				FacesContext.getCurrentInstance().addMessage(
+					null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "USA Hockey Info Not Found",
+                    "Could Not find any USA Registration based upon the number you provided! Please check to see if your USA Hockey#."));
+			}
 			if (!this.dob.equals(usar.getDOB())) {
-				
 				FacesContext.getCurrentInstance().addMessage(
 					null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -120,6 +131,34 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 		//return this.email + "," + ((this.altemail == null || this.altemail.isEmpty()) ? "" : this.altemail);
 		return "";
 		
+	}
+
+	/**
+	 * @return the membertype
+	 */
+	public String getMembertype() {
+		return membertype;
+	}
+
+	/**
+	 * @param membertype the membertype to set
+	 */
+	public void setMembertype(String membertype) {
+		this.membertype = membertype;
+	}
+
+	/**
+	 * @return the regtype
+	 */
+	public String getRelationship() {
+		return relationship;
+	}
+
+	/**
+	 * @param regtype the regtype to set
+	 */
+	public void setRelationship(String regtype) {
+		this.relationship = regtype;
 	}
 	
 

@@ -8,9 +8,9 @@ import com.gbli.context.ContextManager;
 public class UsaHockeyRegistration extends ScahaObject implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	//private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 
-	
+	private String USAHnum = null;
 	private String LastName = null;
 	private String FirstName = null;
 	private String MiddleInit = null;
@@ -31,9 +31,15 @@ public class UsaHockeyRegistration extends ScahaObject implements Serializable {
 	private String Email = null;
 	
 	
-	
-	public UsaHockeyRegistration(int _id ) {
+	/**
+	 * A basic object to hold all the USAH Information coming back from a call..
+	 * 
+	 * @param _id
+	 * @param _sUSAHnum
+	 */
+	public UsaHockeyRegistration(int _id, String _sUSAHnum ) {
 		this.setID(_id);
+		this.setUSAHnum(_sUSAHnum);
 	}
 	/**
 	 * @return the lastName
@@ -251,6 +257,26 @@ public class UsaHockeyRegistration extends ScahaObject implements Serializable {
 	public void setEmail(String email) {
 		Email = email;
 	}
+	
+	/**
+	 * @return the uSAHnum
+	 */
+	public String getUSAHnum() {
+		return USAHnum;
+	}
+	/**
+	 * @param uSAHnum the uSAHnum to set
+	 */
+	public void setUSAHnum(String _uSAHnum) {
+		USAHnum = _uSAHnum;
+	}
+	public String getMembershipYear() {
+		LOGGER.info("GMY:" + getUSAHnum());
+		
+		return "201" +  this.getUSAHnum().substring(3,4);
+		
+	}
+	
 	/**
 	 * @return the serialversionuid
 	 */

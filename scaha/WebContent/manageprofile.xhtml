@@ -34,7 +34,7 @@
   
   		<p:panel id="view-pers" rendered="#{profileBean.isViewPerson()}">
   		
-         	<h:panelGrid columns="2" cellpadding="10">  
+         	<h:panelGrid columns="2" cellpadding="5">  
             	<h:outputText value="User Name (e-mail):" />
             	<h:outputText value="#{profileBean.getUserName()}" />
             	<h:outputText value="Name:" />
@@ -107,7 +107,7 @@
 					<p:inputText id="zip" style="width:75px;" maxlength="5" value="#{profileBean.chgZip}" />
 			</p:panelGrid>
 
-			<p:spacer width="40" height="30" />
+			<p:separator id="separator32"/> 
 
 			(<p:commandLink value="Cancel" update="edit-pers,view-pers" id="cancel-edit-per" ajax="false"  
              actionListener="#{profileBean.setNotEditPerson()}">
@@ -178,44 +178,114 @@
     		</p:panel>
     		
   			<p:panel id="add-member" rendered="#{profileBean.isAddMember()}">
-			
-            <h:panelGrid columns="3" cellpadding="3">  
+  			
+  			Before you can register yourself or a family member as a SCAHA member, you will need to first go to USA Hockey member registration and 
+  			become a member for the upcomming 2014-15 season.  You will receive an official USA Hockey registration number.  It is this number you
+  			enter into the first field below.  We will pull all the registration information from USA hockey so all you have to do is save the information.
+  			
+            <h:panelGrid columns="2" cellpadding="3">  
 				<p:outputLabel for="usah-reg" value="USA Hockey Registration #:" />
 				<h:inputText id="usah-reg" style="width:150px;" value="#{usahBean.regnumber}" 
-						required="true" requiredMessage="Usa Hockey Number cannot be blank." />
-				<p:spacer width="10" height="10" />
+						required="true" requiredMessage="Usa Hockey Number cannot be blank.">
+				 	<f:validateLength minimum="14" /> 						
+				 	<f:validateLength maximum="14" /> 
+				</h:inputText>
 				
 				<p:outputLabel for="usah-dob"  value="Date of Birth" />
 				<p:inputMask id="usah-dob" value="#{usahBean.dob}" style="width:150px;" mask="99/99/9999" required="true" requiredMessage="Please Enter the DOB of the USA Hockey member." />  
-				<p:commandButton global="false" value="Seach USAH" update="add-mem" id="search-usah" ajax="false" actionListener="#{usahBean.fetchUSAHockey()}"/>
+
+				<p:outputLabel value="Relationship: " />  
+       			 	<p:selectOneRadio id="relationship" value="#{usahBean.relationship}" required="true" requiredMessage="Please Select how this person is related to you.">  
+            			<f:selectItem itemLabel="Child" itemValue="Child" />  
+            			<f:selectItem itemLabel="Self" itemValue="Self" />  
+            			<f:selectItem itemLabel="Spouse" itemValue="Spouse"/>  
+        			</p:selectOneRadio>  
+				<p:outputLabel value="Member Type: " /> 
+   			 	<p:selectOneRadio id="membertype" value="#{usahBean.membertype}" required="true" requiredMessage="Please Select what type of member this person is going to be.">  >  
+           			<f:selectItem itemLabel="Player" itemValue="Player" />  
+           			<f:selectItem itemLabel="Coach" itemValue="Coach" />  
+           			<f:selectItem itemLabel="Manager" itemValue="Manager"/>  
+       			</p:selectOneRadio>  
+
+				<p:commandButton global="false" value="Search USAH" update="add-mem" id="search-usah" ajax="false" actionListener="#{usahBean.fetchUSAHockey()}"/>
+
 			</h:panelGrid>					
    
-			<p:spacer width="10" height="15" />
+			<p:separator id="separator"/>  
 			
+			You have pulled a Membership record for the following season: #{usahBean.getUsar().getMembershipYear()} 
+			
+			<p:separator id="separator1"/> 
+			<table>
+			<tr>
+			<td>
 			<h:panelGrid columns="2" cellpadding="3">  
+				<p:spacer width="100px" height="1" />
+    			<p:spacer width="175px" height="1" />
             	<h:outputText value="First Name:" />
             	<h:outputText value="#{usahBean.getUsar().getFirstName()}" />
             	<h:outputText value="Last Name:" />
             	<h:outputText value="#{usahBean.getUsar().getLastName()}" />
             	<h:outputText value="Middle Init:" />
             	<h:outputText value="#{usahBean.getUsar().getMiddleInit()}" />
+			</h:panelGrid>  
+           	<p:separator id="separator23"/>
+			<h:panelGrid columns="2" cellpadding="3"> 
+				<p:spacer width="100px" height="1" />
+    			<p:spacer width="175px" height="1" />
 				<h:outputText value="Address:" />
             	<h:outputText value="#{usahBean.getUsar().getAddress()}" />
 				<h:outputText value="City:" />
             	<h:outputText value="#{usahBean.getUsar().getCity()}" />
-				<h:outputText value="State:" />
-            	<h:outputText value="#{usahBean.getUsar().getState()}" />
+				<h:outputText value="State, Country:" />
+             	<h:outputText value="#{usahBean.getUsar().getState()}, #{usahBean.getUsar().getCountry()}" />
             	<h:outputText value="Zipcode:" />
-            	<h:outputText value="#{usahBean.getUsar().getZipcode()}" />
+            	<h:outputText value="#{usahBean.getUsar().getZipcode()} #{usahBean.getUsar().getForZip()}" />
             	</h:panelGrid>  
+            </td>
+            <td>
+			<h:panelGrid columns="2" cellpadding="3">  
+				<p:spacer width="100px" height="1" />
+    			<p:spacer width="175px" height="1" />
+            	<h:outputText value="DOB:" />
+            	<h:outputText value="#{usahBean.getUsar().getDOB()}" />
+            	<h:outputText value="Citizenship:" />
+            	<h:outputText value="#{usahBean.getUsar().getCitizen()}" />
+            	<h:outputText value="Gender:" />
+            	<h:outputText value="#{usahBean.getUsar().getGender()}" />
+			</h:panelGrid>  
+           	<p:separator id="separator2"/>
+			<h:panelGrid columns="2" cellpadding="3">  
+				<p:spacer width="100px" height="1" />
+    			<p:spacer width="175px" height="1" />
+				<h:outputText value="Parent/Guardian:" />
+            	<h:outputText value="#{usahBean.getUsar().getPGSFName()} #{usahBean.getUsar().getPGSMName()} #{usahBean.getUsar().getPGSLName()}" />
+            	<h:outputText value="Home Phone:" />
+            	<h:outputText value="#{usahBean.getUsar().getHPhone()}" />
+				<h:outputText value="Work Phone:" />
+            	<h:outputText value="#{usahBean.getUsar().getBPhone()}" />
+            	<h:outputText value="e-mail:" />
+            	<h:outputText value="#{usahBean.getUsar().getEmail()}" />
+            </h:panelGrid>  
+            </td>
+            </tr>
+            </table>	
+            <p:separator id="separator3"/> 
+            
+            If the pulled information is set.. along with All the information you set.  Then click the Save New Member.
+            Otherwise enter in a different USAH Registration number, et. el. Or simply click the <b>cancel</b> link.
+            
+            You will receive a confirmation e-mail that contains the SCAHA membership number for the upcoming season.  You 
+            will need this number as member identification when you sign an LOI for the club and team during tryouts.
+            <p/>	
 			(<p:commandLink value="Cancel" update="add-mem, view-mem" id="cancel-add-mem" ajax="false"  immediate="true"
              actionListener="#{profileBean.setNotAddMembers()}">
-                 <p:resetInput target="edit-pass" /> 
+                 <p:resetInput target="add-member" /> 
             </p:commandLink>)
   
     		<p:spacer width="10" height="10" />
              (<p:commandLink global="false" value="Save Mew Member" update="add-mem,view-mem" id="finish-add-mem" ajax="false"  
-             actionListener="#{profileBean.addUSAHMember()}"/>)    
+             actionListener="#{usahBean.addNewMember()}"/>)    
             </p:panel>  
   		</p:tab>
 
