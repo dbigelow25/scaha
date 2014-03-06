@@ -93,7 +93,7 @@ public class RoleCollection extends ScahaObject  {
 		// We want to load them all up first.. in pass i
 		// then link them all up in pass 2
 		Vector<Integer> vct = new Vector<Integer>();
-		vct.add(new Integer(_pro.getID()));
+		vct.add(new Integer(_pro.ID));
 		
 		
 		if (_db.getData(sGelAllRolesByProfile,vct)) {

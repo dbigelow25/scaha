@@ -173,7 +173,9 @@
     		
    			<p:spacer width="40" height="30" />
             (<p:commandLink value="Add A Member" update="view-members, add-member" id="show-add-members" ajax="false"  
-             actionListener="#{profileBean.setAddMembers()}"/>) 
+             actionListener="#{profileBean.setAddMembers()}">
+				<p:ajax update="add-member" resetValues="true" />  
+             </p:commandLink>) 
              
     		</p:panel>
     		
@@ -187,8 +189,8 @@
 				<p:outputLabel for="usah-reg" value="USA Hockey Registration #:" />
 				<h:inputText id="usah-reg" style="width:150px;" value="#{usahBean.regnumber}" 
 						required="true" requiredMessage="Usa Hockey Number cannot be blank.">
-				 	<f:validateLength minimum="14" /> 						
-				 	<f:validateLength maximum="14" /> 
+						<f:validator validatorId="validateUSAHRegistration" />
+						
 				</h:inputText>
 				
 				<p:outputLabel for="usah-dob"  value="Date of Birth" />
@@ -272,20 +274,17 @@
             </table>	
             <p:separator id="separator3"/> 
             
-            If the pulled information is set.. along with All the information you set.  Then click the Save New Member.
+            If the pulled information is correct.. along with ALL the information you entered... tge click  "Save New Member".
             Otherwise enter in a different USAH Registration number, et. el. Or simply click the <b>cancel</b> link.
             
-            You will receive a confirmation e-mail that contains the SCAHA membership number for the upcoming season.  You 
-            will need this number as member identification when you sign an LOI for the club and team during tryouts.
+            Once the information is saved.. You will receive a confirmation e-mail that contains the SCAHA membership number for the upcoming season.  
+            You will need this number handy to identify your players when for LOI's during tryouts.
             <p/>	
-			(<p:commandLink value="Cancel" update="add-mem, view-mem" id="cancel-add-mem" ajax="false"  immediate="true"
-             actionListener="#{profileBean.setNotAddMembers()}">
-                 <p:resetInput target="add-member" /> 
-            </p:commandLink>)
-  
-    		<p:spacer width="10" height="10" />
-             (<p:commandLink global="false" value="Save Mew Member" update="add-mem,view-mem" id="finish-add-mem" ajax="false"  
-             actionListener="#{usahBean.addNewMember()}"/>)    
+			<p:commandButton value="Cancel" update="add-member, view-members" id="cancel-add-mem" immediate="true" ajax="false"
+             actionListener="#{profileBean.setNotAddMembers()}" /> 
+    		<p:spacer width="225" height="10" />
+             <p:commandButton global="false" value="Save Mew Member" update="add-member, view-members" id="finish-add-mem" ajax="false"  
+             actionListener="#{usahBean.addNewMember()}"/>
             </p:panel>  
   		</p:tab>
 

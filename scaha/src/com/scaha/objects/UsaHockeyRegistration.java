@@ -1,8 +1,11 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
+import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.util.logging.Logger;
 
+import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
 public class UsaHockeyRegistration extends ScahaObject implements Serializable {
@@ -30,6 +33,7 @@ public class UsaHockeyRegistration extends ScahaObject implements Serializable {
 	private String PGSMName = null;
 	private String Email = null;
 	
+	protected int ID = 0;
 	
 	/**
 	 * A basic object to hold all the USAH Information coming back from a call..
@@ -38,7 +42,7 @@ public class UsaHockeyRegistration extends ScahaObject implements Serializable {
 	 * @param _sUSAHnum
 	 */
 	public UsaHockeyRegistration(int _id, String _sUSAHnum ) {
-		this.setID(_id);
+		this.ID = _id;
 		this.setUSAHnum(_sUSAHnum);
 	}
 	/**
@@ -282,6 +286,58 @@ public class UsaHockeyRegistration extends ScahaObject implements Serializable {
 	 */
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+	
+	
+	/**
+	 * ok. this guy /adds / updates the USA Hockey Record in the database 
+	 *  and ensures it is tied to a the Person of Interest
+	 */
+	public void update(ScahaDatabase _db, Person _per) throws SQLException {
+
+				// 
+				// is it an object that is not in the database yet..
+				//
+				
+				CallableStatement cs = _db.prepareCall("call scaha.updateUSAHockey(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+				int i = 1;
+				cs.registerOutParameter(1, java.sql.Types.INTEGER);
+				cs.setInt(i++, this.ID);								//	INOUT inout_idusahockey INT(10),
+				cs.setString(i++, this.getUSAHnum());					//	IN in_usahockeynumber varchar(14),
+				cs.setInt(i++, _per.ID);							//	IN in_idperson INT(10),
+				cs.setString(i++, this.getUSAHnum().substring(3,4));  	//	IN in_usayear char(1),
+				cs.setString(i++, this.getLastName());					//	IN in_lastname varchar(45),
+				cs.setString(i++, this.getFirstName());					//	IN in_firstname varchar(45), 
+				cs.setString(i++, this.getMiddleInit());				//	IN in_middleinit char(1),
+				cs.setString(i++, this.getAddress());					//	IN in_address varchar(64),
+				cs.setString(i++, this.getCity());						//	IN in_city varchar(45),
+				cs.setString(i++, this.getState());						//	IN in_state char(2),
+				cs.setString(i++, this.getZipcode());					//	IN in_zipcode varchar(9),
+				cs.setString(i++, this.getDOB());						//	IN in_dob date,
+				cs.setString(i++, this.getCountry());					//	IN in_country varchar(45),
+				cs.setString(i++, this.getForZip());					//	IN in_forzip varchar(16),
+				cs.setString(i++, this.getCitizen());					//	IN in_citizenship varchar(45),
+				cs.setString(i++, this.getGender());					//	IN in_gender char(1),
+				cs.setString(i++, this.getHPhone());					//	IN in_homephone varchar(16),
+				cs.setString(i++, this.getBPhone());					//	IN in_workphone varchar(16),
+				cs.setString(i++, this.getPGSFName());					//	IN in_pgfirstname varchar(45),
+				cs.setString(i++, this.getPGSLName());					//	IN in_pglastname varchar(45),
+				cs.setString(i++, this.getPGSMName());					//	IN in_pgmiddleinit char(1),
+				cs.setString(i++, this.getEmail());						//	IN in_pgemail varchar(45),
+				cs.setInt(i++, 1);										//	IN in_isactive tinyint,
+				cs.setString(i++, null);								//	IN in_updated timestamp
+				
+				cs.execute();
+				
+				//
+				// Update the new ID from the database...
+				//
+				this.ID = cs.getInt(1);
+				cs.close();
+
+				LOGGER.info("HERE IS THE NEW ID:" + this.ID);
+	
 	}
 
 	/* (non-Javadoc)

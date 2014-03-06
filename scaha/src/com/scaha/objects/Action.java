@@ -46,8 +46,7 @@ public class Action extends ScahaObject implements Comparable<Action> {
 	 */
 	public Action (int _id, int _pid, String _sType, String _sTag,  String _sDesc, String _sJspTarget) {
 		
-		super.setID(_id);
-		super.setKey(_id + ":" +  _sTag);
+		this.ID = _id;
 		
 
 		//
@@ -65,7 +64,7 @@ public class Action extends ScahaObject implements Comparable<Action> {
 	 * This represents The fully qualified String Value
 	 */
 	public String toString() {
-		return super.getID() + ":" + this.getType() + ":" + this.getTag() + ":" + this.getURLTarget() + ":" + this.getDesc();
+		return super.ID + ":" + this.getType() + ":" + this.getTag() + ":" + this.getURLTarget() + ":" + this.getDesc();
 	}
 	
 	/**
@@ -73,7 +72,7 @@ public class Action extends ScahaObject implements Comparable<Action> {
 	 * @param _act
 	 */
 	public void putChildAction(Action _act) {
-		this.m_hActions.put(Integer.valueOf(_act.getID()),_act);
+		this.m_hActions.put(Integer.valueOf(_act.ID),_act);
 	}
 
 	public Action getChildAction(int _iActKey) {

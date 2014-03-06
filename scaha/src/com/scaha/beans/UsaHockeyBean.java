@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.el.ValueExpression;
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
@@ -15,6 +17,7 @@ import com.gbli.context.ContextManager;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Person;
 import com.scaha.objects.Profile;
+import com.scaha.objects.ScahaPlayer;
 import com.scaha.objects.UsaHockeyRegistration;
 
 public class UsaHockeyBean implements Serializable, MailableObject {
@@ -80,6 +83,7 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 		//
 		this.usar = null;
 		try {
+			
 			this.usar = USAHRegClient.pullRegistartionRecord(this.getRegnumber());
 
 			if (usar.getFirstName().length()== 0) {
@@ -87,18 +91,26 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 					null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "USA Hockey Info Not Found",
                     "Could Not find any USA Registration based upon the number you provided! Please check to see if your USA Hockey#."));
-			}
+				return "false";
+			} 
 			if (!this.dob.equals(usar.getDOB())) {
 				FacesContext.getCurrentInstance().addMessage(
 					null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Date of Birth Match", usar.getDOB() + ":" + this.dob + "!.  The DOB you provided does not match what was pulled from USA Hockey.  Please check to see if your USA Hockey # and/or DOB is correct."));
+				return "false";
 			}
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		FacesContext.getCurrentInstance().addMessage(
+				null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO,"Successfull Lookup",
+                "Found the information based upon the USAH Registration number.   Please verify the information, then save to create a new member of SCAHA."));
+
 		return "true";
 	}
 
@@ -161,5 +173,51 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 		this.relationship = regtype;
 	}
 	
+
+	/**
+	 * This guy adds a new member via a USAHockey pull request...
+	 * @return
+	 */
+	public String addNewMember() {
+		
+		//
+		// OK.. We know this guy is a new person.. but it is a family member first and forement...
+		
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		Application app = context.getApplication();
+
+		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{profileBean}", Object.class );
+
+		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
+		
+		ScahaPlayer sp = new ScahaPlayer(pb.getProfile());
+		
+		sp.gleanUSAHinfo(this.usar);
+
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		try{
+			sp.update(db);
+			usar.update(db, sp);
+			db.free();
+            context.addMessage(null, new FacesMessage("Successful", "I think we saved something.."));  
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		
+		return "true";
+
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "UsaHockeyBean [usar=" + usar + ", regnumber=" + regnumber
+				+ ", dob=" + dob + ", membertype=" + membertype
+				+ ", relationship=" + relationship + "]";
+	}
 
 }
