@@ -9,8 +9,9 @@
      xmlns:p="http://primefaces.org/ui"
 >
 <f:view contentType="text/html">
-<div style="padding:1px; margin-left:5px; text-align:left;">
 <h:form>
+<div style="text-align:right; width:900px; font-weight: normal;font-size: 9pt;font-family: Verdana;">
+<p:panel>
 <p:toolbar>
 <p:toolbarGroup align="left">   
 <p:menuButton id="menu1"  style="width:100px;" value="League Info">  
@@ -40,10 +41,30 @@
    				<p:separator />  
    				<p:menuitem style="font-size: 11px;" value="Logout" actionListener="#{profileBean.logout}" ajax="false"/>  
   			</p:menuButton>
- 	</p:toolbarGroup>
-</p:toolbar>
- 
-</h:form>
+</p:toolbarGroup>
+<p:toolbarGroup align="right" rendered="#{empty profileBean.getProfile()}">  
+   	<h:inputText style="width:150px;" value="#{profileBean.name}"></h:inputText>
+   	<h:outputText  value="/"></h:outputText>
+	<h:inputSecret style="width:100px;" value="#{profileBean.password}"></h:inputSecret>
+    <p:separator />  
+		<p:commandButton value="login" actionListener="#{profileBean.login}" ajax="false" /><br/>
+ </p:toolbarGroup>  
+ </p:toolbar>
+<ui:fragment style = "font-size: 9pt;font-family: Verdana;" rendered="#{empty profileBean.getProfile()}"> 
+	<h:outputLink id="reglink" value="/scaha/register.xhtml">
+	<h:outputText style = "font-size: 9pt;font-family: Verdana;" value="Create New Account" />
+	</h:outputLink>
+		<h:outputText style = "font-size: 9pt;font-family: Verdana;" value=" / " />
+       	<h:outputLink id="fpasslink" value="/scaha/forgotpassword.xhtml">
+	    <h:outputText style = "font-weight: normal;font-size: 9pt;font-family: Verdana;" value="Forgot Password?" />
+	</h:outputLink>
+</ui:fragment>
+<ui:fragment  rendered="#{not empty profileBean.getProfile()}"> 
+  <p:spacer height="20px" width="20px"/>
+</ui:fragment>
+</p:panel>
 </div>
+</h:form>
+
 </f:view>
 </html>

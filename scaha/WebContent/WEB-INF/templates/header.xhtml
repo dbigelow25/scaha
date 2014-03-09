@@ -8,38 +8,11 @@
      xmlns:p="http://primefaces.org/ui"
 >
 <h:body>
-<h:panelGrid id="header" columns="2" cellpadding="3"  >
+<h:panelGrid id="header" columns="2" cellpadding="5"  >
 	<img src="/scaha/images/pages/scaha_logo.png" width="150px" style="float: left; left:10px; top:10px;" />
 	<h:panelGroup>
 			<div style="text-align:right; width:720px; font-weight: normal;font-size: 9pt;font-family: Verdana;">
- 			 <h:form>
- 			 <p:panel style="float:right;text-align:right; width:520px;" rendered="#{empty profileBean.getProfile()}" >
- 				 <p:toolbar style="text-align:right; width:520px;">	 	 
-    				<p:toolbarGroup align="right">  
-	            	<h:outputText  value=" User: "></h:outputText>
-	            	&nbsp;
-    	        	<h:inputText style="width:150px;" value="#{profileBean.name}"></h:inputText>
-        	    	<h:outputText  value=" Password: "></h:outputText>
-            		<h:inputSecret style="width:125px;" value="#{profileBean.password}"></h:inputSecret>
-			        <p:separator />  
-            		<p:commandButton value="login" actionListener="#{profileBean.login}" ajax="false" /><br/>
- 				   </p:toolbarGroup>  
- 				 </p:toolbar>
-            	<h:outputLink id="reglink" value="/scaha/register.xhtml">
-				    <h:outputText value="Create New Account" />
-				</h:outputLink>
-					<h:outputText  value=" / " />
-            	<h:outputLink id="fpasslink" value="/scaha/forgotpassword.xhtml">
-				    <h:outputText value="Forgot Password?" />
-				</h:outputLink>
-				</p:panel>
-               	<ui:fragment rendered="#{not empty profileBean.getProfile()}"> 
-               	  <p:spacer width="10px" height="60px" />.
-               	  </ui:fragment>
-            </h:form>	
-			</div>
-			<div align="right">
-				<img src="/scaha/images/pages/scaha_banner_logo.png" />
+ 				<img src="/scaha/images/pages/scaha_banner_logo.png" />
 			</div>
 	</h:panelGroup>
 	</h:panelGrid>
