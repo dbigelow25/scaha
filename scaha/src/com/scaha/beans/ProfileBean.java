@@ -516,25 +516,20 @@ public void cancelAddMember() {
 	 * 			5) Address
 	 * 
 	 */
-	public void updatePasswordInfo() {
+	public String updatePasswordInfo() {
 	
 		//
 		// in the end.. we simply turn off the edit so that edit screen will dissappear
 		//
 
 		if (!this.new_password.equals(this.con_password)) {
-			
-			
-			UIComponent component =	UIComponent.getCurrentComponent(FacesContext.getCurrentInstance());
-					 
-			String clientId = component.getClientId();
 					
 			FacesContext.getCurrentInstance().addMessage(
-					clientId,
+					"password:con-pass",
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Confirmation Password Error",
-                    "Confirmation Password does not match your new password entered... Please Try Again!"));
-			return;
+                    "Change Password Error",
+                    "new passwords does not match... Please Try Again!"));
+			return "false";
 		}
 
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
@@ -544,8 +539,6 @@ public void cancelAddMember() {
 			pro.update(db);
 			this.setLive_password(this.new_password);
 			db.free();
-            FacesContext context = FacesContext.getCurrentInstance();  
-            context.addMessage(null, new FacesMessage("Successful", "Your Password has been successfully changed..."));  
 
 			LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM the manage Profile Page..");
 			LOGGER.info("Sending Test mail here...");
@@ -555,12 +548,22 @@ public void cancelAddMember() {
 		} catch (SQLException e) {
 		// TODO Auto-generated catch block
 			LOGGER.info("ERROR IN Profile Change User Attributes PROCESS FOR " + this.getCompleteName());
+            FacesContext context = FacesContext.getCurrentInstance();  
+            context.addMessage("password", new FacesMessage(FacesMessage.SEVERITY_ERROR,"SQL Error", "There was an SQL Error please try again"));  
 			e.printStackTrace();
 			db.rollback();
 			db.free();
 		}
-	
-		this.setNotEditPassword();
+		
+		FacesContext.getCurrentInstance().addMessage(
+				null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO,
+                "Change Password Success",
+                "You have successfully changed your password.  You will be receiving a confirmation e-mail shortly"));
+
+		
+		return "true";
+		
 		
 	}
 

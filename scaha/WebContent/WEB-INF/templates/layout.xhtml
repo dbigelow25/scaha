@@ -7,76 +7,63 @@
      xmlns:p="http://primefaces.org/ui"
 >
 <f:view contentType="text/html">
-    
-    <h:head>
-	 <f:facet name="first">
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
-        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
-     </f:facet>
+ <h:head>
+ <f:facet name="first">
+   <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+   <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+</f:facet>
         
-    
-        <title>SCAHA iSite </title>
-        
-        <style>
-        
-        	.ui-layout-unit {
-        	  border: none
-        	}
-        	
-        	.ui-panel {
-        	  border: none
-        	}
-        	
-        	
-        	.ui-panelgrid tr, .ui-panelgrid td {
-			    border: none;
-			}
-			
-			.ui-growl {   
- 			   position:fixed;
-			    top: 40%;
-			    left: 37%;
-			    width: 360px;
-			    height: 110px;
-			    z-index:9999; 
-			}
-			
-        </style>
-        
-    </h:head>
-    
-    <h:body>
  
-	<div id="page">
- 
-	    <div id="header">
-		<ui:insert name="header" >
-		 <ui:include src="header.xhtml"/> 
-		</ui:insert>
-	    </div>
- 		<table> <tr><td width="175px" valign="top">
- 		<div id="west">
-	  	<ui:insert name="west" >
-	 	  <ui:include src="defaultmenu.xhtml"/> 
-	   	</ui:insert>
-	    </div>
-		</td><td width="655px" valign="top"> 		
- 		<div id="content">
-	  	<ui:insert name="content" >
-	 	  Put default content here, if any.
-	   	</ui:insert>
-	    </div>
-	    </td></tr>
- 		</table>
-	    
-	    <div id="footer">
-	    	<ui:insert name="footer" >
-	    	  <ui:include src="footer.xhtml"/> 
-	    	</ui:insert>
-    	    </div>
- 
-        </div>
- 
-    </h:body>
-</f:view>    
+     <title>SCAHA iSite </title>
+     
+     <style>
+
+
+	.ui-layout-unit {
+     	  border: none
+     	}
+     	
+    .ui-panel {
+      border: none
+    }
+     	
+     	
+    .ui-panelgrid tr, .ui-panelgrid td {
+    	border: none;
+	}
+	
+	.ui-growl {   
+	   position:fixed;
+    top: 40%;
+    left: 37%;
+    width: 360px;
+    height: 110px;
+    z-index:9999; 
+	}
+
+	#div-body {
+   		width: 900px;
+    	vertical-align: top;
+    	margin-left:10px;
+	}
+	
+	#page-div {
+ 		width: 700px;
+    	vertical-align: top;
+    	margin-left:25px;
+	}
+</style>
+     
+ </h:head>
+   
+<h:body>
+
+<div id="div-body">
+<p:growl id="msg" showDetail="true" globalOnly = "true" life="3000" />
+<ui:insert name="menu" ><ui:include src="defaultmenu.xhtml"/></ui:insert>
+<ui:insert name="header" ><ui:include src="header.xhtml"/></ui:insert>
+<ui:insert name="content" >Put default content here, if any.</ui:insert>
+</div>
+</h:body>
+</f:view>
 </html>

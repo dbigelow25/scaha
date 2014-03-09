@@ -9,41 +9,41 @@
      xmlns:p="http://primefaces.org/ui"
 >
 <f:view contentType="text/html">
-<p:menu cellpadding="2px" style="width:150px;margin-left: 2px;border: none; cellpadding:2;">
-<p:submenu style="font-size: 12px;" label="Club/Team Info">
-<p:menuitem style="font-size: 12px;" value="Team Manager" url="http://www.google.com" />
-<p:menuitem style="font-size: 12px;" value="Club Registrar" url="http://www.hotmail.com" />
-<p:menuitem style="font-size: 12px;" value="Safe Sport" url="http://mail.yahoo.com" />
-<p:menuitem style="font-size: 12px;" value="2013 Mite Program" url="http://mail.yahoo.com" />
-</p:submenu>
-<p:submenu style="font-size: 12px;" label="Programs">
-<p:menuitem style="font-size: 12px;" value="Scholarship Athlete Programs" url="http://www.google.com" />
-<p:menuitem style="font-size: 12px;" value="Anheim Ducks" url="http://www.hotmail.com" />
-<p:menuitem style="font-size: 12px;" value="Los Angeles Kings" url="http://mail.yahoo.com" />
-</p:submenu>
-<p:submenu style="font-size: 12px;" label="Season Information">
-<p:menuitem style="font-size: 12px;" value="Select Camp" url="http://www.facebook.com" />
-<p:menuitem style="font-size: 12px;" value="Suspensions" url="http://www.myspace.com" />
-<p:menuitem style="font-size: 12px;" value="Players" url="http://www.myspace.com" />
-<p:menuitem style="font-size: 12px;" value="Coaches" url="http://www.myspace.com" />
-<p:menuitem style="font-size: 12px;" value="Documentation" url="http://www.myspace.com" />
-<p:menuitem style="font-size: 12px;" value="Tournaments" url="http://www.myspace.com" />
-<p:menuitem style="font-size: 12px;" value="Team Declarasions" url="http://www.myspace.com" />
-</p:submenu>
-<p:submenu style="font-size: 12px;" label="Additional Information">
-<p:menuitem style="font-size: 12px;" value="Rink Locations" url="http://www.facebook.com" />
-<p:menuitem style="font-size: 12px;" value="Rules and Regs" url="http://www.myspace.com" />
-<p:menuitem style="font-size: 12px;" value="Hockey Links" url="http://www.myspace.com" />
-<p:menuitem style="font-size: 12px;" value="FAQ" url="http://www.myspace.com" />
-</p:submenu>
-<p:submenu style="font-size: 12px;" label="Statistics">
-<p:menuitem style="font-size: 12px;" value="Reporting" url="http://www.facebook.com" />
-<p:menuitem style="font-size: 12px;" value="Archives" url="http://www.myspace.com" />
-</p:submenu>
-<p:submenu style="font-size: 12px;" label="Playoff Info">
-<p:menuitem style="font-size: 12px;" value="2012-13 Playoffs" url="http://www.facebook.com" />
-<p:menuitem style="font-size: 12px;" value="Archives" url="http://www.myspace.com" />
-</p:submenu>
-</p:menu>
+<div style="padding:1px; margin-left:5px; text-align:left;">
+<h:form>
+<p:toolbar>
+<p:toolbarGroup align="left">   
+<p:menuButton id="menu1"  style="width:100px;" value="League Info">  
+  			<p:menuitem  value="Team Manager" url="http://www.google.com" />
+			<p:menuitem  value="Club Registrar" url="http://www.hotmail.com" />
+			<p:menuitem  value="Safe Sport" url="http://mail.yahoo.com" />
+			<p:menuitem  value="2013 Mite Program" url="http://mail.yahoo.com" />
+</p:menuButton>
+<p:spacer width="2px"/>
+<p:commandButton id="menu2"  style="width:100px;" value="Season Info" type="button"/>  
+   <p:menu overlay="true" trigger="menu2" my="left top" at="left bottom">  
+		<p:menuitem style="font-size: 12px;" value="Scholarship Athlete Programs" url="http://www.google.com" />
+		<p:menuitem style="font-size: 12px;" value="Anheim Ducks" url="http://www.hotmail.com" />
+		<p:menuitem style="font-size: 12px;" value="Los Angeles Kings" url="http://mail.yahoo.com" />
+   </p:menu>
+<p:commandButton id="menu3"  style="width:100px;" value="Club Info" type="button"/> 
+<p:commandButton id="menu4"  style="width:100px;" value="Programs" type="button"/> 
+<p:commandButton id="menu5"  style="width:100px;" value="About Scaha" type="button"/> 
+ </p:toolbarGroup>
+<p:toolbarGroup align="right" rendered="#{not empty profileBean.getProfile()}"> 
+			<h:outputText value="Welcome #{profileBean.getNickName()}"></h:outputText>
+			<p:separator />  
+       		<p:menuButton value="Options">  
+   				<p:menuitem style="font-size: 11px;" value="Manage Profile"  url="manageprofile.xhtml" icon="ui-icon-extlink"/>  
+   				<p:separator />  
+    				<p:menuitem style="font-size: 11px;" value="Change Password"  url="changepassword.xhtml" icon="ui-icon-extlink"/>  
+   				<p:separator />  
+   				<p:menuitem style="font-size: 11px;" value="Logout" actionListener="#{profileBean.logout}" ajax="false"/>  
+  			</p:menuButton>
+ 	</p:toolbarGroup>
+</p:toolbar>
+ 
+</h:form>
+</div>
 </f:view>
 </html>

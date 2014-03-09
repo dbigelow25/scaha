@@ -7,21 +7,14 @@
      xmlns:ui="http://java.sun.com/jsf/facelets"
      xmlns:p="http://primefaces.org/ui"
 >
-<f:view contentType="text/html">
-<table width="850px" border="0" cellpadding="0" cellspacing="0"
-	style="border-collapse: collapse;">
-	<tr>
-		<td align="right" width = "165px">
-			<div align="right">
-				<img src="/scaha/images/pages/scaha_logo.png" width="150px"/>
-			</div>
-		</td>
-		<td align="right">
-			<div align="right" style="font-weight: normal;font-size: 9pt;font-family: Verdana;">
+<h:body>
+<h:panelGrid id="header" columns="2" cellpadding="3"  >
+	<img src="/scaha/images/pages/scaha_logo.png" width="150px" style="float: left; left:10px; top:10px;" />
+	<h:panelGroup>
+			<div style="text-align:right; width:720px; font-weight: normal;font-size: 9pt;font-family: Verdana;">
  			 <h:form>
- 				 <p:growl id="msg" showDetail="true" globalOnly = "true" life="3000" />
-            	<p:panel  rendered="#{empty profileBean.getProfile()}">
- 				 <p:toolbar>	 	 
+ 			 <p:panel style="float:right;text-align:right; width:520px;" rendered="#{empty profileBean.getProfile()}" >
+ 				 <p:toolbar style="text-align:right; width:520px;">	 	 
     				<p:toolbarGroup align="right">  
 	            	<h:outputText  value=" User: "></h:outputText>
 	            	&nbsp;
@@ -39,29 +32,17 @@
             	<h:outputLink id="fpasslink" value="/scaha/forgotpassword.xhtml">
 				    <h:outputText value="Forgot Password?" />
 				</h:outputLink>
-               	</p:panel>
-               	<p:panel rendered="#{not empty profileBean.getProfile()}">
-                <p:toolbar>	 	 
-    				<p:toolbarGroup align="right"> 
-    				<h:outputText value="Welcome #{profileBean.getNickName()}"></h:outputText>
-    				<p:separator />  
-            		<p:menuButton value="Options">  
-	       				<p:menuitem style="font-size: 10px;" value="Manage Profile"  url="manageprofile.xhtml" icon="ui-icon-extlink"/>  
-        				<p:separator />  
-        				<p:menuitem style="font-size: 10px;" value="Logout" actionListener="#{profileBean.logout}" ajax="false"/>  
-        			</p:menuButton>
-        				
-        				</p:toolbarGroup>
-        				</p:toolbar>
-				    <h:outputText value="." />
-            	</p:panel>
-        	</h:form>	
+				</p:panel>
+               	<ui:fragment rendered="#{not empty profileBean.getProfile()}"> 
+               	  <p:spacer width="10px" height="60px" />.
+               	  </ui:fragment>
+            </h:form>	
 			</div>
 			<div align="right">
 				<img src="/scaha/images/pages/scaha_banner_logo.png" />
 			</div>
-		</td>
-	</tr>
-</table>
-</f:view>
+	</h:panelGroup>
+	</h:panelGrid>
+	</h:body>
+	
 </html>
