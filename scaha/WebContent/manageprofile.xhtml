@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -18,23 +17,21 @@
 
 <ui:define name="content">
   
-	<h3>My Scaha Account for #{profileBean.getNickName()}</h3>
+  <p:tabMenu activeIndex="0">  
+    <p:menuitem value="My Information" url="manageprofile.xhtml" icon="ui-icon-star" />  
+    <p:menuitem value="Scaha Membership" url="membermanagement.xhtml" />  
+    <p:menuitem value="My Roles" url="/ui/tabMenuDocumentation.jsf" />  
+    <p:menuitem value="Support" url="/ui/tabMenuSupport.jsf"/>  
+    <p:menuitem value="Social" url="/ui/tabMenuSocial.jsf" />  
+	</p:tabMenu>  
 
-	<h:form id="mess">
-    
-		<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />    
-
-	</h:form>        
-	
-    <h:form id="mp-form">
-    
-    <p:tabView id="tabView">    
-  
-    	<p:tab title="My Information">  
-  
-  		<p:panel id="view-pers" rendered="#{profileBean.isViewPerson()}">
+	<p:separator id="separator"/>
+ 
+ 	<h:form id = "me-form">
+  	
+  		<h:panelGroup id="view-pers" rendered="#{profileBean.isViewPerson()}">
   		
-         	<h:panelGrid columns="2" cellpadding="5">  
+         	<p:panelGrid id ="view-pers-grid" columns="2" cellpadding="5">  
             	<h:outputText value="User Name (e-mail):" />
             	<h:outputText value="#{profileBean.getUserName()}" />
             	<h:outputText value="Name:" />
@@ -51,62 +48,61 @@
             	<h:outputText value="#{profileBean.getAltemail()}"/>
             	<h:outputText value="Address:" />
             	<h:outputText value="#{profileBean.getCompleteAddress()}" />
-            </h:panelGrid>  
-            <p:spacer width="40" height="30" />
-             (<p:commandLink value="Edit This Data" update="view-pers,edit-per" id="show-edit-per" ajax="false"  
-             actionListener="#{profileBean.setEditPerson()}"/>) 
-            
+            </p:panelGrid>  
+	         <p:separator id="separator22"/>
+             <p:commandButton value="Edit This Data" update="view-pers,edit-per" id="show-edit-per" ajax="false"  
+             actionListener="#{profileBean.setEditPerson()}"/> 
              <p:spacer width="10" height="10" />
-             
-             (<p:commandLink value="Change your password" update="view-pers" id="show-edit-pass" ajax="false"  
-             actionListener="#{profileBean.setEditPassword()}"/>)  
+             <p:commandButton value="Change your password" update="view-pers,edit-pass" id="show-edit-pass" ajax="false"  
+             actionListener="#{profileBean.setEditPassword()}"/>  
+       </h:panelGroup>
 
-            </p:panel>
-
-			<p:panel id="edit-pers" rendered="#{profileBean.isEditPerson()}">
-			
-			The following information can be changed about your account.  Please change what you want, then click the update link to save
-			your changes back to iSite.
-  		
-         	<h:panelGrid columns="2" cellpadding="3">  
-
-					<p:outputLabel for="firstname" value="First Name" />
+	<h:panelGroup id="edit-pers" rendered="#{profileBean.isEditPerson()}">
+		<p:focus context="edit-pers"/> 
+			<p:panelGrid columns="3" cellpadding="3" id="edit-pers-grid">  
+					<p:outputLabel for="firstname" value="First Name"></p:outputLabel>
 					<p:inputText id="firstname" style="width:150px;" value="#{profileBean.chgFirstName}" />
-
-					<p:outputLabel for="lastname" value="Last Name" />
+					<p:message id="m_firstname" closable="true" for="firstname"/>
+					
+					<p:outputLabel for="lastname" value="Last Name" ></p:outputLabel>
 					<p:inputText id="lastname" style="width:150px;" value="#{profileBean.chgLastName}" />
+					<p:message id="m_lastname" closable="true" for="lastname"/>
 					
-					<p:outputLabel for="nickname" value="Nick Name" />
+					<p:outputLabel for="nickname" value="Nick Name"></p:outputLabel>
 					<p:inputText id="nickname" style="width:150px;" value="#{profileBean.chgNickName}"/>
+					<p:message id="m_nickname" closable="true" for="nickname"/>
 
-					<p:outputLabel for="dob"  value="Date of Birth" />
+					<p:outputLabel for="dob"  value="Date of Birth:"></p:outputLabel>
 					<p:inputMask id="dob" value="#{profileBean.chgDOB}" style="width:150px;" mask="9999/99/99" />  
+					<p:message id="m_dob" closable="true" for="dob"/>
 
-					<p:outputLabel for="gender" value="Gender" />
-					    <p:selectOneRadio id="gender" value="#{profileBean.chgGender}">  
-				            <f:selectItem itemLabel="Male" itemValue="M" />  
-            				<f:selectItem itemLabel="Female" itemValue="F" />  
-       				 	</p:selectOneRadio> 
+					<p:outputLabel for="gender" value="Gender:" ></p:outputLabel>
+				    <p:selectOneMenu id="gender" value="#{profileBean.chgGender}">  
+			            <f:selectItem itemLabel="Male" itemValue="M"></f:selectItem> 
+           				<f:selectItem itemLabel="Female" itemValue="F"></f:selectItem> 
+      				</p:selectOneMenu> 		
+      				<p:message id="m_gender" closable="true" for="gender"/>			
 
-					<p:outputLabel for="email" value="alternate e-mail" />
+					<p:outputLabel for="email" value="alternate eMail:"></p:outputLabel>
 					<p:inputText id="email" style="width:150px;" value="#{profileBean.chgAltEmail}" />
+					<p:message id="m_email" closable="true" for="email"/>
 
-					<p:outputLabel for="phone"  value="Mobile Phone" />
+					<p:outputLabel for="phone"  value="Mobile Phone"></p:outputLabel>
 					<p:inputMask id="phone" value="#{profileBean.chgPhone}" style="width:150px;" mask="(999) 999-9999" />  
-					
-			</h:panelGrid>
+					<p:message id="m_phone" closable="true" for="phone"/>
 
-			<p:panelGrid columns="4" cellpadding="3">
-					<p:outputLabel for="address" value="Address"/>
-					<p:outputLabel for="city" value="City"/>
-					<p:outputLabel for="state" value="State"/>
-					<p:outputLabel for="zip" value="Zip"/>
+			</p:panelGrid>
+
+			<p:panelGrid columns="4" cellpadding="3" id="edit-pers-addr-grid">
+					<p:outputLabel for="address" value="Address"></p:outputLabel>
+					<p:outputLabel for="city" value="City"></p:outputLabel>
+					<p:outputLabel for="state" value="State"></p:outputLabel>
+					<p:outputLabel for="zip" value="Zip"></p:outputLabel>
 					<p:inputText id="address" style="width:175px;" value="#{profileBean.chgAddress}" />
 					<p:inputText id="city" style="width:175px;" value="#{profileBean.chgCity}" />
 					<p:inputText id="state" style="width:25px;" maxlength="2" value="#{profileBean.chgState}" />
 					<p:inputText id="zip" style="width:75px;" maxlength="5" value="#{profileBean.chgZip}" />
 			</p:panelGrid>
-
 			<p:separator id="separator32"/> 
 
 			(<p:commandLink value="Cancel" update="edit-pers,view-pers" id="cancel-edit-per" ajax="false"  
@@ -118,186 +114,51 @@
              (<p:commandLink value="Update Info" update="edit-pers,view-pers" id="finish-edit-per" ajax="false"  
              actionListener="#{profileBean.updatePersonInfo()}"/>)    
 
-            </p:panel>  
-            
-            <p:panel id="edit-pass" rendered="#{profileBean.isEditPassword()}">
-            
-            <h:panelGrid columns="3" cellpadding="3">  
-			
+            </h:panelGroup>
+
+		<h:panelGroup id="edit-pass" rendered="#{profileBean.isEditPassword()}">
+
+			<p:panelGrid columns="3" cellpadding="3">
+
 				<p:outputLabel for="cur-pass" value="Current Password:" />
-				<h:inputSecret id="cur-pass" style="width:150px;" value="#{profileBean.cur_password}" 
-						required="true" requiredMessage="Current Password cannot be blank.">
-						<f:validator validatorId="validateLivePassword" />
-						<f:ajax event="blur" render="m_current" />
+				<h:inputSecret id="cur-pass" style="width:150px;"
+					value="#{profileBean.cur_password}" required="true"
+					requiredMessage="Current Password cannot be blank.">
+					<f:validator validatorId="validateLivePassword" />
+					<f:ajax event="blur" render="m_current" />
 				</h:inputSecret>
 				<p:message id="m_current" for="cur-pass" />
-				
+
 				<p:outputLabel for="new-pass" value="New Password:" />
-				<p:password id="new-pass" style="width:150px;" value="#{profileBean.new_password}" 
-						required="true" requiredMessage="New Password cannot be blank." />
+				<p:password id="new-pass" style="width:150px;"
+					value="#{profileBean.new_password}" required="true"
+					requiredMessage="New Password cannot be blank." />
 				<p:spacer width="40" height="10" />
 
 				<p:outputLabel for="con-pass" value="Confirm New Password:" />
-				<p:password id="con-pass" style="width:150px;" value="#{profileBean.con_password}"
-					required="true" requiredMessage="Confirm Password cannot be blank."  />
+				<p:password id="con-pass" style="width:150px;"
+					value="#{profileBean.con_password}" required="true"
+					requiredMessage="Confirm Password cannot be blank." />
 				<p:message id="m_confirm" for="finish-edit-pass" />
 
-			</h:panelGrid>					
+			</p:panelGrid>
 
 			<p:spacer width="40" height="30" />
 			
-			(<p:commandLink value="Cancel" update="edit-pass,view-pers" id="cancel-edit-pass" ajax="false"  immediate="true"
-             actionListener="#{profileBean.setNotEditPassword()}">
-                 <p:resetInput target="edit-pass" /> 
-            </p:commandLink>)
+			<p:commandButton value="Cancel" update="edit-pass,view-pers"
+				id="cancel-edit-pass" ajax="false" immediate="true"
+				actionListener="#{profileBean.setNotEditPassword()}">
+				<p:resetInput target="edit-pass" />
+			</p:commandButton>)
   
     		<p:spacer width="10" height="10" />
-             (<p:commandLink global="false" value="Save Changes" update="edit-pass,view-pers" id="finish-edit-pass" ajax="false"  
-             actionListener="#{profileBean.updatePasswordInfo()}"/>)    
+             <p:commandButton global="false" value="Save Changes"
+				update="edit-pass,view-pers" id="finish-edit-pass" ajax="false"
+				actionListener="#{profileBean.updatePasswordInfo()}" />   
 
-            </p:panel>  
+            </h:panelGroup>
             
-        </p:tab>
-        
-        <p:tab title="Scaha Membership">  
-        
-        	<p:panel id="view-members" rendered="#{profileBean.isViewMembers()}">
-        
- 			<p:dataTable var="familymember" value="#{profileBean.getFamilyMembers()}">  
-    		    <p:column headerText="First Name"><h:outputText value="#{familymember.getsFirstName()}" /></p:column>  
-        		<p:column headerText="Last Name"><h:outputText value="#{familymember.getsLastName()}" /></p:column>  
-        		<p:column headerText="Relationship"><h:outputText value="#{familymember.getRelationship()}" /></p:column>
-        		<p:column headerText="Gender"><h:outputText value="#{familymember.getGender()}" /></p:column>  
-        		<p:column headerText="D.O.B."><h:outputText value="#{familymember.getDob()}" /></p:column>  
-    		</p:dataTable> 
-    		
-   			<p:spacer width="40" height="30" />
-            (<p:commandLink value="Add A Member" update="view-members, add-member" id="show-add-members" ajax="false"  
-             actionListener="#{profileBean.setAddMembers()}">
-				<p:ajax update="add-member" resetValues="true" />  
-             </p:commandLink>) 
-             
-    		</p:panel>
-    		
-  			<p:panel id="add-member" rendered="#{profileBean.isAddMember()}">
-  			
-  			Before you can register yourself or a family member as a SCAHA member, you will need to first go to USA Hockey member registration and 
-  			become a member for the upcomming 2014-15 season.  You will receive an official USA Hockey registration number.  It is this number you
-  			enter into the first field below.  We will pull all the registration information from USA hockey so all you have to do is save the information.
-  			
-            <h:panelGrid columns="2" cellpadding="3">  
-				<p:outputLabel for="usah-reg" value="USA Hockey Registration #:" />
-				<h:inputText id="usah-reg" style="width:150px;" value="#{usahBean.regnumber}" 
-						required="true" requiredMessage="Usa Hockey Number cannot be blank.">
-						<f:validator validatorId="validateUSAHRegistration" />
-						
-				</h:inputText>
-				
-				<p:outputLabel for="usah-dob"  value="Date of Birth" />
-				<p:inputMask id="usah-dob" value="#{usahBean.dob}" style="width:150px;" mask="99/99/9999" required="true" requiredMessage="Please Enter the DOB of the USA Hockey member." />  
-
-				<p:outputLabel value="Relationship: " />  
-       			 	<p:selectOneRadio id="relationship" value="#{usahBean.relationship}" required="true" requiredMessage="Please Select how this person is related to you.">  
-            			<f:selectItem itemLabel="Child" itemValue="Child" />  
-            			<f:selectItem itemLabel="Self" itemValue="Self" />  
-            			<f:selectItem itemLabel="Spouse" itemValue="Spouse"/>  
-        			</p:selectOneRadio>  
-				<p:outputLabel value="Member Type: " /> 
-   			 	<p:selectOneRadio id="membertype" value="#{usahBean.membertype}" required="true" requiredMessage="Please Select what type of member this person is going to be.">  >  
-           			<f:selectItem itemLabel="Player" itemValue="Player" />  
-           			<f:selectItem itemLabel="Coach" itemValue="Coach" />  
-           			<f:selectItem itemLabel="Manager" itemValue="Manager"/>  
-       			</p:selectOneRadio>  
-
-				<p:commandButton global="false" value="Search USAH" update="add-mem" id="search-usah" ajax="false" actionListener="#{usahBean.fetchUSAHockey()}"/>
-
-			</h:panelGrid>					
-   
-			<p:separator id="separator"/>  
-			
-			You have pulled a Membership record for the following season: #{usahBean.getUsar().getMembershipYear()} 
-			
-			<p:separator id="separator1"/> 
-			<table>
-			<tr>
-			<td>
-			<h:panelGrid columns="2" cellpadding="3">  
-				<p:spacer width="100px" height="1" />
-    			<p:spacer width="175px" height="1" />
-            	<h:outputText value="First Name:" />
-            	<h:outputText value="#{usahBean.getUsar().getFirstName()}" />
-            	<h:outputText value="Last Name:" />
-            	<h:outputText value="#{usahBean.getUsar().getLastName()}" />
-            	<h:outputText value="Middle Init:" />
-            	<h:outputText value="#{usahBean.getUsar().getMiddleInit()}" />
-			</h:panelGrid>  
-           	<p:separator id="separator23"/>
-			<h:panelGrid columns="2" cellpadding="3"> 
-				<p:spacer width="100px" height="1" />
-    			<p:spacer width="175px" height="1" />
-				<h:outputText value="Address:" />
-            	<h:outputText value="#{usahBean.getUsar().getAddress()}" />
-				<h:outputText value="City:" />
-            	<h:outputText value="#{usahBean.getUsar().getCity()}" />
-				<h:outputText value="State, Country:" />
-             	<h:outputText value="#{usahBean.getUsar().getState()}, #{usahBean.getUsar().getCountry()}" />
-            	<h:outputText value="Zipcode:" />
-            	<h:outputText value="#{usahBean.getUsar().getZipcode()} #{usahBean.getUsar().getForZip()}" />
-            	</h:panelGrid>  
-            </td>
-            <td>
-			<h:panelGrid columns="2" cellpadding="3">  
-				<p:spacer width="100px" height="1" />
-    			<p:spacer width="175px" height="1" />
-            	<h:outputText value="DOB:" />
-            	<h:outputText value="#{usahBean.getUsar().getDOB()}" />
-            	<h:outputText value="Citizenship:" />
-            	<h:outputText value="#{usahBean.getUsar().getCitizen()}" />
-            	<h:outputText value="Gender:" />
-            	<h:outputText value="#{usahBean.getUsar().getGender()}" />
-			</h:panelGrid>  
-           	<p:separator id="separator2"/>
-			<h:panelGrid columns="2" cellpadding="3">  
-				<p:spacer width="100px" height="1" />
-    			<p:spacer width="175px" height="1" />
-				<h:outputText value="Parent/Guardian:" />
-            	<h:outputText value="#{usahBean.getUsar().getPGSFName()} #{usahBean.getUsar().getPGSMName()} #{usahBean.getUsar().getPGSLName()}" />
-            	<h:outputText value="Home Phone:" />
-            	<h:outputText value="#{usahBean.getUsar().getHPhone()}" />
-				<h:outputText value="Work Phone:" />
-            	<h:outputText value="#{usahBean.getUsar().getBPhone()}" />
-            	<h:outputText value="e-mail:" />
-            	<h:outputText value="#{usahBean.getUsar().getEmail()}" />
-            </h:panelGrid>  
-            </td>
-            </tr>
-            </table>	
-            <p:separator id="separator3"/> 
-            
-            If the pulled information is correct.. along with ALL the information you entered... tge click  "Save New Member".
-            Otherwise enter in a different USAH Registration number, et. el. Or simply click the <b>cancel</b> link.
-            
-            Once the information is saved.. You will receive a confirmation e-mail that contains the SCAHA membership number for the upcoming season.  
-            You will need this number handy to identify your players when for LOI's during tryouts.
-            <p/>	
-			<p:commandButton value="Cancel" update="add-member, view-members" id="cancel-add-mem" immediate="true" ajax="false"
-             actionListener="#{profileBean.setNotAddMembers()}" /> 
-    		<p:spacer width="225" height="10" />
-             <p:commandButton global="false" value="Save Mew Member" update="add-member, view-members" id="finish-add-mem" ajax="false"  
-             actionListener="#{usahBean.addNewMember()}"/>
-            </p:panel>  
-  		</p:tab>
-
-    	<p:tab title="Accessability Roles">  
-	
-			<p:dataTable var="role" value="#{profileBean.getRoles()}">  
-        		<p:column headerText="Role Name"><h:outputText value="#{role.getName()}" /></p:column>  
-        		<p:column headerText="Role Description"><h:outputText value="#{role.getDesc()}" /></p:column>  
-        		<p:column headerText="Default?"><h:outputText value="#{role.isDefaultRole()}" /></p:column>  
-    		</p:dataTable>  
-   		</p:tab>
-	</p:tabView>
-    </h:form>		
-</ui:define>
+            </h:form>
+	</ui:define>
 </ui:composition>
 </html>

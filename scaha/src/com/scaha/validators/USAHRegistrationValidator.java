@@ -38,8 +38,8 @@ public class USAHRegistrationValidator implements Validator {
         if (sUSAHReg.length() != 14) {
         	FacesMessage message = new FacesMessage();
         	message.setSeverity(FacesMessage.SEVERITY_ERROR);
-        	message.setSummary("USA Hockey Registration.");
-        	message.setDetail("This is a 14 Character Registartion Number.. you enter only " + sUSAHReg.length() + " characters");
+        	message.setSummary("USAH Reg invalid length");
+        	message.setDetail("This needs to be 14 characters, not " + sUSAHReg.length() + ".");
             throw new ValidatorException(message);
         }
      
@@ -67,7 +67,7 @@ public class USAHRegistrationValidator implements Validator {
 					FacesMessage message = new FacesMessage();
 		        	message.setSeverity(FacesMessage.SEVERITY_ERROR);
 		        	message.setSummary("USA Hockey Registration.");
-		        	message.setDetail("The reg number " + sUSAHReg + " has already been claimed by another member.  You can not reuse this number for more than one member");
+		        	message.setDetail("The reg number has already been claimed.");
 		            throw new ValidatorException(message);
 				}
 			}

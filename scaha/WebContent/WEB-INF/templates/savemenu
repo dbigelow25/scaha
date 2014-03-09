@@ -8,7 +8,7 @@
      xmlns:ui="http://java.sun.com/jsf/facelets"
      xmlns:p="http://primefaces.org/ui"
 >
-<f:view contentType="text/html">
+
 <p:menu cellpadding="2px" style="width:150px;margin-left: 2px;border: none; cellpadding:2;">
 <p:submenu style="font-size: 12px;" label="Club/Team Info">
 <p:menuitem style="font-size: 12px;" value="Team Manager" url="http://www.google.com" />
@@ -45,5 +45,4 @@
 <p:menuitem style="font-size: 12px;" value="Archives" url="http://www.myspace.com" />
 </p:submenu>
 </p:menu>
-</f:view>
 </html>

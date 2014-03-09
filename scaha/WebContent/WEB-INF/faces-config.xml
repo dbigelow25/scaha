@@ -20,6 +20,11 @@
 		<managed-bean-class>com.scaha.beans.PicklistRoleBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
+		<managed-bean>
+		<managed-bean-name>tabtrackBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.TabTrackBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>usahBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.UsaHockeyBean</managed-bean-class>

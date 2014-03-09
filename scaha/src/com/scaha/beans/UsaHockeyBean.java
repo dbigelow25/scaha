@@ -35,6 +35,7 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 	private String dob = null;
 	private String membertype = null;
 	private String relationship = null;
+	private boolean datagood = false;
 	
 	/**
 	 * @return the usar
@@ -88,16 +89,17 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 
 			if (usar.getFirstName().length()== 0) {
 				FacesContext.getCurrentInstance().addMessage(
-					null,
+					"mp-form:usah-reg",
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "USA Hockey Info Not Found",
-                    "Could Not find any USA Registration based upon the number you provided! Please check to see if your USA Hockey#."));
+                    "Could Not find the USA Registration record."));
 				return "false";
 			} 
 			if (!this.dob.equals(usar.getDOB())) {
 				FacesContext.getCurrentInstance().addMessage(
-					null,
+					"mp-form:usah-dob",
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Date of Birth Match", usar.getDOB() + ":" + this.dob + "!.  The DOB you provided does not match what was pulled from USA Hockey.  Please check to see if your USA Hockey # and/or DOB is correct."));
+                    "Date of Birth Match", "The DOB you provided does not match what was pulled."));
+					this.usar = null;
 				return "false";
 			}
 			
@@ -107,10 +109,16 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 		}
 		
 		FacesContext.getCurrentInstance().addMessage(
-				null,
+				"mp-form:finish-add-mem",
                 new FacesMessage(FacesMessage.SEVERITY_INFO,"Successfull Lookup",
-                "Found the information based upon the USAH Registration number.   Please verify the information, then save to create a new member of SCAHA."));
-
+                "Data looks good, CLICK Save Now to create a new Member."));
+		this.datagood = true;
+		
+		//
+		// We need to set Member Type to Manager.. because thats what the XX is for
+		if (this.usar.getUSAHnum().contains("XX")) {
+			this.membertype = "Manager";
+		}
 		return "true";
 	}
 
@@ -175,6 +183,20 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 	
 
 	/**
+	 * @return the datagood
+	 */
+	public boolean isDatagood() {
+		return datagood;
+	}
+
+	/**
+	 * @param datagood the datagood to set
+	 */
+	public void setDatagood(boolean datagood) {
+		this.datagood = datagood;
+	}
+
+	/**
 	 * This guy adds a new member via a USAHockey pull request...
 	 * @return
 	 */
@@ -209,6 +231,19 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 		return "true";
 
 	}
+	
+	public void reset() {
+		LOGGER.info("usaHockeyBean:reseting member variables...");
+		usar = null;
+		regnumber = null;
+		dob = null;
+		membertype = null;
+		relationship = null;
+		datagood = false;
+	}
+	
+	
+	
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()

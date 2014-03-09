@@ -15,12 +15,16 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.el.ValueExpression;
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
+
+import org.primefaces.event.TabChangeEvent;
 
 import com.scaha.objects.Profile;
 
@@ -50,7 +54,6 @@ public class ProfileBean implements Serializable  {
 	private boolean EditPassword = false;
 	private boolean EditMember = false;
 	private boolean AddMember = false;
-
 	
 	//
 	// Very archaic way to track changes.. 
@@ -392,7 +395,7 @@ public void setNotEditPassword() {
  * @param editPerson the editPerson to set
  */
 public void setEditMembers() {
-	LOGGER.info("About to edit password information..");
+	LOGGER.info("About to edit Member information..");
 	
 	EditMember = true;
 	AddMember = false;
@@ -409,7 +412,7 @@ public void setNotEditMembers() {
  * @param editPerson the editPerson to set
  */
 public void setAddMembers() {
-	LOGGER.info("About to edit password information..");
+	LOGGER.info("About to Add Member information..");
 	
 	AddMember = true;
 	EditMember = false;
@@ -420,6 +423,20 @@ public void setAddMembers() {
  */
 public void setNotAddMembers() {
 	AddMember =false;
+	EditMember = false;
+}
+
+public void cancelAddMember() {
+
+	this.setNotAddMembers();
+	FacesContext context = FacesContext.getCurrentInstance();
+	Application app = context.getApplication();
+
+	ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+			"#{usahBean}", Object.class );
+	UsaHockeyBean usah = (UsaHockeyBean) expression.getValue( context.getELContext() );
+	usah.reset();
+	
 }
 
 
@@ -816,4 +833,5 @@ public void setLive_password(String live_password) {
 	this.live_password = live_password;
 }
  
+
 }

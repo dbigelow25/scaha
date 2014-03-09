@@ -36,7 +36,7 @@ public class LivePasswordValidator implements Validator {
 
 		String curPassCheck = (String) value;
 		
-		//context.addMessage("mp-form:newPassword1", new FacesMessage(PASSWORDS_DONT_MATCH, PASSWORDS_DONT_MATCH));
+		//context.addMessage("mp-form:add-member:add-member-grid:usah-dob", new FacesMessage(PASSWORDS_DONT_MATCH, PASSWORDS_DONT_MATCH));
 
         if (!curPassCheck.equals(pb.getLive_password())) {
         	
