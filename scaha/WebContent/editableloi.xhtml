@@ -10,14 +10,14 @@
 	
 	<ui:define name="content">
 		<h:form>
-		<p:panel id ="panel" header="SCAHA Letter of Intent and Membership Registration 2014-2015">
+		<p:panel id ="panel" header="SCAHA LETTER OF INTENT AND MEMBERSHIP REGISTRATION 2014-2015">
 			
-			<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" width="90%">
+			<h:panelGrid columns="2" cellpadding="5" width="50%" >
 				<f:facet name="header">
-						<h:column colspan="2">Club Information</h:column>
+						<h:column colspan="2"><b>Club Information</b></h:column>
 				</f:facet>	
 				<h:column><b>2014 Club:</b></h:column>
-				<h:column>California Heat</h:column>
+				<h:column><h:outputText value="#{loiBean.getClubName()}"/></h:column>
 				<h:column><b>2014 Boys Team:</b></h:column>
 				<h:column>
 					<p:selectOneMenu value="#{loiBean.selectedteam}">
@@ -34,39 +34,41 @@
 				</h:column>
 			</h:panelGrid>
 			<br></br>
-			<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" style="width:100%">
-				<f:facet name="header">
-						<h:column colspan="2">Player Information</h:column>
-				</f:facet>	
-				<h:column width="10%">Name(Last,First):</h:column>
-				<h:column ><h:outputText value="#{loiBean.lastname}" />,<h:outputText value="#{loiBean.firstname}" /></h:column>
-			</h:panelGrid>
-			<h:panelGrid columns="6" cellpadding="5" cellspacing="0" border="0" style="width:100%">
-				<h:column width="10%">Date of Birth (mm/dd/yyyy):</h:column>
-				<h:column><h:outputText value="#{loiBean.dob}" /></h:column>
-				<h:column>Citenzenship:</h:column>
-				<h:column><h:outputText value="#{loiBean.citizenship}" /></h:column>
-				<h:column>Gender:</h:column>
-				<h:column><h:outputText value="#{loiBean.displaygender}" /></h:column>
-			</h:panelGrid>
-			<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" style="width:100%">
-				<h:column width="10%">Address:</h:column>
-				<h:column ><p:inputText id="address" style="width:150px;" value="#{loiBean.address}" required = "true" requiredMessage="Address cannot be blank."/></h:column>
-			</h:panelGrid>
-			<h:panelGrid columns="6" cellpadding="5" cellspacing="0" border="0" style="width:100%">
-				<h:column width="10%">City:</h:column>
-				<h:column><p:inputText id="city" style="width:100px;" value="#{loiBean.city}" required = "true" requiredMessage="City cannot be blank."/></h:column>
-				<h:column>State:</h:column>
-				<h:column><p:inputText id="state" style="width:20px;" value="#{loiBean.state}" required = "true" requiredMessage="State cannot be blank."/></h:column>
-				<h:column>Zip:</h:column>
-				<h:column><p:inputText id="zip" style="width:50px;" value="#{loiBean.zip}" required = "true" requiredMessage="Zip cannot be blank."/></h:column>
-				<h:column>2013-2014 Club:</h:column>
-				<h:column><h:outputText value="#{loiBean.lastyearclub}" /></h:column>
-				<h:column>Team:</h:column>
-				<h:column><h:outputText value="#{loiBean.lastyearteam}" /></h:column>
-				<h:column></h:column>
-				<h:column></h:column>
-			</h:panelGrid>
+			<table cellpadding="5" cellspacing="0" width="90%">
+				<tr>
+					<th colspan="6" align="center"><b>Player Information</b></th>
+				</tr>
+				<tr>
+					<td width="20%"><b>Name(Last,First):</b></td>
+					<td align="left" colspan="5"><h:outputText value="#{loiBean.lastname}" />,<p:spacer width="1"/><h:outputText value="#{loiBean.firstname}" /></td>
+				</tr>
+				<tr>
+					<td width="20%"><b>Date of Birth (mm/dd/yyyy):</b></td>
+					<td><h:outputText value="#{loiBean.dob}" /></td>
+					<td><b>Citenzenship:</b></td>
+					<td><h:outputText value="#{loiBean.citizenship}" /></td>
+					<td><b>Gender:</b></td>
+					<td><h:outputText value="#{loiBean.displaygender}" /></td>
+				</tr>
+				<tr>
+					<td width="20%"><b>Address:</b></td>
+					<td align="left" colspan="5"><p:inputText id="address" style="width:150px;" value="#{loiBean.address}" required = "true" requiredMessage="Address cannot be blank."/></td>
+				</tr>
+				<tr>
+					<td width="20%"><b>City:</b></td>
+					<td><p:inputText id="city" style="width:100px;" value="#{loiBean.city}" required = "true" requiredMessage="City cannot be blank."/></td>
+					<td><b>State:</b></td>
+					<td><p:inputText id="state" style="width:20px;" value="#{loiBean.state}" required = "true" requiredMessage="State cannot be blank."/></td>
+					<td><b>Zip:</b></td>
+					<td><p:inputText id="zip" style="width:50px;" value="#{loiBean.zip}" required = "true" requiredMessage="Zip cannot be blank."/></td>
+				</tr>
+				<tr>
+					<td><b>2013-2014 Club:</b></td>
+					<td colspan="2"><h:outputText value="#{loiBean.lastyearclub}" /></td>
+					<td><b>Team:</b></td>
+					<td colspan="2"><h:outputText value="#{loiBean.lastyearteam}" /></td>
+				</tr>
+			</table>
 		</p:panel>
 		<br></br>
 		<p:dataTable var="FamilyRow" value="#{loiBean.getParents()}" border="1">  
@@ -124,9 +126,12 @@
 				<h:column >Date:</h:column>
 				<h:column ><h:outputText value="#{loiBean.currentdate}"/></h:column>
 			</h:panelGrid>
-			<p:messages id="loicodemessage" showDetail="false" autoUpdate="true" closable="false" />
+			<p:messages id="loicodemessage" showDetail="true" autoUpdate="true" closable="false" />
 		</p:panel>		
-		<div align="center"><p:commandButton id="completeLoi" value="Complete LOI" actionListener="#{loiBean.completeLOI()}" ajax="true"/></div>
+		<div align="center"><p:commandButton id="completeLoi" value="Complete LOI" actionListener="#{loiBean.completeLOI()}" ajax="false"/></div>
+		</h:form>
+		<h:form>
+			(<p:commandLink value="Close" id="close" ajax="false" actionListener="#{loiBean.CloseLoi()}"/>)
 		</h:form>
 	</ui:define>
 </ui:composition>

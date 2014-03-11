@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="content">
+		<h:form>
+		<p:panel id ="panel" header="SCAHA COACH/MANAGER LETTER OF INTENT AND MEMBERSHIP REGISTRATION 2014-2015">
+			
+			<table cellpadding="5" cellspacing="0" width="90%">
+				<tr>
+					<th colspan="6" align="center"><b>Club Information</b></th>
+				</tr>
+				<tr>
+					<td><b>2014 Club:</b></td>
+					<td colspan="5"><h:outputText value="#{coachloiBean.getClubName()}"/></td>
+				</tr>
+				<tr>
+					<td valign="top"><b>2014 Boys Team(s):</b></td>
+					<td colspan="2" valign="top"><h:outputText value="#{coachloiBean.boysteams}"/></td>
+					<td valign="top"><b>2014 Girls Team(s):</b></td>
+					<td colspan="2" align="left" valign="top"><h:outputText value="#{coachloiBean.girlsteams}"/></td>
+				</tr>
+				<tr>
+					<td><b>Screening Expires:</b></td>
+					<td align="left"><h:outputText value="#{coachloiBean.screeningexpires}" /></td>
+					<td><b>CEP#:</b></td>
+					<td align="left"><h:outputText value="#{coachloiBean.cepnumber}" /></td>
+					<td><b>CEP Level:</b></td>
+					<td align="left"><h:outputText value="#{coachloiBean.ceplevel}" /></td>
+				</tr>
+				<tr>
+					<td><b>CEP Expires:</b></td>
+					<td align="left"><h:outputText value="#{coachloiBean.cepexpires}" /></td>
+					<td><b>CEP#:</b></td>
+					<td align="left" colspan="3"><h:outputText value="#{coachloiBean.cepmoduledisplaystring}" /></td>
+				</tr>
+			</table>	
+			<br></br>
+			<table cellpadding="5" cellspacing="0" width="90%">
+				<tr>
+					<th colspan="6" align="center"><b>Coach Information</b></th>
+				</tr>
+				<tr>
+					<td width="20%"><b>Name(Last,First):</b></td>
+					<td align="left" colspan="5"><h:outputText value="#{coachloiBean.lastname}" />,<p:spacer width="1"/><h:outputText value="#{coachloiBean.firstname}" /></td>
+				</tr>
+				<tr>
+					<td width="20%"><b>Address:</b></td>
+					<td align="left" colspan="5"><h:outputText value="#{loiBean.address}" /></td>
+				</tr>
+				<tr>
+					<td width="20%"><b>City:</b></td>
+					<td><h:outputText value="#{loiBean.city}" /></td>
+					<td><b>State:</b></td>
+					<td><h:outputText value="#{loiBean.state}" /></td>
+					<td><b>Zip:</b></td>
+					<td><h:outputText value="#{loiBean.zip}" /></td>
+				</tr>
+				<tr>
+					<td width="20%"><b>Home Number:</b></td>
+					<td><h:outputText value="#{coachloiBean.homenumber}" /></td>
+					<td><b>Email:</b></td>
+					<td><h:outputText value="#{coachloiBean.email}" /></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+		</p:panel>
+		<br></br>
+		<p:panel id ="panel5" header="Notices and Agreements">	
+			<h:panelGrid columns="1" cellpadding="5" cellspacing="0" border="0" style="width:100%">
+				<h:column >
+					By signing below, I understand and agree to the following as conditions of coaching in SCAHA and the member club for the above season:
+					<br></br>
+					<ul>
+						<li>I understand that I must obtain and maintain my coaching certification credentials as mandated by USA Hockey.</li>
+						<li>I understand that I must regularly be screened according to USA Hockey, CAHA and SCAHA policy.</li>
+						<li>I understand that my actions are subject to the USA Hockey Playing Rules, Bylaws, Guidebook and Codes of Conduct, the SCAHA Guidebook and the CAHA Guidebook and that regardless of my knowledge of the same, I understand that my actions will be gauged by their content and agree to conduct myself accordingly.</li>
+						<li>I have reviewed, understand and agree to be bound by the USA Hockey Coaching Code of Ethics.  I understand that violations of the Coaches Ethics Code may result in the full or partial forfeiture of my coaching privileges in programs sanctioned by USA Hockey and/or its various affiliates.  I further understand that lack of awareness or a misunderstanding of an ethical standard on my part is not a defense to a charge of unethical conduct.</li>
+						<li>I will conduct myself in a manner conducive to good sportsmanship by refraining from abusive, obscene or threatening language or gestures, physical violence, and any behavior that would be considered unsportsmanlike or would disrespect the game, its players, coaches, officials, parents or spectators.</li>
+						<li>I understand that as a coach, I am a role model to youth and young adult players and will ensure my actions both on and off the ice are appropriate.</li>
+						<li>Resolution of disputes shall be in accordance with and subject to the applicable SCAHA, CAHA and USA Hockey bylaws, rules and regulations.</li>
+						<li>I understand that, subject to an applicable hearing, any failure to comply with these conditions could subject myself to immediate suspension from SCAHA, fines and/or the revocation of the coaching privilege.</li>
+					</ul>
+				</h:column>
+	    	</h:panelGrid>
+	    	<h:panelGrid columns="4" cellpadding="5" cellspacing="0" border="0" style="width:100%">
+				<h:column >Signature (enter registration code):</h:column>
+				<h:column >xxxxx</h:column>
+				<h:column >Date:</h:column>
+				<h:column ><h:outputText value="#{coachloiBean.currentdate}"/></h:column>
+			</h:panelGrid>
+			<p:messages id="loicodemessage" showDetail="true" autoUpdate="true" closable="false" />
+		</p:panel>		
+		<div align="center"><p:commandButton id="completeLoi" value="Complete LOI" actionListener="#{coachloiBean.completeLOI()}" ajax="false"/></div>
+		</h:form>
+		<h:form>
+			(<p:commandLink value="Close" id="close" ajax="false" actionListener="#{coachloiBean.CloseLoi()}"/>)
+		</h:form>
+	</ui:define>
+</ui:composition>

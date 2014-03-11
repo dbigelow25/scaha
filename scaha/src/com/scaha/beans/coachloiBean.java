@@ -27,43 +27,46 @@ import com.scaha.objects.Team;
 //import com.gbli.common.SendMailSSL;
 
 
-public class loiBean implements Serializable {
+public class coachloiBean implements Serializable {
 
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	transient private ResultSet rs = null;
-	private String selectedteam = null;
-	private String selectedgirlsteam = null;
-	private Integer selectedplayer = 0;
+	private List<String> selectedteams = null;
+	private List<String> selectedgirlsteams = null;
+	private List<String> cepmodulesselected = null;
+	private Integer selectedcoach = 0;
 	private List<Team> teams = null;
-	private List<FamilyRow> parents = null;
 	private String firstname = null;
 	private String lastname = null;
-	private String dob = null;
 	private String address = null;
 	private String state = null;
 	private String city = null;
 	private String zip = null;
-	private String citizenship = null;
-	private String gender = null;
-	private String lastyearteam = null;
-	private String lastyearclub = null;
+	private String homenumber = null;
+	private String email = null;
 	private String loicode = null;
-	private String playerupcode = null;
 	private Integer clubid = null;
-	private String origin = null;
-	private Boolean displaygirlteam = null;
-	private String displaygender = null;
 	private String displayselectedteam = null;
 	private String displayselectedgirlsteam = null;
 	private String currentdate = null;
 	private Integer profileid = 0;
+	private String screeningexpires = null;
+	private String cepnumber = null;
+	private String ceplevel = null;
+	private String cepexpires = null;
+	private String boysteams = null;
+	private String girlsteams = null;
+	private String cepmoduledisplaystring = null;
+	
     
-    public loiBean() {  
+    public coachloiBean() {  
         
     	//hard code value until we load session variable
     	clubid = 1;
+    	
+    	//load profile id from which we can get club id later
     	FacesContext context = FacesContext.getCurrentInstance();
     	Application app = context.getApplication();
 
@@ -76,15 +79,90 @@ public class loiBean implements Serializable {
 		//will need to load player profile information for displaying loi
 		HttpServletRequest hsr = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
     	
-    	if(hsr.getParameter("playerid") != null)
+    	if(hsr.getParameter("coachid") != null)
         {
-    		selectedplayer = Integer.parseInt(hsr.getParameter("playerid").toString());
+    		selectedcoach = Integer.parseInt(hsr.getParameter("coachid").toString());
         }
     	
-    	loadPlayerProfile(selectedplayer);
+    	loadCoachProfile(selectedcoach);
 
     	//doing anything else right here
     }  
+    
+    
+    public void setCepmoduledisplaystring(String snumber){
+    	cepmoduledisplaystring = snumber;
+    }
+    
+    public String getCepmoduledisplaystring(){
+    	return cepmoduledisplaystring;
+    }
+    
+    
+    public void setGirlsteams(String snumber){
+    	girlsteams = snumber;
+    }
+    
+    public String getGirlsteams(){
+    	return girlsteams;
+    }
+    
+    public void setBoysteams(String snumber){
+    	boysteams = snumber;
+    }
+    
+    public String getBoysteams(){
+    	return boysteams;
+    }
+    
+    public void setCepexpires(String snumber){
+    	cepexpires = snumber;
+    }
+    
+    public String getCepexpires(){
+    	return cepexpires;
+    }
+    
+    public void setCeplevel(String snumber){
+    	ceplevel = snumber;
+    }
+    
+    public String getCeplevel(){
+    	return ceplevel;
+    }
+    
+    public void setCepnumber(String snumber){
+    	cepnumber = snumber;
+    }
+    
+    public String getCepnumber(){
+    	return cepnumber;
+    }
+    
+    public void setScreeningexpires(String snumber){
+    	screeningexpires = snumber;
+    }
+    
+    public String getScreeningexpires(){
+    	return screeningexpires;
+    }
+    
+    public void setHomenumber(String snumber){
+    	homenumber = snumber;
+    }
+    
+    public String getHomenumber(){
+    	return homenumber;
+    }
+    
+    
+    public void setEmail(String snumber){
+    	email = snumber;
+    }
+    
+    public String getEmail(){
+    	return email;
+    }
     
     public Integer getProfid(){
     	return profileid;
@@ -100,14 +178,6 @@ public class loiBean implements Serializable {
     
     public String getCurrentdate(){
     	return currentdate;
-    }
-    
-    public void setDisplaygirlteam(Boolean scode){
-    	displaygirlteam = scode;
-    }
-    
-    public Boolean getDisplaygirlteam(){
-    	return displaygirlteam;
     }
     
     public void setDisplayselectedgirlsteam(String scode){
@@ -131,6 +201,10 @@ public class loiBean implements Serializable {
     	loicode = scode;
     }
     
+    public String getLoicode(){
+    	return loicode;
+    }
+    
     public Integer getClubid(){
     	return clubid;
     }
@@ -139,59 +213,6 @@ public class loiBean implements Serializable {
     	clubid = sclub;
     }
     
-    
-    public String getLoicode(){
-    	return loicode;
-    }
-    
-    public void setPlayerupcode(String scode){
-    	playerupcode = scode;
-    }
-    
-    public String getPlayerupcode(){
-    	return playerupcode;
-    }
-    
-    public void setLastyearclub(String sclub){
-    	lastyearclub = sclub;
-    }
-    
-    public String getLastyearclub(){
-    	return lastyearclub;
-    }
-    
-    public void setLastyearteam(String steam){
-    	lastyearteam = steam;
-    }
-    
-    public String getLastyearteam(){
-    	return lastyearteam;
-    }
-    
-    public void setDisplaygender(String sgender){
-    	displaygender = sgender;
-    }
-    
-    public String getDisplaygender(){
-    	return displaygender;
-    }
-    
-    
-    public void setGender(String sgender){
-    	gender = sgender;
-    }
-    
-    public String getGender(){
-    	return gender;
-    }
-    
-    public void setCitizenship(String scitizenship){
-    	citizenship = scitizenship;
-    }
-    
-    public String getCitizenship(){
-    	return citizenship;
-    }
     
     public void setZip(String szip){
     	zip = szip;
@@ -225,14 +246,6 @@ public class loiBean implements Serializable {
     	return address;
     }
     
-    public void setDob(String sdob){
-    	dob = sdob;
-    }
-    
-    public String getDob(){
-    	return dob;
-    }
-    
     public void setLastname(String lname){
     	lastname = lname;
     }
@@ -246,28 +259,36 @@ public class loiBean implements Serializable {
     public String getFirstname(){
     	return firstname;
     }
-    public Integer getSelectedplayer(){
-		return selectedplayer;
+    public Integer getSelectedcoach(){
+		return selectedcoach;
 	}
 	
-	public void setSelectedplayer(Integer selectedPlayer){
-		selectedplayer = selectedPlayer;
+	public void setSelectedcoach(Integer selectedCoach){
+		selectedcoach = selectedCoach;
 	}
 	
-	public String getSelectedteam(){
-		return selectedteam;
+	public List<String> getSelectedteams(){
+		return selectedteams;
 	}
 	
-	public void setSelectedteam(String selectedTeam){
-		selectedteam = selectedTeam;
+	public void setSelectedteams(List<String> selectedTeams){
+		selectedteams = selectedTeams;
 	}
 	
-	public String getSelectedgirlsteam(){
-		return selectedgirlsteam;
+	public List<String> getCepmodulesselected(){
+		return cepmodulesselected;
 	}
 	
-	public void setSelectedgirlsteam(String selectedTeam){
-		selectedgirlsteam = selectedTeam;
+	public void setCepmodulesselected(List<String> selectedTeams){
+		cepmodulesselected = selectedTeams;
+	}
+	
+	public List<String> getSelectedgirlsteams(){
+		return selectedgirlsteams;
+	}
+	
+	public void setSelectedgirlsteams(List<String> selectedTeams){
+		selectedgirlsteams = selectedTeams;
 	}
 	
 	public List<Team> getListofTeams(String gender){
@@ -329,31 +350,24 @@ public class loiBean implements Serializable {
 		teams = list;
 	}
 	
-	public List<FamilyRow> getParents(){
-		return parents;
-	}
-	
-	public void setParents(List<FamilyRow> list){
-		parents = list;
-	}
-	
-	
 	//used to populate loi form with player information
-	public void loadPlayerProfile(Integer selectedplayer){
+	public void loadCoachProfile(Integer selectedcoach){
 		//first get player detail information then get family members
 		Integer personID = 0;
 		
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	
-    	try{
+		DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+		Date date = new Date();
+		currentdate = dateFormat.format(date);
+		
+		try{
 
-    		if (!selectedplayer.equals("")) {
+    		if (!selectedcoach.equals("")) {
     		
-    			
-    			
     			Vector<Integer> v = new Vector<Integer>();
-    			v.add(selectedplayer);
-    			db.getData("CALL scaha.getPlayerInfoByPersonId(?)", v);
+    			v.add(selectedcoach);
+    			db.getData("CALL scaha.getCoachInfoByPersonId(?)", v);
     		    
     			if (db.getResultSet() != null){
     				//need to add to an array
@@ -362,37 +376,80 @@ public class loiBean implements Serializable {
     				while (rs.next()) {
     					firstname = rs.getString("fname");
     					lastname = rs.getString("lname");
-        				dob = rs.getString("dob");
         				address = rs.getString("address");
         				city = rs.getString("city");
         				state = rs.getString("state");
         				zip = rs.getString("zipcode");
-        				gender = rs.getString("gender");
         				personID = rs.getInt("idperson");
-        				lastyearteam = rs.getString("teamname");
-        				lastyearclub = rs.getString("clubname");
+        				homenumber = rs.getString("phone");
+        				screeningexpires = rs.getString("screeningexpires");
+        				cepnumber = rs.getString("cepnumber");
+        				ceplevel = rs.getString("ceplevel");
         				
-        				DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        				Date date = new Date();
-        				currentdate = dateFormat.format(date);
-        				
-        				//need to set the boolean used to display the girl team option or not
-        				if (gender.equals("F")){
-        					displaygirlteam = true;
-        				} else {
-        					displaygirlteam = false;
+        				if (ceplevel.equals("1")){
+        					ceplevel = "Level 1";
         				}
+        				if (ceplevel.equals("2")){
+        					ceplevel = "Level 2";
+        				}
+        				if (ceplevel.equals("3")){
+        					ceplevel = "Level 3";
+        				}
+        				if (ceplevel.equals("4")){
+        					ceplevel = "Level 4";
+        				}
+        				if (ceplevel.equals("5")){
+        					ceplevel = "Level 5";
+        				}
+        				if (ceplevel.equals("0")){
+        					ceplevel = "";
+        				}
+        				cepexpires = rs.getString("cepexpires");
         				
-        				//need to set the display value for gender
-        				if (gender.equals("F")){
-        		    		displaygender = "Female";
-        		    	} else {
-        		    		displaygender = "Male";
-        		    	}
         			}
     				LOGGER.info("We have results for player details by player id");
     			}
     			db.cleanup();
+    			
+    			//need to get list of boys teams signed for
+    			v = new Vector<Integer>();
+    			v.add(selectedcoach);
+    			db.getData("CALL scaha.getCoachTeams(?)", v);
+    		    
+    			String teamname = null;
+    			
+    			if (db.getResultSet() != null){
+    				//need to add to an array
+    				rs = db.getResultSet();
+    				
+    				while (rs.next()) {
+    					teamname = rs.getString("teamname") + "</br>" ;
+    				}
+    				LOGGER.info("We have results for teams for the coach");
+    			}
+    			this.boysteams = teamname;
+    			teamname = "";
+    			db.cleanup();
+    			
+    			//need to get list of girls teams signed for
+    			v = new Vector<Integer>();
+    			v.add(selectedcoach);
+    			db.getData("CALL scaha.getCoachGirlsTeams(?)", v);
+    		    
+    			if (db.getResultSet() != null){
+    				//need to add to an array
+    				rs = db.getResultSet();
+    				
+    				while (rs.next()) {
+    					teamname = teamname + rs.getString("teamname") + "</br>" ;
+    				}
+    				LOGGER.info("We have results for teams for the coach");
+    			}
+    			this.girlsteams = teamname;
+    			teamname = "";
+    			db.cleanup();
+    			
+    			
     		} else {
     		
     		}
@@ -410,61 +467,8 @@ public class loiBean implements Serializable {
     	
     	
     	
-    	//ok now need to get family members that are parents
-    	List<FamilyRow> tempparent = new ArrayList<FamilyRow>();
-    	try{
-
-    		if (personID>0) {
-    			
-    			Vector<Integer> v = new Vector<Integer>();
-    			v.add(personID);
-    			db.getData("CALL scaha.getParentsByPersonId(?)", v);
-    		    
-    			if (db.getResultSet() != null){
-    				//need to add to an array
-    				rs = db.getResultSet();
-    				
-    				while (rs.next()) {
-    					String pfirstname = rs.getString("fname");
-    					String plastname = rs.getString("lname");
-    					String pemail = rs.getString("usercode");
-    					String pphone = rs.getString("phone");
-    					String prelation = rs.getString("reltype");
-    					
-    					/*String areacode = pphone.substring(0,3);
-    					String prefix = pphone.substring(3,6);
-    					String suffix = pphone.substring(6,10);
-    					
-    					pphone = "(" + areacode + ") " + prefix + "-" + suffix;*/
-    					
-    					FamilyRow row = new FamilyRow();
-    					row.setFirstname(pfirstname);
-    					row.setLastname(plastname);
-    					row.setEmail(pemail);
-    					row.setPhone(pphone);
-    					row.setRelation(prelation);
-    					
-    					tempparent.add(row);
-    					}
-    				LOGGER.info("We have results for parents list by person id");
-    			}
-    			db.cleanup();
-    		} else {
-    		
-    		}
-    	} catch (SQLException e) {
-    		// TODO Auto-generated catch block
-    		LOGGER.info("ERROR IN loading teams");
-    		e.printStackTrace();
-    		db.rollback();
-    	} finally {
-    		//
-    		// always clean up after yourself..
-    		//
-    		db.free();
-    	}
 		
-    	setParents(tempparent);
+		
    }
 	
 	public void completeLOI(){
@@ -479,7 +483,7 @@ public class loiBean implements Serializable {
  				LOGGER.info("verify loi code provided");
  				CallableStatement cs = db.prepareCall("CALL scaha.validateMemberNumber(?,?)");
  				cs.setString("memnumber", this.loicode);
- 				cs.setInt("personid", this.selectedplayer);
+ 				cs.setInt("personid", this.selectedcoach);
     		    
     		    rs = cs.executeQuery();
     			
@@ -494,94 +498,86 @@ public class loiBean implements Serializable {
     			db.cleanup();
  				
     		    
-    			if (this.playerupcode!=null && this.playerupcode!=""){
-    				//Need to check player up code from family next
-	 				LOGGER.info("verify family code provided for player up");
-	 				cs = db.prepareCall("CALL scaha.validateMemberNumber(?,?)");
-	 				cs.setString("memnumber", this.loicode);
-	 				cs.setInt("personid", this.selectedplayer);
-	    		    rs = cs.executeQuery();
-	    			resultcount = 0;
-	    		    
-	    		    if (rs != null){
-	    				
-	    				while (rs.next()) {
-	    					resultcount = rs.getInt("idmember");
-	    				}
-	    				LOGGER.info("We have code validation results for player details by player id");
-	    			}
-	    			db.cleanup();
-	    			
-	    			if (resultcount.equals(0)){
-	    				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "The provided Player Up signature code is invalid."));
-	    			}
-    			}
-	    			
-    		    if (resultcount > 0){
+    			if (resultcount > 0){
     		    	
 	    		    //if good save info to person table, then add record to roster then email
 	 				LOGGER.info("updating person record");
 	 				cs = db.prepareCall("CALL scaha.updatePersonInfoAddress(?,?,?,?,?)");
-	    		    cs.setInt("ipersonid", this.selectedplayer);
+	    		    cs.setInt("ipersonid", this.selectedcoach);
 	    		    cs.setString("iaddress", this.address);
 	    		    cs.setString("icity", this.city);
 	    		    cs.setString("istate", this.state);
 	    		    cs.setString("izipcode", this.zip);
 	    			rs = cs.executeQuery();
 	    			
-					LOGGER.info("updating roster record");
-					cs = db.prepareCall("CALL scaha.addRoster(?,?)");
-	    		    cs.setInt("ipersonid", this.selectedplayer);
+	    			//need to save coaches screening and cep stuff
+	    			LOGGER.info("updating coach record");
+	 				cs = db.prepareCall("CALL scaha.updateCoach(?,?,?,?,?,?,?,?,?,?,?)");
+	    		    cs.setInt("coachid", this.selectedcoach);
+	    		    cs.setString("screenexpires", this.screeningexpires);
+	    		    cs.setString("cepnum", this.cepnumber);
+	    		    cs.setString("levelcep", this.ceplevel);
+	    		    cs.setString("cepexpire", this.cepexpires);
 	    		    
+	    		    //need to set values for modules
+	    		    Integer u8 = 0;
+	    		    Integer u10 = 0;
+	    		    Integer u12 = 0;
+	    		    Integer u14 = 0;
+	    		    Integer u18 = 0;
+	    		    Integer ugirls = 0;
+	    		    		
+	    		    for (int i = 0; i < this.cepmodulesselected.size(); i++) {
+	    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("8U")){
+	    		    		u8 = 1;
+	    		    	}
+	    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("10U")){
+	    		    		u10 = 1;
+	    		    	}
+	    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("12U")){
+	    		    		u12 = 1;
+	    		    	}
+	    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("14U")){
+	    		    		u14 = 1;
+	    		    	}
+	    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("18U")){
+	    		    		u18 = 1;
+	    		    	}
+	    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("Girls")){
+	    		    		ugirls = 1;
+	    		    	}
+					}
 	    		    
-	    		    if ((selectedgirlsteam!=null) && (!selectedgirlsteam.equals(""))){
-	    		    	cs.setInt("iteamid", Integer.parseInt(this.selectedgirlsteam));
-	    		    }else{
-	    		    	cs.setInt("iteamid", Integer.parseInt(this.selectedteam));
-	    		    }
+	    		    cs.setInt("u8", u8);
+	    		    cs.setInt("u10", u10);
+	    		    cs.setInt("u12", u12);
+	    		    cs.setInt("u14", u14);
+	    		    cs.setInt("u18", u18);
+	    		    cs.setInt("ugirls", ugirls);
 	    		    rs = cs.executeQuery();
-					
-	    		    //need to get team name for the newly selected team
-	    			if (this.selectedteam!=null && !this.selectedteam.equals("")){
-		    			Vector<Integer> v = new Vector<Integer>();
-		    			v.add(Integer.parseInt(this.selectedteam));
-		    			db.getData("CALL scaha.getTeamByTeamId(?)", v);
-		    			
-		    			if (db.getResultSet() != null){
-		    				//need to add to an array
-		    				rs = db.getResultSet();
-		    			
-			    			if (rs != null){
-			    				
-			    				while (rs.next()) {
-			    					displayselectedteam = rs.getString("teamname");
-			    				}
-			    				LOGGER.info("We have loaded the team name for printable loi");
-			    			}
-			    			db.cleanup();
-		    			}
-	    			}
 	    			
-	    			//need to get team name for the newly selected team
-	    			if (this.selectedgirlsteam!=null && !this.selectedgirlsteam.equals("")){
-		    			Vector<Integer> v = new Vector<Integer>();
-		    			v.add(Integer.parseInt(this.selectedgirlsteam));
-		    			db.getData("CALL scaha.getTeamByTeamId(?)", v);
-		    			
-		    			if (db.getResultSet() != null){
-		    				//need to add to an array
-		    				rs = db.getResultSet();
-		    			
-			    			if (rs != null){
-			    				
-			    				while (rs.next()) {
-			    					displayselectedgirlsteam = rs.getString("teamname");
-			    				}
-			    				LOGGER.info("We have loaded the girls team name for printable loi");
-			    			}
-			    			db.cleanup();
-		    			}
-	    			}
+	    			
+					
+	    		    //need to add to the coach roster table for each boys team
+	    			for (int i = 0; i < this.selectedteams.size(); i++) {
+	    		    	LOGGER.info("updating coach roster record for:" + this.selectedteams.get(i));
+						cs = db.prepareCall("CALL scaha.addCoachRoster(?,?,?)");
+		    		    cs.setInt("ipersonid", this.selectedcoach);
+		    		    cs.setInt("iteamid", Integer.parseInt(this.selectedteams.get(i)));
+		    		    cs.setInt("setyear", 2014);
+		    		    rs = cs.executeQuery();
+					}
+	    		    
+	    		    //need to add to the coach roster table for each girls team selected
+	    			for (int i = 0; i < this.selectedgirlsteams.size(); i++) {
+		    		    	LOGGER.info("updating coach roster record for:" + this.selectedgirlsteams.get(i));
+						cs = db.prepareCall("CALL scaha.addCoachRoster(?,?,?)");
+						cs.setInt("ipersonid", this.selectedcoach);
+		    		    cs.setInt("iteamid", Integer.parseInt(this.selectedgirlsteams.get(i)));
+		    		    cs.setInt("setyear", 2014);
+		    		    rs = cs.executeQuery();
+					}
+	    			
 	    		    
 	    		    
 					LOGGER.info("Sending email to club registrar, family, and nancy");
@@ -594,9 +590,8 @@ public class loiBean implements Serializable {
 					return "True";*/
 					
 					FacesContext context = FacesContext.getCurrentInstance();
-		    		origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
-					try{
-						context.getExternalContext().redirect("printableloi.xhtml?playerid=" + selectedplayer);
+		    		try{
+						context.getExternalContext().redirect("printablecoachloi.xhtml?coachid=" + selectedcoach);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -611,7 +606,7 @@ public class loiBean implements Serializable {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			LOGGER.info("ERROR IN LOI Generation Process" + this.selectedplayer);
+			LOGGER.info("ERROR IN LOI Generation Process" + this.selectedcoach);
 			e.printStackTrace();
 			db.rollback();
 		} finally {
@@ -686,7 +681,6 @@ public class loiBean implements Serializable {
 	public void CloseLoi(){
 		
 		FacesContext context = FacesContext.getCurrentInstance();
-		origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
 		try{
 			context.getExternalContext().redirect("addplayerstoteam.xhtml");
 		} catch (IOException e) {
@@ -704,7 +698,7 @@ public class loiBean implements Serializable {
 
     			
 			Vector<Integer> v = new Vector<Integer>();
-			v.add(selectedplayer);
+			v.add(selectedcoach);
 			db.getData("CALL scaha.getBoyTeamForPlayer(?)", v);
 		    
 			if (db.getResultSet() != null){
@@ -744,7 +738,7 @@ public class loiBean implements Serializable {
 
     			
 			Vector<Integer> v = new Vector<Integer>();
-			v.add(selectedplayer);
+			v.add(selectedcoach);
 			db.getData("CALL scaha.getGirlsTeamForPlayer(?)", v);
 		    
 			if (db.getResultSet() != null){

@@ -1,12 +1,13 @@
 package com.scaha.objects;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.faces.model.ListDataModel;
 
 import org.primefaces.model.SelectableDataModel;
 
-public class ResultDataModel extends ListDataModel<Result> implements SelectableDataModel<Result> {
+public class ResultDataModel extends ListDataModel<Result> implements Serializable, SelectableDataModel<Result> {
 
 	public ResultDataModel() {  
     }  

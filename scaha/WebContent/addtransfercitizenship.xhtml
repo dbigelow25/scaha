@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="content">
+		<h:form id="mess">
+    
+			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />    
+	
+		</h:form>
+		
+		<h:form>
+		<p:panel id ="panel" header="Add Transfer">
+			
+			<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" width="90%">
+				<f:facet name="header">
+						<h:column colspan="2">Player Information</h:column>
+				</f:facet>	
+				<h:column><b>2014 Transfer for <h:outputText value="#{rosteractionBean.playername}"/></b></h:column>
+				
+			</h:panelGrid>
+			
+			 <p:tabView id="tabView">    
+  
+    			<p:tab title="Transfer Information">  
+  
+					<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" width="90%">
+						<h:column width="10%">Does Transfer Exist:</h:column>
+						<h:column >
+							<p:selectOneMenu id="transferexists" value="#{rosteractionBean.transfer}" >
+						    	<f:selectItem itemLabel="Yes" itemValue="1"/>
+						    	<f:selectItem itemLabel="No" itemValue="0"/>
+						    </p:selectOneMenu>
+						</h:column>
+						<h:column width="10%">Is Transfer Indefinite?:</h:column>
+						<h:column >
+							<p:selectOneMenu id="transferindefinite" value="#{rosteractionBean.transferindefinite}" >
+						    	<f:selectItem itemLabel="Yes" itemValue="1"/>
+						    	<f:selectItem itemLabel="No" itemValue="0"/>
+						    </p:selectOneMenu>
+						</h:column>
+						<h:column width="10%">Expiration Date:</h:column>
+						<h:column >
+							<p:inputText id="expirationdate" style="width:80px;" value="#{rosteractionBean.expirationdate}" />
+						</h:column>
+					</h:panelGrid>
+					<div align="center"><p:commandButton id="completetransfer" value="Save Transfer" actionListener="#{rosteractionBean.completeTransfer()}" ajax="true"/></div>
+					
+				</p:tab>
+        
+        		<p:tab title="Citizenship">
+        			<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" width="90%">
+						<h:column width="10%">Birth Certificate Verified:</h:column>
+						<h:column >
+							<p:selectOneMenu id="birthcertificateverified" value="#{rosteractionBean.birthcertificate}" >
+						    	<f:selectItem itemLabel="Yes" itemValue="1"/>
+						    	<f:selectItem itemLabel="No" itemValue="0"/>
+						    </p:selectOneMenu>
+						</h:column>
+					</h:panelGrid>
+					<div align="center"><p:commandButton id="completebirthcertificate" value="Save Birth Certificate" actionListener="#{rosteractionBean.completeCertificate()}" ajax="true"/></div>
+	        	</p:tab>
+			</p:tabView>  
+        	
+		</p:panel>		
+		</h:form>
+		<h:form>
+			<div align="center"><p:commandButton id="closetransfers" value="Close" ajax="false" actionListener="#{rosteractionBean.Close()}"/></div>
+	</h:form>
+	</ui:define>
+</ui:composition>

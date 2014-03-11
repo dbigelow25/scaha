@@ -16,6 +16,8 @@ public class Result extends ScahaObject implements Serializable {
 	private String idplayer = null;
 	private String address = null;
 	private String dob = null;
+	private String idcoach = null;
+	private String coachname = null;
 	
 	
 	public Result (String sName, String playerid,String saddress, String sdob){ 
@@ -59,5 +61,19 @@ public class Result extends ScahaObject implements Serializable {
 		dob = sdob;
 	}
 	
+	public String getCoachname(){
+		return coachname;
+	}
 	
+	public void setCoachname(String sName){
+		coachname = sName;
+	}
+	
+	public String getIdcoach(){
+		return idcoach;
+	}
+	
+	public void setIdcoach(String coachid){
+		idcoach = coachid;
+	}	
 }

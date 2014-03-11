@@ -24,7 +24,7 @@ import com.scaha.objects.Team;
 
 //import com.gbli.common.SendMailSSL;
 
-public class DraftPlayersBean implements Serializable {
+public class DraftCoachesBean implements Serializable {
 
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
@@ -33,28 +33,27 @@ public class DraftPlayersBean implements Serializable {
 	private String searchcriteria = null;
 	private String selectedteam = null;
 	private String selectedgirlsteam = null;
-	private Result selectedplayer = null;
+	private Result selectedcoach = null;
 	private List<Team> teams = null;
     private List<Result> results = null;
     private ResultDataModel resultDataModel = null;
-	private String origin = null;
-    
-    public DraftPlayersBean() {  
+	
+    public DraftCoachesBean() {  
         results = new ArrayList<Result>();  
           
-        playerSearch(); 
+        coachSearch(); 
   
         resultDataModel = new ResultDataModel(results);
         
         //will need to load player profile information
     }  
     
-    public Result getSelectedplayer(){
-		return selectedplayer;
+    public Result getSelectedcoach(){
+		return selectedcoach;
 	}
 	
-	public void setSelectedplayer(Result selectedPlayer){
-		selectedplayer = selectedPlayer;
+	public void setSelectedcoach(Result selectedCoach){
+		selectedcoach = selectedCoach;
 	}
 	
 	public String getSelectedteam(){
@@ -152,7 +151,7 @@ public class DraftPlayersBean implements Serializable {
 
     
     //retrieves list of players for registrar to select from based on criteria provided
-    public void playerSearch(){
+    public void coachSearch(){
     
     	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	List<Result> tempresult = new ArrayList<Result>();
@@ -163,7 +162,7 @@ public class DraftPlayersBean implements Serializable {
     		
     			Vector<String> v = new Vector<String>();
     			v.add(this.searchcriteria);
-    			db.getData("CALL scaha.playersearch(?)", v);
+    			db.getData("CALL scaha.coachsearch(?)", v);
     		    
     			if (db.getResultSet() != null){
     				//need to add to an array
@@ -173,7 +172,7 @@ public class DraftPlayersBean implements Serializable {
     				
     				while (rs.next()) {
     					String idperson = rs.getString("idperson");
-        				String playername = rs.getString("fname") + " " + db.getResultSet().getString("lname");
+        				String coachname = rs.getString("fname") + " " + db.getResultSet().getString("lname");
         				String address = rs.getString("address");
         				String city = db.getResultSet().getString("city");
         				String state = db.getResultSet().getString("state");
@@ -192,11 +191,9 @@ public class DraftPlayersBean implements Serializable {
         					address = address + " " + zip;
         				}
         				
-        				
-        				
-        				String dob = rs.getString("dob");
-        		
-        				Result result = new Result(playername,idperson,address,dob);
+        				Result result = new Result("",idperson,address,"");
+        				result.setCoachname(coachname);
+        				result.setIdcoach(idperson);
         				tempresult.add(result);
     				}
     				
@@ -235,120 +232,19 @@ public class DraftPlayersBean implements Serializable {
     //Generates the loi for family to confirm info and add registration code.  
     //If player is on delinquency or has previously loi'd message will be displayed.
     public void generateLOI(){
-    	Result tempResult = selectedplayer;
-    	String selectedPlayerid = tempResult.getIdplayer();
-    	String selectedPlayername = tempResult.getPlayername();
+    	Result tempResult = selectedcoach;
+    	String selectedCoachid = tempResult.getIdcoach();
+    	String selectedCoachname = tempResult.getCoachname();
     	
-    	//need to check if selected player is on delinquent list 
-    	Boolean delinquent = verifyDelinquency(selectedPlayerid);
-    	Boolean previousloi = verifyNoPreviousLOI(selectedPlayerid);
-    	
-    	//display message that player is delinquent
-    	if (delinquent){
-    		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", selectedPlayername + " is delinquent on a prior financial commitment.  An LOI can't be generated."));
-    	}
-    	
-    	//display message that player is already loi'd
-    	if (previousloi){
-    		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", selectedPlayername + " has rostered with another club.  An LOI can't be generated."));
-    	}
-    	
-    	//we are successful lets display the loi page
-    	if (!delinquent && !previousloi){
-    		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"", selectedPlayername + "'s LOI is being generated..."));
-    		
-    		FacesContext context = FacesContext.getCurrentInstance();
-    		origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
-			try{
-				context.getExternalContext().redirect("editableloi.xhtml?playerid=" + selectedPlayerid);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    	}
-    }
-    
-    private Boolean verifyDelinquency(String playerid){
-    	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-    	String isdelinquent = "";
-    	
-    	try{
-
-    		
-			Vector<Integer> v = new Vector<Integer>();
-			v.add(Integer.parseInt(playerid));
-			db.getData("CALL scaha.getDelinquencyByPlayerId(?)", v);
-		    
-			if (db.getResultSet() != null){
-				//need to add to an array
-				rs = db.getResultSet();
-				if (rs.next()){
-					isdelinquent = rs.getString("delinquencycleared");
-	    			
-					LOGGER.info("We have matching delinquency for:" + playerid);
-				}
-			}
-    				
-    		db.cleanup();
-
-    	} catch (SQLException e) {
-    		// TODO Auto-generated catch block
-    		LOGGER.info("ERROR IN Searching FOR " + this.searchcriteria);
-    		e.printStackTrace();
-    	} finally {
-    		//
-    		// always clean up after yourself..
-    		//
-    		db.free();
-    	}
-    
-    	if (isdelinquent.equals("N")){
-    		return true;
-    	}else{
-    		return false;
-    	}
-    }
-    
-    private Boolean verifyNoPreviousLOI(String playerid){
-    	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-    	Integer previousTeamID = 0;
-    	
-    	try{
-
-    		
-			Vector<Integer> v = new Vector<Integer>();
-			v.add(Integer.parseInt(playerid));
-			db.getData("CALL scaha.isPlayerRostered(?)", v);
-		    
-			if (db.getResultSet() != null){
-				//need to add to an array
-				rs = db.getResultSet();
-				if (rs.next()){
-					previousTeamID = rs.getInt("idteam");
-	    			
-					LOGGER.info("We have matching delinquency for:" + playerid);
-				}
-			}
-    				
-    			db.cleanup();
-
-    	} catch (SQLException e) {
-    		// TODO Auto-generated catch block
-    		LOGGER.info("ERROR IN Searching FOR " + this.searchcriteria);
-    		e.printStackTrace();
-    	} finally {
-    		//
-    		// always clean up after yourself..
-    		//
-    		db.free();
-    	}
-    
-    	if (previousTeamID>0){
-    		return true;
-    	}else{
-    		return false;
-    	}
-    			
+    	FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"", selectedCoachname + "'s LOI is being generated..."));
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		try{
+			context.getExternalContext().redirect("editablecoachloi.xhtml?coachid=" + selectedCoachid);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     public void searchClose(){
@@ -356,7 +252,6 @@ public class DraftPlayersBean implements Serializable {
     	results = null;
 
     	FacesContext context = FacesContext.getCurrentInstance();
-		origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
 		try{
 			context.getExternalContext().redirect("Welcome.xhtml");
 		} catch (IOException e) {

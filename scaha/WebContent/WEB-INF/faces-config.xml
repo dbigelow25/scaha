@@ -41,19 +41,45 @@
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
+		<managed-bean-name>draftcoachesBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.DraftCoachesBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	
+	<managed-bean>
 		<managed-bean-name>loiBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.loiBean</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>coachloiBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.coachloiBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>teamBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.teamBean</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
+		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>reviewloiBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.reviewloiBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>rosteractionBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.rosteractionBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>adminnavigationBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.adminnavigationBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>registrarloiBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.registrarloiBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
 	<validator>
 		<description>This will validate the Username to ensure its unique in the system</description>

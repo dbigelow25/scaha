@@ -15,17 +15,15 @@
 	</p:notificationBar>  
   
 		<h:form>		
-			<p:panel id ="panel" header="Search for Player:">
+			<p:panel id ="panel" header="Search for Coach:">
 				<h:panelGrid columns="2" cellpadding="5">
-					<p:inputText id="searchforplayer" style="width:150px;" value="#{draftplayersBean.searchcriteria}" required="false" requiredMessage="Enter a minimum of 5 characters to execute search."/>
-					<p:commandButton id="executesearch" value="Search" actionListener="#{draftplayersBean.playerSearch()}" ajax="true" update="playersearchresult"/>
-					<p:tooltip for="searchforplayer" value="Enter at least 5 characters to generate a list of matching players" showEffect="fade" hideEffect="fade" />  
-					<p:message id="m_searchforplayer" for="searchforplayer" />
-					
-					
+					<p:inputText id="searchforcoach" style="width:150px;" value="#{draftcoachesBean.searchcriteria}" required="false" requiredMessage="Enter a minimum of 5 characters to execute search."/>
+					<p:commandButton id="executesearch" value="Search" actionListener="#{draftcoachesBean.coachSearch()}" ajax="true" update="coachsearchresult"/>
+					<p:tooltip for="searchforcoach" value="Enter at least 5 characters to generate a list of matching players" showEffect="fade" hideEffect="fade" />  
+					<p:message id="m_searchforcoach" for="searchforcoach" />
 				</h:panelGrid>
 				<br></br>	
-				<p:dataTable id="playersearchresult" var="result" value="#{draftplayersBean.getResultdatamodel()}" selection="#{draftplayersBean.selectedplayer}"  paginator="true" rows="10" >
+				<p:dataTable id="coachsearchresult" var="result" value="#{draftcoachesBean.getResultdatamodel()}" selection="#{draftcoachesBean.selectedcoach}"  paginator="true" rows="10" >
                 		<f:facet name="header">  
 			            Select a Player from the List  
 			        </f:facet> 
@@ -33,24 +31,21 @@
 			         <!-- <p:column headerText="Player ID">  
 			            <h:outputText value="#{result.getIdplayer()}" />  
 			        </p:column> -->  
-			        <p:column headerText="Player Name">  
-			            <h:outputText value="#{result.getPlayername()}" />  
+			        <p:column headerText="Coach Name">  
+			            <h:outputText value="#{result.getCoachname()}" />  
 			        </p:column>  
-			        <p:column headerText="Date of Birth">  
-			            <h:outputText value="#{result.getDob()}" />  
-			        </p:column>
 			        <p:column headerText="Address">  
 			            <h:outputText value="#{result.getAddress()}" />  
 			        </p:column>
 			          
 			    </p:dataTable>
 				<h:panelGrid columns="1" cellpadding="5">
-				    <p:commandButton id="generateLoi" value="Generate LOI" actionListener="#{draftplayersBean.generateLOI()}" ajax="true"/>
+				    <p:commandButton id="generateLoi" value="Generate LOI" actionListener="#{draftcoachesBean.generateLOI()}" ajax="true"/>
 					<p:messages id="loimessage" showDetail="true" autoUpdate="true" closable="false" /> 
 				</h:panelGrid>
 			
 			
-				(<p:commandLink value="Close" id="close" ajax="false" actionListener="#{draftplayersBean.searchClose()}"/>) 
+				(<p:commandLink value="Close" id="close" ajax="false" actionListener="#{draftcoachesBean.searchClose()}"/>) 
 			<p:separator id="customSeparator" style="width:800px;height:2px" />    
 			
 			

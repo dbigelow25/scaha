@@ -10,6 +10,26 @@
      xmlns:p="http://primefaces.org/ui"
 >
      <ui:define name="content">
- 		<h:outputLabel value="Welcome #{profileBean.getNickName()}"></h:outputLabel>
-    </ui:define>
+ 		<h:form>
+ 			<h:panelGrid columns="1">
+		 		<h:outputLabel value="Welcome #{profileBean.getNickName()}"></h:outputLabel>
+		 		<p:spacer width="40" height="30" />
+		 		 <!-- club registrar will see this link -->
+			    <h:outputLabel value="Club Registrar Tools"/>
+			    <p:commandLink value="Create Player LOI" id="create-loi" ajax="false"  
+			             actionListener="#{adminnavigationBean.addLoi()}"/>
+			    <p:commandLink value="Create Coach LOI" id="create-coachloi" ajax="false"  
+			             actionListener="#{adminnavigationBean.addcoachLoi()}"/>
+			    <p:commandLink value="View Club LOI" id="view-list-loi" ajax="false"  
+			             actionListener="#{adminnavigationBean.clubreviewLoi()}"/>
+			    <p:spacer width="40" height="30" />
+			    <!-- scaha registrar -->         
+			    <h:outputLabel value="SCAHA Registrar Tools"/>
+			    <p:commandLink value="Confirm LOI" id="confirm-loi" ajax="false"  
+			             actionListener="#{adminnavigationBean.confirmLoi()}"/>
+		    </h:panelGrid>
+	    </h:form>
+	 </ui:define>
+    
+   
 </ui:composition>

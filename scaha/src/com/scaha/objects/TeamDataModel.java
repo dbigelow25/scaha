@@ -1,12 +1,13 @@
 package com.scaha.objects;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.faces.model.ListDataModel;
 
 import org.primefaces.model.SelectableDataModel;
 
-public class TeamDataModel extends ListDataModel<Team> implements SelectableDataModel<Team> {
+public class TeamDataModel extends ListDataModel<Team> implements Serializable, SelectableDataModel<Team> {
 
 	public TeamDataModel() {  
     }  

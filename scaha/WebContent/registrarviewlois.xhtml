@@ -19,30 +19,21 @@
 	
 		</h:form>
 	<h:form>
-			<p:panel id ="panel" header="Your Club's Loi's:">
+			<p:panel id ="panel" header="View Loi's:">
 				<h:panelGrid columns="2" cellpadding="5">
-					<h:column><b>Display Loi's:</b></h:column>
+					<h:column><b>Select Team:</b></h:column>
 					<h:column>
-						<p:selectOneMenu value="#{reviewloiBean.selectedtabledisplay}" >
-					    	<f:selectItem itemLabel="For Today" itemValue="1"/>
-					    	<f:selectItem itemLabel="Missing Birthcertificate" itemValue="2"/>
-					    	<f:selectItem itemLabel="Missing Transfer" itemValue="3"/>
-					    	<f:selectItem itemLabel="For Club" itemValue="4"/>
-					    </p:selectOneMenu>
-					</h:column>
-					<h:column><b>Club (only applies to "For Club" search):</b></h:column>
-					<h:column>
-						<p:selectOneMenu value="#{reviewloiBean.selectedclub}" >
-					    	<f:selectItem itemLabel="Select One" itemValue=""/>
-					    	<f:selectItems value="#{reviewloiBean.getListofClubs()}" var="club" itemLabel="#{club.getClubname()}" itemValue="#{club.getClubid()}"/>
+						<p:selectOneMenu value="#{registrarloiBean.selectedteam}" >
+					    	<f:selectItem itemLabel="Select All" itemValue="0"/>
+					    	<f:selectItems value="#{registrarloiBean.getListofTeams()}" var="team" itemLabel="#{team.getTeamname()}" itemValue="#{team.getIdteam()}"/>
 					    </p:selectOneMenu>
 					</h:column>
 					<h:column>
-						<p:commandButton id="updatedisplay" value="Load Loi's" actionListener="#{reviewloiBean.playersDisplay()}" ajax="true" update="listofplayers"/>
+						<p:commandButton id="updatedisplay" value="Load Loi's" actionListener="#{registrarloiBean.playersDisplay()}" ajax="true" update="listofplayers"/>
 					</h:column>
 				</h:panelGrid>
 				<br></br>
-				<p:dataTable id="listofplayers" var="player" rowKey="#{player.IDplayer}" value="#{reviewloiBean.getPlayerdatamodel()}" selection="#{reviewloiBean.selectedplayer}" paginator="true" rows="10" autoupdate="false">
+				<p:dataTable id="listofplayers" var="player" rowKey="#{player.IDplayer}" value="#{registrarloiBean.getPlayerdatamodel()}" selection="#{registrarloiBean.selectedplayer}" paginator="true" rows="10" autoupdate="false">
                 	<!--  <p:column headerText="Player ID">  
 			            <h:outputText value="#{player.getIdplayer()}" />  
 			        </p:column>-->  
@@ -73,19 +64,13 @@
 			        <p:column headerText="Birth Cert.">  
 			            <h:outputText value="#{player.birthcertificate}" />  
 			        </p:column>
-			        <p:column headerText="Option" >  
-			             <p:splitButton id="wwtransfer" value="Work with "  >
-					        <p:menuitem value="Transfer/Citizenship" action="#{reviewloiBean.addTransferCitizenship(player)}" />
-					        <p:menuitem value="Void LOI" action="#{reviewloiBean.voidLoi(player)}"/>
-					    </p:splitButton>
-					</p:column>
 			    </p:dataTable>
 			</p:panel>
 			
 			<p:separator id="customSeparator" style="width:800px;height:2px" />    
 	</h:form>
 	<h:form>
-			<div align="center"><p:commandButton id="closeaddteams" value="Close" ajax="false" actionListener="#{reviewloiBean.closePage()}"/></div>
+			<div align="center"><p:commandButton id="closeaddteams" value="Close" ajax="false" actionListener="#{registrarloiBean.closePage()}"/></div>
 	</h:form>
 	</ui:define>
 </ui:composition>
