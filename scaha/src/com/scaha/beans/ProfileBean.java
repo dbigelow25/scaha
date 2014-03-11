@@ -15,12 +15,16 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.el.ValueExpression;
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
+
+import org.primefaces.event.TabChangeEvent;
 
 import com.scaha.objects.Profile;
 
@@ -50,7 +54,6 @@ public class ProfileBean implements Serializable  {
 	private boolean EditPassword = false;
 	private boolean EditMember = false;
 	private boolean AddMember = false;
-
 	
 	//
 	// Very archaic way to track changes.. 
@@ -392,7 +395,7 @@ public void setNotEditPassword() {
  * @param editPerson the editPerson to set
  */
 public void setEditMembers() {
-	LOGGER.info("About to edit password information..");
+	LOGGER.info("About to edit Member information..");
 	
 	EditMember = true;
 	AddMember = false;
@@ -409,7 +412,7 @@ public void setNotEditMembers() {
  * @param editPerson the editPerson to set
  */
 public void setAddMembers() {
-	LOGGER.info("About to edit password information..");
+	LOGGER.info("About to Add Member information..");
 	
 	AddMember = true;
 	EditMember = false;
@@ -420,6 +423,20 @@ public void setAddMembers() {
  */
 public void setNotAddMembers() {
 	AddMember =false;
+	EditMember = false;
+}
+
+public void cancelAddMember() {
+
+	this.setNotAddMembers();
+	FacesContext context = FacesContext.getCurrentInstance();
+	Application app = context.getApplication();
+
+	ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+			"#{usahBean}", Object.class );
+	UsaHockeyBean usah = (UsaHockeyBean) expression.getValue( context.getELContext() );
+	usah.reset();
+	
 }
 
 
@@ -499,25 +516,20 @@ public void setNotAddMembers() {
 	 * 			5) Address
 	 * 
 	 */
-	public void updatePasswordInfo() {
+	public String updatePasswordInfo() {
 	
 		//
 		// in the end.. we simply turn off the edit so that edit screen will dissappear
 		//
 
 		if (!this.new_password.equals(this.con_password)) {
-			
-			
-			UIComponent component =	UIComponent.getCurrentComponent(FacesContext.getCurrentInstance());
-					 
-			String clientId = component.getClientId();
 					
 			FacesContext.getCurrentInstance().addMessage(
-					clientId,
+					"password:con-pass",
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Confirmation Password Error",
-                    "Confirmation Password does not match your new password entered... Please Try Again!"));
-			return;
+                    "Change Password Error",
+                    "new passwords does not match... Please Try Again!"));
+			return "false";
 		}
 
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
@@ -527,8 +539,6 @@ public void setNotAddMembers() {
 			pro.update(db);
 			this.setLive_password(this.new_password);
 			db.free();
-            FacesContext context = FacesContext.getCurrentInstance();  
-            context.addMessage(null, new FacesMessage("Successful", "Your Password has been successfully changed..."));  
 
 			LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM the manage Profile Page..");
 			LOGGER.info("Sending Test mail here...");
@@ -538,12 +548,22 @@ public void setNotAddMembers() {
 		} catch (SQLException e) {
 		// TODO Auto-generated catch block
 			LOGGER.info("ERROR IN Profile Change User Attributes PROCESS FOR " + this.getCompleteName());
+            FacesContext context = FacesContext.getCurrentInstance();  
+            context.addMessage("password", new FacesMessage(FacesMessage.SEVERITY_ERROR,"SQL Error", "There was an SQL Error please try again"));  
 			e.printStackTrace();
 			db.rollback();
 			db.free();
 		}
-	
-		this.setNotEditPassword();
+		
+		FacesContext.getCurrentInstance().addMessage(
+				null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO,
+                "Change Password Success",
+                "You have successfully changed your password.  You will be receiving a confirmation e-mail shortly"));
+
+		
+		return "true";
+		
 		
 	}
 
@@ -816,4 +836,5 @@ public void setLive_password(String live_password) {
 	this.live_password = live_password;
 }
  
+
 }

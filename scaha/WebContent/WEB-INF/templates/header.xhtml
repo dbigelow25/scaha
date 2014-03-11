@@ -7,61 +7,15 @@
      xmlns:ui="http://java.sun.com/jsf/facelets"
      xmlns:p="http://primefaces.org/ui"
 >
-<body>
-<table width="850px" border="0" cellpadding="0" cellspacing="0"
-	style="border-collapse: collapse;">
-	<tr>
-		<td align="right" width = "165px">
-			<div align="right">
-				<img src="/scaha/images/pages/scaha_logo.png" width="150px"/>
+<h:body>
+<h:panelGrid id="header" columns="2" cellpadding="5"  >
+	<img src="/scaha/images/pages/scaha_logo.png" width="150px" style="float: left; left:10px; top:10px;" />
+	<h:panelGroup>
+			<div style="text-align:right; width:720px; font-weight: normal;font-size: 9pt;font-family: Verdana;">
+ 				<img src="/scaha/images/pages/scaha_banner_logo.png" />
 			</div>
-		</td>
-		<td align="right">
-			<div align="right" style="font-weight: normal;font-size: 9pt;font-family: Verdana;">
- 			 <h:form>
- 				 <p:growl id="msg" showDetail="true" globalOnly = "true" life="3000" />
-            	<p:panel  rendered="#{empty profileBean.getProfile()}">
- 				 <p:toolbar>	 	 
-    				<p:toolbarGroup align="right">  
-	            	<h:outputText  value=" User: "></h:outputText>
-	            	&nbsp;
-    	        	<h:inputText style="width:150px;" value="#{profileBean.name}"></h:inputText>
-        	    	<h:outputText  value=" Password: "></h:outputText>
-            		<h:inputSecret style="width:125px;" value="#{profileBean.password}"></h:inputSecret>
-			        <p:separator />  
-            		<p:commandButton value="login" actionListener="#{profileBean.login}" ajax="false" /><br/>
- 				   </p:toolbarGroup>  
- 				 </p:toolbar>
-            	<h:outputLink id="reglink" value="/scaha/register.xhtml">
-				    <h:outputText value="Create New Account" />
-				</h:outputLink>
-					<h:outputText  value=" / " />
-            	<h:outputLink id="fpasslink" value="/scaha/forgotpassword.xhtml">
-				    <h:outputText value="Forgot Password?" />
-				</h:outputLink>
-               	</p:panel>
-               	<p:panel rendered="#{not empty profileBean.getProfile()}">
-                <p:toolbar>	 	 
-    				<p:toolbarGroup align="right"> 
-    				<h:outputText value="Welcome #{profileBean.getNickName()}"></h:outputText>
-    				<p:separator />  
-            		<p:menuButton value="Options">  
-	       				<p:menuitem style="font-size: 10px;" value="Manage Profile"  url="manageprofile.xhtml" icon="ui-icon-extlink"/>  
-        				<p:separator />  
-        				<p:menuitem style="font-size: 10px;" value="Logout" actionListener="#{profileBean.logout}" ajax="false"/>  
-        			</p:menuButton>
-        				
-        				</p:toolbarGroup>
-        				</p:toolbar>
-				    <h:outputText value="." />
-            	</p:panel>
-        	</h:form>	
-			</div>
-			<div align="right">
-				<img src="/scaha/images/pages/scaha_banner_logo.png" />
-			</div>
-		</td>
-	</tr>
-</table>
-</body>
+	</h:panelGroup>
+	</h:panelGrid>
+	</h:body>
+	
 </html>

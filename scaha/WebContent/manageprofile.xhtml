@@ -1,40 +1,59 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui" 
-      xmlns:c="http://java.sun.com/jsp/jstl/core">
-
-<f:metadata>
-<f:event type="preRenderView" listener="#{profileBean.verifyUserLogin()}" />
-</f:metadata>
-      
+<!DOCTYPE html>
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+>
+<f:view contentType="text/html">
+    
+ <h:head>
+	 <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+     </f:facet>
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{profileBean.verifyUserLogin()}" />
+	</f:metadata>
+</h:head>	    
+<h:body>
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
-
-
 <ui:define name="content">
-  
-	<h3>My Scaha Account for #{profileBean.getNickName()}</h3>
 
-	<h:form id="mess">
-    
-		<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />    
-
-	</h:form>        
+	<!-- 
 	
-    <h:form id="mp-form">
-    
-    <p:tabView id="tabView">    
-  
-    	<p:tab title="My Information">  
-  
-  		<p:panel id="view-pers" rendered="#{profileBean.isViewPerson()}">
+	This section is a common tabbed menu.  We tried to use TabView in one giant xhtml file.. but it became too complex
+	To manage.
+	
+	We have 4 basic functions.  One tab for each function.  Each file will have a different active index.. and a 
+	Star icon helping the user understand what area they are in...
+	
+	 -->  
+<div id="page-div">	 
+ <p:tabMenu activeIndex="0">  
+    <p:menuitem value="My Information" url="manageprofile.xhtml" icon="ui-icon-star" />  
+    <p:menuitem value="Scaha Membership" url="membermanagement.xhtml" />  
+    <p:menuitem value="Change Password" url="changepassword.xhtml"/>  
+    <p:menuitem value="Manage Roles" url="manageroles.xhtml" />  
+</p:tabMenu>  
+
+<p:spacer width="10" height="10" />
+	
+	<h:form id = "me-form">
+	
+	<ui:fragment id="view-pers" rendered="#{profileBean.isViewPerson()}">
+	
+  		<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">  
+    	      <h:outputText style="font-size: 12px;" value="The following information is your personal account information.  Please change any contact
+                                                       you need to.  The only thing you cannot change is your usercode. "/>  
+   		</p:fieldset>  
+	
+	  	<p:spacer width="10" height="10" />
+  	
+  		<p:fieldset id="fs2" toggleable="false" toggleSpeed="500">  	
   		
-         	<h:panelGrid columns="2" cellpadding="10">  
+         	<p:panelGrid id ="view-pers-grid" columns="2" cellpadding="5">  
             	<h:outputText value="User Name (e-mail):" />
             	<h:outputText value="#{profileBean.getUserName()}" />
             	<h:outputText value="Name:" />
@@ -51,184 +70,96 @@
             	<h:outputText value="#{profileBean.getAltemail()}"/>
             	<h:outputText value="Address:" />
             	<h:outputText value="#{profileBean.getCompleteAddress()}" />
-            </h:panelGrid>  
-            <p:spacer width="40" height="30" />
-             (<p:commandLink value="Edit This Data" update="view-pers,edit-per" id="show-edit-per" ajax="false"  
-             actionListener="#{profileBean.setEditPerson()}"/>) 
-            
-             <p:spacer width="10" height="10" />
-             
-             (<p:commandLink value="Change your password" update="view-pers" id="show-edit-pass" ajax="false"  
-             actionListener="#{profileBean.setEditPassword()}"/>)  
+            </p:panelGrid>  
+		</p:fieldset>
 
-            </p:panel>
+	  	<p:spacer width="10" height="10" />
 
-			<p:panel id="edit-pers" rendered="#{profileBean.isEditPerson()}">
-			
-			The following information can be changed about your account.  Please change what you want, then click the update link to save
-			your changes back to iSite.
-  		
-         	<h:panelGrid columns="2" cellpadding="3">  
+		<p:fieldset id="fs3">
+             <p:commandButton value="Edit This Data" id="show-edit-per" ajax="false"  
+             actionListener="#{profileBean.setEditPerson()}"/> 
+         </p:fieldset>
 
-					<p:outputLabel for="firstname" value="First Name" />
+	</ui:fragment>
+
+	<ui:fragment id="edit-pers" rendered="#{profileBean.isEditPerson()}">
+	
+	<p:focus context="edit-pers"/> 
+	<p:fieldset id="fs4" toggleable="false" toggleSpeed="500">  
+          <h:outputText style="font-size: 12px;" value="When you haveasdfas fas fasf asf asf asf asdf asdf asdf sad asfasdf assa fasfasf completed making your changes, please click the Update Button."/>
+   	</p:fieldset>  
+
+	<p:spacer width="10" height="10" />
+	
+	<p:fieldset id="fs5">
+		
+			<h:panelGrid columns="3" cellpadding="3" id="edit-pers-grid">  
+					<p:outputLabel for="firstname" value="First Name"></p:outputLabel>
 					<p:inputText id="firstname" style="width:150px;" value="#{profileBean.chgFirstName}" />
-
-					<p:outputLabel for="lastname" value="Last Name" />
+					<p:message id="m_firstname" closable="true" for="firstname"/>
+					
+					<p:outputLabel for="lastname" value="Last Name" ></p:outputLabel>
 					<p:inputText id="lastname" style="width:150px;" value="#{profileBean.chgLastName}" />
+					<p:message id="m_lastname" closable="true" for="lastname"/>
 					
-					<p:outputLabel for="nickname" value="Nick Name" />
+					<p:outputLabel for="nickname" value="Nick Name"></p:outputLabel>
 					<p:inputText id="nickname" style="width:150px;" value="#{profileBean.chgNickName}"/>
+					<p:message id="m_nickname" closable="false" for="nickname"/>
 
-					<p:outputLabel for="dob"  value="Date of Birth" />
-					<p:inputMask id="dob" value="#{profileBean.chgDOB}" style="width:150px;" mask="9999/99/99" />  
+					<p:outputLabel for="dob"  value="Date of Birth:"></p:outputLabel>
+					<p:inputMask id="dob" value="#{profileBean.chgDOB}" style="width:150px;" mask="99/99/9999" />  
+					<p:message id="m_dob" closable="false" for="dob"/>
 
-					<p:outputLabel for="gender" value="Gender" />
-					    <p:selectOneRadio id="gender" value="#{profileBean.chgGender}">  
-				            <f:selectItem itemLabel="Male" itemValue="M" />  
-            				<f:selectItem itemLabel="Female" itemValue="F" />  
-       				 	</p:selectOneRadio> 
+					<p:outputLabel for="gender" value="Gender:" ></p:outputLabel>
+				    <p:selectOneMenu id="gender" value="#{profileBean.chgGender}">  
+			            <f:selectItem itemLabel="Male" itemValue="M"></f:selectItem> 
+           				<f:selectItem itemLabel="Female" itemValue="F"></f:selectItem> 
+      				</p:selectOneMenu> 		
+      				<p:message id="m_gender" closable="true" for="gender"/>			
 
-					<p:outputLabel for="email" value="alternate e-mail" />
+					<p:outputLabel for="email" value="alternate eMail:"></p:outputLabel>
 					<p:inputText id="email" style="width:150px;" value="#{profileBean.chgAltEmail}" />
+					<p:message id="m_email" closable="true" for="email"/>
 
-					<p:outputLabel for="phone"  value="Mobile Phone" />
+					<p:outputLabel for="phone"  value="Mobile Phone"></p:outputLabel>
 					<p:inputMask id="phone" value="#{profileBean.chgPhone}" style="width:150px;" mask="(999) 999-9999" />  
-					
+					<p:message id="m_phone" closable="true" for="phone"/>
+
 			</h:panelGrid>
 
-			<p:panelGrid columns="4" cellpadding="3">
-					<p:outputLabel for="address" value="Address"/>
-					<p:outputLabel for="city" value="City"/>
-					<p:outputLabel for="state" value="State"/>
-					<p:outputLabel for="zip" value="Zip"/>
+			<h:panelGrid columns="4" cellpadding="3" id="edit-pers-addr-grid">
+					<p:outputLabel for="address" value="Address"></p:outputLabel>
+					<p:outputLabel for="city" value="City"></p:outputLabel>
+					<p:outputLabel for="state" value="State"></p:outputLabel>
+					<p:outputLabel for="zip" value="Zip"></p:outputLabel>
 					<p:inputText id="address" style="width:175px;" value="#{profileBean.chgAddress}" />
 					<p:inputText id="city" style="width:175px;" value="#{profileBean.chgCity}" />
 					<p:inputText id="state" style="width:25px;" maxlength="2" value="#{profileBean.chgState}" />
 					<p:inputText id="zip" style="width:75px;" maxlength="5" value="#{profileBean.chgZip}" />
-			</p:panelGrid>
+			</h:panelGrid>
+			
+		</p:fieldset>
+			
+		<p:spacer width="10" height="10" />
 
-			<p:spacer width="40" height="30" />
-
-			(<p:commandLink value="Cancel" update="edit-pers,view-pers" id="cancel-edit-per" ajax="false"  
+		<p:fieldset id="fs6">
+			
+			<p:commandButton value="Cancel" update="edit-pers,view-pers" id="cancel-edit-per" ajax="false"  
              actionListener="#{profileBean.setNotEditPerson()}">
              	<p:ajax update="edit-pers" resetValues="true" />   
-             </p:commandLink>)
+             </p:commandButton>
              
-			<p:spacer width="10" height="10" />
-             (<p:commandLink value="Update Info" update="edit-pers,view-pers" id="finish-edit-per" ajax="false"  
-             actionListener="#{profileBean.updatePersonInfo()}"/>)    
+			<p:spacer width="13" height="10" />
+             <p:commandButton value="Update Information" update="edit-pers,view-pers" id="finish-edit-per" ajax="false"  
+             actionListener="#{profileBean.updatePersonInfo()}"/>
 
-            </p:panel>  
-            
-            <p:panel id="edit-pass" rendered="#{profileBean.isEditPassword()}">
-            
-            <h:panelGrid columns="3" cellpadding="3">  
-			
-				<p:outputLabel for="cur-pass" value="Current Password:" />
-				<h:inputSecret id="cur-pass" style="width:150px;" value="#{profileBean.cur_password}" 
-						required="true" requiredMessage="Current Password cannot be blank.">
-						<f:validator validatorId="validateLivePassword" />
-						<f:ajax event="blur" render="m_current" />
-				</h:inputSecret>
-				<p:message id="m_current" for="cur-pass" />
-				
-				<p:outputLabel for="new-pass" value="New Password:" />
-				<p:password id="new-pass" style="width:150px;" value="#{profileBean.new_password}" 
-						required="true" requiredMessage="New Password cannot be blank." />
-				<p:spacer width="40" height="10" />
-
-				<p:outputLabel for="con-pass" value="Confirm New Password:" />
-				<p:password id="con-pass" style="width:150px;" value="#{profileBean.con_password}"
-					required="true" requiredMessage="Confirm Password cannot be blank."  />
-				<p:message id="m_confirm" for="finish-edit-pass" />
-
-			</h:panelGrid>					
-
-			<p:spacer width="40" height="30" />
-			
-			(<p:commandLink value="Cancel" update="edit-pass,view-pers" id="cancel-edit-pass" ajax="false"  immediate="true"
-             actionListener="#{profileBean.setNotEditPassword()}">
-                 <p:resetInput target="edit-pass" /> 
-            </p:commandLink>)
-  
-    		<p:spacer width="10" height="10" />
-             (<p:commandLink global="false" value="Save Changes" update="edit-pass,view-pers" id="finish-edit-pass" ajax="false"  
-             actionListener="#{profileBean.updatePasswordInfo()}"/>)    
-
-            </p:panel>  
-            
-        </p:tab>
-        
-        <p:tab title="Scaha Membership">  
-        
-        	<p:panel id="view-members" rendered="#{profileBean.isViewMembers()}">
-        
- 			<p:dataTable var="familymember" value="#{profileBean.getFamilyMembers()}">  
-    		    <p:column headerText="First Name"><h:outputText value="#{familymember.getsFirstName()}" /></p:column>  
-        		<p:column headerText="Last Name"><h:outputText value="#{familymember.getsLastName()}" /></p:column>  
-        		<p:column headerText="Relationship"><h:outputText value="#{familymember.getRelationship()}" /></p:column>
-        		<p:column headerText="Gender"><h:outputText value="#{familymember.getGender()}" /></p:column>  
-        		<p:column headerText="D.O.B."><h:outputText value="#{familymember.getDob()}" /></p:column>  
-    		</p:dataTable> 
-    		
-   			<p:spacer width="40" height="30" />
-            (<p:commandLink value="Add A Member" update="view-members, add-member" id="show-add-members" ajax="false"  
-             actionListener="#{profileBean.setAddMembers()}"/>) 
-             
-    		</p:panel>
-    		
-  			<p:panel id="add-member" rendered="#{profileBean.isAddMember()}">
-			
-            <h:panelGrid columns="3" cellpadding="3">  
-				<p:outputLabel for="usah-reg" value="USA Hockey Registration #:" />
-				<h:inputText id="usah-reg" style="width:150px;" value="#{usahBean.regnumber}" 
-						required="true" requiredMessage="Usa Hockey Number cannot be blank." />
-				<p:spacer width="10" height="10" />
-				
-				<p:outputLabel for="usah-dob"  value="Date of Birth" />
-				<p:inputMask id="usah-dob" value="#{usahBean.dob}" style="width:150px;" mask="99/99/9999" required="true" requiredMessage="Please Enter the DOB of the USA Hockey member." />  
-				<p:commandButton global="false" value="Seach USAH" update="add-mem" id="search-usah" ajax="false" actionListener="#{usahBean.fetchUSAHockey()}"/>
-			</h:panelGrid>					
-   
-			<p:spacer width="10" height="15" />
-			
-			<h:panelGrid columns="2" cellpadding="3">  
-            	<h:outputText value="First Name:" />
-            	<h:outputText value="#{usahBean.getUsar().getFirstName()}" />
-            	<h:outputText value="Last Name:" />
-            	<h:outputText value="#{usahBean.getUsar().getLastName()}" />
-            	<h:outputText value="Middle Init:" />
-            	<h:outputText value="#{usahBean.getUsar().getMiddleInit()}" />
-				<h:outputText value="Address:" />
-            	<h:outputText value="#{usahBean.getUsar().getAddress()}" />
-				<h:outputText value="City:" />
-            	<h:outputText value="#{usahBean.getUsar().getCity()}" />
-				<h:outputText value="State:" />
-            	<h:outputText value="#{usahBean.getUsar().getState()}" />
-            	<h:outputText value="Zipcode:" />
-            	<h:outputText value="#{usahBean.getUsar().getZipcode()}" />
-            	</h:panelGrid>  
-			(<p:commandLink value="Cancel" update="add-mem, view-mem" id="cancel-add-mem" ajax="false"  immediate="true"
-             actionListener="#{profileBean.setNotAddMembers()}">
-                 <p:resetInput target="edit-pass" /> 
-            </p:commandLink>)
-  
-    		<p:spacer width="10" height="10" />
-             (<p:commandLink global="false" value="Save Mew Member" update="add-mem,view-mem" id="finish-add-mem" ajax="false"  
-             actionListener="#{profileBean.addUSAHMember()}"/>)    
-            </p:panel>  
-  		</p:tab>
-
-    	<p:tab title="Accessability Roles">  
-	
-			<p:dataTable var="role" value="#{profileBean.getRoles()}">  
-        		<p:column headerText="Role Name"><h:outputText value="#{role.getName()}" /></p:column>  
-        		<p:column headerText="Role Description"><h:outputText value="#{role.getDesc()}" /></p:column>  
-        		<p:column headerText="Default?"><h:outputText value="#{role.isDefaultRole()}" /></p:column>  
-    		</p:dataTable>  
-   		</p:tab>
-	</p:tabView>
-    </h:form>		
+		</p:fieldset>
+	  	<p:spacer width="10" height="10" />
+	</ui:fragment>
+	</h:form>
+	</div>
 </ui:define>
 </ui:composition>
+</h:body>
+</f:view>
 </html>

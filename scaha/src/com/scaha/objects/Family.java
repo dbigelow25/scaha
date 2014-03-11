@@ -38,7 +38,7 @@ public class Family extends ScahaObject implements Serializable  {
 		// ok.. lets pull the family info here..
 		//
 		Vector<Integer> v = new Vector<Integer>();
-		v.add(_per.getID());
+		v.add(_per.ID);
 		ResultSet rs = null;
 		try {
 			if (_db.getData("call scaha.getFamilyByPersonID(?)", v)) {
@@ -46,15 +46,19 @@ public class Family extends ScahaObject implements Serializable  {
 				boolean bfirst = true;
 				while (rs.next()) {
 					if (bfirst) {
-						this.setID(rs.getInt(1));
+						this.ID = (rs.getInt(1));
 						FamilyName = rs.getString(2); // we only need this once
 						bfirst = false;
 					}
 					//
 					// ok.. now lets make a family member .. by sticking a person and a responsibility together..
 					//
-					FamilyMember mem = new FamilyMember(this.getProfile(), rs.getInt(5), rs.getInt(3), rs.getString(4));
+					FamilyMember mem = new FamilyMember(this.getProfile(), rs.getInt(5), rs.getInt(3));
 					
+					//
+					// Need gender information.. along with Date Of Birth.. it all goes here as well..
+					// 
+					mem.setRelationship(rs.getString(4));
 					mem.setsFirstName(rs.getString(6));
 					mem.setsLastName(rs.getString(7));
 					mem.setsEmail(rs.getString(8));
@@ -65,6 +69,7 @@ public class Family extends ScahaObject implements Serializable  {
 					mem.setiZipCode(rs.getInt(13));
 					mem.setGender(rs.getString(14));
 					mem.setDob(rs.getString(15));
+					mem.setCitizenship(rs.getString(16));
 					FamilyMembers.add(mem);
 				}	
 					

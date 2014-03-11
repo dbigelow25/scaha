@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
@@ -26,9 +27,11 @@ public class Person extends ScahaObject implements Serializable {
 	private String sState = null;
 	private String gender = null;
 	private String dob = null;
+	private String citizenship = null;
 	
 	private int iZipCode = 0;
 	private Family fam = null;
+	protected int ID = 0;
 	
 	public Person (ScahaDatabase _db, Profile _pro) {
 		
@@ -40,14 +43,14 @@ public class Person extends ScahaObject implements Serializable {
 		
 		ResultSet rs = _db.getResultSet();
 		Vector<Integer> v = new Vector<Integer>();
-		v.add(_pro.getID());
+		v.add(_pro.ID);
 
 		try {
 			if (_db.getData(m_strDB, v)) {
 				rs = _db.getResultSet();
 				if (rs.next()) {
 					int i = 1;
-					this.setID(rs.getInt(i++));
+					ID = rs.getInt(i++);
 					this.setsFirstName(rs.getString(i++));
 					this.setsLastName(rs.getString(i++));
 					this.setsEmail(rs.getString(i++));
@@ -58,6 +61,7 @@ public class Person extends ScahaObject implements Serializable {
 					this.setiZipCode(rs.getInt(i++));
 					this.setGender(rs.getString(i++));
 					this.setDob(rs.getString(i++));
+					this.setCitizenship(rs.getString(i++));
 					LOGGER.info("Successfully Created the Person Object...");
 
 				}
@@ -82,7 +86,7 @@ public class Person extends ScahaObject implements Serializable {
 	 */
 	public Person (int _id, Profile _pro) {
 		
-		this.setID(_id);
+		this.ID = _id;
 		this.setProfile(_pro);
 	}
 
@@ -237,7 +241,7 @@ public class Person extends ScahaObject implements Serializable {
 		// is it an object that is not in the database yet..
 		//
 		
-		CallableStatement cs = db.prepareCall("call scaha.updatePerson(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		CallableStatement cs = db.prepareCall("call scaha.updatePerson(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		//		INOUT in_idPerson INT(10),
 		//		IN in_idProfile INT(10),
@@ -256,8 +260,8 @@ public class Person extends ScahaObject implements Serializable {
 
 		int i = 1;
 		cs.registerOutParameter(1, java.sql.Types.INTEGER);
-		cs.setInt(i++, getID());
-		cs.setInt(i++, getProfile().getID());
+		cs.setInt(i++, this.ID);
+		cs.setInt(i++, getProfile().ID);
 		cs.setString(i++, this.sFirstName);
 		cs.setString(i++, this.sLastName);
 		cs.setString(i++, this.sEmail);
@@ -268,6 +272,7 @@ public class Person extends ScahaObject implements Serializable {
 		cs.setInt(i++, this.iZipCode);
 		cs.setString(i++, this.gender);
 		cs.setString(i++, this.dob);
+		cs.setString(i++, this.citizenship);
 		cs.setInt(i++,1);
 		cs.setString(i++,null);
 		cs.execute();
@@ -275,10 +280,10 @@ public class Person extends ScahaObject implements Serializable {
 		//
 		// Update the new ID from the database...
 		//
-		this.setID(cs.getInt(1));
+		this.ID = cs.getInt(1);
 		cs.close();
 
-		LOGGER.info("HERE IS THE NEW ID:" + this.getID());
+		LOGGER.info("HERE IS THE new Person ID:" + this.ID);
 
 	}
 
@@ -310,4 +315,26 @@ public class Person extends ScahaObject implements Serializable {
 		this.dob = dob;
 	}
 	
+	public String getCitizenship(){
+		return citizenship;
+	}
+	
+	public void setCitizenship(String sName){
+		citizenship = sName;
+	}
+	
+	/**
+	 * Here we clean all the USA hockey Information we can and jamb it into the Person Record..
+	 * @param usar
+	 */
+	public void gleanUSAHinfo(UsaHockeyRegistration usar) {
+		// TODO Auto-generated method stub
+		setsFirstName(Utils.properCase(usar.getFirstName()));
+		setsLastName(Utils.properCase(usar.getLastName()));
+		setCitizenship(usar.getCitizen());
+		setDob(usar.getDOB());
+		setGender(usar.getGender());
+		
+	}
+		
 }

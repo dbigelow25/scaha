@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf13894530625120" configfile="/scaha/WebContent/WEB-INF/faces-config.xml">
-  <nodes xsi:type="pageflow:PFPage" name="register.xhtml" id="pf13934447904783" referenceLink="//@navigationRule.0/@fromViewId|" path="/register.xhtml"/>
-  <nodes xsi:type="pageflow:PFPage" name="scaha/aWelcome.xhtml" id="pf13934447904785" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" path="/scaha/aWelcome.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="register.xhtml" x="336" y="72" id="pf13934447904783" referenceLink="//@navigationRule.0/@fromViewId|" path="/register.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="scaha/aWelcome.xhtml" x="108" y="108" id="pf13934447904785" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" path="/scaha/aWelcome.xhtml"/>
 </pageflow:Pageflow>

@@ -39,8 +39,8 @@ public class ActionList extends ScahaObject{
 
 		LOGGER.info(this + ":Entering ActionList for Profile " + _pro.toString());
 
-		super.setProfile(_pro);
-		super.setID(0);
+		setProfile(_pro);
+		this.ID = 0;
 
 		this.refresh();
 		
@@ -63,7 +63,7 @@ public class ActionList extends ScahaObject{
 		//
 		
 		try {
-			if (db.getActionData(super.getProfile().getID())) {
+			if (db.getActionData(super.getProfile().ID)) {
 				rs = db.getResultSet();
 				//
 				// These are all the actions for the given profile.. We need to stuff them to preserve the parent child relationship
@@ -79,7 +79,7 @@ public class ActionList extends ScahaObject{
 					this.putAction(act);
 				}
 			} else {
-				LOGGER.info("refresh action list... did not pull any action data... for profile id=" + super.getProfile().getID());
+				LOGGER.info("refresh action list... did not pull any action data... for profile id=" + super.getProfile().ID);
 			}
 		} catch (SQLException ex) {
 				ex.printStackTrace();
@@ -128,7 +128,7 @@ public class ActionList extends ScahaObject{
 	//
 	
 	public void putAction(Action _act) {
-		this.m_hActions.put(Integer.valueOf(_act.getID()), _act);
+		this.m_hActions.put(Integer.valueOf(_act.ID), _act);
 	}
 	
 	//
@@ -145,7 +145,7 @@ public class ActionList extends ScahaObject{
 	//
 	
 	public void putTopLevelAction(Action _act) {
-		this.m_hTopActions.put(Integer.valueOf(_act.getID()), _act);
+		this.m_hTopActions.put(Integer.valueOf(_act.ID), _act);
 	}
 
 	//

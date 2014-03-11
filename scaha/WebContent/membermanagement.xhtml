@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+>
+<f:view contentType="text/html">
+    
+ <h:head>
+	 <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+     </f:facet>
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{profileBean.verifyUserLogin()}" />
+	</f:metadata>
+</h:head>	    
+<h:body>
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+<ui:define name="content">
+
+ 
+	<!-- 
+	
+	This section is a common tabbed menu.  We tried to use TabView in one giant xhtml file.. but it became too complex
+	To manage.
+	
+	We have 4 basic functions.  One tab for each function.  Each file will have a different active index.. and a 
+	Star icon helping the user understand what area they are in...
+	
+	 -->  
+<div id="page-div">
+
+ <p:tabMenu activeIndex="1">  
+    <p:menuitem value="My Information" url="manageprofile.xhtml"  />  
+    <p:menuitem value="Scaha Membership" url="membermanagement.xhtml" icon="ui-icon-star" />  
+    <p:menuitem value="Change Password" url="changepassword.xhtml"/>  
+    <p:menuitem value="Manage Roles" url="manageroles.xhtml" />  
+</p:tabMenu>  
+
+<p:spacer width="10" height="10" />
+
+
+
+  <h:form id="mp-form">
+
+ 	<h:panelGroup id="view-members" rendered="#{profileBean.isViewMembers()}">
+   	
+   		<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">  
+    	      <h:outputText style="font-size: 12px;" value="The following information is all the family members registered under your account.
+    	                                          You can add more people to your account, but they have to FIRST be registered as a USA Hockey member."/>  
+   		</p:fieldset>  
+	
+	  	<p:spacer width="10" height="10" />
+  	
+  		<p:fieldset id="fs2" toggleable="false" toggleSpeed="500">  	      
+			<p:dataTable var="familymember" value="#{profileBean.getFamilyMembers()}">  
+   			    <p:column headerText="First Name"><h:outputText value="#{familymember.getsFirstName()}" /></p:column>  
+   	    		<p:column headerText="Last Name"><h:outputText value="#{familymember.getsLastName()}" /></p:column>  
+   	    		<p:column headerText="Relationship"><h:outputText value="#{familymember.getRelationship()}" /></p:column>
+   	    		<p:column headerText="Gender"><h:outputText value="#{familymember.getGender()}" /></p:column>  
+   	    		<p:column headerText="D.O.B."><h:outputText value="#{familymember.getDob()}" /></p:column>  
+   			</p:dataTable> 
+    	</p:fieldset>
+    			
+		<p:spacer width="10" height="10" />
+  	
+  		<p:fieldset id="fs3" toggleable="false" toggleSpeed="500">  	      
+	    	<p:commandButton value="Add A New Member" update="view-members,add-member" id="show-add-members" ajax="false"  
+           actionListener="#{profileBean.setAddMembers()}"/>
+        </p:fieldset>
+    </h:panelGroup>
+    
+	<ui:fragment id="add-member" rendered="#{profileBean.isAddMember()}">
+	 
+	<p:fieldset id="fs11" toggleable="false" toggleSpeed="500">  
+     <h:outputText style="font-size: 12px;" value="You will need to know the USAHockey Number and the date of birth of who you are registering. Enter this first, then click the SEARCH USAH.  If the record is found, the information below will be prefilled
+ will all the information.  Please review this information then click the SAVE button.  This will create a new member
+ and generate a new member number for the year.  This member number will be needed to confirm you at all the SCAHA
+ tryouts and is needed to sign any Club LOI electronically."/>  
+   	</p:fieldset>  
+	
+	<p:spacer width="10" height="10" />
+	
+  	<p:fieldset id="fs22" toggleable="false" toggleSpeed="500">  	
+  	      
+	    	<p:focus context="fs22"/>   
+          <h:panelGrid id="add-member-grid" columns="3" cellpadding="3">  
+            
+				<p:outputLabel for="usah-reg" style="display: block;width:125px;!important" value="USA Hockey Number:"></p:outputLabel>
+				<p:inputText id="usah-reg" style="width:100px;" value="#{usahBean.regnumber}" required="true" requiredMessage="Usa Hockey Number cannot be blank.">
+					<f:validator validatorId="validateUSAHRegistration" />
+				</p:inputText>
+	 			<p:message id="m_usah-reg" closable="true" for="usah-reg"/>
+
+				<p:outputLabel for="usah-dob"  value="Date of Birth"></p:outputLabel>
+				<p:inputMask id="usah-dob" value="#{usahBean.dob}" style="width:100px;" mask="99/99/9999" required="true" requiredMessage="Please Enter the DOB of the USA Hockey member." />  
+	 			<p:message id="m_usah-dob" closable="true" for="usah-dob"/>
+				<p:outputLabel for = "relationship" value="Relationship" /> 
+       			<p:selectOneMenu id="relationship" value="#{usahBean.relationship}" style="width: 100px"  required="true" requiredMessage="need to select a relationship type." >         
+            		<f:selectItem itemLabel="Child" itemValue="Child" />
+            		<f:selectItem itemLabel="Self" itemValue="Self"/>
+            		<f:selectItem itemLabel="Spouse" itemValue="Spouse"/>
+        		</p:selectOneMenu >  
+	 			<p:message id="m_relationship" closable="true" for="relationship"/>
+				<p:outputLabel  for = "member" value="Member Type" /> 
+   			 	   <p:selectOneMenu  id="member" value="#{usahBean.membertype}" style="width: 100px" required="true" requiredMessage="need to select a member type." >    
+           			<f:selectItem itemLabel="Player" itemValue="Player" />  
+           			<f:selectItem itemLabel="Coach" itemValue="Coach"/>  
+           			<f:selectItem itemLabel="Manager" itemValue="Manager"/>
+       			</p:selectOneMenu>  
+	 			<p:message id="m_member" closable="true" for="member"/>
+
+			</h:panelGrid>	
+			
+			<p:commandButton value="Search USAH" update="add-member" id="search-usah" ajax="false" actionListener="#{usahBean.fetchUSAHockey()}"/>
+ 	
+ 	</p:fieldset>  
+	
+	<p:spacer width="10" height="10" />
+	
+  	<p:fieldset id="fs222" toggleable="false" toggleSpeed="500">  	      
+ 
+ 		<table>
+			<tr>
+			<td>
+			<h:panelGrid columns="2" cellpadding="3">  
+            	<h:outputText style="display:block;width:100px;!important" value="First Name:" />
+            	<h:outputText value="#{usahBean.getUsar().getFirstName()}" />
+            	<h:outputText value="Last Name:" />
+            	<h:outputText value="#{usahBean.getUsar().getLastName()}" />
+            	<h:outputText value="Middle Init:" />
+            	<h:outputText value="#{usahBean.getUsar().getMiddleInit()}" />
+			</h:panelGrid>  
+           	<p:separator id="separator23"/>
+			<h:panelGrid columns="2" cellpadding="3"> 
+				<h:outputText style="display:block;width:100px;!important" value="Address:" />
+            	<h:outputText value="#{usahBean.getUsar().getAddress()}" />
+				<h:outputText value="City:" />
+            	<h:outputText value="#{usahBean.getUsar().getCity()}" />
+				<h:outputText value="State, Country:" />
+             	<h:outputText value="#{usahBean.getUsar().getState()}, #{usahBean.getUsar().getCountry()}" />
+            	<h:outputText value="Zipcode:" />
+            	<h:outputText value="#{usahBean.getUsar().getZipcode()} #{usahBean.getUsar().getForZip()}" />
+            </h:panelGrid>  
+            </td>
+            <td>
+			<h:panelGrid columns="2" cellpadding="3">  
+            	<h:outputText style="display:block;width:100px;!important" value="DOB:" />
+            	<h:outputText value="#{usahBean.getUsar().getDOB()}" />
+            	<h:outputText value="Citizenship:" />
+            	<h:outputText value="#{usahBean.getUsar().getCitizen()}" />
+            	<h:outputText value="Gender:" />
+            	<h:outputText value="#{usahBean.getUsar().getGender()}" />
+			</h:panelGrid>  
+           	<p:separator id="separator2"/>
+			<h:panelGrid columns="2" cellpadding="3">  
+				<h:outputText style="display:block;width:100px;!important" value="Parent/Guardian:" />
+            	<h:outputText value="#{usahBean.getUsar().getPGSFName()} #{usahBean.getUsar().getPGSMName()} #{usahBean.getUsar().getPGSLName()}" />
+            	<h:outputText value="Home Phone:" />
+            	<h:outputText value="#{usahBean.getUsar().getHPhone()}" />
+				<h:outputText value="Work Phone:" />
+            	<h:outputText value="#{usahBean.getUsar().getBPhone()}" />
+            	<h:outputText value="e-mail:" />
+            	<h:outputText value="#{usahBean.getUsar().getEmail()}" />
+            </h:panelGrid>  
+            </td>
+            </tr>
+            </table>	
+   
+    </p:fieldset>
+    
+    <p:spacer width="10" height="10" />
+	
+  	<p:fieldset id="fs23" toggleable="false" toggleSpeed="500">  	      
+       <h:panelGrid columns="3" cellpadding="3"> 
+             <p:commandButton value="Cancel" update="add-member" id="cancel-add-mem" immediate="true" ajax="false" actionListener="#{profileBean.cancelAddMember()}" >
+            		<p:resetInput target="mp-form" />
+            </p:commandButton>
+            <p:commandButton global="false" rendered="#{usahBean.datagood}" value="Save Now" update="add-member,view-members" id="finish-add-mem" ajax="false" actionListener="#{usahBean.addNewMember()}"/> 
+           	 <p:message rendered="#{usahBean.datagood}" id="m_finish-add-mem" closable="true" for="finish-add-mem"/>
+		</h:panelGrid>
+	</p:fieldset>
+	</ui:fragment>            
+ </h:form>		
+ </div>
+</ui:define>
+</ui:composition>
+</h:body>
+</f:view>
+</html>

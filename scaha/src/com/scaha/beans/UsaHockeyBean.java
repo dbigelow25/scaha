@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.el.ValueExpression;
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
@@ -15,6 +17,7 @@ import com.gbli.context.ContextManager;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Person;
 import com.scaha.objects.Profile;
+import com.scaha.objects.ScahaPlayer;
 import com.scaha.objects.UsaHockeyRegistration;
 
 public class UsaHockeyBean implements Serializable, MailableObject {
@@ -30,6 +33,9 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 	private UsaHockeyRegistration usar = null;
 	private String regnumber = null;
 	private String dob = null;
+	private String membertype = null;
+	private String relationship = null;
+	private boolean datagood = false;
 	
 	/**
 	 * @return the usar
@@ -73,20 +79,45 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 	 */
 	public String fetchUSAHockey() {
 		
+		//
+		// clear it out first!!
+		//
+		this.usar = null;
 		try {
-			this.usar = USAHRegClient.pullRegistartionRecord(this.getRegnumber());
 			
-			if (!this.dob.equals(usar.getDOB())) {
-				
+			this.usar = USAHRegClient.pullRegistartionRecord(this.getRegnumber());
+
+			if (usar.getFirstName().length()== 0) {
 				FacesContext.getCurrentInstance().addMessage(
-					null,
+					"mp-form:usah-reg",
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "USA Hockey Info Not Found",
+                    "Could Not find the USA Registration record."));
+				return "false";
+			} 
+			if (!this.dob.equals(usar.getDOB())) {
+				FacesContext.getCurrentInstance().addMessage(
+					"mp-form:usah-dob",
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Date of Birth Match", usar.getDOB() + ":" + this.dob + "!.  The DOB you provided does not match what was pulled from USA Hockey.  Please check to see if your USA Hockey # and/or DOB is correct."));
+                    "Date of Birth Match", "The DOB you provided does not match what was pulled."));
+					this.usar = null;
+				return "false";
 			}
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		
+		FacesContext.getCurrentInstance().addMessage(
+				"mp-form:finish-add-mem",
+                new FacesMessage(FacesMessage.SEVERITY_INFO,"Successfull Lookup",
+                "Data looks good, CLICK Save Now to create a new Member."));
+		this.datagood = true;
+		
+		//
+		// We need to set Member Type to Manager.. because thats what the XX is for
+		if (this.usar.getUSAHnum().contains("XX")) {
+			this.membertype = "Manager";
 		}
 		return "true";
 	}
@@ -121,6 +152,107 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 		return "";
 		
 	}
+
+	/**
+	 * @return the membertype
+	 */
+	public String getMembertype() {
+		return membertype;
+	}
+
+	/**
+	 * @param membertype the membertype to set
+	 */
+	public void setMembertype(String membertype) {
+		this.membertype = membertype;
+	}
+
+	/**
+	 * @return the regtype
+	 */
+	public String getRelationship() {
+		return relationship;
+	}
+
+	/**
+	 * @param regtype the regtype to set
+	 */
+	public void setRelationship(String regtype) {
+		this.relationship = regtype;
+	}
 	
+
+	/**
+	 * @return the datagood
+	 */
+	public boolean isDatagood() {
+		return datagood;
+	}
+
+	/**
+	 * @param datagood the datagood to set
+	 */
+	public void setDatagood(boolean datagood) {
+		this.datagood = datagood;
+	}
+
+	/**
+	 * This guy adds a new member via a USAHockey pull request...
+	 * @return
+	 */
+	public String addNewMember() {
+		
+		//
+		// OK.. We know this guy is a new person.. but it is a family member first and forement...
+		
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		Application app = context.getApplication();
+
+		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{profileBean}", Object.class );
+
+		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
+		
+		ScahaPlayer sp = new ScahaPlayer(pb.getProfile());
+		
+		sp.gleanUSAHinfo(this.usar);
+
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		try{
+			sp.update(db);
+			usar.update(db, sp);
+			db.free();
+            context.addMessage(null, new FacesMessage("Successful", "I think we saved something.."));  
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		
+		return "true";
+
+	}
+	
+	public void reset() {
+		LOGGER.info("usaHockeyBean:reseting member variables...");
+		usar = null;
+		regnumber = null;
+		dob = null;
+		membertype = null;
+		relationship = null;
+		datagood = false;
+	}
+	
+	
+	
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "UsaHockeyBean [usar=" + usar + ", regnumber=" + regnumber
+				+ ", dob=" + dob + ", membertype=" + membertype
+				+ ", relationship=" + relationship + "]";
+	}
 
 }

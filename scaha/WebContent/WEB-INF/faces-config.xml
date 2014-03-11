@@ -20,6 +20,11 @@
 		<managed-bean-class>com.scaha.beans.PicklistRoleBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
+		<managed-bean>
+		<managed-bean-name>tabtrackBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.TabTrackBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>usahBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.UsaHockeyBean</managed-bean-class>
@@ -104,5 +109,11 @@
 		<display-name>Current Password Checker</display-name>
 		<validator-id>validateLivePassword</validator-id>
 		<validator-class>com.scaha.validators.LivePasswordValidator</validator-class>
+	</validator>
+	<validator>
+		<description>This checks to see that the USAHNumber is Correct and not in the System Yet</description>
+		<display-name>Check USAH Registration Number</display-name>
+		<validator-id>validateUSAHRegistration</validator-id>
+		<validator-class>com.scaha.validators.USAHRegistrationValidator</validator-class>
 	</validator>
 </faces-config>

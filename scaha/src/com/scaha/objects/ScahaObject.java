@@ -16,9 +16,13 @@ public abstract class ScahaObject implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-//	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
-	
 	private Profile m_pro = null;
+	
+	//
+	//  This represents the Key for the object
+	//
+	protected int ID = -1;
+	
 	
 	//
 	// Scaha Object have Inherent Collections..
@@ -27,44 +31,8 @@ public abstract class ScahaObject implements Serializable {
 	Hashtable<String,ScahaObject> hsh = new Hashtable<String, ScahaObject>();
 	
 	
-	//
-	//  This represents the Key for the object
-	//
-	String m_sKey = null;
-	int ID = -1;
 	
-	/**
-	 * @return the m_ID
-	 */
-	public int getID() {
-		return ID;
-	}
-
-	/**
-	 * @param m_ID the m_ID to set
-	 */
-	public void setID(int _iID) {
-		this.ID = _iID;
-	}
-
-	/**
-	 * This represents the unique Identifier of this object to the whole system
-	 * set it carefully...
-	 * @param _sKey
-	 */
-	public void setKey(String _sKey) {
-		m_sKey = _sKey;
-	}
-
-	/**
-	 * Retrieves the unique identifier of this object to the whole system
-	 * @return
-	 */
-	public String getKey() {
-		return m_sKey;
-	}
 	
-
 	public ScahaObject get(int _i, String _strObjClass) {
 		return hsh.get(_i + ":" + _strObjClass);
 	}
@@ -78,7 +46,7 @@ public abstract class ScahaObject implements Serializable {
 	}
 	
 	public void put(ScahaObject _so) {
-		hsh.put(_so.getID() + ":" + _so.getClass().getSimpleName(), _so);
+		hsh.put(_so.ID + ":" + _so.getClass().getSimpleName(), _so);
 		vct.add(_so);
 	}
 	
@@ -90,7 +58,7 @@ public abstract class ScahaObject implements Serializable {
 	public void removeAt (int _index) {
 		ScahaObject so = vct.elementAt(_index);
 		vct.removeElement(so);
-		hsh.remove(so.getID() + ":" +so.getClass().getSimpleName());
+		hsh.remove(so.ID + ":" +so.getClass().getSimpleName());
 	}
 	
 	public List getList() {
@@ -118,5 +86,5 @@ public abstract class ScahaObject implements Serializable {
 	public Profile getProfile () {
 		return m_pro;
 	}
-
+	
 }

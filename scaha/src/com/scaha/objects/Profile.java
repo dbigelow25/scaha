@@ -39,7 +39,7 @@ public class Profile extends ScahaObject {
 	
 	private Profile (int _id, ScahaDatabase _db, String _sNN, String _sUser, String _sPass) {
 		
-		super.setID(_id);
+		this.ID = _id;
 		m_sNickName = _sNN;
 		m_sUser = _sUser;
 		m_sPass = _sPass;
@@ -74,7 +74,7 @@ public class Profile extends ScahaObject {
 		m_sNickName = _sNN;
 		m_sUser = _sUser;
 		m_sPass = _sPass;
-		super.setID(0);
+		this.ID = 0;
 
 	}
 	
@@ -178,7 +178,7 @@ public class Profile extends ScahaObject {
 	}
 	
 	public String toString() {
-		return this.getID() + ":" + this.getNickName() + ":" + this.m_sUser;
+		return this.ID + ":" + this.getNickName() + ":" + this.m_sUser;
 	}
 	
 	
@@ -195,7 +195,7 @@ public class Profile extends ScahaObject {
 		
 		CallableStatement cs = db.prepareCall("call scaha.updateprofile(?,?,?,?,?,?,?)");
 		
-		cs.setInt(1, getID());
+		cs.setInt(1, this.ID);
 		cs.setString(2, this.m_sUser);
 		cs.setString(3, this.m_sPass);
 		cs.setString(4, this.m_sNickName);
@@ -207,10 +207,10 @@ public class Profile extends ScahaObject {
 		//
 		// Update the new ID from the database...
 		//
-		this.setID(cs.getInt(7));
+		this.ID = cs.getInt(7);
 		cs.close();
 
-		LOGGER.info("HERE IS THE NEW ID:" + this.getID());
+		LOGGER.info("HERE IS THE NEW ID:" + this.ID);
 
 	}
 }

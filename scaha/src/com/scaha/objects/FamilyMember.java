@@ -14,14 +14,25 @@ public class FamilyMember extends Person implements Serializable {
 	 * @param _per
 	 * @param _relationship
 	 */
-	public FamilyMember ( Profile _pro, int _id, int _ifmid, String _relationship) {
-		super(_id, _pro);
-		this.ifmID = _ifmid;
-		this.Relationship = _relationship;
+	public FamilyMember ( Profile _pro, int _personid, int _ifamilyid) {
+		super(_personid, _pro);
+		this.ifmID = _ifamilyid;
 	}
 	
 	public String getRelationship() {
 		return Relationship;
 	}
 	
+	public void setRelationship(String _s) {
+		this.Relationship = _s;
+	}
+	
+	public void setID(int _i) {
+		this.ifmID = _i;
+	}
+	
+	public int getID() {
+		return this.ifmID;
+	}
+
 }

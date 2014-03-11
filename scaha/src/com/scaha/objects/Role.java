@@ -31,11 +31,11 @@ public class Role extends ScahaObject implements Serializable {
 		Name = _strName;
 		Desc = _strDescription;
 		this.DefaultRole = _dr;
-		this.setID(_id);
+		this.ID = _id;
 	}
 	
 	public Role (int _id) {
-		this.setID(_id);
+		this.ID = _id;
 	}
 
 	/**
