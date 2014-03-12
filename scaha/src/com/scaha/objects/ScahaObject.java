@@ -21,7 +21,7 @@ public abstract class ScahaObject implements Serializable {
 	//
 	//  This represents the Key for the object
 	//
-	protected int ID = -1;
+	public int ID = -1;
 	
 	
 	//

@@ -16,6 +16,8 @@
 		 		<p:spacer width="40" height="30" />
 		 		 <!-- club registrar will see this link -->
 			    <h:outputLabel value="Club Registrar Tools"/>
+			    <p:commandLink value="Add Team(s)" id="create-team" ajax="false"  
+			             actionListener="#{adminnavigationBean.addTeam()}"/>
 			    <p:commandLink value="Create Player LOI" id="create-loi" ajax="false"  
 			             actionListener="#{adminnavigationBean.addLoi()}"/>
 			    <p:commandLink value="Create Coach LOI" id="create-coachloi" ajax="false"  
@@ -25,8 +27,10 @@
 			    <p:spacer width="40" height="30" />
 			    <!-- scaha registrar -->         
 			    <h:outputLabel value="SCAHA Registrar Tools"/>
-			    <p:commandLink value="Confirm LOI" id="confirm-loi" ajax="false"  
+			    <p:commandLink value="Confirm Player LOI" id="confirm-loi" ajax="false"  
 			             actionListener="#{adminnavigationBean.confirmLoi()}"/>
+			    <p:commandLink value="Confirm Coach LOI" id="confirm-coach-loi" ajax="false"  
+			             actionListener="#{adminnavigationBean.confirmcoachLoi()}"/>
 		    </h:panelGrid>
 	    </h:form>
 	 </ui:define>

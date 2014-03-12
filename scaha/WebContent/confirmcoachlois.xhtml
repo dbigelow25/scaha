@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="content">
+	
+	<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top">  
+    	<h:outputText value="SCAHA" style="color:#FFCC00;font-size:36px;" />  
+	</p:notificationBar>  
+  	<h:form id="mess">
+    
+			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />    
+	
+		</h:form>
+	<h:form>
+			<p:panel id ="panel" header="Your Club's Coach/Manager Loi's:">
+				<h:panelGrid columns="2" cellpadding="5">
+					<h:column><b>Display Loi's:</b></h:column>
+					<h:column>
+						<p:selectOneMenu value="#{reviewcoachloiBean.selectedtabledisplay}" >
+					    	<f:selectItem itemLabel="For Today" itemValue="1"/>
+					    	<f:selectItem itemLabel="For Club" itemValue="4"/>
+					    </p:selectOneMenu>
+					</h:column>
+					<h:column><b>Club (only applies to "For Club" search):</b></h:column>
+					<h:column>
+						<p:selectOneMenu value="#{reviewcoachloiBean.selectedclub}" >
+					    	<f:selectItem itemLabel="Select One" itemValue=""/>
+					    	<f:selectItems value="#{reviewcoachloiBean.getListofClubs()}" var="club" itemLabel="#{club.getClubname()}" itemValue="#{club.getClubid()}"/>
+					    </p:selectOneMenu>
+					</h:column>
+					<h:column>
+						<p:commandButton id="updatedisplay" value="Load Loi's" actionListener="#{reviewcoachloiBean.coachesDisplay()}" ajax="true" update="listofcoaches"/>
+					</h:column>
+				</h:panelGrid>
+				<br></br>
+				<p:dataTable id="listofcoaches" var="coach" rowKey="#{coach.IDcoach}" value="#{reviewcoachloiBean.getCoachdatamodel()}" selection="#{reviewcoachloiBean.selectedcoach}" paginator="true" rows="10" autoupdate="false">
+                	<!--  <p:column headerText="Player ID">  
+			            <h:outputText value="#{player.getIdplayer()}" />  
+			        </p:column>-->  
+			        <p:column headerText="First Name">  
+			            <h:outputText value="#{coach.getFirstname()}" />  
+			        </p:column>  
+			        <p:column headerText="Last Name">  
+			            <h:outputText value="#{coach.getLastname()}" />  
+			        </p:column>  
+			        <p:column headerText="2014 Team">  
+			            <h:outputText value="#{coach.getTeamname()}" />  
+			        </p:column>
+			        <p:column headerText="LOI Date">  
+			            <h:outputText value="#{coach.getLoidate()}" />  
+			        </p:column>
+			        <p:column headerText="Screening Expires">  
+			            <h:outputText value="#{coach.getScreeningexpires()}" />  
+			        </p:column>
+			        <p:column headerText="CEP Number">  
+			            <h:outputText value="#{coach.getCepnumber()}" />  
+			        </p:column>
+			        <p:column headerText="CEP Level">  
+			            <h:outputText value="#{coach.getCeplevel()}" />  
+			        </p:column>
+			        <p:column headerText="CEP Expires">  
+			            <h:outputText value="#{coach.getCepexpires()}" />  
+			        </p:column>
+			        <p:column headerText="8U">  
+			            <h:outputText value="#{coach.getU8()}" />  
+			        </p:column>
+			        <p:column headerText="10U">  
+			            <h:outputText value="#{coach.getU10()}" />  
+			        </p:column>
+			        <p:column headerText="12U">  
+			            <h:outputText value="#{coach.getU12()}" />  
+			        </p:column>
+			        <p:column headerText="14U">  
+			            <h:outputText value="#{coach.getU14()}" />  
+			        </p:column>
+			        <p:column headerText="18U">  
+			            <h:outputText value="#{coach.getU18()}" />  
+			        </p:column>
+			        <p:column headerText="Girls">  
+			            <h:outputText value="#{coach.getGirls()}" />  
+			        </p:column>
+			        <p:column headerText="Option" >  
+			             <p:splitButton id="wwtransfer" value="Work with "  >
+					        <p:menuitem value="Coach Details" action="#{reviewcoachloiBean.addCoachdetails(coach)}" />
+					        <p:menuitem value="Void LOI" action="#{reviewcoachloiBean.voidLoi(coach)}"/>
+					    </p:splitButton>
+					</p:column>
+			    </p:dataTable>
+			</p:panel>
+			
+			<p:separator id="customSeparator" style="width:800px;height:2px" />    
+	</h:form>
+	<h:form>
+			<div align="center"><p:commandButton id="closeaddteams" value="Close" ajax="false" actionListener="#{reviewcoachloiBean.closePage()}"/></div>
+	</h:form>
+	</ui:define>
+</ui:composition>

@@ -71,7 +71,7 @@ public class loiBean implements Serializable {
 				"#{profileBean}", Object.class );
 
 		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
-    	this.setProfid(pb.getProfile().getID());
+    	this.setProfid(pb.getProfile().ID);
     	
 		//will need to load player profile information for displaying loi
 		HttpServletRequest hsr = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();

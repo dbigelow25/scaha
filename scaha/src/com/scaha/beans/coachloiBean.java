@@ -56,8 +56,8 @@ public class coachloiBean implements Serializable {
 	private String cepnumber = null;
 	private String ceplevel = null;
 	private String cepexpires = null;
-	private String boysteams = null;
-	private String girlsteams = null;
+	private List<String> boysteams = null;
+	private List<String> girlsteams = null;
 	private String cepmoduledisplaystring = null;
 	
     
@@ -74,7 +74,7 @@ public class coachloiBean implements Serializable {
 				"#{profileBean}", Object.class );
 
 		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
-    	this.setProfid(pb.getProfile().getID());
+    	this.setProfid(pb.getProfile().ID);
     	
 		//will need to load player profile information for displaying loi
 		HttpServletRequest hsr = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
@@ -99,19 +99,19 @@ public class coachloiBean implements Serializable {
     }
     
     
-    public void setGirlsteams(String snumber){
+    public void setGirlsteams(List<String> snumber){
     	girlsteams = snumber;
     }
     
-    public String getGirlsteams(){
+    public List<String> getGirlsteams(){
     	return girlsteams;
     }
     
-    public void setBoysteams(String snumber){
+    public void setBoysteams(List<String> snumber){
     	boysteams = snumber;
     }
     
-    public String getBoysteams(){
+    public List<String> getBoysteams(){
     	return boysteams;
     }
     
@@ -385,6 +385,7 @@ public class coachloiBean implements Serializable {
         				screeningexpires = rs.getString("screeningexpires");
         				cepnumber = rs.getString("cepnumber");
         				ceplevel = rs.getString("ceplevel");
+        				email = rs.getString("email");
         				
         				if (ceplevel.equals("1")){
         					ceplevel = "Level 1";
@@ -415,7 +416,7 @@ public class coachloiBean implements Serializable {
     			v = new Vector<Integer>();
     			v.add(selectedcoach);
     			db.getData("CALL scaha.getCoachTeams(?)", v);
-    		    
+    		    List<String> tempteams = new ArrayList<String>();
     			String teamname = null;
     			
     			if (db.getResultSet() != null){
@@ -423,11 +424,12 @@ public class coachloiBean implements Serializable {
     				rs = db.getResultSet();
     				
     				while (rs.next()) {
-    					teamname = rs.getString("teamname") + "</br>" ;
+    					teamname = rs.getString("teamname");
+    					tempteams.add(teamname);
     				}
     				LOGGER.info("We have results for teams for the coach");
     			}
-    			this.boysteams = teamname;
+    			this.setBoysteams(tempteams);
     			teamname = "";
     			db.cleanup();
     			
@@ -435,17 +437,19 @@ public class coachloiBean implements Serializable {
     			v = new Vector<Integer>();
     			v.add(selectedcoach);
     			db.getData("CALL scaha.getCoachGirlsTeams(?)", v);
-    		    
+    			List<String> tempgirlteams = new ArrayList<String>();
+    			
     			if (db.getResultSet() != null){
     				//need to add to an array
     				rs = db.getResultSet();
     				
     				while (rs.next()) {
-    					teamname = teamname + rs.getString("teamname") + "</br>" ;
+    					teamname = rs.getString("teamname");
+    					tempgirlteams.add(teamname);
     				}
     				LOGGER.info("We have results for teams for the coach");
     			}
-    			this.girlsteams = teamname;
+    			this.setGirlsteams(tempgirlteams);
     			teamname = "";
     			db.cleanup();
     			
@@ -508,7 +512,7 @@ public class coachloiBean implements Serializable {
 	    		    cs.setString("icity", this.city);
 	    		    cs.setString("istate", this.state);
 	    		    cs.setString("izipcode", this.zip);
-	    			rs = cs.executeQuery();
+	    		    rs = cs.executeQuery();
 	    			
 	    			//need to save coaches screening and cep stuff
 	    			LOGGER.info("updating coach record");

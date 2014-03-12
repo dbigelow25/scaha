@@ -52,7 +52,7 @@ public class registrarloiBean implements Serializable {
 				"#{profileBean}", Object.class );
 
 		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
-    	this.setProfid(pb.getProfile().getID());
+    	this.setProfid(pb.getProfile().ID);
     	
     	players = new ArrayList<Player>();  
         PlayerDataModel = new PlayerDataModel(players);

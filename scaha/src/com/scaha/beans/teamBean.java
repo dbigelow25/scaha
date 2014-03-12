@@ -6,8 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.el.ValueExpression;
+import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 
 import com.gbli.connectors.ScahaDatabase;
@@ -25,7 +28,7 @@ public class teamBean implements Serializable {
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
-	private ResultSet rs = null;
+	transient private ResultSet rs = null;
 	private List<Team> teams = null;
     private List<Division> divisions= null;
     private List<SkillLevel> skilllevels= null;
@@ -36,13 +39,23 @@ public class teamBean implements Serializable {
 	private Integer idclub = null;
 	private Team selectedteam = null;
 	private String teamstabletitle = null;
-    
+	private Integer profileid = 0;
+	
     public teamBean() {  
         teams = new ArrayList<Team>();  
         TeamDataModel = new TeamDataModel(teams);
         
         idclub = 1;  
-        
+        FacesContext context = FacesContext.getCurrentInstance();
+    	Application app = context.getApplication();
+
+		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{profileBean}", Object.class );
+
+		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
+    	this.setProfid(pb.getProfile().ID);
+        getClubID();
+    	
         populateTableTitle(idclub);
         teamsForClub(idclub); 
   
@@ -50,6 +63,15 @@ public class teamBean implements Serializable {
         
         
     }  
+    
+    public Integer getProfid(){
+    	return profileid;
+    }
+    
+    public void setProfid(Integer idprofile){
+    	profileid = idprofile;
+    }
+    
     
     public String getTeamstabletitle(){
 		return teamstabletitle;
@@ -391,5 +413,39 @@ public class teamBean implements Serializable {
 		}
     	
     }
+    
+public void getClubID(){
+		
+		//first lets get club id for the logged in profile
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
+			Vector<Integer> v = new Vector<Integer>();
+			v.add(this.getProfid());
+			db.getData("CALL scaha.getClubforPerson(?)", v);
+		    
+			if (db.getResultSet() != null){
+				//need to add to an array
+				rs = db.getResultSet();
+				
+				while (rs.next()) {
+					this.idclub = rs.getInt("idclub");
+					}
+				LOGGER.info("We have results for club for a profile");
+			}
+			db.cleanup();
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN loading club by profile");
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+		
+	}
 }
 

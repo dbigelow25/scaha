@@ -36,6 +36,17 @@ public class adminnavigationBean implements Serializable {
         //
     }  
  
+    public void addTeam(){
+        
+    	FacesContext context = FacesContext.getCurrentInstance();
+    	try{
+    		context.getExternalContext().redirect("addteams.xhtml");
+    	} catch (IOException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}
+    	
+    }
     
     public void addLoi(){
     
@@ -78,6 +89,18 @@ public class adminnavigationBean implements Serializable {
     	FacesContext context = FacesContext.getCurrentInstance();
     	try{
     		context.getExternalContext().redirect("confirmlois.xhtml");
+    	} catch (IOException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}
+    	
+    }
+    
+    public void confirmcoachLoi(){
+        
+    	FacesContext context = FacesContext.getCurrentInstance();
+    	try{
+    		context.getExternalContext().redirect("confirmcoachlois.xhtml");
     	} catch (IOException e) {
     		// TODO Auto-generated catch block
     		e.printStackTrace();

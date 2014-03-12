@@ -64,7 +64,7 @@
 	<managed-bean>
 		<managed-bean-name>teamBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.teamBean</managed-bean-class>
-		<managed-bean-scope>view</managed-bean-scope>
+		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>reviewloiBean</managed-bean-name>
@@ -77,6 +77,11 @@
 		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
+		<managed-bean-name>coachrosteractionBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.coachrosteractionBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
 		<managed-bean-name>adminnavigationBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.adminnavigationBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
@@ -86,6 +91,12 @@
 		<managed-bean-class>com.scaha.beans.registrarloiBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>reviewcoachloiBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.reviewcoachloiBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	
 	<validator>
 		<description>This will validate the Username to ensure its unique in the system</description>
 		<display-name>User Name Validator</display-name>
