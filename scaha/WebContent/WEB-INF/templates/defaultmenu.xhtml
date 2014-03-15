@@ -20,7 +20,6 @@
 	<p:menuitem  value="2013 Mite Program" url="http://mail.yahoo.com" />
 </p:menuButton>
 <p:spacer width="2px"/>
-<<<<<<< HEAD
 <p:commandButton id="menu2"  style="width:100px;" value="Season Info" type="button"/>  
    <p:menu overlay="true" trigger="menu2" my="left top" at="left bottom">  
 		<p:menuitem style="font-size: 12px;" value="Scholarship Athlete Programs" url="http://www.google.com" />
@@ -29,26 +28,10 @@
    </p:menu>
 <p:commandButton id="menu3"  style="width:100px;" value="Club Info" type="button"/> 
 <p:commandButton id="menu4"  style="width:100px;" value="Programs" type="button"/> 
-<p:commandButton id="adminmenu" style="width:100px;" value="Admin" type="button" rendered="false"/>
- </p:toolbarGroup>
-=======
-<p:menuButton id="menu2"  style="width:110px;" value="Season info" type="button"/>  
- 	<p:menuitem style="font-size: 11px;" value="Scholarship Athlete Programs" url="http://www.google.com" />
-	<p:menuitem style="font-size: 11px;" value="Anaheim Ducks" url="http://www.hotmail.com" />
-	<p:menuitem style="font-size: 11px;" value="Los Angeles Kings" url="http://mail.yahoo.com" />
-<p:menuButton id="menu3"  style="width:110px;" value="Club Info" type="button"> 
-	<p:menuitem  value="Club Registrar" url="http://www.hotmail.com" />
-</p:menuButton>
-<p:spacer width="2px"/>
-<p:menuButton id="menu4"  style="width:110px;" value="Documentation" type="button"/> 
-<p:spacer width="2px"/>
 </p:toolbarGroup>
-
 <p:toolbarGroup align="left" rendered="#{not empty profileBean.getProfile()}"> 
-<p:commandButton id="menu5"  style="width:100px;" value="My Info" type="button"/> 
-    <!-- THIS SECTION WILL BE PROGROMATICALLY FILLED -->
+	<p:commandButton id="menu5"  style="width:100px;" value="My Info" type="button"/> 
 </p:toolbarGroup>
->>>>>>> 040366d5594ab665c63264576c4c08f0d557593f
 <p:toolbarGroup align="right" rendered="#{not empty profileBean.getProfile()}"> 
 			<h:outputText value="Welcome #{profileBean.getNickName()}"></h:outputText>
 			<p:separator />  
