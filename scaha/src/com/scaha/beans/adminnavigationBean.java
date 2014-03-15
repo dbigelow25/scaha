@@ -33,7 +33,9 @@ public class adminnavigationBean implements Serializable {
 	
 	
     public adminnavigationBean() {  
-        //
+        //need to get the roles and setup the navigation permissions
+    	
+    	
     }  
  
     public void addTeam(){

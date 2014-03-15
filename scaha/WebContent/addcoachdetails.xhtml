@@ -9,69 +9,63 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	<ui:define name="content">
+		<div id="page-div">
+		<p:tabMenu activeIndex="0">  
+		    <p:menuitem value="Certification Information" url="#" icon="ui-icon-star" />  
+		</p:tabMenu>  
 		<h:form id="mess">
-    
-			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />    
-	
+    		<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />    
 		</h:form>
-		
+		<p:spacer width="10" height="10" />
+		<ui:fragment id="edit-transfers" >
 		<h:form>
-		<p:panel id ="panel" header="Add Coach Ingormation">
-			
+			<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">
 			<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" width="90%">
-				<f:facet name="header">
-						<h:column colspan="2">Coach Information</h:column>
-				</f:facet>	
 				<h:column><b>2014 Transfer for <h:outputText value="#{coachrosteractionBean.coachname}"/></b></h:column>
-				
 			</h:panelGrid>
-			
-			 <p:tabView id="tabView">    
-  
-    			<p:tab title="Certification Information">  
-  					<table cellpadding="5" cellspacing="0" width="90%">
-						<tr>
-							<td><b>Screening Expires:</b></td>
-							<td align="left"><p:inputText id="screeningexpires" style="width:100px;" value="#{coachrosteractionBean.screeningexpires}" /></td>
-							<td><b>CEP#:</b></td>
-							<td align="left"><p:inputText id="cepnumber" style="width:100px;" value="#{coachrosteractionBean.cepnumber}" /></td>
-							<td><b>CEP Level:</b></td>
-							<td align="left">
-								<p:selectOneMenu value="#{coachrosteractionBean.ceplevel}">
-							    	<f:selectItem itemLabel="Select One" itemValue="0"/>
-							    	<f:selectItem itemLabel="Level 1" itemValue="1"/>
-							    	<f:selectItem itemLabel="Level 2" itemValue="2"/>
-							    	<f:selectItem itemLabel="Level 3" itemValue="3"/>
-							    	<f:selectItem itemLabel="Level 4" itemValue="4"/>
-							    	<f:selectItem itemLabel="Level 5" itemValue="5"/>
-							    </p:selectOneMenu>
-							</td>
-						</tr>
-						<tr>
-							<td><b>CEP Expires:</b></td>
-							<td align="left"><p:inputText id="cepexpires" style="width:100px;" value="#{coachrosteractionBean.cepexpires}" /></td>
-							<td><b>CEP Modules Completed:</b></td>
-							<td align="left" colspan="3">
-								<p:selectManyMenu id="cepmodules" value="#{coachrosteractionBean.cepmodulesselected}" style="width:100px;height:75px">
-							    	<f:selectItem itemLabel="8U" itemValue="8U" />  
-						            <f:selectItem itemLabel="10U" itemValue="10U" />  
-						            <f:selectItem itemLabel="12U" itemValue="12U" />
-						            <f:selectItem itemLabel="14U" itemValue="14U" />
-						            <f:selectItem itemLabel="18U" itemValue="18U" />
-						            <f:selectItem itemLabel="Girls" itemValue="Girls" />
-							    </p:selectManyMenu>
-							</td>
-						</tr>
-					</table>	
-					<div align="center"><p:commandButton id="completecoach" value="Save Coaching Certification" actionListener="#{coachrosteractionBean.completeCoachDetails()}" ajax="true"/></div>
-					
-				</p:tab>
-        	</p:tabView>  
-        	
-		</p:panel>		
+			<table cellpadding="5" cellspacing="0" width="90%">
+				<tr>
+					<td><b>Screening Expires:</b></td>
+					<td align="left"><p:inputText id="screeningexpires" style="width:100px;" value="#{coachrosteractionBean.screeningexpires}" /></td>
+					<td><b>CEP#:</b></td>
+					<td align="left"><p:inputText id="cepnumber" style="width:100px;" value="#{coachrosteractionBean.cepnumber}" /></td>
+					<td><b>CEP Level:</b></td>
+					<td align="left">
+						<p:selectOneMenu value="#{coachrosteractionBean.ceplevel}">
+					    	<f:selectItem itemLabel="Select One" itemValue="0"/>
+					    	<f:selectItem itemLabel="Level 1" itemValue="1"/>
+					    	<f:selectItem itemLabel="Level 2" itemValue="2"/>
+					    	<f:selectItem itemLabel="Level 3" itemValue="3"/>
+					    	<f:selectItem itemLabel="Level 4" itemValue="4"/>
+					    	<f:selectItem itemLabel="Level 5" itemValue="5"/>
+					    </p:selectOneMenu>
+					</td>
+				</tr>
+				<tr>
+					<td><b>CEP Expires:</b></td>
+					<td align="left"><p:inputText id="cepexpires" style="width:100px;" value="#{coachrosteractionBean.cepexpires}" /></td>
+					<td><b>CEP Modules Completed:</b></td>
+					<td align="left" colspan="3">
+						<p:selectManyMenu id="cepmodules" value="#{coachrosteractionBean.cepmodulesselected}" style="width:100px;height:75px">
+					    	<f:selectItem itemLabel="8U" itemValue="8U" />  
+				            <f:selectItem itemLabel="10U" itemValue="10U" />  
+				            <f:selectItem itemLabel="12U" itemValue="12U" />
+				            <f:selectItem itemLabel="14U" itemValue="14U" />
+				            <f:selectItem itemLabel="18U" itemValue="18U" />
+				            <f:selectItem itemLabel="Girls" itemValue="Girls" />
+					    </p:selectManyMenu>
+					</td>
+				</tr>
+			</table>	
+			<div align="center"><p:commandButton id="completecoach" value="Save Coaching Certification" actionListener="#{coachrosteractionBean.completeCoachDetails()}" ajax="true"/></div>
+			</p:fieldset>
 		</h:form>
+		</ui:fragment>
+		<p:fieldset id="fs2" toggleable="false" toggleSpeed="500">
 		<h:form>
 			<div align="center"><p:commandButton id="closecoach" value="Close" ajax="false" actionListener="#{coachrosteractionBean.Close()}"/></div>
-	</h:form>
+		</h:form>
+		</p:fieldset>
+		</div>
 	</ui:define>
 </ui:composition>

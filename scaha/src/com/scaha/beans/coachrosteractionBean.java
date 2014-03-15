@@ -30,7 +30,7 @@ public class coachrosteractionBean implements Serializable {
 	private String coachname = null;
 	private String screeningexpires = null;
 	private String cepnumber = null;
-	private String ceplevel = null;
+	private Integer ceplevel = null;
 	private String cepexpires = null;
 	private String u8 = null;
 	private String u10 = null;
@@ -149,11 +149,11 @@ public class coachrosteractionBean implements Serializable {
     	return cepexpires;
     }
     
-    public void setCeplevel(String snumber){
+    public void setCeplevel(Integer snumber){
     	ceplevel = snumber;
     }
     
-    public String getCeplevel(){
+    public Integer getCeplevel(){
     	return ceplevel;
     }
     
@@ -214,9 +214,9 @@ public class coachrosteractionBean implements Serializable {
     					coachname = rs.getString("fname") + ' ' + rs.getString("lname");
     					screeningexpires = rs.getString("screeningexpires");
         				cepnumber = rs.getString("cepnumber");
-        				ceplevel = rs.getString("ceplevel");
+        				ceplevel = rs.getInt("ceplevel");
         				
-        				if (ceplevel.equals("1")){
+        				/*if (ceplevel.equals("1")){
         					ceplevel = "Level 1";
         				}
         				if (ceplevel.equals("2")){
@@ -233,7 +233,7 @@ public class coachrosteractionBean implements Serializable {
         				}
         				if (ceplevel.equals("0")){
         					ceplevel = "";
-        				}
+        				}*/
         				cepexpires = rs.getString("cepexpires");
         				
         				List<String> templist = new ArrayList<String>();
@@ -298,7 +298,7 @@ public class coachrosteractionBean implements Serializable {
     		    cs.setInt("coachid", Integer.parseInt(this.selectedcoach));
     		    cs.setString("screenexpires", this.screeningexpires);
     		    cs.setString("cepnum", this.cepnumber);
-    		    cs.setInt("levelcep", Integer.parseInt(this.ceplevel));
+    		    cs.setInt("levelcep", this.ceplevel);
     		    cs.setString("cepexpire", this.cepexpires);
     		    
     		    //need to set values for modules

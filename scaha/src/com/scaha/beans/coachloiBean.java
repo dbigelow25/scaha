@@ -54,11 +54,19 @@ public class coachloiBean implements Serializable {
 	private Integer profileid = 0;
 	private String screeningexpires = null;
 	private String cepnumber = null;
-	private String ceplevel = null;
+	private Integer ceplevel = 0;
+	private String cepleveldisplay = null;
 	private String cepexpires = null;
 	private List<String> boysteams = null;
 	private List<String> girlsteams = null;
 	private String cepmoduledisplaystring = null;
+	private String u8 = null;
+	private String u10 = null;
+	private String u12 = null;
+	private String u14 = null;
+	private String u18 = null;
+	private String girls = null;
+	
 	
     
     public coachloiBean() {  
@@ -98,6 +106,82 @@ public class coachloiBean implements Serializable {
     	return cepmoduledisplaystring;
     }
     
+    public void setGirls(String snumber){
+    	if (snumber.equals("0")){
+    		girls = "No";
+    	} else {
+    		girls = "Yes";
+    	}
+		
+    }
+    
+	public String getGirls(){
+    	return girls;
+    }
+	
+	public void setU18(String snumber){
+    	if (snumber.equals("0")){
+    		u18 = "No";
+    	} else {
+    		u18 = "Yes";
+    	}
+		
+    }
+    
+	public String getU18(){
+    	return u18;
+    }
+	
+	public void setU14(String snumber){
+    	if (snumber.equals("0")){
+    		u14 = "No";
+    	} else {
+    		u14 = "Yes";
+    	}
+		
+    }
+    
+	public String getU14(){
+    	return u14;
+    }
+	
+	public void setU12(String snumber){
+    	if (snumber.equals("0")){
+    		u12 = "No";
+    	} else {
+    		u12 = "Yes";
+    	}
+		
+    }
+    
+	public String getU12(){
+    	return u12;
+    }
+	
+	public void setU10(String snumber){
+    	if (snumber.equals("0")){
+    		u10 = "No";
+    	} else {
+    		u10 = "Yes";
+    	}
+		
+    }
+    
+	public String getU10(){
+    	return u10;
+    }
+	public void setU8(String snumber){
+    	if (snumber.equals("0")){
+    		u8 = "No";
+    	} else {
+    		u8 = "Yes";
+    	}
+		
+    }
+    
+	public String getU8(){
+    	return u8;
+    }
     
     public void setGirlsteams(List<String> snumber){
     	girlsteams = snumber;
@@ -123,12 +207,20 @@ public class coachloiBean implements Serializable {
     	return cepexpires;
     }
     
-    public void setCeplevel(String snumber){
+    public void setCeplevel(Integer snumber){
     	ceplevel = snumber;
     }
     
-    public String getCeplevel(){
+    public Integer getCeplevel(){
     	return ceplevel;
+    }
+    
+    public void setCepleveldisplay(String snumber){
+    	cepleveldisplay = snumber;
+    }
+    
+    public String getCepleveldisplay(){
+    	return cepleveldisplay;
     }
     
     public void setCepnumber(String snumber){
@@ -384,29 +476,55 @@ public class coachloiBean implements Serializable {
         				homenumber = rs.getString("phone");
         				screeningexpires = rs.getString("screeningexpires");
         				cepnumber = rs.getString("cepnumber");
-        				ceplevel = rs.getString("ceplevel");
+        				ceplevel = rs.getInt("ceplevel");
         				email = rs.getString("email");
         				
-        				if (ceplevel.equals("1")){
-        					ceplevel = "Level 1";
+        				if (ceplevel.equals(1)){
+        					cepleveldisplay = "Level 1";
         				}
         				if (ceplevel.equals("2")){
-        					ceplevel = "Level 2";
+        					cepleveldisplay = "Level 2";
         				}
         				if (ceplevel.equals("3")){
-        					ceplevel = "Level 3";
+        					cepleveldisplay = "Level 3";
         				}
         				if (ceplevel.equals("4")){
-        					ceplevel = "Level 4";
+        					cepleveldisplay = "Level 4";
         				}
         				if (ceplevel.equals("5")){
-        					ceplevel = "Level 5";
+        					cepleveldisplay = "Level 5";
         				}
         				if (ceplevel.equals("0")){
-        					ceplevel = "";
+        					cepleveldisplay = "";
         				}
         				cepexpires = rs.getString("cepexpires");
-        				
+        				List<String> templist = new ArrayList<String>();
+        				u8 = rs.getString("eightu");
+        				if (u8.equals("1")){
+        					templist.add("8U");
+        				}
+        				u10 = rs.getString("tenu");
+        				if (u10.equals("1")){
+        					templist.add("10U");
+        				}
+        				u12 = rs.getString("twelveu");
+        				if (u12.equals("1")){
+        					templist.add("12U");
+        				}
+        				u14 = rs.getString("fourteenu");
+        				if (u14.equals("1")){
+        					templist.add("14U");
+        				}
+        				u18 = rs.getString("eighteenu");
+        				if (u18.equals("1")){
+        					templist.add("18U");
+        				}
+        				girls = rs.getString("girls");
+        				if (girls.equals("1")){
+        					templist.add("Girls");
+        				}
+        			
+        				setCepmodulesselected(templist);
         			}
     				LOGGER.info("We have results for player details by player id");
     			}
@@ -520,7 +638,7 @@ public class coachloiBean implements Serializable {
 	    		    cs.setInt("coachid", this.selectedcoach);
 	    		    cs.setString("screenexpires", this.screeningexpires);
 	    		    cs.setString("cepnum", this.cepnumber);
-	    		    cs.setString("levelcep", this.ceplevel);
+	    		    cs.setString("levelcep", this.ceplevel.toString());
 	    		    cs.setString("cepexpire", this.cepexpires);
 	    		    
 	    		    //need to set values for modules
@@ -686,7 +804,7 @@ public class coachloiBean implements Serializable {
 		
 		FacesContext context = FacesContext.getCurrentInstance();
 		try{
-			context.getExternalContext().redirect("addplayerstoteam.xhtml");
+			context.getExternalContext().redirect("addcoachestoteam.xhtml");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

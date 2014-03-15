@@ -29,7 +29,7 @@
    </p:menu>
 <p:commandButton id="menu3"  style="width:100px;" value="Club Info" type="button"/> 
 <p:commandButton id="menu4"  style="width:100px;" value="Programs" type="button"/> 
-<p:commandButton id="menu5"  style="width:100px;" value="About Scaha" type="button"/> 
+<p:commandButton id="adminmenu" style="width:100px;" value="Admin" type="button" rendered="false"/>
  </p:toolbarGroup>
 <p:toolbarGroup align="right" rendered="#{not empty profileBean.getProfile()}"> 
 			<h:outputText value="Welcome #{profileBean.getNickName()}"></h:outputText>

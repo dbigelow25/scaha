@@ -44,10 +44,10 @@
                 	<!--  <p:column headerText="Player ID">  
 			            <h:outputText value="#{player.getIdplayer()}" />  
 			        </p:column>-->  
-			        <p:column headerText="First Name">  
+			        <p:column filterBy="firstname" filterMatchMode="contains" filterStyle="width:50px" headerText="First Name">  
 			            <h:outputText value="#{coach.getFirstname()}" />  
 			        </p:column>  
-			        <p:column headerText="Last Name">  
+			        <p:column filterBy="lastname" filterMatchMode="contains" filterStyle="width:50px" headerText="Last Name">  
 			            <h:outputText value="#{coach.getLastname()}" />  
 			        </p:column>  
 			        <p:column headerText="2014 Team">  

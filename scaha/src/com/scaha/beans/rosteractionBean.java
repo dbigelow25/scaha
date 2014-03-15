@@ -35,7 +35,8 @@ public class rosteractionBean implements Serializable {
 	private String expirationdate = null;
 	private Integer transferid = null;
 	private Integer birthcertificate = null;
-	
+	private String gotoTransferInformation = null;
+	private String gotoCitizenship = null;
 	
     public rosteractionBean() {  
         //will need to load player profile information for displaying citienship and transfer informatoin
@@ -54,7 +55,25 @@ public class rosteractionBean implements Serializable {
     	loadPlayerProfile(selectedplayer);
 
     	//doing anything else right here
+    	gotoTransferInformation = "addtransfercitizenship.xhtml?playerid=" + this.selectedplayer;
+    	gotoCitizenship = "managecitizenship.xhtml?playerid=" + this.selectedplayer;
     }  
+    
+    public void setGotoTransferInformation(String url){
+    	gotoTransferInformation = url;
+    }
+    
+    public String getGotoTransferInformation(){
+    	return gotoTransferInformation;
+    }
+    
+    public void setGotoCitizenship(String url){
+    	gotoCitizenship = url;
+    }
+    
+    public String getGotoCitizenship(){
+    	return gotoCitizenship;
+    }
     
     public Integer getBirthcertificate(){
     	return birthcertificate;
@@ -231,6 +250,8 @@ public class rosteractionBean implements Serializable {
     		    cs.setInt("playerid", Integer.parseInt(this.selectedplayer));
     		    cs.setInt("certificate", this.birthcertificate);
     		    
+    		    rs = cs.executeQuery();
+    		    
     		    db.commit();
     			db.cleanup();
  				
@@ -265,5 +286,6 @@ public class rosteractionBean implements Serializable {
 			e.printStackTrace();
 		} 
 	}
+	
 }
 
