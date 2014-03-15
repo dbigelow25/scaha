@@ -27,10 +27,19 @@
 		<p:menuitem style="font-size: 12px;" value="Los Angeles Kings" url="http://mail.yahoo.com" />
    </p:menu>
 <p:commandButton id="menu3"  style="width:100px;" value="Club Info" type="button"/> 
-<p:commandButton id="menu4"  style="width:100px;" value="Programs" type="button"/> 
+<p:commandButton id="menu4"  style="width:100px;" value="Documentation" type="button"/>
 </p:toolbarGroup>
 <p:toolbarGroup align="left" rendered="#{not empty profileBean.getProfile()}"> 
-	<p:commandButton id="menu5"  style="width:100px;" value="My Info" type="button"/> 
+	<p:commandButton id="menu5"  style="width:100px;" value="My Info" type="button" />
+	<p:menu overlay="true" trigger="menu5" my="left top" at="left bottom">  
+		<p:menuitem style="font-size: 12px;" value="Add Teams" url="addteams.xhtml" rendered="#{adminnavigationBean.clubregistrar}"/>
+		<p:menuitem style="font-size: 12px;" value="Create Player LOI" url="addplayerstoteam.xhtml" rendered="#{adminnavigationBean.clubregistrar}"/>
+		<p:menuitem style="font-size: 12px;" value="Create Coach LOI" url="addcoachestoteam.xhtml" rendered="#{adminnavigationBean.clubregistrar}"/>
+		<p:menuitem style="font-size: 12px;" value="Review LOI's" url="registrarviewlois.xhtml" rendered="#{adminnavigationBean.clubregistrar}"/>
+		<p:menuitem style="font-size: 12px;" value="Confirm Player LOI's" url="confirmlois.xhtml" rendered="#{adminnavigationBean.scaharegistrar}"/>
+		<p:menuitem style="font-size: 12px;" value="Confirm Coach LOI's" url="confirmcoachlois.xhtml" rendered="#{adminnavigationBean.scaharegistrar}"/>
+		
+   </p:menu> 
 </p:toolbarGroup>
 <p:toolbarGroup align="right" rendered="#{not empty profileBean.getProfile()}"> 
 			<h:outputText value="Welcome #{profileBean.getNickName()}"></h:outputText>
