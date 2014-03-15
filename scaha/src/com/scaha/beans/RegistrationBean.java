@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+
 import com.gbli.common.SendMailSSL;
 import com.gbli.connectors.Database;
 import com.gbli.connectors.ScahaDatabase;
@@ -239,7 +242,7 @@ public class RegistrationBean implements Serializable, MailableObject  {
 					if (db.getResultSet().getInt(1) > 0) {
 						// We already have this username.. 
 						// we need to exit and fill the message in the context on the screen.
-						return "False";
+						return "fail";
 					}
 				}
  				
@@ -270,15 +273,28 @@ public class RegistrationBean implements Serializable, MailableObject  {
 
 				// We want to create a family called the <lastname> family...
 				LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM REGISTRATION..");
-				LOGGER.info("Sending Test mail here...");
+				LOGGER.info("Sending Registration mail here...");
 				SendMailSSL mail = new SendMailSSL(this);
 				LOGGER.info("Finished creating mail object for " + this.getUsername());
 				mail.sendMail();
-				return "True";
+				
+				//
+				// This keeps the message alive between redirects!
+				//
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.getExternalContext().getFlash().setKeepMessages(true);			
+				
+				context.addMessage(
+						null,
+		                new FacesMessage(FacesMessage.SEVERITY_INFO,
+		                "Registration Success",
+		                "You have successfully Registered with the system.  You will be receiving a confirmation e-mail shortly"));
+						
+				return "Welcome.xhtml?faces-redirect=true";
 			
 			} else {
 				LOGGER.info(" ** Cannot set autocommit to false *** ERROR IN REGISTRATION PROCESS FOR " + this.getUsername());
-				return "False";
+				return "fail";
 			}
 			
 		} catch (SQLException e) {
@@ -289,7 +305,7 @@ public class RegistrationBean implements Serializable, MailableObject  {
 			db.free();
 		}
 		
-		return "False";
+		return "fail";
 
 		
 	}

@@ -8,14 +8,17 @@
      xmlns:p="http://primefaces.org/ui"
 >
 <h:body>
+<h:form>
 <h:panelGrid id="header" columns="2" cellpadding="5"  >
-	<img src="/scaha/images/pages/scaha_logo.png" width="150px" style="float: left; left:10px; top:10px;" />
+	<h:commandLink action="/scaha/Welcome.xhtml">
+		<img src="/scaha/images/pages/scaha_logo.png" width="150px" style="float: left; left:10px; top:10px;" />
+	</h:commandLink>
 	<h:panelGroup>
 			<div style="text-align:right; width:720px; font-weight: normal;font-size: 9pt;font-family: Verdana;">
  				<img src="/scaha/images/pages/scaha_banner_logo.png" />
 			</div>
-	</h:panelGroup>
-	</h:panelGrid>
-	</h:body>
-	
+</h:panelGroup>
+</h:panelGrid>
+</h:form>
+</h:body>
 </html>

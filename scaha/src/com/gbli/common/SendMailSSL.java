@@ -34,23 +34,28 @@ public class SendMailSSL {
 		
 		m_mo = _mo;
 		
-	    Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
-        final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
+	    final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 
         // Get a Properties object
         Properties props = System.getProperties();
-        props.setProperty("mail.smtps.host", "smtp.gmail.com");
         props.setProperty("mail.smtp.socketFactory.class", SSL_FACTORY);
         props.setProperty("mail.smtp.socketFactory.fallback", "false");
-        props.setProperty("mail.smtp.port", "465");
+        props.setProperty("mail.smtp.port", "587");
         props.setProperty("mail.smtp.socketFactory.port", "465");
-        props.setProperty("mail.smtps.auth", "true");
-        props.put("mail.smtps.quitwait", "false");
-		
-		
-		
-        m_sess = Session.getInstance(props, null);
-		
+        props.put("mail.smtp.host","smtp.iscaha.com");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.auth", "true");
+
+		//
+		// Username password set up on context..
+		// just some osfuscation.. for you all
+		//
+        m_sess = Session.getInstance(props, new javax.mail.Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(username, password);
+			}
+		  });
+ 
 		LOGGER.info("Session Properties for e-mail successfully set up...");
 		
 	}
@@ -85,11 +90,7 @@ public class SendMailSSL {
 
 			LOGGER.info("Sending e-mail now...");
 			
-		    SMTPTransport t = (SMTPTransport)m_sess.getTransport("smtps");
-		    
-		    t.connect(username, password);
-	        t.sendMessage(message, message.getAllRecipients());      
-	        t.close();
+			Transport.send(message);
 
 			LOGGER.info("Completed Sending E-mail...");
 

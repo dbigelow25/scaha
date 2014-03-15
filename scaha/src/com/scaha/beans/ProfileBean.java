@@ -4,6 +4,7 @@ import com.gbli.common.SendMailSSL;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.FamilyMember;
+import com.scaha.objects.MailableObject;
 import com.scaha.objects.Person;
 import com.scaha.objects.Profile;
 import com.scaha.objects.Role;
@@ -33,7 +34,7 @@ import com.scaha.objects.Profile;
  * 
  */
 
-public class ProfileBean implements Serializable  { 
+public class ProfileBean implements Serializable,  MailableObject  { 
 
 	//
 	// Class Level Variables
@@ -529,7 +530,7 @@ public void cancelAddMember() {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Change Password Error",
                     "new passwords does not match... Please Try Again!"));
-			return "false";
+			return "fail";
 		}
 
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
@@ -542,9 +543,25 @@ public void cancelAddMember() {
 
 			LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM the manage Profile Page..");
 			LOGGER.info("Sending Test mail here...");
-			//SendMailSSL mail = new SendMailSSL(this);
-			//LOGGER.info("Finished creating mail object for " + this.getUsername());
-			//mail.sendMail();
+			SendMailSSL mail = new SendMailSSL(this);
+			LOGGER.info("Finished creating mail object for " + pro.getUserName());
+			mail.sendMail();
+			
+			//
+			// This keeps the message alive between redirects!
+			//
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.getExternalContext().getFlash().setKeepMessages(true);			
+			
+
+			context.addMessage(
+					null,
+	                new FacesMessage(FacesMessage.SEVERITY_INFO,
+	                "Change Password Success",
+	                "You have successfully changed your password.  You will be receiving a confirmation e-mail shortly"));
+					
+			return "Welcome.xhtml?faces-redirect=true";
+			
 		} catch (SQLException e) {
 		// TODO Auto-generated catch block
 			LOGGER.info("ERROR IN Profile Change User Attributes PROCESS FOR " + this.getCompleteName());
@@ -555,14 +572,7 @@ public void cancelAddMember() {
 			db.free();
 		}
 		
-		FacesContext.getCurrentInstance().addMessage(
-				null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Change Password Success",
-                "You have successfully changed your password.  You will be receiving a confirmation e-mail shortly"));
-
-		
-		return "true";
+		return "fail";
 		
 		
 	}
@@ -836,5 +846,29 @@ public void setLive_password(String live_password) {
 	this.live_password = live_password;
 }
  
+
+/**
+ *  Will need to be able to understand that overtime this has to know the context of the mailing
+ *  
+ */
+public String getSubject()  {
+	//
+	// right now.. we just mail for a password change..
+	//
+	return "An account message from iscaha";
+	
+}
+public String getTextBody() {
+	return "You have recently changed your password.  If this was not you.. please get in contact with a SCAHA rep ASAP!!";
+}
+
+public String getPreApprovedCC() {
+	return "";
+}
+
+public String getToMailAddress() {
+	return this.pro.getUserName();
+}
+
 
 }
