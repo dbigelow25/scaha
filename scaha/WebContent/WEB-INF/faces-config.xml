@@ -50,7 +50,6 @@
 		<managed-bean-class>com.scaha.beans.DraftCoachesBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-	
 	<managed-bean>
 		<managed-bean-name>loiBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.loiBean</managed-bean-class>
@@ -96,7 +95,6 @@
 		<managed-bean-class>com.scaha.beans.reviewcoachloiBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-	
 	<validator>
 		<description>This will validate the Username to ensure its unique in the system</description>
 		<display-name>User Name Validator</display-name>

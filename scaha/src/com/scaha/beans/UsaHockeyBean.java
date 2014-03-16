@@ -32,7 +32,6 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 	
 	private UsaHockeyRegistration usar = null;
 	private String regnumber = null;
-	private String dob = null;
 	private String membertype = null;
 	private String relationship = null;
 	private boolean datagood = false;
@@ -67,13 +66,6 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 	}
 
 	/**
-	 * @return the dob
-	 */
-	public String getDob() {
-		return dob;
-	}
-	
-	/**
 	 * 
 	 * @return
 	 */
@@ -94,14 +86,6 @@ public class UsaHockeyBean implements Serializable, MailableObject {
                     "Could Not find the USA Registration record."));
 				return "false";
 			} 
-			if (!this.dob.equals(usar.getDOB())) {
-				FacesContext.getCurrentInstance().addMessage(
-					"mp-form:usah-dob",
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Date of Birth Match", "The DOB you provided does not match what was pulled."));
-					this.usar = null;
-				return "false";
-			}
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -122,12 +106,6 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 		return "true";
 	}
 
-	/**
-	 * @param dob the dob to set
-	 */
-	public void setDob(String dob) {
-		this.dob = dob;
-	}
 	
 	@Override
 	public String getSubject() {
@@ -236,7 +214,6 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 		LOGGER.info("usaHockeyBean:reseting member variables...");
 		usar = null;
 		regnumber = null;
-		dob = null;
 		membertype = null;
 		relationship = null;
 		datagood = false;
@@ -251,7 +228,7 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 	@Override
 	public String toString() {
 		return "UsaHockeyBean [usar=" + usar + ", regnumber=" + regnumber
-				+ ", dob=" + dob + ", membertype=" + membertype
+				+ ", dob=" + ", membertype=" + membertype
 				+ ", relationship=" + relationship + "]";
 	}
 

@@ -86,7 +86,7 @@
 	
 	<p:focus context="edit-pers"/> 
 	<p:fieldset id="fs4" toggleable="false" toggleSpeed="500">  
-          <h:outputText style="font-size: 12px;" value="When you haveasdfas fas fasf asf asf asf asdf asdf asdf sad asfasdf assa fasfasf completed making your changes, please click the Update Button."/>
+          <h:outputText style="font-size: 12px;" value="When you have completed making your changes, please click the Update Information button."/>
    	</p:fieldset>  
 
 	<p:spacer width="10" height="10" />
@@ -134,8 +134,8 @@
 					<p:outputLabel for="zip" value="Zip"></p:outputLabel>
 					<p:inputText id="address" style="width:175px;" value="#{profileBean.chgAddress}" />
 					<p:inputText id="city" style="width:175px;" value="#{profileBean.chgCity}" />
-					<p:inputText id="state" style="width:25px;" maxlength="2" value="#{profileBean.chgState}" />
-					<p:inputText id="zip" style="width:75px;" maxlength="5" value="#{profileBean.chgZip}" />
+					<p:inputMask  id="state" style="width:25px;" maxlength="2" value="#{profileBean.chgState}" mask="aa"/>
+					<p:inputMask id="zip" style="width:75px;" maxlength="5" value="#{profileBean.chgZip}" mask="99999"/>
 			</h:panelGrid>
 			
 		</p:fieldset>
@@ -143,15 +143,17 @@
 		<p:spacer width="10" height="10" />
 
 		<p:fieldset id="fs6">
-			
+
+			<p:spacer width="13" height="10" />
+             <p:commandButton value="Update Information" update="edit-pers,view-pers" id="finish-edit-per" ajax="false"  
+             actionListener="#{profileBean.updatePersonInfo()}"/>
+             			
 			<p:commandButton value="Cancel" update="edit-pers,view-pers" id="cancel-edit-per" ajax="false"  
              actionListener="#{profileBean.setNotEditPerson()}">
              	<p:ajax update="edit-pers" resetValues="true" />   
              </p:commandButton>
              
-			<p:spacer width="13" height="10" />
-             <p:commandButton value="Update Information" update="edit-pers,view-pers" id="finish-edit-per" ajax="false"  
-             actionListener="#{profileBean.updatePersonInfo()}"/>
+
 
 		</p:fieldset>
 	  	<p:spacer width="10" height="10" />

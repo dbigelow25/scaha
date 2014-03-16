@@ -254,7 +254,7 @@ public class Person extends ScahaObject implements Serializable {
 		//	    IN in_state VARCHAR(2),
 		//	    IN in_zipcode INT(10),
 		//	    IN in_gender VARCHAR(1),
-		//	    IN in_dob VARCHAR(10),
+		//	    IN in_dob VARCHAR(10),  (This really needs to be a date at the end of the day!!)
 		//		IN in_isactive tinyint,
 		//		IN in_updated timestamp,
 
