@@ -3,12 +3,10 @@
  */
 package com.scaha.objects;
 
-import java.io.Serializable;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
@@ -16,8 +14,13 @@ import com.gbli.context.ContextManager;
  * @author dbigelow
  *
  */
-public class ScahaPlayer extends Person {
+public class ScahaCoach extends Person {
 	
+	public ScahaCoach(int _id, Profile _pro) {
+		super(_id, _pro);
+		// TODO Auto-generated constructor stub
+	}
+
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
@@ -25,7 +28,7 @@ public class ScahaPlayer extends Person {
 	//
 	// Lets hold the playerID here.. and allow the super to hold the person...
 	//
-	protected int ID = 0;
+	protected int ID = -1;
 	
 	/**
 	 * A basic constructor that glues a person to a player given the relationship.
@@ -34,7 +37,7 @@ public class ScahaPlayer extends Person {
 	 * @param _per
 	 * @param _relationship
 	 */
-	public ScahaPlayer (Profile _pro) {
+	public ScahaCoach (Profile _pro) {
 		
 		//
 		// Here we are starting with basically an empty shell of an object..
@@ -44,14 +47,11 @@ public class ScahaPlayer extends Person {
 		ID = -1;
 	}
 	
-	public ScahaPlayer(Profile _pro, Person _per) {
+	public ScahaCoach(Profile _pro, Person _per) {
 		super( _pro, _per);
-		//
-		// now .. how do you take on the 
-		
 	}
 	
-	
+
 	
 	public void update(ScahaDatabase _db) throws SQLException {
 		
@@ -59,14 +59,19 @@ public class ScahaPlayer extends Person {
 		// Lets update the person here.
 		//
 		super.update(_db);
-	
+		
+		//
+		// now.. we have to update the pertinat parts of the player table 
+		// to add the player extension data..
+		
 		// 
 		// is it an object that is not in the database yet..
 		//
+		//
+		CallableStatement cs = _db.prepareCall("call scaha.updateScahaCoach(?,?,?,?)");
 		
-		CallableStatement cs = _db.prepareCall("call scaha.updatePlayer(?,?,?,?)");
-		
-		LOGGER.info("HERE IS THE Person ID:" + super.ID);
+		LOGGER.info("HERE IS THE PERSON ID for coach:" + super.ID);
+		LOGGER.info("HERE IS THE coach ID for coach:" + this.ID);
 
 		int i = 1;
 		cs.registerOutParameter(1, java.sql.Types.INTEGER);
@@ -81,10 +86,8 @@ public class ScahaPlayer extends Person {
 		//
 		this.ID = cs.getInt(1);
 		cs.close();
-		LOGGER.info("HERE IS THE Player ID:" + this.ID);
+		LOGGER.info("HERE IS THE NEW Coach ID:" + this.ID);
 		
 	}
-
-	
 
 }

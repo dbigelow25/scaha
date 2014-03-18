@@ -1,6 +1,7 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
+import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,6 +22,12 @@ public class Family extends ScahaObject implements Serializable  {
 	private String FamilyName = null;
 	
 	
+	public Family (int _id, Profile _pro, Person _per) {
+		this.ID = _id;
+		super.setProfile(_pro);
+		this.per = _per;
+	}
+
 	public Family (ScahaDatabase _db, Person _per) {
 
 		//
@@ -53,7 +60,7 @@ public class Family extends ScahaObject implements Serializable  {
 					//
 					// ok.. now lets make a family member .. by sticking a person and a responsibility together..
 					//
-					FamilyMember mem = new FamilyMember(this.getProfile(), rs.getInt(5), rs.getInt(3));
+					FamilyMember mem = new FamilyMember(this.getProfile(), this, rs.getInt(5), rs.getInt(3));
 					
 					//
 					// Need gender information.. along with Date Of Birth.. it all goes here as well..
@@ -70,6 +77,7 @@ public class Family extends ScahaObject implements Serializable  {
 					mem.setGender(rs.getString(14));
 					mem.setDob(rs.getString(15));
 					mem.setCitizenship(rs.getString(16));
+					mem.setMembertypes(rs.getString(17));
 					FamilyMembers.add(mem);
 				}	
 					
@@ -86,4 +94,81 @@ public class Family extends ScahaObject implements Serializable  {
 	public List<FamilyMember> getFamilyMembers() {
 		return FamilyMembers;
 	}
+	
+	/**
+	 * @return the per
+	 */
+	public Person getPer() {
+		return per;
+	}
+
+	/**
+	 * @param per the per to set
+	 */
+	public void setPer(Person per) {
+		this.per = per;
+	}
+
+	/**
+	 * @return the familyName
+	 */
+	public String getFamilyName() {
+		return FamilyName;
+	}
+
+	/**
+	 * @param familyName the familyName to set
+	 */
+	public void setFamilyName(String familyName) {
+		FamilyName = familyName;
+	}
+
+	/**
+	 * ok.. this guy will maintain the family record...
+	 * it either creates one.. ur updates it.. (Most Likely the Name of the Family is being changed).
+	 * 
+	 * The deep is signalling us to actually go through and update all the family members in this tree..
+	 * (adds, changes, deletes)
+	 * @param _db
+	 * @param _deep
+	 */
+	public void update (ScahaDatabase _db, boolean _deep) throws SQLException {
+
+		
+		//
+		// lets check to make sure we have a valid person.. (>0)
+		
+		if (this.per != null && this.per.ID > 0) {
+			//
+			// ok.. we are good here..
+			//
+				
+				// 
+				// is it an object that is not in the database yet..
+				//
+			
+			CallableStatement cs = _db.prepareCall("call scaha.updateFamily(?,?,?,?,?)");
+				
+			LOGGER.info("HERE IS THE Prior Update Family ID:" + this.ID);
+
+			int i = 1;
+			cs.registerOutParameter(1, java.sql.Types.INTEGER);
+			cs.setInt(i++, this.ID);			// This will be the family ID
+			cs.setInt(i++, this.per.ID);		// This will be the owner Person ID
+			cs.setString(i++,this.FamilyName);
+			cs.setInt(i++,1);
+			cs.setString(i++, null);
+			cs.execute();
+							
+			//
+			// Update the new ID from the database...
+			//
+			this.ID = cs.getInt(1);
+			cs.close();
+			LOGGER.info("HERE IS THE New Family ID:" + this.ID);
+				
+		}
+			
+	}
+	
 }

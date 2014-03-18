@@ -31,6 +31,21 @@ public class Person extends ScahaObject implements Serializable {
 	
 	private int iZipCode = 0;
 	private Family fam = null;
+
+	/**
+	 * @return the fam
+	 */
+	public Family getFam() {
+		return fam;
+	}
+
+	/**
+	 * @param fam the fam to set
+	 */
+	public void setFam(Family fam) {
+		this.fam = fam;
+	}
+
 	protected int ID = 0;
 	
 	public Person (ScahaDatabase _db, Profile _pro) {
@@ -78,6 +93,36 @@ public class Person extends ScahaObject implements Serializable {
 		this.fam = new Family (_db, this);
 		
 	}
+
+	public Person (Profile _pro, Person _per) {
+		
+		LOGGER.info("Attempting to Create the Person.. from another person");
+		//
+		//  Lets pull from the database now..
+		// 
+		this.setProfile(_pro);
+		
+		if (_per == null) {
+			this.ID = -1;
+			this.setProfile(_pro);
+		} else {
+		
+			ID = _per.ID;
+			this.setsFirstName(_per.getsFirstName());
+			this.setsLastName(_per.getsLastName());
+			this.setsEmail(_per.getsEmail());
+			this.setsPhone(_per.getsPhone());
+			this.setsAddress1(_per.getsAddress1());
+			this.setsCity(_per.getsCity());
+			this.setsState(_per.getsState());
+			this.setiZipCode(_per.getiZipCode());
+			this.setGender(_per.getGender());
+			this.setDob(_per.getDob());
+			this.setCitizenship(_per.getCitizenship());
+			this.fam = _per.getFamily();
+			LOGGER.info("Successfully Created the Person Object.. from another person..");
+		}
+	}
 	
 	/**
 	 * Here we build one from scratch w/o any DB Support
@@ -90,7 +135,16 @@ public class Person extends ScahaObject implements Serializable {
 		this.setProfile(_pro);
 	}
 
-	
+	/**
+	 * Here we build one from scratch w/o any DB Support
+	 * @param _id
+	 * @param _pro
+	 */
+	public Person (Profile _pro) {
+		
+		this.ID = -1;
+		this.setProfile(_pro);
+	}
 	
 	/**
 	 * @return the sPhone
@@ -243,20 +297,8 @@ public class Person extends ScahaObject implements Serializable {
 		
 		CallableStatement cs = db.prepareCall("call scaha.updatePerson(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
-		//		INOUT in_idPerson INT(10),
-		//		IN in_idProfile INT(10),
-		//	    IN in_fname VARCHAR(50),
-		//	    IN in_lname VARCHAR(50),
-		//	    IN in_altemail VARCHAR(75),
-		//	    IN in_phone VARCHAR(10),
-		//	    IN in_address VARCHAR(75),
-		//	    IN in_city VARCHAR(50),
-		//	    IN in_state VARCHAR(2),
-		//	    IN in_zipcode INT(10),
-		//	    IN in_gender VARCHAR(1),
-		//	    IN in_dob VARCHAR(10),  (This really needs to be a date at the end of the day!!)
-		//		IN in_isactive tinyint,
-		//		IN in_updated timestamp,
+
+		LOGGER.info("HERE IS THE Starting Person ID:" + this.ID);
 
 		int i = 1;
 		cs.registerOutParameter(1, java.sql.Types.INTEGER);

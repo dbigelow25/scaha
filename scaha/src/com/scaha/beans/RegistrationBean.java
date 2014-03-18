@@ -10,9 +10,12 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import com.gbli.common.SendMailSSL;
+import com.gbli.common.Utils;
 import com.gbli.connectors.Database;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
+import com.scaha.objects.Family;
+import com.scaha.objects.FamilyMember;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Person;
 import com.scaha.objects.Profile;
@@ -254,9 +257,11 @@ public class RegistrationBean implements Serializable, MailableObject  {
 
 				Profile pro = new Profile(this.username,this.password, this.nickname);
 				Person per = new Person(0,pro);
+				Family fam = new Family(-1, pro, per);
+				
 				per.setsAddress1(this.address);
-				per.setsFirstName(this.firstname);
-				per.setsLastName(this.lastname);
+				per.setsFirstName(Utils.properCase(this.firstname));
+				per.setsLastName(Utils.properCase(this.lastname));
 				per.setsCity(city);
 				per.setsState(this.state);
 				per.setiZipCode(Integer.valueOf(this.zip));
@@ -267,7 +272,26 @@ public class RegistrationBean implements Serializable, MailableObject  {
 				
 				pro.update(db);
 				per.update(db);
-
+				
+				//
+				// now update the family..  Lets give it the default name!!
+				//
+				fam.setFamilyName("The " + per.getsLastName() + " Family");
+				fam.update(db, false);
+				
+				//
+				// Make sure the person is always them selves
+				//
+				FamilyMember fm = new FamilyMember(pro,fam, per);
+				fm.setRelationship("Self");
+				fm.updateFamilyMemberStructure(db);
+				
+				//
+				// Lets not forget the family record
+				// and possibly the default FamilyMember.. (who ever is creating this record)
+				//
+				
+				
 				db.commit();
 				db.free();
 

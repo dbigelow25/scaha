@@ -6,6 +6,18 @@
      xmlns:ui="http://java.sun.com/jsf/facelets"
      xmlns:p="http://primefaces.org/ui"
 >
+
+	<!-- 
+	
+	This view is designed to manager memberships.   A single account can manage several memberships (in the family).
+	
+	Right now.. the only way to create a membership is to first start with a USA hockey number for the given master season.
+	
+	Eventually, we will allow the user to select an existing sibling.. and re-register for a new seasion.. (re-up the membership)
+	
+	 -->  
+
+
 <f:view contentType="text/html">
     
  <h:head>
@@ -22,15 +34,6 @@
 <ui:define name="content">
 
  
-	<!-- 
-	
-	This section is a common tabbed menu.  We tried to use TabView in one giant xhtml file.. but it became too complex
-	To manage.
-	
-	We have 4 basic functions.  One tab for each function.  Each file will have a different active index.. and a 
-	Star icon helping the user understand what area they are in...
-	
-	 -->  
 <div id="page-div">
 
  <p:tabMenu activeIndex="1">  
@@ -46,6 +49,7 @@
 
   <h:form id="mp-form">
 
+	<h:outputText value="#{profileBean.getProfile().getPerson().getFam().getFamilyName()}"></h:outputText>
  	<h:panelGroup id="view-members" rendered="#{profileBean.isViewMembers()}">
    	
    		<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">  
@@ -57,11 +61,11 @@
   	
   		<p:fieldset id="fs2" toggleable="false" toggleSpeed="500">  	      
 			<p:dataTable var="familymember" value="#{profileBean.getFamilyMembers()}">  
-   			    <p:column headerText="First Name"><h:outputText value="#{familymember.getsFirstName()}" /></p:column>  
-   	    		<p:column headerText="Last Name"><h:outputText value="#{familymember.getsLastName()}" /></p:column>  
+   			    <p:column headerText="Name"><h:outputText value="#{familymember.getsFirstName()} #{familymember.getsLastName()}" /></p:column>  
    	    		<p:column headerText="Relationship"><h:outputText value="#{familymember.getRelationship()}" /></p:column>
    	    		<p:column headerText="Gender"><h:outputText value="#{familymember.getGender()}" /></p:column>  
-   	    		<p:column headerText="D.O.B."><h:outputText value="#{familymember.getDob()}" /></p:column>  
+   	    		<p:column headerText="DOB."><h:outputText value="#{familymember.getDob()}" /></p:column>  
+   	    		<p:column headerText="'PCM'"><h:outputText value="#{familymember.getMembertypes()}" /></p:column>  
    			</p:dataTable> 
     	</p:fieldset>
     			
@@ -76,8 +80,8 @@
 	<ui:fragment id="add-member" rendered="#{profileBean.isAddMember()}">
 	 
 	<p:fieldset id="fs11" toggleable="false" toggleSpeed="500">  
-     <h:outputText style="font-size: 12px;" value="You will need to know the USAHockey Number and the date of birth of who you are registering. Enter this first, then click the SEARCH USAH.  If the record is found, the information below will be prefilled
- will all the information.  Please review this information then click the SAVE button.  This will create a new member
+     <h:outputText style="font-size: 12px;" value="You will FIRST need to know the USAHockey Number for the CURRENT SEASON. Enter this in the provided field below, then click the SEARCH USAH.  
+      If the record is found, the information below will be prefilled all the information.  Please review this information then click the SAVE button.  This will create a new member
  and generate a new member number for the year.  This member number will be needed to confirm you at all the SCAHA
  tryouts and is needed to sign any Club LOI electronically."/>  
    	</p:fieldset>  
@@ -104,11 +108,11 @@
  			<p:message id="m_relationship" closable="true" for="relationship"/>
 
 			<p:outputLabel  for = "member" value="Member Type" /> 
-		 	   <p:selectOneMenu  id="member" value="#{usahBean.membertype}" style="width: 100px" required="true" requiredMessage="need to select a member type." >    
+		 	   <p:selectManyCheckbox  id="member" value="#{usahBean.membertype}" style="width: 100px" required="true" requiredMessage="need to select a member type." >    
           			<f:selectItem itemLabel="Player" itemValue="Player" />  
           			<f:selectItem itemLabel="Coach" itemValue="Coach"/>  
          			<f:selectItem itemLabel="Manager" itemValue="Manager"/>
-      			</p:selectOneMenu>  
+      			</p:selectManyCheckbox>  
  			<p:message id="m_member" closable="true" for="member"/>
 
 			</h:panelGrid>	

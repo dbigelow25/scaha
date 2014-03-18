@@ -1,11 +1,37 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
+import java.sql.CallableStatement;
+import java.sql.SQLException;
+import java.util.logging.Logger;
+
+import com.gbli.connectors.ScahaDatabase;
+import com.gbli.context.ContextManager;
 
 public class FamilyMember extends Person implements Serializable {
 	
-	private int ifmID = 0;
+	protected int ID = 0;
 	private String Relationship = null;
+	private String membertypes = null;
+	/**
+	 * @return the membertypes
+	 */
+	public String getMembertypes() {
+		return membertypes;
+	}
+
+	/**
+	 * @param membertypes the membertypes to set
+	 */
+	public void setMembertypes(String membertypes) {
+		this.membertypes = membertypes;
+	}
+
+	private Family fam = null;
+	
+	// Class Level Variables
+	private static final long serialVersionUID = 1L;
+	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	
 	/**
 	 * A basic constructor that glues a person to a relationship for a given family.
@@ -14,10 +40,18 @@ public class FamilyMember extends Person implements Serializable {
 	 * @param _per
 	 * @param _relationship
 	 */
-	public FamilyMember ( Profile _pro, int _personid, int _ifamilyid) {
+	public FamilyMember ( Profile _pro, Family _fam, int _personid, int _fmid) {
 		super(_personid, _pro);
-		this.ifmID = _ifamilyid;
+		this.ID = _fmid;
+		this.fam = _fam;
 	}
+
+	public FamilyMember ( Profile _pro, Family _fam, Person _per) {
+		super(_per.ID, _pro);
+		this.ID = -1;
+		this.fam = _fam;
+	}
+
 	
 	public String getRelationship() {
 		return Relationship;
@@ -27,12 +61,41 @@ public class FamilyMember extends Person implements Serializable {
 		this.Relationship = _s;
 	}
 	
-	public void setID(int _i) {
-		this.ifmID = _i;
-	}
+	/**
+	 *  This updates the record in the table.
+	 *  
+	 *  The person is the person 
+	 *  The person is also 
+	 * @throws SQLException 
+	 */
+	public void updateFamilyMemberStructure(ScahaDatabase _db) throws SQLException {
+		
+		// 
+		// is it an object that is not in the database yet..
+		//
 	
-	public int getID() {
-		return this.ifmID;
+		CallableStatement cs = _db.prepareCall("call scaha.updateFamilyMember(?,?,?,?,?,?)");
+			
+		LOGGER.info("HERE IS THE Pre FamilyMember ID:" + this.ID);
+
+		int i = 1;
+		cs.registerOutParameter(1, java.sql.Types.INTEGER);
+		cs.setInt(i++, this.ID);		// Family Member ID
+		cs.setInt(i++, super.ID);		// PersonID
+		cs.setInt(i++, fam.ID);			// FamilyID
+		cs.setString(i++, this.getRelationship());  // Relationship Type
+		cs.setInt(i++,1);				// Is Active
+		cs.setString(i++,null);			// Now
+		cs.execute();
+						
+		//
+		// Update the new ID from the database...
+		//
+		this.ID = cs.getInt(1);
+		cs.close();
+		LOGGER.info("HERE IS THE Family Mamber ID:" + this.ID);
+				
+		
 	}
 
 }

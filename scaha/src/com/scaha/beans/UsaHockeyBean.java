@@ -2,6 +2,7 @@ package com.scaha.beans;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -14,9 +15,13 @@ import com.gbli.common.SendMailSSL;
 import com.gbli.common.USAHRegClient;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
+import com.scaha.objects.Family;
+import com.scaha.objects.FamilyMember;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Person;
 import com.scaha.objects.Profile;
+import com.scaha.objects.ScahaCoach;
+import com.scaha.objects.ScahaManager;
 import com.scaha.objects.ScahaPlayer;
 import com.scaha.objects.UsaHockeyRegistration;
 
@@ -32,7 +37,7 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 	
 	private UsaHockeyRegistration usar = null;
 	private String regnumber = null;
-	private String membertype = null;
+	private List<String> membertype;  
 	private String relationship = null;
 	private boolean datagood = false;
 	
@@ -99,10 +104,21 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 		this.datagood = true;
 		
 		//
-		// We need to set Member Type to Manager.. because thats what the XX is for
-		if (this.usar.getUSAHnum().contains("XX")) {
-			this.membertype = "Manager";
+		// We need to set Member Type to Manager.  Because thats what the XX is for
+		//
+		
+		if (this.usar == null) {
+			LOGGER.info("usaHockeyBean:Did NOT Get any USAH Number info Back!! BAD SERVICE CALL");
+			
+		} else if (this.usar.getUSAHnum().contains("XX")) {
+			if (!membertype.contains("Manager")) {
+				this.membertype.add("Manager");
+			}
 		}
+		
+		//
+		// We are not going anywhere.. so simply pass true vs routing..
+		//
 		return "true";
 	}
 
@@ -134,15 +150,15 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 	/**
 	 * @return the membertype
 	 */
-	public String getMembertype() {
+	public List<String>  getMembertype() {
 		return membertype;
 	}
 
 	/**
-	 * @param membertype the membertype to set
+	 * @param membertype the  to set
 	 */
-	public void setMembertype(String membertype) {
-		this.membertype = membertype;
+	public void setMembertype(List<String> selectedOptions2) {
+		this.membertype = selectedOptions2;
 	}
 
 	/**
@@ -181,29 +197,107 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 	public String addNewMember() {
 		
 		//
-		// OK.. We know this guy is a new person.. but it is a family member first and forement...
-		
+		//
+		// We have to be really clear here.  First off.. this person can either be brand new.. or and existing member.
+		//
+		// This current case only deals with a Brand New Person.
+		//
+		// In this case.. we need to
+		//
+		// 1) Create or update the person..
+		// 2) Need to create an object.. for each type they are (player, manager, coach)
+		// 3) Hook them up to the existing family..
+		// 4) If they have not already registered.. we need to create a SCAHA registration
+		//
 		
 		FacesContext context = FacesContext.getCurrentInstance();
 		Application app = context.getApplication();
-
 		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
 				"#{profileBean}", Object.class );
-
 		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
 		
-		ScahaPlayer sp = new ScahaPlayer(pb.getProfile());
-		
-		sp.gleanUSAHinfo(this.usar);
 
+		//
+		// Lets start off with the basics person is always implied in the extended object.
+		// we are really just saving off alot of stuff through the objects.. then reloading the family .. once done
+		// 
+		//
+		Profile pro = pb.getProfile();   // This is the profile of the user
+		Person tper = pro.getPerson();   //  This is their person record
+		Family tfam = tper.getFamily();  //  This is their Family Structure
+		
+		Person per = new Person(pro);		// This will be the new person
+		ScahaManager sm = null;
+		ScahaPlayer sp = null;
+		ScahaCoach sc = null;
+
+		// And we need to create the membership record as well..
+		//
+		// Here is where we update everything at once.
+		// we have auto commit off so its an all or nothing approach.
+		//
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		db.setAutoCommit(false);
+		//
 		try{
-			sp.update(db);
-			usar.update(db, sp);
+
+			per.gleanUSAHinfo(this.usar);
+			per.update(db);
+			
+			//
+			// ok.. lets update the trifecta and see if it sticks!!
+			//
+			if (membertype.contains("Manager")) {
+				sm = new ScahaManager(pro,per);
+				sm.update(db);
+			}
+			if (membertype.contains("Coach")) {
+				sc = new ScahaCoach(pro,per);
+				sc.update(db);
+
+			}
+			if (membertype.contains("Player")) {
+				sp = new ScahaPlayer(pro, per);
+				sp.gleanUSAHinfo(this.usar);
+				sp.update(db);
+			}
+
+			usar.update(db, per);
+			//
+			// Now we need to get the Family Object from the Person in the Profile..
+			// and add this person to the database.. and the object
+			//
+			// no matter how many types of people we have.. they all point to the same person...
+			FamilyMember fm = new FamilyMember(pro, tfam, per);
+			fm.setRelationship(this.getRelationship());
+			fm.updateFamilyMemberStructure(db);
+			
+			// ok.. since we are good.. lets get a new family structure for the pic.
+			
+			tper.setFam(null);
+			tper.setFam(new Family(db, tper));
+			
 			db.free();
             context.addMessage(null, new FacesMessage("Successful", "I think we saved something.."));  
+            
+            //
+            // Lets go back to view mode.. i know .. its a bad name.. but we are in a hurry
+            //
+            pb.cancelAddMember();
+        
+            
+            //
+            //  We also have to create an e-mail record.. possibly formated in HTML..
+            //
+            
+            //
+            //
+            //  
+            
+            
 		} catch (SQLException ex) {
 			ex.printStackTrace();
+			db.free();
 		}
 		
 		return "true";

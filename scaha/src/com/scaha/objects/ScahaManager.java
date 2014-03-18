@@ -14,9 +14,9 @@ import com.gbli.context.ContextManager;
  * @author David
  *
  */
-public class Manager extends Person {
+public class ScahaManager extends Person {
 
-	public Manager(int _id, Profile _pro) {
+	public ScahaManager(int _id, Profile _pro) {
 		super(_id, _pro);
 		// TODO Auto-generated constructor stub
 	}
@@ -28,7 +28,7 @@ public class Manager extends Person {
 	//
 	// Lets hold the playerID here.. and allow the super to hold the person...
 	//
-	protected int ID = 0;
+	protected int ID = -1;
 	
 	/**
 	 * A basic constructor that glues a person to a player given the relationship.
@@ -37,7 +37,7 @@ public class Manager extends Person {
 	 * @param _per
 	 * @param _relationship
 	 */
-	public Manager (Profile _pro) {
+	public ScahaManager (Profile _pro) {
 		
 		//
 		// Here we are starting with basically an empty shell of an object..
@@ -47,6 +47,12 @@ public class Manager extends Person {
 		ID = -1;
 	}
 	
+	public ScahaManager(Profile _pro, Person _per) {
+		super( _pro, _per);
+
+	}
+	
+
 	public int getID() {
 		return ID;
 	}
@@ -68,8 +74,9 @@ public class Manager extends Person {
 		//
 		CallableStatement cs = _db.prepareCall("call scaha.updateManager(?,?,?,?)");
 		
-		LOGGER.info("HERE IS THE Manager ID:" + super.ID);
-
+		LOGGER.info("HERE IS THE PERSON ID for manager:" + super.ID);
+		LOGGER.info("HERE IS THE manager  ID for manager:" + this.ID);
+		
 		int i = 1;
 		cs.registerOutParameter(1, java.sql.Types.INTEGER);
 		cs.setInt(i++, this.ID);
@@ -83,7 +90,7 @@ public class Manager extends Person {
 		//
 		this.ID = cs.getInt(1);
 		cs.close();
-		LOGGER.info("HERE IS THE Manager ID:" + this.ID);
+		LOGGER.info("HERE IS THE New  Manager ID:" + this.ID);
 		
 	}
 
