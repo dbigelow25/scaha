@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -21,13 +22,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
-import com.scaha.objects.FamilyRow;
+import com.scaha.objects.MailableObject;
 import com.scaha.objects.Team;
 
 //import com.gbli.common.SendMailSSL;
 
 
-public class coachloiBean implements Serializable {
+public class coachloiBean implements Serializable, MailableObject {
 
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
@@ -66,6 +67,11 @@ public class coachloiBean implements Serializable {
 	private String u14 = null;
 	private String u18 = null;
 	private String girls = null;
+	private String to = null;
+	private String subject = null;
+	private String cc = null;
+	private String textbody = null;
+	
 	
 	
     
@@ -98,7 +104,45 @@ public class coachloiBean implements Serializable {
     }  
     
     
-    public void setCepmoduledisplaystring(String snumber){
+    public String getSubject() {
+		// TODO Auto-generated method stub
+		return subject;
+	}
+    
+    public void setSubject(String ssubject){
+    	subject = ssubject;
+    }
+    
+	public String getTextBody() {
+		// TODO Auto-generated method stub
+		return textbody;
+	}
+	
+	public void setTextBody(String stextbody){
+		textbody = stextbody;
+	}
+	
+	public String getPreApprovedCC() {
+		// TODO Auto-generated method stub
+		return cc;
+	}
+	
+	public void setPreApprovedCC(String scc){
+		cc = scc;
+	}
+	
+	
+	
+	public String getToMailAddress() {
+		// TODO Auto-generated method stub
+		return to;
+	}
+    
+    public void setToMailAddress(String sto){
+    	to = sto;
+    }
+	
+	public void setCepmoduledisplaystring(String snumber){
     	cepmoduledisplaystring = snumber;
     }
     
@@ -701,15 +745,60 @@ public class coachloiBean implements Serializable {
 					}
 	    			
 	    		    
+	    			LOGGER.info("Sending email to club registrar, family, and scaha registrar");
+	    			cs = db.prepareCall("CALL scaha.getClubRegistrarEmail(?)");
+	    		    cs.setInt("iclubid", this.clubid);
+	    		    rs = cs.executeQuery();
+	    		    if (rs != null){
+	    				while (rs.next()) {
+	    					to = rs.getString("usercode");
+	    				}
+	    			}
+					
 	    		    
-					LOGGER.info("Sending email to club registrar, family, and nancy");
+	    			//need to check if scaha registrar has received an email today
+	    		    //set value to 0 and then check if the current date is less than 8/1/2014 if it is then we want
+	    		    //to check if an email has been sent today, if = or > than 8/1/2014 then always send email to scaha
+	    		    //registrar
+	    		    Integer emailsenttoday = 0;
+	    		    Date curdate = new Date();
+	    		    Calendar cal = Calendar.getInstance();
+	    		    cal.set(2014, Calendar.AUGUST, 1); //Year, month and day of month
+	    		    Date targetdate = cal.getTime();
+	    		    if (curdate.compareTo(targetdate)<0){
+	    		    	cs = db.prepareCall("CALL scaha.HasReceivedEmail()");
+		    		    rs = cs.executeQuery();
+		    		    if (rs != null){
+		    				while (rs.next()) {
+		    					emailsenttoday = rs.getInt("emailcount");
+		    				}
+		    			}
+	    		    }
+	    		    
+	    			if (emailsenttoday.equals(0)){
+		    		    cs = db.prepareCall("CALL scaha.getSCAHARegistrarEmail()");
+		    		    rs = cs.executeQuery();
+		    		    if (rs != null){
+		    				while (rs.next()) {
+		    					to = to + ',' + rs.getString("usercode");
+		    				}
+		    			}
+		    		    
+		    		    cs = db.prepareCall("CALL scaha.setSCAHARegistrarEmail()");
+		    		    rs = cs.executeQuery();
+		    		    db.commit();
+	    		    }
+	    		    
 					
-					
+	    		    this.setToMailAddress(to);
+	    		    this.setTextBody("Coach " + this.firstname + " " + this.lastname + " signed an loi for club " + this.getClubName());
+	    		    this.setSubject(this.firstname + " " + this.lastname + " LOI with " + this.getClubName());
+	    		    
 					/*SendMailSSL mail = new SendMailSSL(this);
-					LOGGER.info("Finished creating mail object for " + this.getUsername());
+					LOGGER.info("Finished creating mail object for ");
 					mail.sendMail();
-					db.commit();
-					return "True";*/
+					db.commit();*/
+					
 					
 					FacesContext context = FacesContext.getCurrentInstance();
 		    		try{

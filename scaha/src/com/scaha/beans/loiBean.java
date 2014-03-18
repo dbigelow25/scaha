@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -22,12 +23,13 @@ import javax.servlet.http.HttpServletRequest;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.FamilyRow;
+import com.scaha.objects.MailableObject;
 import com.scaha.objects.Team;
 
 //import com.gbli.common.SendMailSSL;
 
 
-public class loiBean implements Serializable {
+public class loiBean implements Serializable, MailableObject {
 
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
@@ -59,8 +61,12 @@ public class loiBean implements Serializable {
 	private String displayselectedgirlsteam = null;
 	private String currentdate = null;
 	private Integer profileid = 0;
-    
-    public loiBean() {  
+	private String to = null;
+	private String subject = null;
+	private String cc = null;
+	private String textbody = null;
+	
+	public loiBean() {  
         
     	//hard code value until we load session variable
     	clubid = 1;
@@ -86,7 +92,45 @@ public class loiBean implements Serializable {
     	//doing anything else right here
     }  
     
-    public Integer getProfid(){
+	public String getSubject() {
+		// TODO Auto-generated method stub
+		return subject;
+	}
+    
+    public void setSubject(String ssubject){
+    	subject = ssubject;
+    }
+    
+	public String getTextBody() {
+		// TODO Auto-generated method stub
+		return textbody;
+	}
+	
+	public void setTextBody(String stextbody){
+		textbody = stextbody;
+	}
+	
+	public String getPreApprovedCC() {
+		// TODO Auto-generated method stub
+		return cc;
+	}
+	
+	public void setPreApprovedCC(String scc){
+		cc = scc;
+	}
+	
+	
+	
+	public String getToMailAddress() {
+		// TODO Auto-generated method stub
+		return to;
+	}
+    
+    public void setToMailAddress(String sto){
+    	to = sto;
+    }
+	
+	public Integer getProfid(){
     	return profileid;
     }
     
@@ -493,7 +537,7 @@ public class loiBean implements Serializable {
     			}
     			db.cleanup();
  				
-    		    
+    		    //need to verify player up code if user provided it.
     			if (this.playerupcode!=null && this.playerupcode!=""){
     				//Need to check player up code from family next
 	 				LOGGER.info("verify family code provided for player up");
@@ -516,7 +560,33 @@ public class loiBean implements Serializable {
 	    				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "The provided Player Up signature code is invalid."));
 	    			}
     			}
+	    		
+    			
+    			//need to verify if player is playing up and if player up code is needed if not provided
+    			if (this.playerupcode==null || this.playerupcode==""){
+    				//Need to check player up code from family next
+	 				LOGGER.info("verify if user needs to enter player up code");
+	 				cs = db.prepareCall("CALL scaha.IsPlayerUpNeeded(?,?)");
+	 				String year = this.dob.substring(0,4);
+	 				cs.setInt("birthyear",Integer.parseInt(year));
+	 				cs.setInt("selectedteam", Integer.parseInt(this.selectedteam));
+	    		    rs = cs.executeQuery();
+	    			resultcount = 0;
+	    		    
+	    		    if (rs != null){
+	    				
+	    				while (rs.next()) {
+	    					resultcount = rs.getInt("divisioncount");
+	    				}
+	    				LOGGER.info("We have validation whether player needs player up code or not");
+	    			}
+	    			db.cleanup();
 	    			
+	    			if (resultcount.equals(0)){
+	    				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "The Player Up Code is required for this player for the division selected."));
+	    			}
+    			}
+    			
     		    if (resultcount > 0){
     		    	
 	    		    //if good save info to person table, then add record to roster then email
@@ -584,9 +654,64 @@ public class loiBean implements Serializable {
 	    			}
 	    		    
 	    		    
-					LOGGER.info("Sending email to club registrar, family, and nancy");
+	    			LOGGER.info("Sending email to club registrar, family, and scaha registrar");
+	    			cs = db.prepareCall("CALL scaha.getClubRegistrarEmail(?)");
+	    		    cs.setInt("iclubid", this.clubid);
+	    		    rs = cs.executeQuery();
+	    		    if (rs != null){
+	    				while (rs.next()) {
+	    					to = rs.getString("usercode");
+	    				}
+	    			}
 					
+	    		    
+	    			//need to check if scaha registrar has received an email today
+	    		    //set value to 0 and then check if the current date is less than 8/1/2014 if it is then we want
+	    		    //to check if an email has been sent today, if = or > than 8/1/2014 then always send email to scaha
+	    		    //registrar
+	    		    Integer emailsenttoday = 0;
+	    		    Date curdate = new Date();
+	    		    Calendar cal = Calendar.getInstance();
+	    		    cal.set(2014, Calendar.AUGUST, 1); //Year, month and day of month
+	    		    Date targetdate = cal.getTime();
+	    		    if (curdate.compareTo(targetdate)<0){
+	    		        cs = db.prepareCall("CALL scaha.HasReceivedEmail()");
+		    		    rs = cs.executeQuery();
+		    		    if (rs != null){
+		    				while (rs.next()) {
+		    					emailsenttoday = rs.getInt("emailcount");
+		    				}
+		    			}
+	    		    }
+	    		    
+	    		    if (emailsenttoday.equals(0)){
+		    		    cs = db.prepareCall("CALL scaha.getSCAHARegistrarEmail()");
+		    		    rs = cs.executeQuery();
+		    		    if (rs != null){
+		    				while (rs.next()) {
+		    					to = to + ',' + rs.getString("usercode");
+		    				}
+		    			}
+		    		    
+		    		    cs = db.prepareCall("CALL scaha.setSCAHARegistrarEmail()");
+		    		    rs = cs.executeQuery();
+		    		    db.commit();
+	    		    }
+	    		    
+	    		    cs = db.prepareCall("CALL scaha.getFamilyEmail(?)");
+	    		    cs.setInt("iplayerid", this.selectedplayer);
+	    		    rs = cs.executeQuery();
+	    		    if (rs != null){
+	    				while (rs.next()) {
+	    					to = to + ',' + rs.getString("usercode");
+	    				}
+	    			}
 					
+	    		    
+	    		    this.setToMailAddress(to);
+	    		    this.setTextBody("Player " + this.firstname + " " + this.lastname + " signed an loi for club " + this.getClubName());
+	    		    this.setSubject(this.firstname + " " + this.lastname + " LOI with " + this.getClubName());
+	    		    
 					/*SendMailSSL mail = new SendMailSSL(this);
 					LOGGER.info("Finished creating mail object for " + this.getUsername());
 					mail.sendMail();
