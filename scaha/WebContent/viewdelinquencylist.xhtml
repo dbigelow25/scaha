@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="content">
+	
+	<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top">  
+    	<h:outputText value="SCAHA" style="color:#FFCC00;font-size:36px;" />  
+	</p:notificationBar>  
+  	<h:form id="mess">
+    
+			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />    
+	
+		</h:form>
+	<h:form>
+			<p:panel id ="panel" header="2014 Delinquency List:">
+				<p:dataTable id="listofplayers" var="player" rowKey="#{player.IDplayer}" value="#{delinquencyBean.getPlayerdatamodel()}" selection="#{delinquencyBean.selectedplayer}" paginator="true" rows="10" autoupdate="false">
+                	<p:column filterBy="firstname" filterMatchMode="contains" filterStyle="width:50px" headerText="First Name">  
+			            <h:outputText value="#{player.getFirstname()}" />  
+			        </p:column>  
+			        <p:column filterBy="lastname" filterMatchMode="contains" filterStyle="width:50px" headerText="Last Name">  
+			            <h:outputText value="#{player.getLastname()}" />  
+			        </p:column>  
+			        <p:column headerText="2014 Team">  
+			            <h:outputText value="#{player.getCurrentteam()}" />  
+			        </p:column>
+			        <p:column headerText="DOB">  
+			            <h:outputText value="#{player.getDob()}" />  
+			        </p:column>
+			        <p:column headerText="Option" >  
+			             <p:commandButton id="removedelinquency" value="Remove" action="#{delinquencyBean.removePlayer(player)}"/>
+					</p:column>
+			    </p:dataTable>
+			</p:panel>
+			<p:separator id="customSeparator" style="width:800px;height:2px" />    
+	</h:form>
+	<h:form>
+			<div align="center"><p:commandButton id="closeaddteams" value="Close" ajax="false" actionListener="#{delinquencyBean.closePage()}"/></div>
+	</h:form>
+	</ui:define>
+</ui:composition>

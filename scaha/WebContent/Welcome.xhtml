@@ -11,28 +11,7 @@
 >
      <ui:define name="content">
  		<h:form>
- 			<h:panelGrid columns="1">
-		 		<h:outputLabel value="Welcome #{profileBean.getNickName()}"></h:outputLabel>
-		 		<p:spacer width="40" height="30" />
-		 		 <!-- club registrar will see this link -->
-			    <h:outputLabel value="Club Registrar Tools"/>
-			    <p:commandLink value="Add Team(s)" id="create-team" ajax="false"  
-			             actionListener="#{adminnavigationBean.addTeam()}"/>
-			    <p:commandLink value="Create Player LOI" id="create-loi" ajax="false"  
-			             actionListener="#{adminnavigationBean.addLoi()}"/>
-			    <p:commandLink value="Create Coach LOI" id="create-coachloi" ajax="false"  
-			             actionListener="#{adminnavigationBean.addcoachLoi()}"/>
-			    <p:commandLink value="View Club LOI" id="view-list-loi" ajax="false"  
-			             actionListener="#{adminnavigationBean.clubreviewLoi()}"/>
-			    <p:spacer width="40" height="30" />
-			    <!-- scaha registrar -->         
-			    <h:outputLabel value="SCAHA Registrar Tools"/>
-			    <p:commandLink value="Confirm Player LOI" id="confirm-loi" ajax="false"  
-			             actionListener="#{adminnavigationBean.confirmLoi()}"/>
-			    <p:commandLink value="Confirm Coach LOI" id="confirm-coach-loi" ajax="false"  
-			             actionListener="#{adminnavigationBean.confirmcoachLoi()}"/>
-		    </h:panelGrid>
-	    </h:form>
+ 		</h:form>
 	 </ui:define>
     
    

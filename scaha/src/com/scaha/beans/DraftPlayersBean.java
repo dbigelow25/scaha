@@ -364,5 +364,37 @@ public class DraftPlayersBean implements Serializable {
 			e.printStackTrace();
 		}
     }
+    
+    public void addtoDelinquency(){
+    	Result tempResult = selectedplayer;
+    	String selectedPlayerid = tempResult.getIdplayer();
+    	String selectedPlayername = tempResult.getPlayername();
+    	
+    	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	
+    	try{
+
+    		Vector<Integer> v = new Vector<Integer>();
+			v.add(Integer.parseInt(selectedPlayerid));
+			db.getData("CALL scaha.addToDelinquency(?)", v);
+		    
+			db.commit();		
+    		db.cleanup();
+
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN Searching FOR " + this.searchcriteria);
+    		e.printStackTrace();
+    		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"", "Unable to add " + selectedPlayername + "to the Delinquency List.  The player is not a team"));
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"", selectedPlayername + "has been added to the Delinquency List"));
+    	}
+		
+		
+    }
 }
 
