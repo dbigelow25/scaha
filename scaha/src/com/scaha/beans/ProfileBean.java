@@ -5,7 +5,6 @@ import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.FamilyMember;
 import com.scaha.objects.MailableObject;
-import com.scaha.objects.Person;
 import com.scaha.objects.Profile;
 import com.scaha.objects.Role;
 
@@ -13,21 +12,14 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
 
-import org.primefaces.event.TabChangeEvent;
-
-import com.scaha.objects.Profile;
 
 /**
  * LoginBean.java
@@ -38,7 +30,7 @@ public class ProfileBean implements Serializable,  MailableObject  {
 
 	//
 	// Class Level Variables
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 
 	private String name = null;
@@ -72,7 +64,17 @@ public class ProfileBean implements Serializable,  MailableObject  {
 	private String  chgZip= null;
 	private String  chgDOB= null;
 	private String  chgGender= null;
+	private String  currentUSAHockeySeason = "Needs call to DB";
+	private String  currentSCAHAHockeySeason = "Needs call to DB";
 	
+	
+	/**
+	 * 
+	 */
+	public ProfileBean () {
+		
+		
+	}
     public String getName ()
     {
         return name;
@@ -123,6 +125,34 @@ public class ProfileBean implements Serializable,  MailableObject  {
     	// pull profile into the Login Bean..
     	try {
 	    	if (pro != null) {
+	    		
+	    		//
+	    		// Here we want to default some session stuff right here.
+	    		// What is the current USAHockey Season..
+	    		//
+	    		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+	    		try{
+	    		
+	    			if (db.getData("call scaha.getActiveMemberShipByType('USAH')")) {
+	    				while (db.getResultSet().next()) {
+	    					this.setCurrentUSAHockeySeason(db.getResultSet().getString(2));
+	    				}
+	    			}
+
+	    			if (db.getData("call scaha.getActiveMemberShipByType('SCAHA')")) {
+	    				while (db.getResultSet().next()) {
+	    					this.setCurrentSCAHAHockeySeason(db.getResultSet().getString(2));
+	    				}
+	    			}
+  			
+	    			
+	    			db.free();
+	    		} catch (SQLException ex) {
+	    			ex.printStackTrace();
+	    			db.free();
+	    		}
+	    		
+	    				
     			if (origin != null) {
         			FacesContext.getCurrentInstance().getExternalContext().redirect(origin);
     			}
@@ -868,6 +898,33 @@ public String getPreApprovedCC() {
 
 public String getToMailAddress() {
 	return this.pro.getUserName();
+}
+
+
+/**
+ * @return the currentUSAHockeySeason
+ */
+public String getCurrentUSAHockeySeason() {
+	return currentUSAHockeySeason;
+}
+
+/**
+ * @param currentUSAHockeySeason the currentUSAHockeySeason to set
+ */
+public void setCurrentUSAHockeySeason(String currentUSAHockeySeason) {
+	this.currentUSAHockeySeason = currentUSAHockeySeason;
+}
+/**
+ * @return the currentSCAHAHockeySeason
+ */
+public String getCurrentSCAHAHockeySeason() {
+	return currentSCAHAHockeySeason;
+}
+/**
+ * @param currentSCAHAHockeySeason the currentSCAHAHockeySeason to set
+ */
+public void setCurrentSCAHAHockeySeason(String currentSCAHAHockeySeason) {
+	this.currentSCAHAHockeySeason = currentSCAHAHockeySeason;
 }
 
 

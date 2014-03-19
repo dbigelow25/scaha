@@ -9,29 +9,17 @@ import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
 public class FamilyMember extends Person implements Serializable {
-	
-	protected int ID = 0;
-	private String Relationship = null;
-	private String membertypes = null;
-	/**
-	 * @return the membertypes
-	 */
-	public String getMembertypes() {
-		return membertypes;
-	}
 
-	/**
-	 * @param membertypes the membertypes to set
-	 */
-	public void setMembertypes(String membertypes) {
-		this.membertypes = membertypes;
-	}
-
-	private Family fam = null;
-	
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+
+	protected int ID = -1;
+	private String usaHockeyNumber = "--------------";  // this is used for family member display... for the given hockey year..
+	private String Relationship = null;
+	private String membertypes = null;
+	private Family fam = null;
+	
 	
 	/**
 	 * A basic constructor that glues a person to a relationship for a given family.
@@ -98,4 +86,31 @@ public class FamilyMember extends Person implements Serializable {
 		
 	}
 
+	/**
+	 * @return the membertypes
+	 */
+	public String getMembertypes() {
+		return membertypes;
+	}
+
+	/**
+	 * @param membertypes the membertypes to set
+	 */
+	public void setMembertypes(String membertypes) {
+		this.membertypes = membertypes;
+	}
+	
+	/**
+	 * @return the usaHockeyNumber
+	 */
+	public String getUsaHockeyNumber() {
+		return usaHockeyNumber;
+	}
+
+	/**
+	 * @param usaHockeyNumber the usaHockeyNumber to set
+	 */
+	public void setUsaHockeyNumber(String usaHockeyNumber) {
+		this.usaHockeyNumber = usaHockeyNumber;
+	}
 }

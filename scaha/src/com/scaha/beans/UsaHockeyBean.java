@@ -28,7 +28,7 @@ import com.scaha.objects.UsaHockeyRegistration;
 public class UsaHockeyBean implements Serializable, MailableObject {
 	
 	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 
 	/**
@@ -244,6 +244,8 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 			per.gleanUSAHinfo(this.usar);
 			per.update(db);
 			
+			LOGGER.info("Member Type is" + membertype.toString());
+			
 			//
 			// ok.. lets update the trifecta and see if it sticks!!
 			//
@@ -256,9 +258,12 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 				sc.update(db);
 
 			}
-			if (membertype.contains("Player")) {
+			if (membertype.contains("Player-Goalie") || membertype.contains("Player-Skater")) {
 				sp = new ScahaPlayer(pro, per);
 				sp.gleanUSAHinfo(this.usar);
+				if (membertype.contains("Player-Goalie")) {
+					sp.setGoalie(true);
+				}
 				sp.update(db);
 			}
 

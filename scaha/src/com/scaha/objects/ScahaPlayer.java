@@ -21,6 +21,8 @@ public class ScahaPlayer extends Person {
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	
+	private boolean goalie = false;
 
 	//
 	// Lets hold the playerID here.. and allow the super to hold the person...
@@ -64,7 +66,7 @@ public class ScahaPlayer extends Person {
 		// is it an object that is not in the database yet..
 		//
 		
-		CallableStatement cs = _db.prepareCall("call scaha.updatePlayer(?,?,?,?)");
+		CallableStatement cs = _db.prepareCall("call scaha.updatePlayer(?,?,?,?,?)");
 		
 		LOGGER.info("HERE IS THE Person ID:" + super.ID);
 
@@ -72,6 +74,7 @@ public class ScahaPlayer extends Person {
 		cs.registerOutParameter(1, java.sql.Types.INTEGER);
 		cs.setInt(i++, this.ID);
 		cs.setInt(i++, super.ID);
+		cs.setInt(i++, (this.isGoalie() ? 1 : 0));
 		cs.setInt(i++,1);
 		cs.setString(i++,null);
 		cs.execute();
@@ -85,6 +88,20 @@ public class ScahaPlayer extends Person {
 		
 	}
 
-	
+	/**
+	 * @return the goalie
+	 */
+	public boolean isGoalie() {
+		return goalie;
+	}
+
+	/**
+	 * @param goalie the goalie to set
+	 */
+	public void setGoalie(boolean goalie) {
+		this.goalie = goalie;
+	}
+
+
 
 }
