@@ -20,11 +20,11 @@
 		</h:form>
 	<h:form>
 			<p:panel id ="panel" header="2014 Delinquency List:">
-				<p:dataTable id="listofplayers" var="player" rowKey="#{player.IDplayer}" value="#{delinquencyBean.getPlayerdatamodel()}" selection="#{delinquencyBean.selectedplayer}" paginator="true" rows="10" autoupdate="false">
-                	<p:column filterBy="firstname" filterMatchMode="contains" filterStyle="width:50px" headerText="First Name">  
+				<p:dataTable id="listofplayers" var="player" rowKey="#{player.IDplayer}" rowkey="" value="#{delinquencyBean.getPlayerdatamodel()}" selection="#{delinquencyBean.selectedplayer}" paginator="true" rows="10" autoupdate="false">
+                	<p:column headerText="First Name">  
 			            <h:outputText value="#{player.getFirstname()}" />  
 			        </p:column>  
-			        <p:column filterBy="lastname" filterMatchMode="contains" filterStyle="width:50px" headerText="Last Name">  
+			        <p:column headerText="Last Name">  
 			            <h:outputText value="#{player.getLastname()}" />  
 			        </p:column>  
 			        <p:column headerText="2014 Team">  
@@ -33,9 +33,6 @@
 			        <p:column headerText="DOB">  
 			            <h:outputText value="#{player.getDob()}" />  
 			        </p:column>
-			        <p:column headerText="Option" >  
-			             <p:commandButton id="removedelinquency" value="Remove" action="#{delinquencyBean.removePlayer(player)}" update="listofplayers"/>
-					</p:column>
 			    </p:dataTable>
 			</p:panel>
 			<p:separator id="customSeparator" style="width:800px;height:2px" />    

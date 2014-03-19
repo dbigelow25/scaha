@@ -34,6 +34,7 @@ public class adminnavigationBean implements Serializable {
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	private Boolean clubregistrar = null;
 	private Boolean scaharegistrar = null;
+	private String pagecode = null;
 	
     public adminnavigationBean() {  
         //need to get the roles and setup the navigation permissions
@@ -45,9 +46,20 @@ public class adminnavigationBean implements Serializable {
 
 		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
     	setRoleflags(pb);
+
+    	
+    	
     	
     }  
  
+    public void setPagecode(String scode){
+    	pagecode = scode;
+    }
+    
+    public String getPagecode(){
+    	return pagecode;
+    }
+    
     public void setRoleflags(ProfileBean pb){
     	
     	//set initial values to false
@@ -154,6 +166,87 @@ public class adminnavigationBean implements Serializable {
     		e.printStackTrace();
     	}
     	
+    }
+    
+    public void viewDelinquency(){
+        
+    	//need to reload delinquency list before redirecting due to session object issues.
+    	FacesContext context = FacesContext.getCurrentInstance();
+    	Application app = context.getApplication();
+
+		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{delinquencyBean}", Object.class );
+
+		delinquencyBean db = (delinquencyBean) expression.getValue( context.getELContext() );
+    	db.playersDisplay();
+
+    	try{
+    		context.getExternalContext().redirect(this.loadPageCode() + ".xhtml");
+    	} catch (IOException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}
+    	    	
+    }
+    
+    public void loadNavigation(){
+        
+    	//need to reload player and coaches loi list before redirecting due to session object issues.
+    	FacesContext context = FacesContext.getCurrentInstance();
+    	Application app = context.getApplication();
+
+		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{reviewloiBean}", Object.class );
+
+		reviewloiBean lb = (reviewloiBean) expression.getValue( context.getELContext() );
+    	lb.setSelectedclub("0");
+    	lb.setSelectedplayerid("0");
+    	lb.setSelectedtabledisplay("0");
+    	lb.playersDisplay();
+		
+    	expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{reviewcoachloiBean}", Object.class );
+
+		reviewcoachloiBean clb = (reviewcoachloiBean) expression.getValue( context.getELContext() );
+    	clb.setSelectedclub("0");
+    	clb.setSelectedtabledisplay("0");
+    	clb.coachesDisplay();
+    	
+    	expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{draftplayersBean}", Object.class );
+
+    	DraftPlayersBean dpb = (DraftPlayersBean) expression.getValue( context.getELContext() );
+    	dpb.setSearchcriteria("");
+    	dpb.playerSearch();
+    	
+    	expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{draftcoachesBean}", Object.class );
+
+    	DraftCoachesBean dcb = (DraftCoachesBean) expression.getValue( context.getELContext() );
+    	dcb.setSearchcriteria("");
+    	dcb.coachSearch();
+    	
+    	
+    	try{
+    		context.getExternalContext().redirect(this.loadPageCode() + ".xhtml");
+    	} catch (IOException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}
+    	    	
+    }
+    
+        	    	
+    private String loadPageCode(){
+    	//get page to navigate to
+    	HttpServletRequest hsr = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+    	
+    	if(hsr.getParameter("pagecode") != null)
+        {
+    		pagecode = hsr.getParameter("pagecode").toString();
+        }
+    	
+    	return pagecode;
     }
     
      

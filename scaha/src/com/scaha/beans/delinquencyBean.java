@@ -187,7 +187,7 @@ public class delinquencyBean implements Serializable {
  				LOGGER.info("update player in delinquency list");
  				CallableStatement cs = db.prepareCall("CALL scaha.removeDelinquency(?)");
     		    cs.setInt("iplayerid", Integer.parseInt(sidplayer));
-    		    
+    		    rs=cs.executeQuery();
     		    db.commit();
     			db.cleanup();
  				
@@ -211,6 +211,8 @@ public class delinquencyBean implements Serializable {
 			//
 			db.free();
 		}
+		
+		playersDisplay();
 	}
 }
 

@@ -329,6 +329,7 @@ public class reviewloiBean implements Serializable {
  				LOGGER.info("verify loi code provided");
  				CallableStatement cs = db.prepareCall("CALL scaha.settoVoid(?)");
     		    cs.setInt("playerid", Integer.parseInt(sidplayer));
+    		    rs=cs.executeQuery();
     		    
     		    db.commit();
     			db.cleanup();
@@ -353,6 +354,9 @@ public class reviewloiBean implements Serializable {
 			//
 			db.free();
 		}
+		
+		//now we need to reload the data object for the loi list
+		playersDisplay();
 	}
 }
 

@@ -100,7 +100,6 @@
 		<managed-bean-class>com.scaha.beans.delinquencyBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-	
 	<validator>
 		<description>This will validate the Username to ensure its unique in the system</description>
 		<display-name>User Name Validator</display-name>
