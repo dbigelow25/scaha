@@ -22,6 +22,7 @@ import com.scaha.objects.Person;
 import com.scaha.objects.Profile;
 import com.scaha.objects.ScahaCoach;
 import com.scaha.objects.ScahaManager;
+import com.scaha.objects.ScahaMember;
 import com.scaha.objects.ScahaPlayer;
 import com.scaha.objects.UsaHockeyRegistration;
 
@@ -126,7 +127,7 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 	@Override
 	public String getSubject() {
 		// TODO Auto-generated method stub
-		return "";
+		return "Congradulations, you have successfully registered";
 	}
 	@Override
 	public String getTextBody() {
@@ -230,6 +231,8 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 		ScahaManager sm = null;
 		ScahaPlayer sp = null;
 		ScahaCoach sc = null;
+		ScahaMember mem = null;
+		
 
 		// And we need to create the membership record as well..
 		//
@@ -243,6 +246,13 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 
 			per.gleanUSAHinfo(this.usar);
 			per.update(db);
+			usar.update(db, per);
+			
+			mem = new ScahaMember(pro,per);
+			mem.setSCAHAYear(this.usar.getMemberShipYear());
+			LOGGER.info("Time to Create the Membership.. ");
+			mem.generateMembership(db);
+			mem.setTopPerson(tper);
 			
 			LOGGER.info("Member Type is" + membertype.toString());
 			
@@ -267,7 +277,6 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 				sp.update(db);
 			}
 
-			usar.update(db, per);
 			//
 			// Now we need to get the Family Object from the Person in the Profile..
 			// and add this person to the database.. and the object
@@ -294,11 +303,9 @@ public class UsaHockeyBean implements Serializable, MailableObject {
             //
             //  We also have to create an e-mail record.. possibly formated in HTML..
             //
-            
-            //
-            //
-            //  
-            
+        	// We want to create a family called the <lastname> family...
+			SendMailSSL mail = new SendMailSSL(mem);
+			mail.sendMail();
             
 		} catch (SQLException ex) {
 			ex.printStackTrace();

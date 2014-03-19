@@ -31,6 +31,8 @@ public class Person extends ScahaObject implements Serializable {
 	
 	private int iZipCode = 0;
 	private Family fam = null;
+	private UsaHockeyRegistration UsaHockeyRegistration = null;
+	
 
 	/**
 	 * @return the fam
@@ -366,6 +368,20 @@ public class Person extends ScahaObject implements Serializable {
 	}
 	
 	/**
+	 * @return the usaHockeyRegistration
+	 */
+	public UsaHockeyRegistration getUsaHockeyRegistration() {
+		return UsaHockeyRegistration;
+	}
+
+	/**
+	 * @param usaHockeyRegistration the usaHockeyRegistration to set
+	 */
+	public void setUsaHockeyRegistration(UsaHockeyRegistration usaHockeyRegistration) {
+		UsaHockeyRegistration = usaHockeyRegistration;
+	}
+
+	/**
 	 * Here we clean all the USA hockey Information we can and jamb it into the Person Record..
 	 * @param usar
 	 */
@@ -376,6 +392,7 @@ public class Person extends ScahaObject implements Serializable {
 		setCitizenship(usar.getCitizen());
 		setDob(usar.getDOB());
 		setGender(usar.getGender());
+		this.setsEmail(usar.getEmail()); // Always carry this through to the actual person
 		
 	}
 		

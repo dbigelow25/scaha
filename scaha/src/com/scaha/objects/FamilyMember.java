@@ -16,6 +16,8 @@ public class FamilyMember extends Person implements Serializable {
 
 	protected int ID = -1;
 	private String usaHockeyNumber = "--------------";  // this is used for family member display... for the given hockey year..
+	private String scahaHockeyNumber = "-----";  // this is used for family member display... for the given hockey year..
+	
 	private String Relationship = null;
 	private String membertypes = null;
 	private Family fam = null;
@@ -112,5 +114,19 @@ public class FamilyMember extends Person implements Serializable {
 	 */
 	public void setUsaHockeyNumber(String usaHockeyNumber) {
 		this.usaHockeyNumber = usaHockeyNumber;
+	}
+
+	/**
+	 * @return the scahaHockeyNumber
+	 */
+	public String getScahaHockeyNumber() {
+		return scahaHockeyNumber;
+	}
+
+	/**
+	 * @param scahaHockeyNumber the scahaHockeyNumber to set
+	 */
+	public void setScahaHockeyNumber(String scahaHockeyNumber) {
+		this.scahaHockeyNumber = scahaHockeyNumber;
 	}
 }

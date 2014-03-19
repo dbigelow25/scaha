@@ -19,7 +19,7 @@ public class Utils {
 	
 	public static void main (String[] args) throws Exception  {
 		
-		System.out.println(getRandomString());
+		System.out.println(getRandom5CharStringUpper());
 		
 	}
 	
@@ -36,8 +36,8 @@ public class Utils {
 
 	
 	
-	public static String getRandomString() {
-		return RandomStringUtils.random(4, true, true).toUpperCase();
+	public static String getRandom5CharStringUpper() {
+		return RandomStringUtils.random(5, true, true).toUpperCase();
 	}
 	
 }

@@ -43,25 +43,23 @@ public class USAHRegistrationValidator implements Validator {
             throw new ValidatorException(message);
         }
      
-    	//
-		// ok.. lets check the database to make sure its unique..
-		// 
 
         ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-        
-        Vector<String> v = new Vector<String>();
-		v.add(sUSAHReg);
 
-		db.getData("CALL scaha.checkForExistingUSAHNum(?)", v);
-        
-		//
-		// iF THE COUNT COMES BACK > 0 THEN SOMEONE ALREADY HAS THAT USA Hockey In play
-		// 
+        try {
 
-		//
-		// iF THE COUNT COMES BACK > 0 THEN SOMEONE ALREADY HAS THAT USERNAME
-		// 
-		try {
+
+	        
+	        Vector<String> v = new Vector<String>();
+			
+	        //
+	        // ok.. lets make sure the USA Hockey number is not currently in play...
+	        v.add(sUSAHReg);
+			db.getData("CALL scaha.checkForExistingUSAHNum(?)", v);
+			
+    		//
+			// iF THE COUNT COMES BACK > 0 THEN SOMEONE ALREADY HAS THAT USA Hockey In play
+			// 
 			if (db.getResultSet() != null && db.getResultSet().next()){
 				if (db.getResultSet().getInt(1) > 0) {
 					FacesMessage message = new FacesMessage();
@@ -71,6 +69,24 @@ public class USAHRegistrationValidator implements Validator {
 		            throw new ValidatorException(message);
 				}
 			}
+			
+			//
+			// Now.. lets check to make sure its for the active year and not some prior year...
+			//
+			v.clear();
+			v.add(sUSAHReg.substring(3,4));
+			db.getData("CALL scaha.validateUSAHockeyYear(?)", v);
+    		//
+			// iF we get any result back.. then we are in the proper year
+			// 
+			if (!db.getResultSet().next()){
+				FacesMessage message = new FacesMessage();
+				message.setSeverity(FacesMessage.SEVERITY_ERROR);
+				message.setSummary("USA Hockey Registration.");
+				message.setDetail("This Number is NOT for the current registration year.  Please check your number and try again.");
+				throw new ValidatorException(message);
+			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

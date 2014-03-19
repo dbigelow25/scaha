@@ -79,6 +79,8 @@ public class Family extends ScahaObject implements Serializable  {
 					mem.setCitizenship(rs.getString(16));
 					mem.setMembertypes(rs.getString(17));
 					mem.setUsaHockeyNumber(rs.getString(18));
+					mem.setScahaHockeyNumber(rs.getString(19));
+					
 					FamilyMembers.add(mem);
 				}	
 					

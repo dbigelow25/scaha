@@ -83,10 +83,9 @@ public class SendMailSSL {
 			//
 			// Add the Blind CC's
 			//
-			message.setRecipients(Message.RecipientType.BCC,
-					InternetAddress.parse(m_mo.getPreApprovedCC()));
+			message.setRecipients(Message.RecipientType.BCC,InternetAddress.parse(m_mo.getPreApprovedCC()));
 			message.setSubject(m_mo.getSubject());
-			message.setText(m_mo.getTextBody());
+			message.setContent(m_mo.getTextBody(),"text/html; charset=ISO-8859-1");
 
 			LOGGER.info("Sending e-mail now...");
 			

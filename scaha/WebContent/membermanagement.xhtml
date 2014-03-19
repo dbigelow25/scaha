@@ -34,7 +34,7 @@
 <ui:define name="content">
 
  
-<div id="page-div">
+<div id="page-div" width = "700px">
 
  <p:tabMenu activeIndex="1">  
     <p:menuitem value="My Information" url="manageprofile.xhtml"  />  
@@ -49,7 +49,6 @@
 
   <h:form id="mp-form">
 
-	<h:outputText value="#{profileBean.getProfile().getPerson().getFam().getFamilyName()}"></h:outputText>
  	<h:panelGroup id="view-members" rendered="#{profileBean.isViewMembers()}">
    	
    		<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">  
@@ -57,31 +56,35 @@
     	                                          You can add more people to your account, but they have to FIRST be registered as a USA Hockey member."/>  
    		</p:fieldset>  
 
-   		<p:fieldset id="fs1-1" toggleable="false" toggleSpeed="500">  
+	  	<p:spacer width="10" height="10" />
+	
+		<p:fieldset id="fs1-1" toggleable="false" toggleSpeed="500">  
    	      	<h:outputText style="font-size: 12px;" value="The member information below applies to the following USA and SCAHA Hockey Seasons"/>  
- 			<h:panelGrid id="season-ino" columns="3" cellpadding="3">  
-				<h:outputText style="display: block;width:125px;!important" value="Current USA Hockey Season:" />
-				<h:outputText style="display: block;width:125px;!important" value="Current SCAHA Hockey Season:" />
-				<h:outputText style="display: block;width:125px;!important" value="Weeks Left:" />
-
-				<h:outputText style="display: block;width:125px;!important" value="Date From:" />
-				<h:outputText style="display: block;width:125px;!important" value="Date Ends:" />
-				<h:outputText style="display: block;width:125px;!important" value="Weeks Left:" />
-			</h:panelGrid>
+ 			<p:panelGrid id="season-ino" columns="2" cellpadding="3"> 
+ 				<h:outputText  value="Season Descriptsion" />
+				<h:outputText  value="Days Left" />
+				<h:outputText  value="#{profileBean.getCurrentSCAHAHockeySeason()}" />
+				<h:outputText  value="12" />
+				<h:outputText  value="#{profileBean.getCurrentUSAHockeySeason()}" />
+				<h:outputText  value="12" />
+			</p:panelGrid>
 		</p:fieldset>  
 	
-	  	<p:spacer width="10" height="10" />
-  	
+		<p:spacer width="10" height="10" />
+    
+    	<h:outputText value="#{profileBean.getProfile().getPerson().getFam().getFamilyName()}"></h:outputText>
+	
+ 	 	<p:spacer width="10" height="10" />
+    
   		<!--  Here we need to implement at table model -->
   		<p:fieldset id="fs2" toggleable="false" toggleSpeed="500">  	      
 			<p:dataTable var="familymember" value="#{profileBean.getFamilyMembers()}">  
    			    <p:column headerText="Name"><h:outputText value="#{familymember.getsFirstName()} #{familymember.getsLastName()}" /></p:column>  
    	    		<p:column headerText="Relationship"><h:outputText value="#{familymember.getRelationship()}" /></p:column>
-   	    		<p:column headerText="Gender"><h:outputText value="#{familymember.getGender()}" /></p:column>  
    	    		<p:column headerText="DOB."><h:outputText value="#{familymember.getDob()}" /></p:column>  
    	    		<p:column headerText="CMPs"><h:outputText value="#{familymember.getMembertypes()}" /></p:column>  
    	    		<p:column headerText="#{profileBean.getCurrentUSAHockeySeason()}"><p:outputLabel value="#{familymember.getUsaHockeyNumber()}" /></p:column>  
-   	    		<p:column headerText="#{profileBean.getCurrentSCAHAHockeySeason()}"><p:outputLabel value="**WILL PULL FROM DB ***" /></p:column>  
+   	    		<p:column headerText="#{profileBean.getCurrentSCAHAHockeySeason()}"><p:outputLabel value="#{familymember.getScahaHockeyNumber()}" /></p:column>  
    			</p:dataTable> 
     	</p:fieldset>
     			
@@ -103,7 +106,11 @@
    	</p:fieldset>  
 	
 	<p:spacer width="10" height="10" />
-	
+    
+   	<h:outputText value="#{profileBean.getProfile().getPerson().getFam().getFamilyName()}"></h:outputText>
+
+ 	<p:spacer width="10" height="10" />	
+
   	<p:fieldset id="fs22" toggleable="false" toggleSpeed="500">  	
   	      
 	    	<p:focus context="fs22"/>   
@@ -115,15 +122,19 @@
 				</p:inputText>
 	 			<p:message id="m_usah-reg" closable="true" for="usah-reg"/>
 				
-			<p:outputLabel  for = "relationship" value="Relationship Type" /> 
+			<p:outputLabel  for = "relationship" value="Relationship (select one)" /> 
        			<p:selectOneMenu id="relationship" value="#{usahBean.relationship}" style="width: 100px"  required="true" requiredMessage="need to select a relationship type." >         
             		<f:selectItem itemLabel="Child" itemValue="Child" />
             		<f:selectItem itemLabel="Self" itemValue="Self"/>
             		<f:selectItem itemLabel="Spouse" itemValue="Spouse"/>
+            		<f:selectItem itemLabel="Parent" itemValue="Parent"/>
+            		<f:selectItem itemLabel="Relative" itemValue="Relative"/>
+            		<f:selectItem itemLabel="Other" itemValue="Other"/>
         		</p:selectOneMenu >  
+ 
  			<p:message id="m_relationship" closable="true" for="relationship"/>
-
-			<p:outputLabel  for = "member" value="Member Type" /> 
+ 			
+			<p:outputLabel  for = "member" value="Member Type (choose all that apply)" /> 
 		 	   <p:selectManyCheckbox  id="member" value="#{usahBean.membertype}" style="width: 125px" required="true" requiredMessage="need to select a member type." >    
           			<f:selectItem itemLabel="Player-Skater" itemValue="Player-Skater" />  
           			<f:selectItem itemLabel="Player-Goalie" itemValue="Player-Goalie" />  

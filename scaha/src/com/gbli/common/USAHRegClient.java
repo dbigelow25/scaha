@@ -28,7 +28,7 @@ public class USAHRegClient {
  
 		System.out.println("START:" + crypt.encryptText(_strUSAH));
 		
-		URL url = new URL("http://scahalookup.azurewebsites.net/ReqUSAH.aspx?usah='" + crypt.encryptText(_strUSAH) + "'");
+		URL url = new URL("http://scahalookup.azurewebsites.net/ReqUSAH.aspx?usah='" + crypt.encryptText(_strUSAH).replace("+", ":PLUS:") + "'");
 		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 		String inputLine = null;
 		String answer = new String ();
