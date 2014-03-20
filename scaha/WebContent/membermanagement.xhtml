@@ -83,8 +83,8 @@
    	    		<p:column headerText="Relationship"><h:outputText value="#{familymember.getRelationship()}" /></p:column>
    	    		<p:column headerText="DOB."><h:outputText value="#{familymember.getDob()}" /></p:column>  
    	    		<p:column headerText="CMPs"><h:outputText value="#{familymember.getMembertypes()}" /></p:column>  
-   	    		<p:column headerText="#{profileBean.getCurrentUSAHockeySeason()}"><p:outputLabel value="#{familymember.getUsaHockeyNumber()}" /></p:column>  
-   	    		<p:column headerText="#{profileBean.getCurrentSCAHAHockeySeason()}"><p:outputLabel value="#{familymember.getScahaHockeyNumber()}" /></p:column>  
+   	    		<p:column headerText="#{profileBean.getCurrentUSAHockeySeason()}"><p:outputLabel style="font-family:monospace;!important" value="#{familymember.getUsaHockeyNumber()}" /></p:column>  
+   	    		<p:column headerText="#{profileBean.getCurrentSCAHAHockeySeason()}"><p:outputLabel style="font-family:monospace;!important" value="#{familymember.getScahaHockeyNumber()}" /></p:column>  
    			</p:dataTable> 
     	</p:fieldset>
     			

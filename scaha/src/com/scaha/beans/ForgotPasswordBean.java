@@ -40,16 +40,15 @@ public class ForgotPasswordBean implements Serializable, MailableObject {
 			v.add(this.email);
 			db.getData("CALL scaha.checkforuser(?)", v);
 		        
-			if (db.getResultSet() != null && db.getResultSet().next()){
-				if (db.getResultSet().getInt(1) == 0) {
-
-					//
-					// This username does not exist.  So we cannot send.. 
-					// lets exit
-					//
-					// The screen logic should have caught this
-					return "False";
-				}
+			if (db.getResultSet() == null || !db.getResultSet().next()){
+		
+				//
+				// This username does not exist.  So we cannot send.. 
+				// lets exit
+				//
+				// The screen logic should have caught this
+				return "False";
+				
 			}
 
 			LOGGER.info("Forgot Password.. got a good e-mail...");

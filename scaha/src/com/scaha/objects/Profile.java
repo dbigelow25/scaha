@@ -37,7 +37,7 @@ public class Profile extends ScahaObject {
 	private ActionList m_al = null;
 	private Person m_per = null;
 	
-	private Profile (int _id, ScahaDatabase _db, String _sNN, String _sUser, String _sPass) {
+	public Profile (int _id, ScahaDatabase _db, String _sNN, String _sUser, String _sPass) {
 		
 		this.ID = _id;
 		m_sNickName = _sNN;
@@ -50,7 +50,7 @@ public class Profile extends ScahaObject {
 			// Lets get the Person...
 			m_per = new Person(_db, this);
 			// Lets get the action List...
-			m_al = new ActionList(this);
+		//	m_al = new ActionList(this); TODO  // needs to use passed db connection...      
 			// What roles do they have ?  Non hierarchical
 			m_rc = new RoleCollection(_db, this);
 
@@ -169,9 +169,12 @@ public class Profile extends ScahaObject {
 	 */
 	public Person getPerson() {
 		return this.m_per;
-		
 	}
-	
+
+	public void setPerson(Person _per) {
+		this.m_per = _per;
+	}
+
 	@SuppressWarnings("unchecked")
 	public List<Role> getRoles() {
 		return this.m_rc.getList();

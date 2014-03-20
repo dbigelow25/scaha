@@ -71,13 +71,9 @@ public class UserNameValidator implements Validator {
 		// 
 		try {
 			if (db.getResultSet() != null && db.getResultSet().next()){
-				if (db.getResultSet().getInt(1) == 0) {
-					LOGGER.info("One FREE");
-				} else {
-					LOGGER.info("TWO FREE");
-					throw new ValidatorException(new FacesMessage(
-							FacesMessage.SEVERITY_ERROR, "This UserName is already in use.", null));
-				}
+				LOGGER.info("TWO FREE");
+				throw new ValidatorException(new FacesMessage(
+						FacesMessage.SEVERITY_ERROR, "This UserName is already in use.", null));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

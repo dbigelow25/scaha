@@ -26,6 +26,7 @@ public class Family extends ScahaObject implements Serializable  {
 		this.ID = _id;
 		super.setProfile(_pro);
 		this.per = _per;
+		_per.setFam(this);
 	}
 
 	public Family (ScahaDatabase _db, Person _per) {
@@ -110,6 +111,7 @@ public class Family extends ScahaObject implements Serializable  {
 	 */
 	public void setPer(Person per) {
 		this.per = per;
+		per.setFam(this);
 	}
 
 	/**
