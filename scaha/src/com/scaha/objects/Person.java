@@ -386,7 +386,7 @@ public class Person extends ScahaObject implements Serializable {
 	 * @param usar
 	 */
 	public void gleanUSAHinfo(UsaHockeyRegistration usar) {
-		// TODO Auto-generated method stub
+		// TODO WILL NEED TO ADD COUNTRY AS WELL
 		setsFirstName(Utils.properCase(usar.getFirstName()));
 		setsLastName(Utils.properCase(usar.getLastName()));
 		setCitizenship(usar.getCitizen());

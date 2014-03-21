@@ -67,18 +67,16 @@ public class EmailValidator implements Validator {
 		db.getData("CALL scaha.checkforuser(?)", v);
         
 		//
-		// iF THE COUNT COMES BACK > 0 THEN SOMEONE ALREADY HAS THAT USERNAME 
+		// iF a row comes back.. We ALREADY Have THAT USERNAME 
 		// and in this case, thats great.. because we are going to send 
 		// 
 		try {
 			if (db.getResultSet() != null && db.getResultSet().next()){
-				if (db.getResultSet().getInt(1) != 0) {
-					LOGGER.info("One FREE");
-				} else {
-					LOGGER.info("TWO FREE");
-					throw new ValidatorException(new FacesMessage(
-							FacesMessage.SEVERITY_ERROR, "This UserName Cannot be found in the system.", null));
-				}
+				LOGGER.info("One FREE");
+			} else {
+				LOGGER.info("TWO FREE");
+				throw new ValidatorException(new FacesMessage(
+						FacesMessage.SEVERITY_ERROR, "This UserName Cannot be found in the system.", null));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

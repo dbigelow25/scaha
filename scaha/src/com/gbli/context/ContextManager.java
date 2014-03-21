@@ -174,5 +174,20 @@ public class ContextManager implements ServletContextListener {
 		return c_hDBPools.get(_sClassName).getDatabase();
 	}
 	
+	public static void setLogger(String _strloggerContext) {
+		//
+		// STEP 1 Lets Get the Logger Established right now
+		//
+		
+		c_sLoggerContext = _strloggerContext;
+		c_Logger = Logger.getLogger(_strloggerContext);
+
+		try {
+			MyLogger.setup();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
 
 }

@@ -242,11 +242,9 @@ public class RegistrationBean implements Serializable, MailableObject  {
  				db.getData("CALL scaha.checkforuser(?)", v);
 			        
  				if (db.getResultSet() != null && db.getResultSet().next()){
-					if (db.getResultSet().getInt(1) > 0) {
-						// We already have this username.. 
-						// we need to exit and fill the message in the context on the screen.
-						return "fail";
-					}
+					// We already have this username.. 
+					// we need to exit and fill the message in the context on the screen.
+					return "fail";
 				}
  				
  				db.cleanup();
