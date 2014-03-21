@@ -18,7 +18,6 @@ public class ScahaMember extends ScahaObject implements Serializable, MailableOb
 	private String SCAHANumber = null;			// This is the 6 digit automatically generated number..
 	private String SCAHAYear = null;		// This is they year (single digit) its valid in..
 	private Person MyPerson = null;				// ok.. new strat.. this owns the member object
-	
 	private Person TopPerson = null; 	// This represents the Top owner of this object.. Usually the account holder
 	
 	

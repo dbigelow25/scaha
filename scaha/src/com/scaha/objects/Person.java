@@ -305,7 +305,17 @@ public class Person extends ScahaObject implements Serializable {
 		int i = 1;
 		cs.registerOutParameter(1, java.sql.Types.INTEGER);
 		cs.setInt(i++, this.ID);
-		cs.setInt(i++, (getProfile().getPerson() == this ? getProfile().ID : 0));
+		
+		//
+		// This is bad.. but in a pinch
+		// if the attached person is not in db yet.. we want to see if this matches profile person obj in memory
+		// otherwise.. ids must match..
+		//
+		if (getProfile().getPerson().ID < 1) {
+			cs.setInt(i++, (getProfile().getPerson() == this ? getProfile().ID : 0));
+		} else {
+			cs.setInt(i++, (getProfile().getPerson().ID == this.ID ? getProfile().ID : 0));
+		}
 		cs.setString(i++, this.sFirstName);
 		cs.setString(i++, this.sLastName);
 		cs.setString(i++, this.sEmail);
@@ -313,7 +323,7 @@ public class Person extends ScahaObject implements Serializable {
 		cs.setString(i++, this.sAddress1);
 		cs.setString(i++, this.sCity);
 		cs.setString(i++, this.sState);
-		cs.setInt(i++, this.iZipCode);
+		cs.setInt(i++, 	this.iZipCode);
 		cs.setString(i++, this.gender);
 		cs.setString(i++, this.dob);
 		cs.setString(i++, this.citizenship);
