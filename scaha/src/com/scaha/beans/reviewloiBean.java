@@ -358,5 +358,65 @@ public class reviewloiBean implements Serializable {
 		//now we need to reload the data object for the loi list
 		playersDisplay();
 	}
+	
+	public void viewLoi(Player selectedPlayer){
+		
+		String sidplayer = selectedPlayer.getIdplayer();
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
+
+			if (db.setAutoCommit(false)) {
+			
+				//Need to provide info to the stored procedure to save or update
+ 				LOGGER.info("verify loi code provided");
+ 				CallableStatement cs = db.prepareCall("CALL scaha.getPersonIdbyPlayerId(?)");
+    		    cs.setInt("iplayerid", Integer.parseInt(sidplayer));
+    		    rs=cs.executeQuery();
+    		    
+    		    if (rs != null){
+    				
+    				while (rs.next()) {
+    					Integer idplayer = rs.getInt("idperson");
+    					sidplayer = idplayer.toString();
+        			}
+    				LOGGER.info("We have results for division list");
+    			}
+    			db.commit();
+    			db.cleanup();
+ 			} else {
+		
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("ERROR IN Retrieving PersonId" + this.selectedplayer);
+			e.printStackTrace();
+			db.rollback();
+		} finally {
+			//
+			// always clean up after yourself..
+			//
+			db.free();
+		}
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		try{
+			context.getExternalContext().redirect("scahaviewloi.xhtml?playerid=" + sidplayer);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void CloseLoi(){
+		FacesContext context = FacesContext.getCurrentInstance();
+		try{
+			context.getExternalContext().redirect("confirmlois.xhtml");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
 

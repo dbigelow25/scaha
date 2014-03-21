@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.el.ValueExpression;
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
@@ -344,7 +346,16 @@ public class coachrosteractionBean implements Serializable {
     		    //logging 
     			LOGGER.info("We are updating transfer info for coach id:" + this.selectedcoach);
     		    
-    			FacesContext context = FacesContext.getCurrentInstance();  
+    			
+    			
+    			FacesContext context = FacesContext.getCurrentInstance();
+    			Application app = context.getApplication();
+    			ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+    					"#{reviewcoachloiBean}", Object.class );
+
+    			reviewcoachloiBean rclb = (reviewcoachloiBean) expression.getValue( context.getELContext() );
+    	    	rclb.coachesDisplay();
+    			
                 context.addMessage(null, new FacesMessage("Successful", "You ave updated the Coach"));
                 try{
         			context.getExternalContext().redirect("confirmcoachlois.xhtml");

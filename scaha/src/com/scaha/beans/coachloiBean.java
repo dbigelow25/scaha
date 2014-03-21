@@ -508,7 +508,7 @@ public class coachloiBean implements Serializable, MailableObject {
     			if (db.getResultSet() != null){
     				//need to add to an array
     				rs = db.getResultSet();
-    				
+    				this.cepmoduledisplaystring="";
     				while (rs.next()) {
     					firstname = rs.getString("fname");
     					lastname = rs.getString("lname");
@@ -526,19 +526,19 @@ public class coachloiBean implements Serializable, MailableObject {
         				if (ceplevel.equals(1)){
         					cepleveldisplay = "Level 1";
         				}
-        				if (ceplevel.equals("2")){
+        				if (ceplevel.equals(2)){
         					cepleveldisplay = "Level 2";
         				}
-        				if (ceplevel.equals("3")){
+        				if (ceplevel.equals(3)){
         					cepleveldisplay = "Level 3";
         				}
-        				if (ceplevel.equals("4")){
+        				if (ceplevel.equals(4)){
         					cepleveldisplay = "Level 4";
         				}
-        				if (ceplevel.equals("5")){
+        				if (ceplevel.equals(5)){
         					cepleveldisplay = "Level 5";
         				}
-        				if (ceplevel.equals("0")){
+        				if (ceplevel.equals(0)){
         					cepleveldisplay = "";
         				}
         				cepexpires = rs.getString("cepexpires");
@@ -546,28 +546,49 @@ public class coachloiBean implements Serializable, MailableObject {
         				u8 = rs.getString("eightu");
         				if (u8.equals("1")){
         					templist.add("8U");
+        					this.cepmoduledisplaystring="8U";
         				}
         				u10 = rs.getString("tenu");
         				if (u10.equals("1")){
         					templist.add("10U");
+        					if (!this.cepmoduledisplaystring.equals("")){
+        						this.cepmoduledisplaystring=this.cepmoduledisplaystring+", ";
+        					}
+        					this.cepmoduledisplaystring=this.cepmoduledisplaystring + "10U";
         				}
         				u12 = rs.getString("twelveu");
         				if (u12.equals("1")){
         					templist.add("12U");
+        					if (!this.cepmoduledisplaystring.equals("")){
+        						this.cepmoduledisplaystring=this.cepmoduledisplaystring+", ";
+        					}
+        					this.cepmoduledisplaystring=this.cepmoduledisplaystring + "12U";
         				}
         				u14 = rs.getString("fourteenu");
         				if (u14.equals("1")){
         					templist.add("14U");
+        					if (!this.cepmoduledisplaystring.equals("")){
+        						this.cepmoduledisplaystring=this.cepmoduledisplaystring+", ";
+        					}
+        					this.cepmoduledisplaystring=this.cepmoduledisplaystring + "14U";
         				}
         				u18 = rs.getString("eighteenu");
         				if (u18.equals("1")){
         					templist.add("18U");
+        					if (!this.cepmoduledisplaystring.equals("")){
+        						this.cepmoduledisplaystring=this.cepmoduledisplaystring+", ";
+        					}
+        					this.cepmoduledisplaystring=this.cepmoduledisplaystring + "18U";
         				}
         				girls = rs.getString("girls");
         				if (girls.equals("1")){
         					templist.add("Girls");
+        					if (!this.cepmoduledisplaystring.equals("")){
+        						this.cepmoduledisplaystring=this.cepmoduledisplaystring+", ";
+        					}
+        					this.cepmoduledisplaystring=this.cepmoduledisplaystring + "Girls";
         				}
-        			
+        				
         				setCepmodulesselected(templist);
         			}
     				LOGGER.info("We have results for player details by player id");

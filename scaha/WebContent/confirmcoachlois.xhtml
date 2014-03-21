@@ -89,7 +89,8 @@
 			        <p:column headerText="Option" >  
 			             <p:splitButton id="wwtransfer" value="Work with "  >
 					        <p:menuitem value="Coach Details" action="#{reviewcoachloiBean.addCoachdetails(coach)}" />
-					        <p:menuitem value="Void LOI" action="#{reviewcoachloiBean.voidLoi(coach)}"/>
+					        <p:menuitem value="View LOI" action="#{reviewcoachloiBean.viewLoi(coach)}"/>
+					        <p:menuitem value="Void LOI" action="#{reviewcoachloiBean.voidLoi(coach)}" update="listofcoaches"/>
 					    </p:splitButton>
 					</p:column>
 			    </p:dataTable>

@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.el.ValueExpression;
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
@@ -279,6 +281,13 @@ public class rosteractionBean implements Serializable {
 	
 	public void Close(){
 		FacesContext context = FacesContext.getCurrentInstance();
+		Application app = context.getApplication();
+		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{reviewloiBean}", Object.class );
+
+		reviewloiBean rlb = (reviewloiBean) expression.getValue( context.getELContext() );
+    	rlb.playersDisplay();
+
 		try{
 			context.getExternalContext().redirect("confirmlois.xhtml");
 		} catch (IOException e) {

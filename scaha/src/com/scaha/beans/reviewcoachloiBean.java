@@ -122,7 +122,7 @@ public class reviewcoachloiBean implements Serializable {
     			if (rs != null){
     				
     				while (rs.next()) {
-    					String idcoach = rs.getString("idcoach");
+    					String idcoach = rs.getString("idcoachroster");
         				String sfirstname = rs.getString("fname");
         				String slastname = rs.getString("lname");
         				String steam = rs.getString("teamname");
@@ -277,7 +277,7 @@ public class reviewcoachloiBean implements Serializable {
  				LOGGER.info("verify loi code provided");
  				CallableStatement cs = db.prepareCall("CALL scaha.setcoachtoVoid(?)");
     		    cs.setInt("coachid", Integer.parseInt(sidcoach));
-    		    
+    		    rs=cs.executeQuery();
     		    db.commit();
     			db.cleanup();
  				
@@ -301,11 +301,51 @@ public class reviewcoachloiBean implements Serializable {
 			//
 			db.free();
 		}
+		
+		this.coachesDisplay();
 	}
 
 	public void addCoachdetails(Coach selectedCoach){
 		
 		String sidcoach = selectedCoach.getIdcoach();
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
+
+			if (db.setAutoCommit(false)) {
+			
+				//Need to provide info to the stored procedure to save or update
+ 				LOGGER.info("verify loi code provided");
+ 				CallableStatement cs = db.prepareCall("CALL scaha.getCoachIdByCoachRosterId(?)");
+    		    cs.setInt("coachrosterid", Integer.parseInt(sidcoach));
+    		    rs=cs.executeQuery();
+    		    
+    		    if (rs != null){
+    				
+    				while (rs.next()) {
+    					Integer idplayer = rs.getInt("idcoach");
+    					sidcoach = idplayer.toString();
+        			}
+    				LOGGER.info("We have results for person id by coach");
+    			}
+    			db.commit();
+    			db.cleanup();
+ 			} else {
+		
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("ERROR IN Retrieving PersonId" + this.selectedcoach);
+			e.printStackTrace();
+			db.rollback();
+		} finally {
+			//
+			// always clean up after yourself..
+			//
+			db.free();
+		}
 		
 		FacesContext context = FacesContext.getCurrentInstance();
 		try{
@@ -314,6 +354,68 @@ public class reviewcoachloiBean implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
+	}
+	
+	public void viewLoi(Coach selectedCoach){
+		
+		String sidcoach = selectedCoach.getIdcoach();
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
+
+			if (db.setAutoCommit(false)) {
+			
+				//Need to provide info to the stored procedure to save or update
+ 				LOGGER.info("verify loi code provided");
+ 				CallableStatement cs = db.prepareCall("CALL scaha.getPersonIdbyCoachId(?)");
+    		    cs.setInt("icoachid", Integer.parseInt(sidcoach));
+    		    rs=cs.executeQuery();
+    		    
+    		    if (rs != null){
+    				
+    				while (rs.next()) {
+    					Integer idplayer = rs.getInt("idperson");
+    					sidcoach = idplayer.toString();
+        			}
+    				LOGGER.info("We have results for person id by coach");
+    			}
+    			db.commit();
+    			db.cleanup();
+ 			} else {
+		
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("ERROR IN Retrieving PersonId" + this.selectedcoach);
+			e.printStackTrace();
+			db.rollback();
+		} finally {
+			//
+			// always clean up after yourself..
+			//
+			db.free();
+		}
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		try{
+			context.getExternalContext().redirect("scahaviewcoachloi.xhtml?coachid=" + sidcoach);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	
+	
+	public void CloseLoi(){
+		FacesContext context = FacesContext.getCurrentInstance();
+		try{
+			context.getExternalContext().redirect("confirmcoachlois.xhtml");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 }
