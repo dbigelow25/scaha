@@ -305,7 +305,7 @@ public class Person extends ScahaObject implements Serializable {
 		int i = 1;
 		cs.registerOutParameter(1, java.sql.Types.INTEGER);
 		cs.setInt(i++, this.ID);
-		cs.setInt(i++, getProfile().ID);
+		cs.setInt(i++, (getProfile().getPerson() == this ? getProfile().ID : 0));
 		cs.setString(i++, this.sFirstName);
 		cs.setString(i++, this.sLastName);
 		cs.setString(i++, this.sEmail);

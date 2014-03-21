@@ -29,10 +29,8 @@ public class Simple3Des {
 
 	public String encryptText(String plainText) throws Exception {
 		// ---- Use specified 3DES key and IV from other source --------------
-		byte[] plaintext = plainText.getBytes();
+		byte[] plaintext = plainText.trim().getBytes();
 		byte[] tdesKeyData = key.getBytes();
-
-		// byte[] myIV = initializationVector.getBytes();
 
 		Cipher c3des = Cipher.getInstance("DESede/CBC/PKCS5Padding");
 		SecretKeySpec myKey = new SecretKeySpec(tdesKeyData, "DESede");

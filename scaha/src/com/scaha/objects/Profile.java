@@ -37,7 +37,7 @@ public class Profile extends ScahaObject {
 	private ActionList m_al = null;
 	private Person m_per = null;
 	
-	public Profile (int _id, ScahaDatabase _db, String _sNN, String _sUser, String _sPass) {
+	public Profile (int _id, ScahaDatabase _db, String _sNN, String _sUser, String _sPass, boolean _getActionRoles) {
 		
 		this.ID = _id;
 		m_sNickName = _sNN;
@@ -49,11 +49,13 @@ public class Profile extends ScahaObject {
 
 			// Lets get the Person...
 			m_per = new Person(_db, this);
-			// Lets get the action List...
-		//	m_al = new ActionList(this); TODO  // needs to use passed db connection...      
-			// What roles do they have ?  Non hierarchical
-			m_rc = new RoleCollection(_db, this);
-
+			
+			if (_getActionRoles) {
+				// Lets get the action List...
+				m_al = new ActionList(this);   // needs to use passed db connection...      
+				// What roles do they have ?  Non hierarchical
+				m_rc = new RoleCollection(_db, this);
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -124,7 +126,7 @@ public class Profile extends ScahaObject {
 		
 		if (bgood) {
 			LOGGER.info("Creating the profile...");
-			prof =  new Profile (id, db, sNickName, _sUser, _sPass);
+			prof =  new Profile (id, db, sNickName, _sUser, _sPass, true);
 		} 
 		
 		db.free();
@@ -215,5 +217,17 @@ public class Profile extends ScahaObject {
 
 		LOGGER.info("HERE IS THE NEW ID:" + this.ID);
 
+	}
+	
+	/**
+	 * Is the passed peson the profile owner?
+	 * 
+	 * We need to know this to ensure that only the profile owner uses the idprofile when saving the person..
+	 * 
+	 * @param _per
+	 * @return
+	 */
+	public boolean isProfileOwner(Person _per) {
+		return this.m_per.ID == _per.ID;
 	}
 }
