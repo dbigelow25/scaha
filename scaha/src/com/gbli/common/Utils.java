@@ -125,7 +125,7 @@ public class Utils {
 			String lname = Utils.properCase(db.getResultSet().getString(y++)).trim();
 			String addr = Utils.properCase(db.getResultSet().getString(y++)).trim();
 			String city = Utils.properCase(db.getResultSet().getString(y++)).trim();
-			String st = Utils.properCase(db.getResultSet().getString(y++)).trim();
+			String st = db.getResultSet().getString(y++).trim().toUpperCase();
 			String zip = Utils.properCase(db.getResultSet().getString(y++)).trim();
 			String forzip = Utils.properCase(db.getResultSet().getString(y++)).trim();
 			String phone = Utils.properCase(db.getResultSet().getString(y++)).trim();
@@ -165,7 +165,13 @@ public class Utils {
 			usahockey + ", " +
 			usayear
 			);
+
+			if (usahockey.length() != 14) {
+				LOGGER.info("usaHockey # for " + fname + " " + lname + "is bad =" + usahockey);
+				continue;
+			}
 			
+
 			int iProfileid = 0;
 			String struser = null;
 			String strpwd = null;
