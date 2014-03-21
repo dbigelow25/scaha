@@ -86,8 +86,8 @@ public class Utils {
 		String mySQL = 
 				" select distinct " + 
 				" ipf.prim_email, " +
-				" ipf.pg1_first, " +
-				" ipf.pg1_last, " +
+				" case when ipf.pg1_first = ''  then ipf.first_name else ipf.pg1_first end, " +
+				" case when ipf.pg1_last= ''  then ipf.last_name else ipf.pg1_last end, " +
 				" concat(ipf.address1,' ', ipf.address2) as address, " +
 				" ipf.city, " +
 				" ipf.st, " +
@@ -107,7 +107,7 @@ public class Utils {
 				" ipf.conf_no as usahockeynumber, " +
 				" substring(ipf.conf_no,4,1) as usayear " +
 				" from scaha.USADataFile ipf " +
-				" where  YEAR(now()) - YEAR(ipf.dob) <= 18 order by 3,2,1,4 ";
+				" where  2013 - YEAR(ipf.dob) <= 18 order by 3,2,1,4 ";  // They could have played last year...
 		
 		db.getData(mySQL);
 		int i=1;
@@ -200,8 +200,9 @@ public class Utils {
 			
 			if (iProfileid > 0 ) {
 				
-				 LOGGER.info("Profile already exists.. loading it (and Person, family");
+				 LOGGER.info("Profile already exists.. loading it (and Person, family)");
 				 pro =  new Profile (iProfileid, db2, strnn, struser, strpwd, false);
+				 LOGGER.info("Profile already exists.. DONE loading it (and Person, family)");
 
 			} else {
 
@@ -271,12 +272,8 @@ public class Utils {
 			Person tper = pro.getPerson();   //  This is their person record
 			Family tfam = tper.getFamily();  //  This is their Family Structure
 			
-			Person per = new Person(pro);		// This will be the new person
-			ScahaPlayer sp = null;
-			ScahaMember mem = null;
 			UsaHockeyRegistration usar = new UsaHockeyRegistration(-1,usahockey);
- 			
-			usar.setAddress(addr);
+ 			usar.setAddress(addr);
 			usar.setBPhone(phone);
 			usar.setCitizen(citizen);
 			usar.setCity(city);
@@ -296,17 +293,34 @@ public class Utils {
 			usar.setUSAHnum(usahockey);
 			usar.setZipcode(zip);
 			
+			
+			//
+			// If the 
+			//
+			Person per = new Person(pro);		// This will be the new person
+			//
+			// If the person is the child.. (meaning) they registered themselves.. (when they are 18.. or a true adult)
+			if (fname.equals(kidfirst) && lname.equals(kidlast)) {
+				per = tper;
+				LOGGER.info("!!!!!Selfie Found for " + tper);
+			} else {
+				per.gleanUSAHinfo(usar);
+				per.update(db2);
+				FamilyMember fm = new FamilyMember(pro, tfam, per);
+				fm.setRelationship("Child");
+				fm.updateFamilyMemberStructure(db2);
+			}
+
+			ScahaPlayer sp = null;
+			ScahaMember mem = null;
+			
 			//
 			// here we make the USAHockey Information available..
 			//
 			//
 			// lets always make a new one!
 			//
-		
-			per.gleanUSAHinfo(usar);
-			per.update(db2);
 			usar.update(db2, per);
-				
 			mem = new ScahaMember(pro,per);
 			mem.setSCAHAYear(usar.getMemberShipYear());
 			mem.generateMembership(db2);
@@ -315,9 +329,6 @@ public class Utils {
 			sp.gleanUSAHinfo(usar);
 			sp.update(db2);
 
-			FamilyMember fm = new FamilyMember(pro, tfam, per);
-			fm.setRelationship("Child");
-			fm.updateFamilyMemberStructure(db2);
 			db2.commit();
 
 		}
