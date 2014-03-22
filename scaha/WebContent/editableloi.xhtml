@@ -26,7 +26,7 @@
 							<td><b>2014 Boys Team:</b></td>
 							<td>
 								<p:selectOneMenu value="#{loiBean.selectedteam}">
-							    	<f:selectItem itemLabel="Select One" itemValue=""/>
+							    	<f:selectItem itemLabel="Select One" itemValue="0"/>
 							    	<f:selectItems value="#{loiBean.getListofTeams('M')}" var="team" itemLabel="#{team.getTeamname()}" itemValue="#{team.getIdteam()}"/>
 							    </p:selectOneMenu>
 							</td>
@@ -35,7 +35,8 @@
 							<td><b><h:outputText value="2014 Girls Team:" rendered="#{loiBean.displaygirlteam}"/></b></td>
 							<td>
 								<p:selectOneMenu value="#{loiBean.selectedgirlsteam}" rendered="#{loiBean.displaygirlteam}">
-							    	<f:selectItem itemLabel="Select One" itemValue=""/>
+							    	<f:selectItem itemLabel="Select One" itemValue="0"/>
+							    	<f:selectItems value="#{loiBean.getListofTeams('F')}" var="team" itemLabel="#{team.getTeamname()}" itemValue="#{team.getIdteam()}"/>
 							    </p:selectOneMenu>
 							</td>
 						</tr>

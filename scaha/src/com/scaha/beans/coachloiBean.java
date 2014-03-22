@@ -89,6 +89,7 @@ public class coachloiBean implements Serializable, MailableObject {
 
 		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
     	this.setProfid(pb.getProfile().ID);
+    	String cname = this.getClubName();
     	
 		//will need to load player profile information for displaying loi
 		HttpServletRequest hsr = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
@@ -870,7 +871,7 @@ public class coachloiBean implements Serializable, MailableObject {
 				rs = db.getResultSet();
 				
 				while (rs.next()) {
-					clubid = rs.getInt("idclub");
+					this.clubid = rs.getInt("idclub");
 					
 					}
 				LOGGER.info("We have results for club for a profile");

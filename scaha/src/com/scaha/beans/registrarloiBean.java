@@ -53,6 +53,7 @@ public class registrarloiBean implements Serializable {
 
 		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
     	this.setProfid(pb.getProfile().ID);
+    	loadClubName();
     	
     	players = new ArrayList<Player>();  
         PlayerDataModel = new PlayerDataModel(players);
@@ -320,10 +321,9 @@ public class registrarloiBean implements Serializable {
 		teams = list;
 	}
 	
-public String getClubName(){
+public void loadClubName(){
 		
 		//first lets get club id for the logged in profile
-		Integer clubid = 0;
 		String clubname = "";
 		
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
@@ -340,7 +340,7 @@ public String getClubName(){
 				rs = db.getResultSet();
 				
 				while (rs.next()) {
-					clubid = rs.getInt("idclub");
+					this.clubid = rs.getInt("idclub");
 					
 					}
 				LOGGER.info("We have results for club for a profile");
@@ -377,7 +377,7 @@ public String getClubName(){
     		db.free();
     	}
 		
-		return clubname;
+		
 	}
 	
 }

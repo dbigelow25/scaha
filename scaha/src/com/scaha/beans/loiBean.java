@@ -65,6 +65,8 @@ public class loiBean implements Serializable, MailableObject {
 	private String subject = null;
 	private String cc = null;
 	private String textbody = null;
+	private Integer parentid = 0;
+	private Boolean bplayerup = null;
 	
 	public loiBean() {  
         
@@ -92,6 +94,22 @@ public class loiBean implements Serializable, MailableObject {
     	//doing anything else right here
     }  
     
+	public Boolean getBplayerup(){
+		return bplayerup;
+	}
+	
+	public void setBplayerup(Boolean bplay){
+		bplayerup=bplay;
+	}
+	
+	public Integer getParentid(){
+		return parentid;
+	}
+	
+	public void setParentid(Integer id){
+		parentid = id;
+	}
+	
 	public String getSubject() {
 		// TODO Auto-generated method stub
 		return subject;
@@ -415,6 +433,7 @@ public class loiBean implements Serializable, MailableObject {
         				personID = rs.getInt("idperson");
         				lastyearteam = rs.getString("teamname");
         				lastyearclub = rs.getString("clubname");
+        				parentid = rs.getInt("parentid");
         				
         				DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         				Date date = new Date();
@@ -519,6 +538,9 @@ public class loiBean implements Serializable, MailableObject {
 
 			if (db.setAutoCommit(false)) {
 			
+				
+				
+				
 				//Need to check loi code from family first
  				LOGGER.info("verify loi code provided");
  				CallableStatement cs = db.prepareCall("CALL scaha.validateMemberNumber(?,?)");
@@ -537,31 +559,8 @@ public class loiBean implements Serializable, MailableObject {
     			}
     			db.cleanup();
  				
-    		    //need to verify player up code if user provided it.
-    			if (this.playerupcode!=null && this.playerupcode!=""){
-    				//Need to check player up code from family next
-	 				LOGGER.info("verify family code provided for player up");
-	 				cs = db.prepareCall("CALL scaha.validateMemberNumber(?,?)");
-	 				cs.setString("memnumber", this.loicode);
-	 				cs.setInt("personid", this.selectedplayer);
-	    		    rs = cs.executeQuery();
-	    			resultcount = 0;
-	    		    
-	    		    if (rs != null){
-	    				
-	    				while (rs.next()) {
-	    					resultcount = rs.getInt("idmember");
-	    				}
-	    				LOGGER.info("We have code validation results for player details by player id");
-	    			}
-	    			db.cleanup();
-	    			
-	    			if (resultcount.equals(0)){
-	    				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "The provided Player Up signature code is invalid."));
-	    			}
-    			}
-	    		
-    			
+    		    
+    			bplayerup = false;
     			//need to verify if player is playing up and if player up code is needed if not provided
     			if (this.playerupcode==null || this.playerupcode==""){
     				//Need to check player up code from family next
@@ -584,15 +583,52 @@ public class loiBean implements Serializable, MailableObject {
 	    			
 	    			if (resultcount.equals(0)){
 	    				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "The Player Up Code is required for this player for the division selected."));
+	    				bplayerup=true;
 	    			}
     			}
+    			
+    			//need to verify player up code if user provided it.
+    			if (this.playerupcode!=null && this.playerupcode!=""){
+    				//Need to check player up code from family next
+	 				LOGGER.info("verify family code provided for player up");
+	 				cs = db.prepareCall("CALL scaha.validateMemberNumber(?,?)");
+	 				cs.setString("memnumber", this.loicode);
+	 				cs.setInt("personid", this.selectedplayer);
+	    		    rs = cs.executeQuery();
+	    			resultcount = 0;
+	    		    
+	    		    if (rs != null){
+	    				
+	    				while (rs.next()) {
+	    					resultcount = rs.getInt("idmember");
+	    				}
+	    				LOGGER.info("We have code validation results for player details by player id");
+	    			}
+	    			db.cleanup();
+	    			
+	    			if (resultcount.equals(0)){
+	    				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "The provided Player Up signature code is invalid."));
+	    			} else {
+	    				bplayerup=true;
+	    			}
+    			}
+	    		
+    			
+    			
+    			
+    			//lets make sure a team was selected
+    			if (this.selectedteam.equals("0") && (this.selectedgirlsteam==null || this.selectedgirlsteam.equals("0"))){
+    				resultcount=0;
+    				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "A team must be selected for the player"));
+    			}
+    			
     			
     		    if (resultcount > 0){
     		    	
 	    		    //if good save info to person table, then add record to roster then email
 	 				LOGGER.info("updating person record");
 	 				cs = db.prepareCall("CALL scaha.updatePersonInfoAddress(?,?,?,?,?)");
-	    		    cs.setInt("ipersonid", this.selectedplayer);
+	    		    cs.setInt("ipersonid", this.parentid);
 	    		    cs.setString("iaddress", this.address);
 	    		    cs.setString("icity", this.city);
 	    		    cs.setString("istate", this.state);
@@ -600,8 +636,16 @@ public class loiBean implements Serializable, MailableObject {
 	    			rs = cs.executeQuery();
 	    			
 					LOGGER.info("updating roster record");
-					cs = db.prepareCall("CALL scaha.addRoster(?,?)");
+					cs = db.prepareCall("CALL scaha.addRoster(?,?,?)");
 	    		    cs.setInt("ipersonid", this.selectedplayer);
+	    		    
+	    		    if (bplayerup){
+	    		    	cs.setInt("playerup",1);
+	    		    } else {
+	    		    	cs.setInt("playerup",0);
+	    		    }
+	    		    
+	    		    
 	    		    
 	    		    
 	    		    if ((selectedgirlsteam!=null) && (!selectedgirlsteam.equals(""))){
@@ -751,7 +795,6 @@ public class loiBean implements Serializable, MailableObject {
 	public String getClubName(){
 		
 		//first lets get club id for the logged in profile
-		Integer clubid = 0;
 		String clubname = "";
 		
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
@@ -768,7 +811,7 @@ public class loiBean implements Serializable, MailableObject {
 				rs = db.getResultSet();
 				
 				while (rs.next()) {
-					clubid = rs.getInt("idclub");
+					this.clubid = rs.getInt("idclub");
 					
 					}
 				LOGGER.info("We have results for club for a profile");
@@ -811,6 +854,16 @@ public class loiBean implements Serializable, MailableObject {
 	public void CloseLoi(){
 		
 		FacesContext context = FacesContext.getCurrentInstance();
+		Application app = context.getApplication();
+
+		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{draftplayersBean}", Object.class );
+
+		DraftPlayersBean dpb = (DraftPlayersBean) expression.getValue( context.getELContext());
+    	dpb.setSearchcriteria("");
+		dpb.playerSearch();
+
+		
 		origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
 		try{
 			context.getExternalContext().redirect("addplayerstoteam.xhtml");

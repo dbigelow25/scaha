@@ -11,13 +11,13 @@ public class Result extends ScahaObject implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	
-	
 	private String playername = null;
 	private String idplayer = null;
 	private String address = null;
 	private String dob = null;
 	private String idcoach = null;
 	private String coachname = null;
+	private String currentteam = null;
 	
 	
 	public Result (String sName, String playerid,String saddress, String sdob){ 
@@ -27,6 +27,14 @@ public class Result extends ScahaObject implements Serializable {
 		address = saddress;
 		dob = sdob;
 	
+	}
+	
+	public String getCurrentteam(){
+		return currentteam;
+	}
+	
+	public void setCurrentteam(String sName){
+		currentteam = sName;
 	}
 	
 	public String getPlayername(){
