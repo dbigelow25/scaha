@@ -3,6 +3,7 @@
  */
 package com.gbli.connectors;
 
+import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -72,8 +73,34 @@ public class ScahaDatabase extends Database {
 		return getData(c_sp_actionlist, v);
 
 	}
+	
+	/**
+	 *  General utility to check to see if  this person already exists in the database as a person..
+	 *  
+	 * @param _sfname
+	 * @param _slname
+	 * @param _sDOB
+	 * @return
+	 * @throws SQLException 
+	 */
+	public boolean checkForPersonByFLDOB(String _sfname, String _slname, String _sDOB) throws SQLException {
 
-
+		String strAnswer = "N";
+		CallableStatement cs = this.prepareCall("call scaha.checkforPersonByFLDOB(?,?,?,?)");
+		
+		LOGGER.info("FLDOB:" + _sfname + ":" + _slname + ":" + _sDOB); 
+		cs.registerOutParameter(1, java.sql.Types.VARCHAR);
+		cs.setString(1, strAnswer);
+		cs.setString(2,  _sfname);
+		cs.setString(3,  _slname);
+		cs.setString(4,  _sDOB);
+		cs.execute();
+		strAnswer = cs.getString(1);
+		cs.close();
+		LOGGER.info("FLDOB:" + _sfname + ":" + _slname + ":" + _sDOB + ":returns=" + strAnswer); 
+		return strAnswer.equals("Y");
+		
+	}
 }
 
 

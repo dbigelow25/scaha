@@ -5,6 +5,7 @@
      xmlns:h="http://java.sun.com/jsf/html"
      xmlns:ui="http://java.sun.com/jsf/facelets"
      xmlns:p="http://primefaces.org/ui"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
 >
 
 	<!-- 
@@ -13,7 +14,7 @@
 	
 	Right now.. the only way to create a membership is to first start with a USA hockey number for the given master season.
 	
-	Eventually, we will allow the user to select an existing sibling.. and re-register for a new seasion.. (re-up the membership)
+	Eventually, we will allow the user to select an existing sibling.. and re-register for a new season.. (re-up the membership)
 	
 	 -->  
 
@@ -50,42 +51,36 @@
   <h:form id="mp-form">
 
  	<h:panelGroup id="view-members" rendered="#{profileBean.isViewMembers()}">
+ 	
+ 		<p:messages id = "existmem"  showDetail="true"/>
+ 		
    	
    		<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">  
     	      <h:outputText style="font-size: 12px;" value="The following information is all the family members registered under your account.
     	                                          You can add more people to your account, but they have to FIRST be registered as a USA Hockey member."/>  
    		</p:fieldset>  
 
-	  	<p:spacer width="10" height="10" />
-	
-		<p:fieldset id="fs1-1" toggleable="false" toggleSpeed="500">  
-   	      	<h:outputText style="font-size: 12px;" value="The member information below applies to the following USA and SCAHA Hockey Seasons"/>  
- 			<p:panelGrid id="season-ino" columns="2" cellpadding="3"> 
- 				<h:outputText  value="Season Descriptsion" />
-				<h:outputText  value="Days Left" />
-				<h:outputText  value="#{profileBean.getCurrentSCAHAHockeySeason()}" />
-				<h:outputText  value="12" />
-				<h:outputText  value="#{profileBean.getCurrentUSAHockeySeason()}" />
-				<h:outputText  value="12" />
-			</p:panelGrid>
-		</p:fieldset>  
-	
-		<p:spacer width="10" height="10" />
+	  	<p:spacer width="10" height="35" />
     
-    	<h:outputText value="#{profileBean.getProfile().getPerson().getFam().getFamilyName()}"></h:outputText>
-	
- 	 	<p:spacer width="10" height="10" />
+    	<h:outputText value="#{profileBean.getProfile().getPerson().getFam().getFamilyName()}"/>
+
+ 	 	<p:spacer width="10" height="35" />
     
   		<!--  Here we need to implement at table model -->
   		<p:fieldset id="fs2" toggleable="false" toggleSpeed="500">  	      
-			<p:dataTable var="familymember" value="#{profileBean.getFamilyMembers()}">  
+<!--  			<p:dataTable var="familymember" value="#{profileBean.getFamilyMembers()}" selection="#{profileBean.selectedFamily}" selectionMode = "single">  
+-->			
+			<p:dataTable var="familymember" value="#{profileBean.getFamilyMembers()}" >  
+
+  			    <p:column style="width:6%"><p:rowEditor /></p:column>  
    			    <p:column headerText="Name"><h:outputText value="#{familymember.getsFirstName()} #{familymember.getsLastName()}" /></p:column>  
-   	    		<p:column headerText="Relationship"><h:outputText value="#{familymember.getRelationship()}" /></p:column>
+   	    		<p:column headerText="Relationship"><h:outputText value="#{familymember.getRelationship()}" /></p:column>		
    	    		<p:column headerText="DOB."><h:outputText value="#{familymember.getDob()}" /></p:column>  
    	    		<p:column headerText="CMPs"><h:outputText value="#{familymember.getMembertypes()}" /></p:column>  
    	    		<p:column headerText="#{profileBean.getCurrentUSAHockeySeason()}"><p:outputLabel style="font-family:monospace;!important" value="#{familymember.getUsaHockeyNumber()}" /></p:column>  
    	    		<p:column headerText="#{profileBean.getCurrentSCAHAHockeySeason()}"><p:outputLabel style="font-family:monospace;!important" value="#{familymember.getScahaHockeyNumber()}" /></p:column>  
-   			</p:dataTable> 
+
+ 			</p:dataTable> 
     	</p:fieldset>
     			
 		<p:spacer width="10" height="10" />
@@ -99,17 +94,20 @@
 	<ui:fragment id="add-member" rendered="#{profileBean.isAddMember()}">
 	 
 	<p:fieldset id="fs11" toggleable="false" toggleSpeed="500">  
-     <h:outputText style="font-size: 12px;" value="You will FIRST need to know the USAHockey Number for the CURRENT SEASON. Enter this in the provided field below, then click the SEARCH USAH.  
+	
+     <p style="font-size: 12px;">You will FIRST need to know the USAHockey Number for the CURRENT SEASON. Enter this in the provided field below, then click the SEARCH USAH.  
       If the record is found, the information below will be prefilled all the information.  Please review this information then click the SAVE button.  This will create a new member
  and generate a new member number for the year.  This member number will be needed to confirm you at all the SCAHA
- tryouts and is needed to sign any Club LOI electronically."/>  
+ tryouts and is needed to sign any Club LOI electronically.</p>  
+
    	</p:fieldset>  
 	
-	<p:spacer width="10" height="10" />
+	<p:spacer width="10" height="35" />
     
-   	<h:outputText value="#{profileBean.getProfile().getPerson().getFam().getFamilyName()}"></h:outputText>
+   	<h:outputText value="#{profileBean.getProfile().getPerson().getFam().getFamilyName()}"/>
+	<h:outputText value=" (ADDING A NEW MEMBER TO YOUR ACCOUNT)"/>
 
- 	<p:spacer width="10" height="10" />	
+ 	<p:spacer width="10" height="35" />	
 
   	<p:fieldset id="fs22" toggleable="false" toggleSpeed="500">  	
   	      
@@ -125,7 +123,6 @@
 			<p:outputLabel  for = "relationship" value="Relationship (select one)" /> 
        			<p:selectOneMenu id="relationship" value="#{usahBean.relationship}" style="width: 100px"  required="true" requiredMessage="need to select a relationship type." >         
             		<f:selectItem itemLabel="Child" itemValue="Child" />
-            		<f:selectItem itemLabel="Self" itemValue="Self"/>
             		<f:selectItem itemLabel="Spouse" itemValue="Spouse"/>
             		<f:selectItem itemLabel="Parent" itemValue="Parent"/>
             		<f:selectItem itemLabel="Relative" itemValue="Relative"/>
@@ -134,8 +131,8 @@
  
  			<p:message id="m_relationship" closable="true" for="relationship"/>
  			
-			<p:outputLabel  for = "member" value="Member Type (choose all that apply)" /> 
-		 	   <p:selectManyCheckbox  id="member" value="#{usahBean.membertype}" style="width: 125px" required="true" requiredMessage="need to select a member type." >    
+			<p:outputLabel  for = "member" value="Type (choose all that apply)" /> 
+		 	   <p:selectManyCheckbox  id="member" value="#{usahBean.membertype}" style="width: 125px" required="true" requiredMessage="need to select a member type." layout="grid" columns="1">    
           			<f:selectItem itemLabel="Player-Skater" itemValue="Player-Skater" />  
           			<f:selectItem itemLabel="Player-Goalie" itemValue="Player-Goalie" />  
           			<f:selectItem itemLabel="Coach" itemValue="Coach"/>  
@@ -152,7 +149,7 @@
 	<p:spacer width="10" height="10" />
 	
   	<p:fieldset id="fs222" toggleable="false" toggleSpeed="500">  	      
- 
+   		<p style="font-size: 12px;">Information pulled from USA Hockey Membership:</p>  
  		<table>
 			<tr>
 			<td>

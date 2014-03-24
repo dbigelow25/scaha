@@ -1,6 +1,7 @@
 package com.scaha.beans;
 
 import java.io.Serializable;
+import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Vector;
@@ -213,104 +214,124 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 		
 		FacesContext context = FacesContext.getCurrentInstance();
 		Application app = context.getApplication();
-		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
-				"#{profileBean}", Object.class );
+		ValueExpression expression = app.getExpressionFactory().createValueExpression(context.getELContext(), "#{profileBean}", Object.class );
 		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
-		
+
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 
 		//
 		// Lets start off with the basics person is always implied in the extended object.
 		// we are really just saving off alot of stuff through the objects.. then reloading the family .. once done
 		// 
-		//
-		Profile pro = pb.getProfile();   // This is the profile of the user
-		Person tper = pro.getPerson();   //  This is their person record
-		Family tfam = tper.getFamily();  //  This is their Family Structure
 		
-		Person per = new Person(pro);		// This will be the new person
-		ScahaManager sm = null;
-		ScahaPlayer sp = null;
-		ScahaCoach sc = null;
-		ScahaMember mem = null;
+		//
+		// First.. if the added person is looks just like another person in the family.. then we have trouble brewing..
+		// We must stop this add in its tracks and tell them to use an update existing family member function
+		//
+		try {
+			if (db.checkForPersonByFLDOB(usar.getFirstName(), usar.getLastName(), usar.getDOB())) {
+				
+				FacesContext.getCurrentInstance().addMessage(
+						"mp-form:usah-reg",
+	                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+	                    "USA Hockey Reg",
+	                    "You cannot create a member.  There is already a member with the same first name, last name and date of birth!"));
+				
+			} else {
+	
+				//
+				// Lets check to see if this person .. "looks" like another person
+				// if it does.. we need to route them to a confirmation screen that they are indeed going to add 
+				//
+			
+				Profile pro = pb.getProfile();   // This is the profile of the user
+				Person tper = pro.getPerson();   //  This is their person record
+				Family tfam = tper.getFamily();  //  This is their Family Structure
+				
+				Person per = new Person(pro);		// This will be the new person
+				ScahaManager sm = null;
+				ScahaPlayer sp = null;
+				ScahaCoach sc = null;
+				ScahaMember mem = null;
+				
 		
-
-		// And we need to create the membership record as well..
-		//
-		// Here is where we update everything at once.
-		// we have auto commit off so its an all or nothing approach.
-		//
-		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-		db.setAutoCommit(false);
-		//
-		try{
-
-			per.gleanUSAHinfo(this.usar);
-			per.update(db);
-			usar.update(db, per);
-			
-			mem = new ScahaMember(pro,per);
-			mem.setSCAHAYear(this.usar.getMemberShipYear());
-			LOGGER.info("Time to Create the Membership.. ");
-			mem.generateMembership(db);
-			mem.setTopPerson(tper);
-			
-			LOGGER.info("Member Type is" + membertype.toString());
-			
-			//
-			// ok.. lets update the trifecta and see if it sticks!!
-			//
-			if (membertype.contains("Manager")) {
-				sm = new ScahaManager(pro,per);
-				sm.update(db);
-			}
-			if (membertype.contains("Coach")) {
-				sc = new ScahaCoach(pro,per);
-				sc.update(db);
-
-			}
-			if (membertype.contains("Player-Goalie") || membertype.contains("Player-Skater")) {
-				sp = new ScahaPlayer(pro, per);
-				sp.gleanUSAHinfo(this.usar);
-				if (membertype.contains("Player-Goalie")) {
-					sp.setGoalie(true);
+				// And we need to create the membership record as well..
+				//
+				// Here is where we update everything at once.
+				// we have auto commit off so its an all or nothing approach.
+				//
+				db.setAutoCommit(false);
+				//
+		
+				per.gleanUSAHinfo(this.usar);
+				per.update(db);
+				usar.update(db, per);
+				
+				mem = new ScahaMember(pro,per);
+				mem.setSCAHAYear(this.usar.getMemberShipYear());
+				LOGGER.info("Time to Create the Membership.. ");
+				mem.generateMembership(db);
+				mem.setTopPerson(tper);
+				
+				LOGGER.info("Member Type is" + membertype.toString());
+				
+				//
+				// ok.. lets update the trifecta and see if it sticks!!
+				//
+				if (membertype.contains("Manager")) {
+					sm = new ScahaManager(pro,per);
+					sm.update(db);
 				}
-				sp.update(db);
+				if (membertype.contains("Coach")) {
+					sc = new ScahaCoach(pro,per);
+					sc.update(db);
+	
+				}
+				if (membertype.contains("Player-Goalie") || membertype.contains("Player-Skater")) {
+					sp = new ScahaPlayer(pro, per);
+					sp.gleanUSAHinfo(this.usar);
+					if (membertype.contains("Player-Goalie")) {
+						sp.setGoalie(true);
+					}
+					sp.update(db);
+				}
+		
+				//
+				// Now we need to get the Family Object from the Person in the Profile..
+				// and add this person to the database.. and the object
+				//
+				// no matter how many types of people we have.. they all point to the same person...
+				FamilyMember fm = new FamilyMember(pro, tfam, per);
+				fm.setRelationship(this.getRelationship());
+				fm.updateFamilyMemberStructure(db);
+				
+				// ok.. since we are good.. lets get a new family structure for the pic.
+				
+				tper.setFam(null);
+				tper.setFam(new Family(db, tper));
+				
+				db.free();
+	            context.addMessage(null, new FacesMessage("Successful", "I think we saved something.."));  
+	            
+	            //
+	            // Lets go back to view mode.. i know .. its a bad name.. but we are in a hurry
+	            //
+	            pb.cancelAddMember();
+	        
+	            
+	            //
+	            //  We also have to create an e-mail record.. possibly formated in HTML..
+	            //
+	        	// We want to create a family called the <lastname> family...
+				SendMailSSL mail = new SendMailSSL(mem);
+				mail.sendMail();
 			}
-
-			//
-			// Now we need to get the Family Object from the Person in the Profile..
-			// and add this person to the database.. and the object
-			//
-			// no matter how many types of people we have.. they all point to the same person...
-			FamilyMember fm = new FamilyMember(pro, tfam, per);
-			fm.setRelationship(this.getRelationship());
-			fm.updateFamilyMemberStructure(db);
-			
-			// ok.. since we are good.. lets get a new family structure for the pic.
-			
-			tper.setFam(null);
-			tper.setFam(new Family(db, tper));
-			
-			db.free();
-            context.addMessage(null, new FacesMessage("Successful", "I think we saved something.."));  
-            
-            //
-            // Lets go back to view mode.. i know .. its a bad name.. but we are in a hurry
-            //
-            pb.cancelAddMember();
-        
-            
-            //
-            //  We also have to create an e-mail record.. possibly formated in HTML..
-            //
-        	// We want to create a family called the <lastname> family...
-			SendMailSSL mail = new SendMailSSL(mem);
-			mail.sendMail();
             
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			db.free();
 		}
+		
+		db.free();
 		
 		return "true";
 
