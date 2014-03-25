@@ -5,6 +5,7 @@ import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Family;
 import com.scaha.objects.FamilyMember;
+import com.scaha.objects.FamilyMemberDataModel;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Profile;
 import com.scaha.objects.Role;
@@ -22,6 +23,8 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.primefaces.event.RowEditEvent;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
 
 
 /**
@@ -70,11 +73,7 @@ public class ProfileBean implements Serializable,  MailableObject  {
 	private String  currentUSAHockeySeason = "Needs call to DB";
 	private String  currentSCAHAHockeySeason = "Needs call to DB";
 	
-	//
-	// Account Management.. this is when they select a family member to change something
-	//
-	private Family selectedFamily = null;
-	
+
 	/**
 	 * 
 	 */
@@ -323,9 +322,9 @@ public class ProfileBean implements Serializable,  MailableObject  {
 		}
 	 }
 
- public List<FamilyMember> getFamilyMembers() {
+ public FamilyMemberDataModel getFamilyMembers() {
 	 if (pro != null) {
-		 return pro.getPerson().getFamily().getFamilyMembers();
+		 return new FamilyMemberDataModel(pro.getPerson().getFamily().getFamilyMembers());
 	 } 
 	 return null;
  }
@@ -933,22 +932,5 @@ public String getCurrentSCAHAHockeySeason() {
 public void setCurrentSCAHAHockeySeason(String currentSCAHAHockeySeason) {
 	this.currentSCAHAHockeySeason = currentSCAHAHockeySeason;
 }
-
-/**
- * @return the selectedFamily
- */
-public Family getSelectedFamily() {
-	return selectedFamily;
-}
-/**
- * @param selectedFamily the selectedFamily to set
- */
-public void setSelectedFamily(Family selectedFamily) {
-	this.selectedFamily = selectedFamily;
-}
-public void onFamilyEdit(RowEditEvent event) {  
-    FacesMessage msg = new FacesMessage("Car Edited", "This is my Family ID: " + ((Family)event.getObject()).ID);  
-    FacesContext.getCurrentInstance().addMessage(null, msg);  
-}  
 
 }

@@ -66,20 +66,17 @@
 
  	 	<p:spacer width="10" height="35" />
     
-  		<!--  Here we need to implement at table model -->
+  		<!--  Here we need to implement at table model  oncomplete="PF('carDialog').show() " rowKey="#{familymember.getFamilyMemberID()}"-->
   		<p:fieldset id="fs2" toggleable="false" toggleSpeed="500">  	      
-<!--  			<p:dataTable var="familymember" value="#{profileBean.getFamilyMembers()}" selection="#{profileBean.selectedFamily}" selectionMode = "single">  
--->			
-			<p:dataTable var="familymember" value="#{profileBean.getFamilyMembers()}" >  
-
-  			    <p:column style="width:6%"><p:rowEditor /></p:column>  
+			<p:dataTable id="familymembers" var="familymember" value="#{profileBean.getFamilyMembers()}" selection="#{familymemberBean.selectedFamilyMember}" selectionMode = "single">  
+			    <p:ajax event="rowSelect" listener="#{familymemberBean.onFamilyMemberRowSelect}" update=":mp-form:existmem"  />  
+        		<p:ajax event="rowUnselect" listener="#{familymemberBean.onFamilyMemberRowUnselect}" />		
    			    <p:column headerText="Name"><h:outputText value="#{familymember.getsFirstName()} #{familymember.getsLastName()}" /></p:column>  
    	    		<p:column headerText="Relationship"><h:outputText value="#{familymember.getRelationship()}" /></p:column>		
    	    		<p:column headerText="DOB."><h:outputText value="#{familymember.getDob()}" /></p:column>  
    	    		<p:column headerText="CMPs"><h:outputText value="#{familymember.getMembertypes()}" /></p:column>  
    	    		<p:column headerText="#{profileBean.getCurrentUSAHockeySeason()}"><p:outputLabel style="font-family:monospace;!important" value="#{familymember.getUsaHockeyNumber()}" /></p:column>  
    	    		<p:column headerText="#{profileBean.getCurrentSCAHAHockeySeason()}"><p:outputLabel style="font-family:monospace;!important" value="#{familymember.getScahaHockeyNumber()}" /></p:column>  
-
  			</p:dataTable> 
     	</p:fieldset>
     			

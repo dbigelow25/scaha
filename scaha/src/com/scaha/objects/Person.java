@@ -405,5 +405,8 @@ public class Person extends ScahaObject implements Serializable {
 		this.setsEmail(usar.getEmail()); // Always carry this through to the actual person
 		
 	}
-		
+	
+	public int getPersonID() {
+		return this.ID;
+	}
 }

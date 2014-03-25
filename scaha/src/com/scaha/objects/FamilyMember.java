@@ -14,7 +14,7 @@ public class FamilyMember extends Person implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 
-	protected int ID = -1;
+	public int ID = -1;
 	private String usaHockeyNumber = "--------------";  // this is used for family member display... for the given hockey year..
 	private String scahaHockeyNumber = "-----";  // this is used for family member display... for the given hockey year..
 	
@@ -129,4 +129,9 @@ public class FamilyMember extends Person implements Serializable {
 	public void setScahaHockeyNumber(String scahaHockeyNumber) {
 		this.scahaHockeyNumber = scahaHockeyNumber;
 	}
+	
+	public int getFamilyMemberID() {
+		return ID;
+	}
+	
 }

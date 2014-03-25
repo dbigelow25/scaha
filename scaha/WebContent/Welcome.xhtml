@@ -1,7 +1,5 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition template="/WEB-INF/templates/layout.xhtml"
      xmlns="http://www.w3.org/1999/xhtml"
      xmlns:f="http://java.sun.com/jsf/core"
@@ -9,10 +7,21 @@
      xmlns:ui="http://java.sun.com/jsf/facelets"
      xmlns:p="http://primefaces.org/ui"
 >
-     <ui:define name="content">
- 		<h:form>
- 		</h:form>
-	 </ui:define>
-    
-   
+<ui:define name="content">
+
+<h:form>
+	<p:fieldset legend="Latest SCAHA News..."> 
+		<p:accordionPanel multiple="true" value="#{newsBean.getNewsItemList()}" var="newsitem">
+    		<p:tab title="#{newsitem.title}">
+    			   <h:outputText style="text-align:right;display:block;width:600px;!important" value = "Published On: #{newsitem.updated} / Written By:#{newsitem.author}" />
+    			<p:separator /> 
+	    		   <h:outputText style="font-weight:bold;" value = "#{newsitem.subject}" />
+    			<p:separator /> 
+    		
+            	<h:outputText value="#{newsitem.body}"  escape="false"/>
+	    	</p:tab>
+		</p:accordionPanel>
+		</p:fieldset>
+ 	</h:form>
+</ui:define>
 </ui:composition>

@@ -10,6 +10,16 @@
 		<managed-bean-class>com.scaha.beans.ProfileBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
+		<managed-bean>
+		<managed-bean-name>familymemberBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.FamilyMemberBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>newsBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.NewsBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>roletreeBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.RoleTreeBean</managed-bean-class>

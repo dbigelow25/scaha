@@ -82,6 +82,16 @@ public class Profile extends ScahaObject {
 	
 
 	/**
+	 * This is a dummy profile that is used for all object that do not need any form
+	 * of security. 
+	 * @param i
+	 */
+	public Profile(int i) {
+		// TODO Auto-generated constructor stub
+		this.ID = i;
+	}
+
+	/**
 	 * verify - Gathers the profile information from the target system
 	 * If it returns false.. authentication failed.
 	 * 
