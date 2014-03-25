@@ -1,0 +1,55 @@
+@CHARSET "ISO-8859-1";
+
+img { border-style: none; }
+
+.ui-layout-unit {
+    	  border: none
+}
+.ui-panelgrid tr, .ui-panelgrid td {
+   	border: none;
+}
+#div-body {
+  		width: 900px;
+   	vertical-align: top;
+   	margin-left:10px;
+}
+#page-div {
+		width: 700px;
+   	vertical-align: top;
+   	margin-top:25px;
+   	margin-left:25px;
+}
+
+#news-div {
+		width: 700px;
+   	vertical-align: top;
+   	margin-top:25px;
+   	margin-left:25px;
+   	float:right;
+}
+
+.NewsTitle
+{
+	margin-top: 7px;
+	color: #880000;
+	font: 14pt "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+}
+.NewsDate
+{
+	font-weight: normal;
+	font-size: 8pt;
+	color: #555555;
+	font-family: "Trebuchet MS", Verdana;
+}
+.NewsText
+{
+	color: #000000;
+	text-align: left;
+	font: normal 10pt/18px "Trebuchet MS", Verdana;
+	margin-top: 7px;
+}
+.NewsGap
+{
+	margin-top: 14px;
+	border-top: 1px dashed #aaaaaa;
+}

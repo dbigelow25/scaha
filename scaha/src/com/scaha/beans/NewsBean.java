@@ -8,6 +8,7 @@ import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.FamilyMemberDataModel;
 import com.scaha.objects.MailableObject;
+import com.scaha.objects.NewsItem;
 import com.scaha.objects.NewsItemList;
 import com.scaha.objects.Profile;
 
@@ -17,6 +18,8 @@ public class NewsBean implements Serializable,  MailableObject  {
 	// Class Level Variables
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	private NewsItem currentnewsitem = null;
+	
 	//
 	/**
 	 * @param args
@@ -46,7 +49,19 @@ public class NewsBean implements Serializable,  MailableObject  {
 		return null;
 	}
 
-	 public NewsItemList getNewsItemList() {
+	 /**
+	 * @return the currentnewsitem
+	 */
+	public NewsItem getCurrentNewsItem() {
+		return currentnewsitem;
+	}
+	/**
+	 * @param currentnewsitem the currentnewsitem to set
+	 */
+	public void setCurrentNewsItem(NewsItem currentnewsitem) {
+		this.currentnewsitem = currentnewsitem;
+	}
+	public NewsItemList getNewsItemList() {
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		NewsItemList nil = null;
 		try {
@@ -59,4 +74,18 @@ public class NewsBean implements Serializable,  MailableObject  {
 		return nil;
 		
 	 }
+	
+	public void updateNewsItem(NewsItem current) {
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		try {
+			current.update(db);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		db.free();
+		LOGGER.info(current.toString());
+
+	}
 }

@@ -4,8 +4,11 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
+import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.util.logging.Logger;
 
+import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
 /**
@@ -116,6 +119,10 @@ public class NewsItem extends ScahaObject implements Serializable {
 	public String getBody() {
 		return body;
 	}
+	
+	public String getIDStr() {
+		return this.ID + "";
+	}
 
 	/**
 	 * @param body the body to set
@@ -124,4 +131,28 @@ public class NewsItem extends ScahaObject implements Serializable {
 		this.body = body;
 	}
 
+	public void update(ScahaDatabase _db) throws SQLException {
+		
+		CallableStatement cs = _db.prepareCall("call scaha.updateNewsItem(?,?,?,?,?,?,?,?)");
+		
+		int i = 1;
+		cs.registerOutParameter(1, java.sql.Types.INTEGER);
+		cs.setInt(i++, this.ID);
+		cs.setString(i++,"Logged");
+		cs.setString(i++, this.getTitle());
+		cs.setString(i++, this.getSubject());
+		cs.setString(i++, "publish");
+		cs.setString(i++, this.getBody());
+		cs.setInt(i++, 1);										//	IN in_isactive tinyint,
+		cs.setString(i++, null);								//	IN in_updated timestamp
+		
+		cs.execute();
+		
+		//
+		// Update the new ID from the database...
+		//
+		this.ID = cs.getInt(1);
+		cs.close();
+		_db.cleanup();
+	}
 }
