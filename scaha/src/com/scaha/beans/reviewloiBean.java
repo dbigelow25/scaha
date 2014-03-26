@@ -126,7 +126,7 @@ public class reviewloiBean implements Serializable {
     			if (rs != null){
     				
     				while (rs.next()) {
-    					String idplayer = rs.getString("idplayer");
+    					String idplayer = rs.getString("idperson");
         				String sfirstname = rs.getString("firstname");
         				String slastname = rs.getString("lastname");
         				String scurrentteam = rs.getString("currentteam");
@@ -316,7 +316,7 @@ public class reviewloiBean implements Serializable {
 	public void voidLoi(Player selectedPlayer){
 		
 		String sidplayer = selectedPlayer.getIdplayer();
-		String playname = selectedPlayer.getPlayername();
+		String playname = selectedPlayer.getFirstname() + ' ' + selectedPlayer.getLastname();
 		
 		//need to set to void
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
@@ -362,44 +362,7 @@ public class reviewloiBean implements Serializable {
 	public void viewLoi(Player selectedPlayer){
 		
 		String sidplayer = selectedPlayer.getIdplayer();
-		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-		
-		try{
-
-			if (db.setAutoCommit(false)) {
-			
-				//Need to provide info to the stored procedure to save or update
- 				LOGGER.info("verify loi code provided");
- 				CallableStatement cs = db.prepareCall("CALL scaha.getPersonIdbyPlayerId(?)");
-    		    cs.setInt("iplayerid", Integer.parseInt(sidplayer));
-    		    rs=cs.executeQuery();
-    		    
-    		    if (rs != null){
-    				
-    				while (rs.next()) {
-    					Integer idplayer = rs.getInt("idperson");
-    					sidplayer = idplayer.toString();
-        			}
-    				LOGGER.info("We have results for division list");
-    			}
-    			db.commit();
-    			db.cleanup();
- 			} else {
-		
-			}
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			LOGGER.info("ERROR IN Retrieving PersonId" + this.selectedplayer);
-			e.printStackTrace();
-			db.rollback();
-		} finally {
-			//
-			// always clean up after yourself..
-			//
-			db.free();
-		}
-		
+				
 		FacesContext context = FacesContext.getCurrentInstance();
 		try{
 			context.getExternalContext().redirect("scahaviewloi.xhtml?playerid=" + sidplayer);

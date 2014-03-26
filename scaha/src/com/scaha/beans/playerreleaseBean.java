@@ -12,17 +12,13 @@ import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
+import com.scaha.objects.Player;
 import com.scaha.objects.Result;
 import com.scaha.objects.ResultDataModel;
-import com.scaha.objects.Team;
 
 //import com.gbli.common.SendMailSSL;
 
@@ -122,11 +118,11 @@ public class playerreleaseBean implements Serializable {
     			if (rs != null){
     				while (rs.next()) {
     					String idperson = rs.getString("idperson");
-        				String playername = rs.getString("fname") + " " + db.getResultSet().getString("lname");
+        				String playername = rs.getString("fname") + " " + rs.getString("lname");
         				String address = rs.getString("address");
-        				String city = db.getResultSet().getString("city");
-        				String state = db.getResultSet().getString("state");
-        				String zip = db.getResultSet().getString("zipcode");
+        				String city = rs.getString("city");
+        				String state = rs.getString("state");
+        				String zip = rs.getString("zipcode");
         				
         				if (address == null){
         					address = "";
@@ -142,7 +138,7 @@ public class playerreleaseBean implements Serializable {
         				}
         				
         				String dob = rs.getString("dob");
-        				String currentteam = db.getResultSet().getString("currentteam");
+        				String currentteam = rs.getString("currentteam");
         				
         				Result result = new Result(playername,idperson,address,dob);
         				result.setCurrentteam(currentteam);
@@ -219,6 +215,33 @@ public Integer loadClubid(){
 		
 		return clubid;
 	}
-    
+
+	public void startPermanentRelease(Result selectedPlayer){
+		
+		String sidplayer = selectedPlayer.getIdplayer();
+		FacesContext context = FacesContext.getCurrentInstance();
+		
+		try{
+			context.getExternalContext().redirect("releaseform.xhtml?releasetype=p&playerid=" + sidplayer);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void startTemporaryRelease(Result selectedPlayer){
+		
+		String sidplayer = selectedPlayer.getIdplayer();
+		FacesContext context = FacesContext.getCurrentInstance();
+		
+		try{
+			context.getExternalContext().redirect("releaseform.xhtml?playerid=" + sidplayer);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
 }
 

@@ -22,12 +22,12 @@
 					<p:message id="m_searchforplayer" for="searchforplayer" />
 				</h:panelGrid>
 				<br></br>	
-				<p:dataTable id="playersearchresult" var="result" value="#{playerreleaseBean.getResultdatamodel()}" selection="#{playerreleaseBean.selectedplayer}"  paginator="true" rows="10" >
+				<p:dataTable id="playersearchresult" var="result" value="#{playerreleaseBean.getResultdatamodel()}" selection="#{playerreleaseBean.selectedplayer}" paginator="true" rows="10" autoupdate="false">
                 		<f:facet name="header">  
 			            Select a Player from the List  
 			        </f:facet> 
-			         <p:column selectionMode="single" style="width:2%" />
-			         <!-- <p:column headerText="Player ID">  
+			         <!-- <p:column selectionMode="single" style="width:2%" />
+			         <p:column headerText="Player ID">  
 			            <h:outputText value="#{result.getIdplayer()}" />  
 			        </p:column> -->  
 			        <p:column headerText="Player Name">  
@@ -42,14 +42,13 @@
 			        <p:column headerText="Address">  
 			            <h:outputText value="#{result.getAddress()}" />  
 			        </p:column>
-			          
+			        <p:column headerText="Options">
+			        	<p:splitButton id="release" value="Release Type:"  >
+					        <p:menuitem value="Permanent" action="#{playerreleaseBean.startPermanentRelease(result)}" />
+					        <p:menuitem value="Temporary" action="#{playerreleaseBean.startTemporaryRelease(result)}" />
+					    </p:splitButton>
+			        </p:column>  
 			    </p:dataTable>
-				<h:panelGrid columns="1" cellpadding="5">
-				    <p:splitButton id="wwtransfer" value="Release Type:"  >
-				        <p:menuitem value="Permanent" action="#{playerreleaseBean.startPermanentRelease(player)}" />
-				        <p:menuitem value="Temporary" action="#{playerreleaseBean.startTemporaryRelease(player)}" />
-				    </p:splitButton>
-				</h:panelGrid>
 			<p:separator id="customSeparator" style="width:800px;height:2px" />    
 		</p:panel>
 	</h:form>

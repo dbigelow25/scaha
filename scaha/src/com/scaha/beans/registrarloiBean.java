@@ -145,7 +145,7 @@ public class registrarloiBean implements Serializable {
     			if (rs != null){
     				
     				while (rs.next()) {
-    					String idplayer = rs.getString("idplayer");
+    					String idplayer = rs.getString("idperson");
         				String sfirstname = rs.getString("firstname");
         				String slastname = rs.getString("lastname");
         				String scurrentteam = rs.getString("currentteam");

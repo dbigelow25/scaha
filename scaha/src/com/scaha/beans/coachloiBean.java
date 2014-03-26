@@ -71,7 +71,7 @@ public class coachloiBean implements Serializable, MailableObject {
 	private String subject = null;
 	private String cc = null;
 	private String textbody = null;
-	
+	private String clubname = "";
 	
 	
     
@@ -89,7 +89,7 @@ public class coachloiBean implements Serializable, MailableObject {
 
 		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
     	this.setProfid(pb.getProfile().ID);
-    	String cname = this.getClubName();
+    	this.setClubname(this.getClubName());
     	
 		//will need to load player profile information for displaying loi
 		HttpServletRequest hsr = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
@@ -104,6 +104,15 @@ public class coachloiBean implements Serializable, MailableObject {
     	//doing anything else right here
     }  
     
+    
+    public String getClubname() {
+		// TODO Auto-generated method stub
+		return clubname;
+	}
+    
+    public void setClubname(String ssubject){
+    	clubname = ssubject;
+    }
     
     public String getSubject() {
 		// TODO Auto-generated method stub
@@ -881,7 +890,7 @@ public class coachloiBean implements Serializable, MailableObject {
     		
 			//now lets retrieve club name
 			v = new Vector<Integer>();
-			v.add(clubid);
+			v.add(this.clubid);
 			db.getData("CALL scaha.getClubNamebyId(?)", v);
 		    
 			if (db.getResultSet() != null){
