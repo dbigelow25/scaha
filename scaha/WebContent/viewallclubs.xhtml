@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+<ui:define name="content">
+	
+<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top">  
+   	<h:outputText value="SCAHA" style="color:#FFCC00;font-size:36px;" />  
+</p:notificationBar>  
+
+<div id="news-div">	
+  	<h:form id="allclubs">
+		<p:panel id ="panel" header="SCAHA Club List">
+			<p:dataTable id="listofclubs" var="club" value="#{viewScahaBean.getScahaClubList()}" autoupdate="false">
+               	<p:column headerText="Club Name"><h:outputText value="#{club.getClubname()}" /></p:column>  
+               	<p:column headerText="CAHA Number"><h:outputText value="#{club.getCahaNumber()}" /></p:column>  
+               	<p:column headerText="Website"><a target = "_blank" href="#{club.getWebSite()}"><h:outputText value="#{club.getWebSite()}" /></a></p:column>  
+		    </p:dataTable>
+		</p:panel>
+		<p:separator id="customSeparator" style="width:800px;height:2px" />    
+	</h:form>
+
+</div>
+</ui:define>
+</ui:composition>

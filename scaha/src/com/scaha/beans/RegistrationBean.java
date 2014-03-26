@@ -269,6 +269,7 @@ public class RegistrationBean implements Serializable, MailableObject  {
 				per.setDob(this.DOB);
 				
 				pro.update(db);
+				pro.setPerson(per);
 				per.update(db);
 				
 				//
