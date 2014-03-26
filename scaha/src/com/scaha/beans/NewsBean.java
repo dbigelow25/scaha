@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
+import javax.el.ValueExpression;
+import javax.faces.application.Application;
+import javax.faces.context.FacesContext;
+
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.FamilyMemberDataModel;
@@ -76,9 +80,13 @@ public class NewsBean implements Serializable,  MailableObject  {
 	 }
 	
 	public void updateNewsItem(NewsItem current) {
-		
+		FacesContext context = FacesContext.getCurrentInstance();
+		Application app = context.getApplication();
+		ValueExpression expression = app.getExpressionFactory().createValueExpression(context.getELContext(), "#{profileBean}", Object.class );
+		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		try {
+			current.setAuthor(pb.getProfile().getPerson().getsFirstName() + " " + pb.getProfile().getPerson().getsLastName());
 			current.update(db);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

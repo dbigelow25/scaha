@@ -36,6 +36,7 @@ public class Profile extends ScahaObject {
 	private String m_sNickName = null;
 	private ActionList m_al = null;
 	private Person m_per = null;
+	private boolean SuperUser = false;
 	
 	public Profile (int _id, ScahaDatabase _db, String _sNN, String _sUser, String _sPass, boolean _getActionRoles) {
 		
@@ -239,5 +240,19 @@ public class Profile extends ScahaObject {
 	 */
 	public boolean isProfileOwner(Person _per) {
 		return this.m_per.ID == _per.ID;
+	}
+
+	/**
+	 * @return the superUser
+	 */
+	public boolean isSuperUser() {
+		return SuperUser;
+	}
+
+	/**
+	 * @param superUser the superUser to set
+	 */
+	public void setSuperUser(boolean superUser) {
+		SuperUser = superUser;
 	}
 }

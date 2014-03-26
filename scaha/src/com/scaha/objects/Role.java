@@ -97,5 +97,9 @@ public class Role extends ScahaObject implements Serializable {
 	public String toString() {
 		return this.Desc + "(" + this.Name.trim() + ")"; 
 	}
-
+	
+	public boolean isSuperUserRole() {
+		return this.Name.equals("SUSER");
+	}
+	
 }

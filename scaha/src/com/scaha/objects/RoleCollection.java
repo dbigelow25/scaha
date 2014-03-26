@@ -107,6 +107,7 @@ public class RoleCollection extends ScahaObject  {
 				boolean idr = (rs.getInt(i++) == 1 ? true : false);
 				// lets see if this role has already been stubbed out in this collection
 				LOGGER.info("getAllRolesByProfile:" + id + ":" + sName + ":" + sDesc +":" + iparentid + ":" + idr);
+				if (sName.equals("SUSER")) _pro.setSuperUser(true);
 				Role rl = (Role)this.get(id,Role.class.getSimpleName());
 				if (rl == null) {
 					rl = new Role(id, sName, sDesc,idr);

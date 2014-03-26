@@ -138,7 +138,7 @@ public class NewsItem extends ScahaObject implements Serializable {
 		int i = 1;
 		cs.registerOutParameter(1, java.sql.Types.INTEGER);
 		cs.setInt(i++, this.ID);
-		cs.setString(i++,"Logged");
+		cs.setString(i++,this.getAuthor());
 		cs.setString(i++, this.getTitle());
 		cs.setString(i++, this.getSubject());
 		cs.setString(i++, "publish");

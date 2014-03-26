@@ -195,6 +195,14 @@ public class ProfileBean implements Serializable,  MailableObject  {
 		}
 	}
     
+    /**
+     * This will get expanded once rolls are set up
+     * @return
+     */
+    public boolean isSuperUser() {
+    	return (pro != null && pro.isSuperUser());
+    }
+    
     public String logout() {
     	this.pro = null;
     	this.live_password = null;
