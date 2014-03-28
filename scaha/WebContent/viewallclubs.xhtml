@@ -46,16 +46,19 @@
    		</p:dataTable>
 	</pe:masterDetailLevel>
 	<pe:masterDetailLevel level="2" contextVar="club" levelLabel="#{club.getClubname()} ">
+
+  	          <p:growl id="messages" />
+
 		<table>
 		<tr>
 
 		
 		<td valign="top">
 		#{clubBean.setClub(club)}
-		<p:graphicImage id="logoimage" value="#{clubBean.getSCLogo()}" /> 
+		<p:graphicImage id="logoimage" value="#{clubBean.scLogo}" /> 
 		<p:fileUpload id="fileUploadLogo" mode="advanced"  fileUploadListener="#{clubBean.handleFileUpload}"   
-    		 description="Images" update="logoimage" render="true"/>    
-  	               
+    		 description="Images" update="messages, logoimage" render="true"/>    
+  	          
     	</td>
         </tr>
 		<tr>

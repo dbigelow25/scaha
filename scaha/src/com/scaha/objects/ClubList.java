@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 
 import javax.faces.model.ListDataModel;
@@ -13,11 +14,14 @@ import javax.faces.model.ListDataModel;
 import org.primefaces.model.SelectableDataModel;
 
 import com.gbli.connectors.ScahaDatabase;
+import com.gbli.context.ContextManager;
 ;
 
 public class ClubList extends ListDataModel<Club> implements Serializable, SelectableDataModel<Club> {
 	
 	private static final long serialVersionUID = 1L;
+	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	
 
 	public ClubList() {  
     }  
@@ -57,13 +61,15 @@ public class ClubList extends ListDataModel<Club> implements Serializable, Selec
 		//
 
 		for (Club c : data) {
+			LOGGER.info("CALL IS: call scaha.getMultiMedia(" + c.ID + ", 'CLUB', 'LOGO')");
 			_db.getData("call scaha.getMultiMedia(" + c.ID + ", 'CLUB', 'LOGO')");
 			rs = _db.getResultSet();
 			while (rs.next()) {
-				Blob blob = rs.getBlob(2);
+				Blob blob = rs.getBlob(4);
 			      // materialize BLOB onto client
 				c.setLogoextension(rs.getString(2));
 				c.setBlogo(blob.getBytes(1, (int) blob.length()));
+				LOGGER.info("blob ext is(" + c.getLogoextension() + ", " + c.getBlogo().length);
 			}
 			rs.close();
 			c.setCal(ClubAdminList.NewClubAdminListFactory(_pro, _db, c));

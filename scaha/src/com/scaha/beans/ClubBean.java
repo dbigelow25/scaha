@@ -14,6 +14,7 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
 import javax.sql.rowset.serial.SerialBlob;
 
 import org.primefaces.event.FileUploadEvent;
@@ -36,7 +37,7 @@ public class ClubBean implements Serializable,  MailableObject {
 	
 	private UploadedFile uploadedLogo;
 	
-	private StreamedContent scLogo;
+	private transient StreamedContent scLogo;
 	
 	
 	private ClubList ScahaClubList  = null;
@@ -74,7 +75,7 @@ public class ClubBean implements Serializable,  MailableObject {
 	    logo = event.getFile().getContents();
 	    LOGGER.info("GET THE INFO:" + event.getFile().getFileName() + ":" + event.getFile().getSize() +  ":" + uploadedLogo.getFileName().substring(uploadedLogo.getFileName().lastIndexOf(".")+1));
 		try {
-			setSCLogo(new DefaultStreamedContent(uploadedLogo.getInputstream(),"image/" + uploadedLogo.getFileName().substring(uploadedLogo.getFileName().lastIndexOf("."))));
+			scLogo = new DefaultStreamedContent(uploadedLogo.getInputstream(),"image/" + uploadedLogo.getFileName().substring(uploadedLogo.getFileName().lastIndexOf(".")));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -115,7 +116,7 @@ public class ClubBean implements Serializable,  MailableObject {
 			cs.setInt(i++, _club.ID);
 			cs.setString(i++, "CLUB");
 			cs.setString(i++, "LOGO");
-			cs.setString(i++, "png");
+			cs.setString(i++, "image/" + uploadedLogo.getFileName().substring(uploadedLogo.getFileName().lastIndexOf(".")+1));
 			cs.setInt(i++,1);
 			cs.setString(i++,null);
 			cs.setBlob(i++, new SerialBlob(this.logo));
@@ -207,28 +208,44 @@ public class ClubBean implements Serializable,  MailableObject {
 	/**
 	 * @return the bLogo
 	 */
-	public StreamedContent getSCLogo() {
-		LOGGER.info("HERE IS CLUB:" + this.selectedclub.getClubname() + ":" + this.selectedclub.getBlogo().length);
-		try {
-			InputStream is = new ByteArrayInputStream(selectedclub.getBlogo());
-			setSCLogo(new DefaultStreamedContent(is, selectedclub.getLogoextension()));
-			is.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public StreamedContent getClubLogo() {
+		
+		  FacesContext context = FacesContext.getCurrentInstance();
+		  
+		  LOGGER.info("HERE IS CLUB:" + this.selectedclub.getClubname() + ":" + (this.selectedclub.getBlogo() != null ?this.selectedclub.getBlogo().length : "0"));
+		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+		    // So, we're rendering the HTML. Return a stub StreamedContent so that it will generate right URL.
+			return  scLogo;
+		} else {
+			return scLogo;
 		}
+		
+		
+	}
+
+	public String setClub(Club _cl) {
+		this.selectedclub = _cl;
+		LOGGER.info("HI!!!! + " + _cl.getLogoextension());
+		if (selectedclub.getBlogo() != null) {
+			scLogo =  new DefaultStreamedContent(new ByteArrayInputStream(selectedclub.getBlogo()),this.selectedclub.getLogoextension());
+		} else {
+			scLogo = null;
+		}
+		return "";
+	}
+
+	/**
+	 * @return the scLogo
+	 */
+	public StreamedContent getScLogo() {
 		return scLogo;
 	}
 
 	/**
-	 * @param bLogo the bLogo to set
+	 * @param scLogo the scLogo to set
 	 */
-	public void setSCLogo(StreamedContent bLogo) {
-		this.scLogo = bLogo;
-	}
-	public String setClub(Club _cl) {
-		this.selectedclub = _cl;
-		return _cl.getClubname();
+	public void setScLogo(StreamedContent scLogo) {
+		this.scLogo = scLogo;
 	}
     
 }
