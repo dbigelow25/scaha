@@ -445,7 +445,7 @@ public class viewreleaseBean implements Serializable, MailableObject {
 
     			
 			Vector<Integer> v = new Vector<Integer>();
-			v.add(this.getProfid());
+//			v.add(this.p());
 			db.getData("CALL scaha.getClubforPerson(?)", v);
 		    
 			if (db.getResultSet() != null){
