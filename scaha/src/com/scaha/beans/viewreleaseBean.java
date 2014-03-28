@@ -433,6 +433,71 @@ public class viewreleaseBean implements Serializable, MailableObject {
     	
    }
 	
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+		
+	public void getClubName(){
+		
+		//first lets get club id for the logged in profile
+		String clubname = "";
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
+
+    			
+			Vector<Integer> v = new Vector<Integer>();
+//			v.add(this.p());
+			db.getData("CALL scaha.getClubforPerson(?)", v);
+		    
+			if (db.getResultSet() != null){
+				//need to add to an array
+				rs = db.getResultSet();
+				
+				while (rs.next()) {
+					this.clubid = rs.getInt("idclub");
+					
+					}
+				LOGGER.info("We have results for club for a profile");
+			}
+			
+			db.cleanup();
+    		
+			//now lets retrieve club name
+			v = new Vector<Integer>();
+			v.add(clubid);
+			db.getData("CALL scaha.getClubNamebyId(?)", v);
+		    
+			if (db.getResultSet() != null){
+				//need to add to an array
+				rs = db.getResultSet();
+				
+				while (rs.next()) {
+					this.clubname = rs.getString("clubname");
+				}
+				LOGGER.info("We have results for club name");
+			}
+			
+			db.cleanup();
+			
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN loading club by profile");
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+		
+	}
+	
+=======
+>>>>>>> scaha release process completed
+>>>>>>> HEAD@{1}
 	public void CloseLoi(){
 		
 		FacesContext context = FacesContext.getCurrentInstance();

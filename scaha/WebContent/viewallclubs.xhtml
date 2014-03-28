@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	
+<ui:define name="content">
+	
+<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top">  
+   	<h:outputText value="SCAHA" style="color:#FFCC00;font-size:36px;" />  
+</p:notificationBar>  
+
+<div id="news-div">	
+
+	<h:form id="clubsmenu" enctype="multipart/form-data">
+
+  	<pe:masterDetail id="masterDetail" selectLevelListener="#{selectLevelListener.handleNavigation}"  showAllBreadcrumbItems="true"> 
+  	
+    <pe:masterDetailLevel level="1" levelLabel="SCAHA Clubs">  
+
+  		<p:dataTable id="listofclubs" var="club" value="#{clubBean.getScahaClubList()}">
+			<p:subTable var="peep" value="#{club.getCal()}">
+	            <f:facet name="header">
+		            <p:commandLink value="#{club.getClubname()} (#{club.getCahaNumber()})">  
+	                    <pe:selectDetailLevel contextValue="#{club}"/>  
+    	            </p:commandLink>
+        		</f:facet>
+ 	            <p:column>
+    	            #{peep.getMyRole().getDesc()}
+        	    </p:column>
+	            <p:column>
+    	            #{peep.getsFirstName()} #{peep.getsLastName()}
+        	    </p:column>
+	            <p:column>
+    	            #{peep.getsPhone()}
+        	    </p:column>
+	            <p:column>
+    	            #{peep.getsEmail()}
+        	    </p:column>
+			</p:subTable>
+   		</p:dataTable>
+	</pe:masterDetailLevel>
+	<pe:masterDetailLevel level="2" contextVar="club" levelLabel="#{club.getClubname()} ">
+		#{clubBean.setClub(club)}
+		<table>
+		<tr>
+		<td valign="top">
+		<p:graphicImage id="logoimage" value="#{clubBean.scLogo}" cache="false">
+		 <f:param name="aaa" value="#{clubBean.getDate()}"/>
+		 </p:graphicImage> 
+		<p:fileUpload id="fileUploadLogo" mode="advanced"  fileUploadListener="#{clubBean.handleFileUpload}"   
+    		 description="Images" update="logoimage" render="true"/>    
+  	          
+    	</td>
+        </tr>
+		<tr>
+		<td valign="top">
+		<p:panelGrid id="clublevel" columns="2">  
+            <p:outputLabel value="Club Name:"/>  
+            <h:outputText value="#{club.getClubname()}"/>  
+            <h:outputText value="Web Site:"/>  
+            <h:outputText value="#{club.getWebSite()}"/>  
+        </p:panelGrid>
+        </td>
+		<td valign="top">
+		<p:panelGrid id="clubpeeps" columns="2">  
+            <p:outputLabel value="President"/>  
+            <h:outputText value="President Name Here"/>  
+            <h:outputText value="Registrar"/>  
+            <h:outputText value="Registrar Name Here"/>  
+            <h:outputText value="Ice Conveiner"/>  
+            <h:outputText value="Ice Convener Here"/>  
+        </p:panelGrid>
+		</td>
+        </tr>
+        </table>
+        
+               <p:commandButton value="Save with success" process="masterDetail"  
+                         action="#{clubBean.save()}"  
+                         style="margin-top:10px;" icon="ui-icon-disk">  
+	            </p:commandButton>
+	  </pe:masterDetailLevel>	
+	</pe:masterDetail>
+	</h:form>
+
+</div>
+</ui:define>
+</ui:composition>

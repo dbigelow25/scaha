@@ -404,9 +404,8 @@ public class Utils {
 				" ca.cahanum = ipf.assoc_code " +
 				" and ca.inscahacoach = 1 " +
 				" where ipf.cep_card <> '' " + 
-//				" and ca.cahanum = 'CAH1115' " +
-  				" and ipf.last_name = 'KEMP' " +
-				" order by 3,2,1,4 ";
+				" and ca.cahanum = 'CAH1050' " +
+  			    " order by 3,2,1,4 ";
 
 		
 		db.getData(mySQL);

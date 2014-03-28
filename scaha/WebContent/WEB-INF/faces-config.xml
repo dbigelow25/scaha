@@ -10,7 +10,7 @@
 		<managed-bean-class>com.scaha.beans.ProfileBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-		<managed-bean>
+	<managed-bean>
 		<managed-bean-name>familymemberBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.FamilyMemberBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
@@ -160,4 +160,9 @@
 		<validator-id>validateUSAHRegistration</validator-id>
 		<validator-class>com.scaha.validators.USAHRegistrationValidator</validator-class>
 	</validator>
+	<managed-bean>
+    <managed-bean-name>now</managed-bean-name>
+    <managed-bean-class>java.util.Date</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+</managed-bean>
 </faces-config>
