@@ -21,7 +21,8 @@ public class Club extends ScahaObject implements Serializable {
 	private String CahaNumber = null;
 	private String idclub = null;
 	private String WebSite = null;
-	
+	private byte[] blogo = null;
+	private String logoextension = null;
 	private ClubAdminList cal = null;
 	/**
 	 * @return the tag
@@ -137,6 +138,34 @@ public class Club extends ScahaObject implements Serializable {
 	 */
 	public void setCal(ClubAdminList cal) {
 		this.cal = cal;
+	}
+
+	/**
+	 * @return the blogo
+	 */
+	public byte[] getBlogo() {
+		return blogo;
+	}
+
+	/**
+	 * @param blogo the blogo to set
+	 */
+	public void setBlogo(byte[] blogo) {
+		this.blogo = blogo;
+	}
+
+	/**
+	 * @return the logoextension
+	 */
+	public String getLogoextension() {
+		return logoextension;
+	}
+
+	/**
+	 * @param logoextension the logoextension to set
+	 */
+	public void setLogoextension(String logoextension) {
+		this.logoextension = logoextension;
 	}
 	
 	

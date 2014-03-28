@@ -30,6 +30,8 @@ public class ClubAdmin extends Person {
 	
 	public ClubAdmin(int _id, Profile _pro, Club _cl, Role _role) {
 		super(_id, _pro);
+		MyRole = _role;
+		MyClub = _cl;
 	}
 	
 	public void update(ScahaDatabase _db) throws SQLException {

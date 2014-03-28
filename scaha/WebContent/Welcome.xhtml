@@ -29,6 +29,7 @@
 			</h:panelGrid>
 			<p:separator />
    			<p:editor  id="editor" widgetVar="edit#{newsitem.getIDStr()}" value="#{newsitem.body}" rendered="true"/>
+			<p:separator />
   			<p:commandButton value="Update News Item" id="update" ajax="false" action="#{newsBean.updateNewsItem(newsitem)}" oncomplete="panelwv#{newsitem.getIDStr()}.hide();"/>
 			<p:spacer height="10" width="10" />
 			<p:commandButton  value="Cancel" id="cancel" ajax="false" oncomplete="panelwv#{newsitem.getIDStr()}.hide();" />

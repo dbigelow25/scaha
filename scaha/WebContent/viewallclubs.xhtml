@@ -6,7 +6,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
 	
 <ui:define name="content">
 	
@@ -15,15 +16,77 @@
 </p:notificationBar>  
 
 <div id="news-div">	
-  	<h:form id="allclubs">
-		<p:panel id ="panel" header="SCAHA Club List">
-			<p:dataTable id="listofclubs" var="club" value="#{viewScahaBean.getScahaClubList()}" autoupdate="false">
-               	<p:column headerText="Club Name"><h:outputText value="#{club.getClubname()}" /></p:column>  
-               	<p:column headerText="CAHA Number"><h:outputText value="#{club.getCahaNumber()}" /></p:column>  
-               	<p:column headerText="Website"><a target = "_blank" href="#{club.getWebSite()}"><h:outputText value="#{club.getWebSite()}" /></a></p:column>  
-		    </p:dataTable>
-		</p:panel>
-		<p:separator id="customSeparator" style="width:800px;height:2px" />    
+
+	<h:form id="clubsmenu" enctype="multipart/form-data">
+
+  	<pe:masterDetail id="masterDetail" selectLevelListener="#{selectLevelListener.handleNavigation}"  showAllBreadcrumbItems="true"> 
+  	
+    <pe:masterDetailLevel level="1" levelLabel="SCAHA Clubs">  
+
+  		<p:dataTable id="listofclubs" var="club" value="#{clubBean.getScahaClubList()}">
+			<p:subTable var="peep" value="#{club.getCal()}">
+	            <f:facet name="header">
+		            <p:commandLink value="#{club.getClubname()} (#{club.getCahaNumber()})">  
+	                    <pe:selectDetailLevel contextValue="#{club}"/>  
+    	            </p:commandLink>
+        		</f:facet>
+ 	            <p:column>
+    	            #{peep.getMyRole().getDesc()}
+        	    </p:column>
+	            <p:column>
+    	            #{peep.getsFirstName()} #{peep.getsLastName()}
+        	    </p:column>
+	            <p:column>
+    	            #{peep.getsPhone()}
+        	    </p:column>
+	            <p:column>
+    	            #{peep.getsEmail()}
+        	    </p:column>
+			</p:subTable>
+   		</p:dataTable>
+	</pe:masterDetailLevel>
+	<pe:masterDetailLevel level="2" contextVar="club" levelLabel="#{club.getClubname()} ">
+		<table>
+		<tr>
+
+		
+		<td valign="top">
+		#{clubBean.setClub(club)}
+		<p:graphicImage id="logoimage" value="#{clubBean.getSCLogo()}" /> 
+		<p:fileUpload id="fileUploadLogo" mode="advanced"  fileUploadListener="#{clubBean.handleFileUpload}"   
+    		 description="Images" update="logoimage" render="true"/>    
+  	               
+    	</td>
+        </tr>
+		<tr>
+		<td valign="top">
+		<p:panelGrid id="clublevel" columns="2">  
+            <p:outputLabel value="Club Name:"/>  
+            <h:outputText value="#{club.getClubname()}"/>  
+            <h:outputText value="Web Site:"/>  
+            <h:outputText value="#{club.getWebSite()}"/>  
+        </p:panelGrid>
+        </td>
+		<td valign="top">
+		<p:panelGrid id="clubpeeps" columns="2">  
+            <p:outputLabel value="President"/>  
+            <h:outputText value="President Name Here"/>  
+            <h:outputText value="Registrar"/>  
+            <h:outputText value="Registrar Name Here"/>  
+            <h:outputText value="Ice Conveiner"/>  
+            <h:outputText value="Ice Convener Here"/>  
+        </p:panelGrid>
+		</td>
+        </tr>
+        </table>
+        
+               <p:commandButton value="Save with success" process="masterDetail"  
+                         action="#{clubBean.save(club)}"  
+                         style="margin-top:10px;" icon="ui-icon-disk">  
+	            <pe:selectDetailLevel level="1"/>  
+	            </p:commandButton>
+	  </pe:masterDetailLevel>	
+	</pe:masterDetail>
 	</h:form>
 
 </div>

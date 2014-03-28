@@ -7,17 +7,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import javax.faces.model.ListDataModel;
 
 import org.primefaces.model.SelectableDataModel;
 
 import com.gbli.connectors.ScahaDatabase;
+import com.gbli.context.ContextManager;
 
 public class ClubAdminList extends ListDataModel<ClubAdmin> implements Serializable, SelectableDataModel<ClubAdmin> {
 	
 	private static final long serialVersionUID = 1L;
-
+	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	
 	public ClubAdminList() {  
     }  
 	
@@ -43,6 +46,7 @@ public class ClubAdminList extends ListDataModel<ClubAdmin> implements Serializa
 				ca.setsLastName(rs.getString(i++));
 				ca.setsPhone(rs.getString(i++));
 				ca.setsEmail(rs.getString(i++));
+				data.add(ca);
 			}
 			rs.close();
 		

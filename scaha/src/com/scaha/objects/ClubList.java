@@ -1,6 +1,7 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
+import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import javax.faces.model.ListDataModel;
 import org.primefaces.model.SelectableDataModel;
 
 import com.gbli.connectors.ScahaDatabase;
+;
 
 public class ClubList extends ListDataModel<Club> implements Serializable, SelectableDataModel<Club> {
 	
@@ -46,11 +48,24 @@ public class ClubList extends ListDataModel<Club> implements Serializable, Selec
 				cl.setWebSite(rs.getString(i++));
 				data.add(cl);
 			}
-
 			rs.close();
 			}
 		
+		
+		//
+		// now lets get the second level stuff..
+		//
+
 		for (Club c : data) {
+			_db.getData("call scaha.getMultiMedia(" + c.ID + ", 'CLUB', 'LOGO')");
+			rs = _db.getResultSet();
+			while (rs.next()) {
+				Blob blob = rs.getBlob(2);
+			      // materialize BLOB onto client
+				c.setLogoextension(rs.getString(2));
+				c.setBlogo(blob.getBytes(1, (int) blob.length()));
+			}
+			rs.close();
 			c.setCal(ClubAdminList.NewClubAdminListFactory(_pro, _db, c));
 		}
 		return new ClubList(data);

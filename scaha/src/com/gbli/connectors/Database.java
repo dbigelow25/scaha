@@ -1,8 +1,10 @@
 package com.gbli.connectors;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,6 +16,9 @@ import java.sql.Savepoint;
 import java.sql.Statement;
 import java.util.Vector;
 import java.util.logging.Logger;
+
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 
 import com.gbli.context.ContextManager;
 
@@ -500,5 +505,21 @@ public class Database {
 				+ (m_binuse ? "busy" : "free") + ":";
 	}
 
+	/**
+	 * Lets see if we cannot update a pic!
+	 * @param _cs
+	 * @param bs
+	 * @throws IOException
+	 * @throws SerialException
+	 * @throws SQLException
+	 */
+	public void updateMultiMedia(CallableStatement _cs, byte[] bs) throws IOException, SerialException, SQLException {
+		
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();        
+		final ObjectOutputStream oos = new ObjectOutputStream(baos);
+		oos.writeObject(bs);
+		_cs.setBlob(1, new SerialBlob(baos.toByteArray()));
+		
+	}
 	
 }
