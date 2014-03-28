@@ -46,18 +46,15 @@
    		</p:dataTable>
 	</pe:masterDetailLevel>
 	<pe:masterDetailLevel level="2" contextVar="club" levelLabel="#{club.getClubname()} ">
-
-  	          <p:growl id="messages" />
-
+		#{clubBean.setClub(club)}
 		<table>
 		<tr>
-
-		
 		<td valign="top">
-		#{clubBean.setClub(club)}
-		<p:graphicImage id="logoimage" value="#{clubBean.scLogo}" /> 
+		<p:graphicImage id="logoimage" value="#{clubBean.scLogo}" cache="false">
+		 <f:param name="aaa" value="#{clubBean.getDate()}"/>
+		 </p:graphicImage> 
 		<p:fileUpload id="fileUploadLogo" mode="advanced"  fileUploadListener="#{clubBean.handleFileUpload}"   
-    		 description="Images" update="messages, logoimage" render="true"/>    
+    		 description="Images" update="logoimage" render="true"/>    
   	          
     	</td>
         </tr>
@@ -84,9 +81,8 @@
         </table>
         
                <p:commandButton value="Save with success" process="masterDetail"  
-                         action="#{clubBean.save(club)}"  
+                         action="#{clubBean.save()}"  
                          style="margin-top:10px;" icon="ui-icon-disk">  
-	            <pe:selectDetailLevel level="1"/>  
 	            </p:commandButton>
 	  </pe:masterDetailLevel>	
 	</pe:masterDetail>

@@ -9,13 +9,16 @@ import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.application.ViewHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
 import javax.sql.rowset.serial.SerialBlob;
+
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -80,6 +83,13 @@ public class ClubBean implements Serializable,  MailableObject {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		String viewId = context.getViewRoot().getViewId();
+		ViewHandler handler = context.getApplication().getViewHandler();
+		UIViewRoot root = handler.createView(context, viewId);
+		root.setViewId(viewId);
+		context.setViewRoot(root);
 	}
 
 	/**
@@ -97,11 +107,11 @@ public class ClubBean implements Serializable,  MailableObject {
 	}	
 	
 	
-	public String save(Club _club) {  
+	public String save() {  
 	        FacesMessage message =  
-	            new FacesMessage(FacesMessage.SEVERITY_INFO, "Club " + _club.getClubname() + " has been saved", null);  
+	            new FacesMessage(FacesMessage.SEVERITY_INFO, "Club " + this.selectedclub.getClubname() + " has been saved", null);  
 	        FacesContext.getCurrentInstance().addMessage(null, message);  
-	        updateLogo(_club);
+	        updateLogo(this.selectedclub);
 	        
 	        return "true";
     } 
@@ -215,7 +225,7 @@ public class ClubBean implements Serializable,  MailableObject {
 		  LOGGER.info("HERE IS CLUB:" + this.selectedclub.getClubname() + ":" + (this.selectedclub.getBlogo() != null ?this.selectedclub.getBlogo().length : "0"));
 		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
 		    // So, we're rendering the HTML. Return a stub StreamedContent so that it will generate right URL.
-			return  scLogo;
+			return  new DefaultStreamedContent();
 		} else {
 			return scLogo;
 		}
@@ -248,4 +258,7 @@ public class ClubBean implements Serializable,  MailableObject {
 		this.scLogo = scLogo;
 	}
     
+	 public long getDate() {
+	        return System.currentTimeMillis();
+	    }
 }
