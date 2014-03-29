@@ -55,6 +55,13 @@ img { border-style: none; }
 	border-top: 1px dashed #aaaaaa;
 }
 
+.GeneralGap
+{
+	margin-top: 5px;
+	margin-bottom: 1px;
+	border-top: 1px dashed #aaaaaa;
+}
+
 .list-no-border tr, .list-no-border td 
 {
     vertical-align: center; 

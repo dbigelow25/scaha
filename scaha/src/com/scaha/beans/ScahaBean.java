@@ -38,16 +38,12 @@ public class ScahaBean implements Serializable,  MailableObject {
 		 
 		 LOGGER.info("ScahaBean PostConstruct Init: Logger level at:" + LOGGER.getLevel());
 		 LOGGER.setLevel(Level.ALL);
+		 refreshBean();
 		 
 	 }
 	
-	
-	public ScahaBean () {
-		
-		 refreshBean();
-		 
-	}
-	public static void main(String[] args) {
+
+	 public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
 	}
@@ -61,7 +57,6 @@ public class ScahaBean implements Serializable,  MailableObject {
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		Profile pro = new Profile(0);
 		try {
-			LOGGER.info("REFRESH BEAN DIP TIME");
 			setScahaClubList(ClubList.NewClubListFactory(new Profile(0), db));
 			setScahaSeasonList(GeneralSeasonList.NewClubListFactory(pro, db, "SCAHA"));
 		} catch (SQLException e) {
