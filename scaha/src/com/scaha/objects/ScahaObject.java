@@ -30,9 +30,7 @@ public abstract class ScahaObject implements Serializable {
 	Vector<ScahaObject> vct = new Vector<ScahaObject>();
 	Hashtable<String,ScahaObject> hsh = new Hashtable<String, ScahaObject>();
 	
-	
-	
-	
+
 	public ScahaObject get(int _i, String _strObjClass) {
 		return hsh.get(_i + ":" + _strObjClass);
 	}

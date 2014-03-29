@@ -8,20 +8,21 @@ img { border-style: none; }
 .ui-panelgrid tr, .ui-panelgrid td {
    	border: none;
 }
+
 #div-body {
   		width: 900px;
    	vertical-align: top;
    	margin-left:10px;
 }
 #page-div {
-		width: 700px;
+		width: 875px;
    	vertical-align: top;
    	margin-top:25px;
    	margin-left:25px;
 }
 
 #news-div {
-		width: 700px;
+		width: 725px;
    	vertical-align: top;
    	margin-top:25px;
    	margin-left:25px;
@@ -52,4 +53,11 @@ img { border-style: none; }
 {
 	margin-top: 14px;
 	border-top: 1px dashed #aaaaaa;
+}
+
+.list-no-border tr, .list-no-border td 
+{
+    vertical-align: center; 
+	border-style:none;
+	border-width:0px;
 }

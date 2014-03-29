@@ -59,7 +59,12 @@ public class FamilyMemberBean  implements Serializable,  MailableObject  {
 	 */
 	public void setSelectedFamilyMember(FamilyMember selectedFamilyMember) {
 		this.selectedFamilyMember = selectedFamilyMember;
-		LOGGER.info("I am selected Family Member: " + this.selectedFamilyMember.ID);
+		if (this.selectedFamilyMember == null) {
+			LOGGER.info("We have a null family member coming across ...");
+			
+		} else {
+			LOGGER.info("I am selected Family Member: " + this.selectedFamilyMember.ID);
+		}
 	}
 
 	public void onFamilyMemberRowSelect(SelectEvent  event) {  
