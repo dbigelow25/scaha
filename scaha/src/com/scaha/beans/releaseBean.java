@@ -15,6 +15,7 @@ import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
+import com.gbli.common.SendMailSSL;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Club;
@@ -702,7 +703,7 @@ public class releaseBean implements Serializable, MailableObject {
 
     		if (db.setAutoCommit(false)) {
     		
-    			CallableStatement cs = db.prepareCall("CALL scaha.addRelease(?,?,?,?,?,?,?,?,?,?,?)");
+    			CallableStatement cs = db.prepareCall("CALL scaha.addRelease(?,?,?,?,?,?,?,?,?,?,?,?,?)");
     			cs.setInt("personid", this.selectedplayer);
     			cs.setInt("reason", Integer.parseInt(this.selectedreason));
     			cs.setInt("suspension", Integer.parseInt(this.selectedsuspension));
@@ -712,6 +713,13 @@ public class releaseBean implements Serializable, MailableObject {
     			cs.setInt("acceptingdivision", Integer.parseInt(this.selectedacceptingdivision));
     			cs.setInt("acceptingskilllevel", Integer.parseInt(this.selectedacceptingskilllevel));
     			cs.setString("comments", this.comments);
+    			cs.setInt("clubid", this.clubid);
+    			
+    			if (displaypermanent){
+    				cs.setInt("status", 1);
+    			}else{
+    				cs.setInt("status", 2);
+    			}
     			
     			if (this.selectedfinancial==null){
     				cs.setString("releasetype", "T");
@@ -759,15 +767,18 @@ public class releaseBean implements Serializable, MailableObject {
     		    //and now the family email
     		    to = to + ',' + this.getParentemail();
     		    
+    		    //use this will testing the site.  send emails to rob's personal account
+    		    to = "lahockeyfan2@yahoo.com";
+    		    
     		    this.setToMailAddress(to);
+    		    this.cc="";
     		    this.setTextBody("Player " + this.firstname + " " + this.lastname + " has been released from club " + this.clubname);
     		    this.setSubject(this.firstname + " " + this.lastname + " Released from " + this.clubname);
     		    
-				/*SendMailSSL mail = new SendMailSSL(this);
-				LOGGER.info("Finished creating mail object for " + this.getUsername());
+				SendMailSSL mail = new SendMailSSL(this);
+				LOGGER.info("Finished creating mail object for Release");
 				mail.sendMail();
-				db.commit();
-				return "True";*/
+				
 				
     		    FacesContext context = FacesContext.getCurrentInstance();
 	    		try{

@@ -130,6 +130,12 @@
 		<managed-bean-class>com.scaha.beans.viewreleaseBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>calendarBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.CalendarBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
+	
 	<validator>
 		<description>This will validate the Username to ensure its unique in the system</description>
 		<display-name>User Name Validator</display-name>

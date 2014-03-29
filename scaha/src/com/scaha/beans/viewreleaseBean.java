@@ -87,7 +87,7 @@ public class viewreleaseBean implements Serializable, MailableObject {
 		return selectedstatus;
 	}
     
-    public void setSelectedStatus(String snum){
+    public void setSelectedstatus(String snum){
     	selectedstatus = snum;
     }
 	
@@ -433,65 +433,6 @@ public class viewreleaseBean implements Serializable, MailableObject {
     	
    }
 	
-		
-	public void getClubName(){
-		
-		//first lets get club id for the logged in profile
-		String clubname = "";
-		
-		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-		
-		try{
-
-    			
-			Vector<Integer> v = new Vector<Integer>();
-//			v.add(this.p());
-			db.getData("CALL scaha.getClubforPerson(?)", v);
-		    
-			if (db.getResultSet() != null){
-				//need to add to an array
-				rs = db.getResultSet();
-				
-				while (rs.next()) {
-					this.clubid = rs.getInt("idclub");
-					
-					}
-				LOGGER.info("We have results for club for a profile");
-			}
-			
-			db.cleanup();
-    		
-			//now lets retrieve club name
-			v = new Vector<Integer>();
-			v.add(clubid);
-			db.getData("CALL scaha.getClubNamebyId(?)", v);
-		    
-			if (db.getResultSet() != null){
-				//need to add to an array
-				rs = db.getResultSet();
-				
-				while (rs.next()) {
-					this.clubname = rs.getString("clubname");
-				}
-				LOGGER.info("We have results for club name");
-			}
-			
-			db.cleanup();
-			
-    	} catch (SQLException e) {
-    		// TODO Auto-generated catch block
-    		LOGGER.info("ERROR IN loading club by profile");
-    		e.printStackTrace();
-    		db.rollback();
-    	} finally {
-    		//
-    		// always clean up after yourself..
-    		//
-    		db.free();
-    	}
-		
-	}
-	
 	public void CloseLoi(){
 		
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -521,51 +462,36 @@ public class viewreleaseBean implements Serializable, MailableObject {
 
     		if (db.setAutoCommit(false)) {
     		
-    			CallableStatement cs = db.prepareCall("CALL scaha.addRelease(?,?,?,?,?,?,?,?,?,?,?)");
-    			cs.setInt("personid", this.selectedplayer);
-    			cs.setInt("reason", Integer.parseInt(this.selectedreason));
-    			cs.setInt("suspension", Integer.parseInt(this.selectedsuspension));
-    			cs.setString("beginningdate", this.beginningdate);
-    			cs.setString("endingdate", this.endingdate);
-    			cs.setInt("acceptingclub", Integer.parseInt(this.selectedacceptingclub));
-    			cs.setInt("acceptingdivision", Integer.parseInt(this.selectedacceptingdivision));
-    			cs.setInt("acceptingskilllevel", Integer.parseInt(this.selectedacceptingskilllevel));
-    			cs.setString("comments", this.comments);
+    			CallableStatement cs = db.prepareCall("CALL scaha.addNotestoRelease(?,?,?)");
+    			cs.setInt("releaseid", this.releaseid);
+    			cs.setInt("status", Integer.parseInt(this.selectedstatus));
+    			cs.setString("notes", this.note);
     			
-    			if (this.selectedfinancial==null){
-    				cs.setString("releasetype", "T");
-    				cs.setInt("financial", 0);
-    			} else {
-    				cs.setInt("financial", Integer.parseInt(this.selectedfinancial));
-    				cs.setString("releasetype", "P");
-    			}
-    			
-    		    cs.executeQuery();
+    			cs.executeQuery();
     			db.commit();
     			db.cleanup();
     			
     			//need to send email to club registrars, family, and scaha registrar
-    			//first releasing club
+    			//first releasing and accepting club registrar
     			LOGGER.info("Sending email to club registrar, family, and scaha registrar");
-    			cs = db.prepareCall("CALL scaha.getClubRegistrarEmail(?)");
-    		    cs.setInt("iclubid", this.clubid);
+    			cs = db.prepareCall("CALL scaha.getClubRegistrarEmailsForRelease(?)");
+    		    cs.setInt("releaseid", this.releaseid);
     		    rs = cs.executeQuery();
     		    if (rs != null){
     				while (rs.next()) {
-    					to = rs.getString("usercode");
+    					to = rs.getString("acceptingemail");
+    					if (to!=null){
+    						to = to + ',';
+    					}else {
+    						to = "";
+    					}
+    					to = to + rs.getString("releasingemail");
     				}
     			}
     		    
-    		    //next receiving club
-    			LOGGER.info("Sending email to club registrar, family, and scaha registrar");
-    			cs = db.prepareCall("CALL scaha.getClubRegistrarEmail(?)");
-    		    cs.setInt("iclubid", Integer.parseInt(this.getSelectedacceptingclub()));
-    		    rs = cs.executeQuery();
-    		    if (rs != null){
-    				while (rs.next()) {
-    					to = rs.getString("usercode");
-    				}
-    			}
+    		    
+    		    
+    		    //
     		    //next scaha registrar
     		    cs = db.prepareCall("CALL scaha.getSCAHARegistrarEmail()");
     		    rs = cs.executeQuery();
@@ -579,8 +505,8 @@ public class viewreleaseBean implements Serializable, MailableObject {
     		    to = to + ',' + this.getParentemail();
     		    
     		    this.setToMailAddress(to);
-    		    this.setTextBody("Player " + this.firstname + " " + this.lastname + " has been released from club " + this.clubname);
-    		    this.setSubject(this.firstname + " " + this.lastname + " Released from " + this.clubname);
+    		    this.setTextBody("Player " + this.firstname + " " + this.lastname + " Notes From SCAHA");
+    		    this.setSubject(this.firstname + " " + this.lastname + " Released Notes from SCAHA");
     		    
 				/*SendMailSSL mail = new SendMailSSL(this);
 				LOGGER.info("Finished creating mail object for " + this.getUsername());
@@ -590,7 +516,7 @@ public class viewreleaseBean implements Serializable, MailableObject {
 				
     		    FacesContext context = FacesContext.getCurrentInstance();
 	    		try{
-					context.getExternalContext().redirect("startplayerrelease.xhtml");
+					context.getExternalContext().redirect("confirmrelease.xhtml");
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
