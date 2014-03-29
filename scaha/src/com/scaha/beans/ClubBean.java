@@ -9,12 +9,11 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
 import javax.imageio.ImageIO;
@@ -26,19 +25,17 @@ import org.primefaces.model.StreamedContent;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Club;
-import com.scaha.objects.ClubList;
 import com.scaha.objects.MailableObject;
-import com.scaha.objects.Profile;
 
 @ManagedBean
-@ApplicationScoped
+@SessionScoped
 public class ClubBean implements Serializable,  MailableObject {
 	
-	
-	private ClubList ScahaClubList  = null;
-	private Club selectedclub = null;
-	private int currentLevel = 1; 
+	@ManagedProperty(value="#{scahaBean}")
+    private ScahaBean scaha;
 
+	private Club selectedclub = null;
+	
 	//
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
@@ -48,17 +45,23 @@ public class ClubBean implements Serializable,  MailableObject {
 	// lets go get it!
 	//
 	public ClubBean() {
-		
-		if (ScahaClubList == null) refreshBean();
-		
 	}
-	
+
+	 @PostConstruct
+	 public void init() {
+
+	 }
+	 
 	public void handleFileUpload(FileUploadEvent event) {
 	    this.selectedclub.getLogo().setMmObject(event.getFile().getContents());
 	    this.selectedclub.getLogo().setExtension(event.getFile().getContentType());
 	    LOGGER.info("GET THE INFO:" + event.getFile().getFileName() + ":" + event.getFile().getSize());
 	}
 
+	/**
+	 * This saves the Club object and along with it.. any changes
+	 * @return
+	 */
 	public String save() {  
 	        FacesMessage message =  
 	            new FacesMessage(FacesMessage.SEVERITY_INFO, "Club " + this.selectedclub.getClubname() + " has been saved", null);  
@@ -82,34 +85,7 @@ public class ClubBean implements Serializable,  MailableObject {
     public void setSelectedclub(Club clubselected){
     	selectedclub=clubselected;
     }
-    /**
-	 * @return the clubList
-	 */
-	public ClubList getScahaClubList() {
-		
-			return ScahaClubList;
-	}
 
-	/**
-	 * @param clubList the clubList to set
-	 */
-	public void setScahaClubList(ClubList clubList) {
-		ScahaClubList = clubList;
-	}
-
-	/**
-	 * @return the currentLevel
-	 */
-	public int getCurrentLevel() {
-		return currentLevel;
-	}
-
-	/**
-	 * @param currentLevel the currentLevel to set
-	 */
-	public void setCurrentLevel(int currentLevel) {
-		this.currentLevel = currentLevel;
-	}
 
 	@Override
 	public String getSubject() {
@@ -194,62 +170,39 @@ public class ClubBean implements Serializable,  MailableObject {
 		
 		FacesContext context = FacesContext.getCurrentInstance();
 		String get = context.getExternalContext().getRequestParameterMap().get("target");
-	    
+	    LOGGER.info("gclbyparm: get =" + get);
 	    if (get == null) {
     		return new DefaultStreamedContent();
 	    }
     	int id = Integer.parseInt(get);
-	    Club myclub  = this.findClubByID(id);
+	    Club myclub  = scaha.findClubByID(id);
 		return getClubLogo(myclub);
 		
 	}
-	
-	
-	public Club findClubByID (int _id) {
-		for (Club c : ScahaClubList) {
-			if (c.ID == _id) { 
-				return c;
-			}
-		}
-		return null;
-	}
-	
-	public String setClub(Club _cl) {
-		
-		if (ScahaClubList == null) {
-			this.selectedclub = _cl;
-			return "";
-		}
 
-		for (Club c : ScahaClubList) {
-			if (c.ID == _cl.ID) { 
-				this.selectedclub = c;
-				break;
-			}
-		}
-		
-		if (this.selectedclub == null) this.selectedclub = _cl;
-		
+	/**
+	 * This sets the call..
+	 * @param _id
+	 * @return
+	 */
+	public String setClub(int _id) {
+		LOGGER.fine("ClubBean received a Club id of:" + + _id);
+		this.selectedclub = scaha.findClubByID(_id);
+		LOGGER.info((this.selectedclub == null ? "setClub found nothing in masterlist!" : "setting to club " + this.selectedclub.getClubname()));
 		return "";
 	}
+	
+	/**
+	 * @return the scaha
+	 */
+	public ScahaBean getScaha() {
+		return scaha;
+	}
 
-	 public long getDate() {
-	    return System.currentTimeMillis();
-	 }
-	 
-	 public String refreshBean() {
-		 
-		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-		
-		try {
-			LOGGER.info("REFRESH BEAN DIP TIME");
-			ScahaClubList = ClubList.NewClubListFactory(new Profile(0), db);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		db.free();
-		return "done";
-		 
-	 }
+	/**
+	 * @param scaha the scaha to set
+	 */
+	public void setScaha(ScahaBean scaha) {
+		this.scaha = scaha;
+	}
 }

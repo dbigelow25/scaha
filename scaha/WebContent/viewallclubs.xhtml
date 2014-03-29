@@ -23,7 +23,7 @@
   	
     <pe:masterDetailLevel level="1" levelLabel="SCAHA Clubs">  
 
-  		<p:dataTable id="listofclubs" var="club" value="#{clubBean.getScahaClubList()}" >
+  		<p:dataTable id="listofclubs" var="club" value="#{scahaBean.getScahaClubList()}" >
 			<p:subTable var="peep" value="#{club.getCal()}" tableStyle="width:auto">
 	            <f:facet name="header">
 	            	<div style="float:left;vertical-align:middle;width:75px;font-size: 12px;">
@@ -67,13 +67,13 @@
    		</p:dataTable>
 	</pe:masterDetailLevel>
 	<pe:masterDetailLevel level="2" contextVar="club" levelLabel="#{club.getClubname()} ">
-		#{clubBean.setClub(club)}
+		#{clubBean.setClub(club.getClubID())}
 		<table>
 		<tr>
 		<td valign="top">
 		<p:graphicImage id="logoimage" value="#{clubBean.getClubLogo()}" cache="false">
-		 <f:param id = "target1" name="target" value="#{club.getClubID()}" />
-		 </p:graphicImage> 
+ 			<f:param name="aaa" value="#{scahaBean.getDate()}"/>
+ 		 </p:graphicImage> 
 		<p:fileUpload id="fileUploadLogo" mode="advanced"  fileUploadListener="#{clubBean.handleFileUpload}"   
     		 description="Images" update="logoimage" render="true"/>    
   	          
