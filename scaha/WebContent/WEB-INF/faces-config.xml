@@ -135,6 +135,16 @@
 		<managed-bean-class>com.scaha.beans.CalendarBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>managecalendarBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.managecalendarBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>managecalitemBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.managecalitemBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
 	
 	<validator>
 		<description>This will validate the Username to ensure its unique in the system</description>
