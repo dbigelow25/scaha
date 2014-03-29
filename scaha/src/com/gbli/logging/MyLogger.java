@@ -54,7 +54,7 @@ public class MyLogger {
     m_fileHTML.setFormatter(m_formatterHTML);
     LOGGER.addHandler(m_fileHTML);
     
-    LOGGER.info("Logger set to: " + Level.FINEST);
+    LOGGER.info("Logger set to: " + LOGGER.getLevel());
     
   }
   

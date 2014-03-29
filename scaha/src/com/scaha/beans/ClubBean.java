@@ -33,7 +33,8 @@ public class ClubBean implements Serializable,  MailableObject {
 	
 	@ManagedProperty(value="#{scahaBean}")
     private ScahaBean scaha;
-
+	private int currentLevel = 1;
+	
 	private Club selectedclub = null;
 	
 	//
@@ -188,7 +189,7 @@ public class ClubBean implements Serializable,  MailableObject {
 	public String setClub(int _id) {
 		LOGGER.fine("ClubBean received a Club id of:" + + _id);
 		this.selectedclub = scaha.findClubByID(_id);
-		LOGGER.info((this.selectedclub == null ? "setClub found nothing in masterlist!" : "setting to club " + this.selectedclub.getClubname()));
+		LOGGER.fine((this.selectedclub == null ? "setClub found nothing in masterlist!" : "setting to club " + this.selectedclub.getClubname()));
 		return "";
 	}
 	
@@ -204,5 +205,18 @@ public class ClubBean implements Serializable,  MailableObject {
 	 */
 	public void setScaha(ScahaBean scaha) {
 		this.scaha = scaha;
+	}
+
+	/**
+	 * @return the currentlevel
+	 */
+	public int getCurrentLevel() {
+		return this.currentLevel;
+	}
+	/**
+	 * @param currentlevel the currentlevel to set
+	 */
+	public void setCurrentLevel(int currentlevel) {
+		this.currentLevel = currentlevel;
 	}
 }

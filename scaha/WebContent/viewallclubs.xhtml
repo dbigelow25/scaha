@@ -17,9 +17,9 @@
 
 <div id="news-div">	
 
-	<h:form id="clubsmenu" >
-
-  	<pe:masterDetail id="masterDetail" selectLevelListener="#{selectLevelListener.handleNavigation}"  showAllBreadcrumbItems="true"> 
+	<h:form id="clubsmenu"  >
+ 	<p:growl id="messages" showDetail="true"/> 
+  	<pe:masterDetail id="masterDetail" > 
   	
     <pe:masterDetailLevel level="1" levelLabel="SCAHA Clubs">  
 
@@ -31,12 +31,12 @@
 	            		<f:param id = "target" name="target" value="#{club.getClubID()}" />
 			 		</p:graphicImage> 
 					</div>
-	            	<div style=	"float:left;margin-top:15px;margin-left:10px;vertical-align:middle;width:300px;font-size: 12px;">
-	            	<p:commandLink value="#{club.getClubname()} - (#{club.getCahaNumber()})">  
+	            	<div style=	"float:left;margin-top:15px;margin-left:10px;vertical-align:middle;width:300px;">
+	            	<p:commandLink style="font-size: 12px;" value="#{club.getClubname()} - (#{club.getCahaNumber()})">  
     	                <pe:selectDetailLevel contextValue="#{club}"/>  
    		            </p:commandLink>
    		            </div>
-	            	<div style="float:right;margin-top:15px;margin-left:10px;text-align:right;vertical-align:middle;width:200px;font-size: 12px;">
+	            	<div style="float:right;margin-top:15px;margin-left:10px;text-align:right;vertical-align:middle;width:200px;font-size: 11px;">
 	            	  (<i><h:outputLink value="#{club.getWebSite()}">#{club.getWebSite()}</h:outputLink></i>)
    		       		</div>
         		</f:facet>
@@ -70,41 +70,57 @@
 		#{clubBean.setClub(club.getClubID())}
 		<table>
 		<tr>
-		<td valign="top">
-		<p:graphicImage id="logoimage" value="#{clubBean.getClubLogo()}" cache="false">
+		<td valign="top" >
+		<p:graphicImage id="logoimage" value="#{clubBean.getClubLogo()}" cache="false" width="60px">
  			<f:param name="aaa" value="#{scahaBean.getDate()}"/>
- 		 </p:graphicImage> 
-		<p:fileUpload id="fileUploadLogo" mode="advanced"  fileUploadListener="#{clubBean.handleFileUpload}"   
-    		 description="Images" update="logoimage" render="true"/>    
-  	          
-    	</td>
-        </tr>
-		<tr>
+ 		</p:graphicImage> 
+		</td>
 		<td valign="top">
-		<p:panelGrid id="clublevel" columns="2">  
-            <p:outputLabel value="Club Name:"/>  
-            <h:outputText value="#{club.getClubname()}"/>  
-            <h:outputText value="Web Site:"/>  
-            <h:outputText value="#{club.getWebSite()}"/>  
+		<p:panelGrid id="clublevel" columns="1">  
+           <div class="NewsTitle">#{club.getClubname()}</div> 
+            <div class="NewsDate">
+            	<a href="#{club.getWebSite()}" target="_blank">#{club.getWebSite()}
+           		</a>
+        	</div> 
         </p:panelGrid>
         </td>
-		<td valign="top">
-		<p:panelGrid id="clubpeeps" columns="2">  
-            <p:outputLabel value="President"/>  
-            <h:outputText value="President Name Here"/>  
-            <h:outputText value="Registrar"/>  
-            <h:outputText value="Registrar Name Here"/>  
-            <h:outputText value="Ice Conveiner"/>  
-            <h:outputText value="Ice Convener Here"/>  
-        </p:panelGrid>
-		</td>
         </tr>
         </table>
-        
-               <p:commandButton value="Save with success" process="masterDetail"  
-                         action="#{clubBean.save()}"  
-                         style="margin-top:10px;" icon="ui-icon-disk">  
-	            </p:commandButton>
+        <p:separator />
+		<table>
+		<tr>
+		<td valign="top">
+			<div style="float:right;width=300px">
+			<p:dataTable  var="peep" value="#{clubBean.selectedclub.getCal()}" >
+	            <p:column headerText="Position" style="font-size: 10px;">
+    	             <h:outputText style="font-size: 10px;" value="#{peep.getMyRole().getDesc()}" />
+   	            </p:column >
+	            <p:column headerText="Name" style="font-size: 10px;">
+    	            <h:outputText style="font-size: 10px;" value="#{peep.getsFirstName()} #{peep.getsLastName()}" />
+        	    </p:column>
+	            <p:column headerText="Phone" style="font-size: 10px;">
+    	            <h:outputText style="font-size: 10px;" value="#{peep.getsPhone()}" />
+        	    </p:column>
+	            <p:column headerText="e-mail" style="font-size: 10px;">
+					<h:outputLink value="mailto:#{peep.getsEmail()}">
+    					<f:param name="subject" value="iSCAHA Related" />
+   						 <h:outputText style="font-size: 10px;" value=" #{peep.getsEmail()}" />
+					</h:outputLink>
+        	    </p:column>
+			</p:dataTable>
+			</div>
+		</td>
+		</tr>
+        </table>
+        <p:separator />
+   		<div style="vertical-align:middle;width:650px;height:100px;">
+   			<p:fileUpload id="fileUploadLogo" mode="advanced"  fileUploadListener="#{clubBean.handleFileUpload}" description="Club Logo images" update="logoimage,messages,fileUploadLogo" auto="false" dragDropSupport="true"  />    
+   		</div>
+         <p:commandButton value="Save with success" process="masterDetail"  
+                 action="#{clubBean.save()}"  
+                 style="margin-top:10px;" icon="ui-icon-disk">  
+                 <pe:selectDetailLevel step="-1"/> 
+         </p:commandButton>
 	  </pe:masterDetailLevel>	
 	</pe:masterDetail>
 	</h:form>

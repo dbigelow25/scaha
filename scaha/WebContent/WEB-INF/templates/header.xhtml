@@ -14,8 +14,9 @@
 		<img src="/scaha/images/pages/scaha_logo.png" width="150px" style="float: left; left:10px; top:10px;" />
 	</a>
 	<h:panelGroup>
-			<div style="text-align:right; width:720px; font-weight: normal;font-size: 9pt;font-family: Verdana;">
- 				<img border="0" src="/scaha/images/pages/scaha_banner_logo.png" />
+			<div style="font-family: 'Trebuchet MS', Verdana;color: #555555;text-align:right; width:720px; font-weight: normal;font-size:8pt;">
+ 				<img border="0" src="/scaha/images/pages/scaha_banner_logo.png" /><br/>
+ 				Current Season: #{scahaBean.getScahaSeasonList().getCurrentSeason().getDescription()}
 			</div>
 </h:panelGroup>
 </h:panelGrid>
