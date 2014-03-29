@@ -61,19 +61,12 @@ public class ClubList extends ListDataModel<Club> implements Serializable, Selec
 		//
 
 		for (Club c : data) {
-			LOGGER.info("CALL IS: call scaha.getMultiMedia(" + c.ID + ", 'CLUB', 'LOGO')");
-			_db.getData("call scaha.getMultiMedia(" + c.ID + ", 'CLUB', 'LOGO')");
-			rs = _db.getResultSet();
-			while (rs.next()) {
-				Blob blob = rs.getBlob(4);
-			      // materialize BLOB onto client
-				c.setLogoextension(rs.getString(2));
-				c.setBlogo(blob.getBytes(1, (int) blob.length()));
-				LOGGER.info("blob ext is(" + c.getLogoextension() + ", " + c.getBlogo().length);
-			}
-			rs.close();
+			MultiMedia mm = new MultiMedia(_pro, Club.MM_ENTITYTYPE, c.ID, Club.MM_ATTTYPE);
+			mm.get(_db);
+			c.setLogo(mm);
 			c.setCal(ClubAdminList.NewClubAdminListFactory(_pro, _db, c));
 		}
+		LOGGER.info("Finished all the Club List Loading!!");
 		return new ClubList(data);
 	}
 

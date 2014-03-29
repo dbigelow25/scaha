@@ -15,15 +15,22 @@ public class Club extends ScahaObject implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	
+	//
+	// Multi Media Objects Meta
+	//
+	public static final String MM_ENTITYTYPE = "CLUB";
+	public static final String MM_ATTTYPE = "LOGO";
+	
+	
 	private String Tag = null;
 	private String Sname = null;
 	private String clubname = null;
 	private String CahaNumber = null;
 	private String idclub = null;
 	private String WebSite = null;
-	private byte[] blogo = null;
-	private String logoextension = null;
+	private MultiMedia Logo = null;
 	private ClubAdminList cal = null;
+	
 	/**
 	 * @return the tag
 	 */
@@ -141,32 +148,21 @@ public class Club extends ScahaObject implements Serializable {
 	}
 
 	/**
-	 * @return the blogo
+	 * @return the logo
 	 */
-	public byte[] getBlogo() {
-		return blogo;
+	public MultiMedia getLogo() {
+		return Logo;
 	}
 
 	/**
-	 * @param blogo the blogo to set
+	 * @param logo the logo to set
 	 */
-	public void setBlogo(byte[] blogo) {
-		this.blogo = blogo;
-	}
-
-	/**
-	 * @return the logoextension
-	 */
-	public String getLogoextension() {
-		return logoextension;
-	}
-
-	/**
-	 * @param logoextension the logoextension to set
-	 */
-	public void setLogoextension(String logoextension) {
-		this.logoextension = logoextension;
+	public void setLogo(MultiMedia logo) {
+		Logo = logo;
 	}
 	
+	public int getClubID () {
+		return this.ID;
+	}
 	
 }

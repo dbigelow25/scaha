@@ -323,6 +323,16 @@ public class Database {
 		return m_cstmt = m_con.prepareCall(_sql);
 		
 	}
+
+
+	public PreparedStatement prepareStatement(String _sql) throws SQLException {
+		
+		
+		return this.m_pstmt = m_con.prepareStatement(_sql);
+		
+	}
+
+	
 	public void updateCallable(String _sSQL, Vector _vParms, Vector<String> _vDirection) throws SQLException {
 
 		//

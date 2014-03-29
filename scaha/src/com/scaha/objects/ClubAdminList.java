@@ -44,8 +44,8 @@ public class ClubAdminList extends ListDataModel<ClubAdmin> implements Serializa
 				ClubAdmin ca = new ClubAdmin(rs.getInt(i++), _pro, _cl, rl);
 				ca.setsFirstName(rs.getString(i++));
 				ca.setsLastName(rs.getString(i++));
-				ca.setsPhone(rs.getString(i++));
 				ca.setsEmail(rs.getString(i++));
+				ca.setsPhone(rs.getString(i++));
 				data.add(ca);
 			}
 			rs.close();
