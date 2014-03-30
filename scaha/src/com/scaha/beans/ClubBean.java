@@ -250,7 +250,7 @@ public class ClubBean implements Serializable,  MailableObject {
 
 		if (selectedclub == null) return null;
 		
-		if (selectedclub.getTeams() != null) return selectedclub.getTeams();
+		if (selectedclub.getTeams() != null) return selectedclub.getScahaTeams();
 
 		// lets refresh the team base
 		GeneralSeason scahags = scaha.getScahaSeasonList().getCurrentSeason();
@@ -258,7 +258,7 @@ public class ClubBean implements Serializable,  MailableObject {
 		
 		try {
 			selectedTeamList = TeamList.NewTeamListFactory(pb.getProfile(), db, this.selectedclub, scahags, true, false);
-			selectedclub.setTeams(selectedTeamList);
+			selectedclub.setScahaTeams(selectedTeamList);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
