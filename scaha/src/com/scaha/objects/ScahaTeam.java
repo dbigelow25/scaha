@@ -48,20 +48,16 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 	}
 
 	public ScahaCoach getHeadCoach() {
-		LOGGER.info("Looking for Head Coach for Team:" + this.getTeamName());
 		if (this.Coachs == null) return null;
 		for (ScahaCoach hc : Coachs) {
-			LOGGER.info("\tLooking at coach:" + hc.getsLastName() + ":" + hc.getGenatt().get("ROSTERTYPE"));
 			if (hc.getGenatt().get("ROSTERTYPE").equals("Head Coach")) return hc;
 		}
 		return  null;
 	}
 	
 	public ScahaManager getManager() {
-		LOGGER.info("Looking for Manager for Team:" + this.getTeamName());
 		if (this.Managers == null) return null;
 		for (ScahaManager hc : Managers) {
-			LOGGER.info("\tLooking at Manager:" + hc.getsLastName() + ":" + hc.getGenatt().get("ROSTERTYPE"));
 			if (hc.getGenatt().get("ROSTERTYPE").equals("Manager")) return hc;
 		}
 		return  null;

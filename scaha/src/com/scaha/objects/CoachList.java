@@ -71,8 +71,6 @@ public class CoachList extends ListDataModel<ScahaCoach> implements Serializable
 		
 		//
 		// now lets get the second level stuff..
-		//
-		LOGGER.info("Finished all the Coach List Loading!!");
 		return new CoachList(data);
 	}
 
