@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import com.gbli.common.GeneralAttributes;
 import com.gbli.context.ContextManager;
 
 public abstract class ScahaObject implements Serializable {
@@ -24,12 +25,13 @@ public abstract class ScahaObject implements Serializable {
 	public int ID = -1;
 	
 	
+	
 	//
 	// Scaha Object have Inherent Collections..
 	//
 	Vector<ScahaObject> vct = new Vector<ScahaObject>();
 	Hashtable<String,ScahaObject> hsh = new Hashtable<String, ScahaObject>();
-	
+	private GeneralAttributes genatt = new GeneralAttributes();
 
 	public ScahaObject get(int _i, String _strObjClass) {
 		return hsh.get(_i + ":" + _strObjClass);
@@ -83,6 +85,20 @@ public abstract class ScahaObject implements Serializable {
 
 	public Profile getProfile () {
 		return m_pro;
+	}
+
+	/**
+	 * @return the genatt
+	 */
+	public GeneralAttributes getGenatt() {
+		return genatt;
+	}
+
+	/**
+	 * @param genatt the genatt to set
+	 */
+	public void setGenatt(GeneralAttributes genatt) {
+		this.genatt = genatt;
 	}
 	
 }

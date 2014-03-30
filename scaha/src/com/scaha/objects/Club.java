@@ -31,7 +31,11 @@ public class Club extends ScahaObject implements Serializable {
 	private String WebSite = null;
 	private MultiMedia Logo = null;
 	private ClubAdminList cal = null;
+<<<<<<< HEAD
 	private List<Team> teams = null;
+=======
+	private TeamList Teams = null;
+>>>>>>> 5751ee1b55c5d88c2cfbed652ee40e72d8746864
 	
 	/**
 	 * @return the tag
@@ -174,6 +178,20 @@ public class Club extends ScahaObject implements Serializable {
 	
 	public int getClubID () {
 		return this.ID;
+	}
+
+	/**
+	 * @return the teams
+	 */
+	public TeamList getTeams() {
+		return Teams;
+	}
+
+	/**
+	 * @param teams the teams to set
+	 */
+	public void setTeams(TeamList teams) {
+		Teams = teams;
 	}
 	
 }

@@ -25,7 +25,10 @@ import org.primefaces.model.StreamedContent;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Club;
+import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.MailableObject;
+import com.scaha.objects.Profile;
+import com.scaha.objects.TeamList;
 
 @ManagedBean
 @SessionScoped
@@ -33,9 +36,28 @@ public class ClubBean implements Serializable,  MailableObject {
 	
 	@ManagedProperty(value="#{scahaBean}")
     private ScahaBean scaha;
+	
+	@ManagedProperty(value="#{profileBean}")
+	private ProfileBean pb;
+	
+	/**
+	 * @return the pb
+	 */
+	public ProfileBean getPb() {
+		return pb;
+	}
+
+	/**
+	 * @param pb the pb to set
+	 */
+	public void setPb(ProfileBean pb) {
+		this.pb = pb;
+	}
+
 	private int currentLevel = 1;
 	
 	private Club selectedclub = null;
+	private TeamList selectedTeamList = null;
 	
 	//
 	// Class Level Variables
@@ -218,5 +240,35 @@ public class ClubBean implements Serializable,  MailableObject {
 	 */
 	public void setCurrentLevel(int currentlevel) {
 		this.currentLevel = currentlevel;
+	}
+	
+	/**
+ 	* This gets the current list of teams given the season setting in the ScahaBean Application Session 
+ 	* 
+	*/
+	public TeamList getTeams() {
+
+		if (selectedclub == null) return null;
+		
+		if (selectedclub.getTeams() != null) return selectedclub.getTeams();
+
+		// lets refresh the team base
+		GeneralSeason scahags = scaha.getScahaSeasonList().getCurrentSeason();
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try {
+			selectedTeamList = TeamList.NewTeamListFactory(pb.getProfile(), db, this.selectedclub, scahags, true, false);
+			selectedclub.setTeams(selectedTeamList);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.free();
+		//
+		// we are not going to stitch it to the Club just yet.. its a question of needing to at the moment.
+		// do we want to get all teams in memory over time as people look?
+		//
+		// no.. 
+		return selectedTeamList;
 	}
 }
