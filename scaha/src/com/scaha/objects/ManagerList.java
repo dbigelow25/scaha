@@ -72,7 +72,7 @@ public class ManagerList extends ListDataModel<ScahaManager> implements Serializ
 		//
 		// now lets get the second level stuff..
 		//
-		LOGGER.info("Finished all the Coach List Loading!!");
+//		LOGGER.info("Finished all the Coach List Loading!!");
 		return new ManagerList(data);
 	}
 

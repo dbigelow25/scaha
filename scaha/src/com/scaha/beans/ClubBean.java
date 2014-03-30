@@ -209,9 +209,9 @@ public class ClubBean implements Serializable,  MailableObject {
 	 * @return
 	 */
 	public String setClub(int _id) {
-		LOGGER.fine("ClubBean received a Club id of:" + + _id);
+		LOGGER.info("ClubBean received a Club id of:" + + _id);
 		this.selectedclub = scaha.findClubByID(_id);
-		LOGGER.fine((this.selectedclub == null ? "setClub found nothing in masterlist!" : "setting to club " + this.selectedclub.getClubname()));
+		LOGGER.info((this.selectedclub == null ? "setClub found nothing in masterlist!" : "setting to club " + this.selectedclub.getClubname()));
 		return "";
 	}
 	
@@ -247,10 +247,15 @@ public class ClubBean implements Serializable,  MailableObject {
  	* 
 	*/
 	public TeamList getTeams() {
-
-		if (selectedclub == null) return null;
 		
-		if (selectedclub.getTeams() != null) return selectedclub.getTeams();
+		if (selectedclub == null) {
+			LOGGER.info("SELECTED CLUB IS NULL!!!");
+			return null;
+		}
+		
+		if (selectedclub.getScahaTeams() != null) return selectedclub.getScahaTeams();
+
+		LOGGER.info("The Selected Club Has no Teams Set!:" + selectedclub.getClubname());
 
 		// lets refresh the team base
 		GeneralSeason scahags = scaha.getScahaSeasonList().getCurrentSeason();
@@ -258,7 +263,7 @@ public class ClubBean implements Serializable,  MailableObject {
 		
 		try {
 			selectedTeamList = TeamList.NewTeamListFactory(pb.getProfile(), db, this.selectedclub, scahags, true, false);
-			selectedclub.setTeams(selectedTeamList);
+			selectedclub.setScahaTeams(selectedTeamList);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -31,7 +31,8 @@ public class Club extends ScahaObject implements Serializable {
 	private String WebSite = null;
 	private MultiMedia Logo = null;
 	private ClubAdminList cal = null;
-	private List<Team> teams = null;
+	private List<Team> teams = null; // This is from LOI side
+	private TeamList Teams = null;
 	
 	/**
 	 * @return the tag
@@ -179,14 +180,15 @@ public class Club extends ScahaObject implements Serializable {
 	/**
 	 * @return the teams
 	 */
-	public TeamList getTeams() {
+	public TeamList getScahaTeams() {
 		return Teams;
 	}
 
 	/**
 	 * @param teams the teams to set
 	 */
-	public void setTeams(TeamList teams) {
+	public void setScahaTeams(TeamList teams) {
+		LOGGER.info("Setting Team List for Club:" + this.getClubname());
 		Teams = teams;
 	}
 	
