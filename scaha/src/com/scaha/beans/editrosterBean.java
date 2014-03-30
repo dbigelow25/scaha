@@ -162,7 +162,7 @@ public class editrosterBean implements Serializable {
 		
 		FacesContext context = FacesContext.getCurrentInstance();
 		try{
-			context.getExternalContext().redirect("editrosterdetail.xhtml?playerid=" + idplayer);
+			context.getExternalContext().redirect("editrosterdetail.xhtml?playerid=" + idplayer + "&teamid=" + this.teamid);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

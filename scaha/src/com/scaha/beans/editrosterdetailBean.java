@@ -32,11 +32,14 @@ public class editrosterdetailBean implements Serializable {
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	transient private ResultSet rs = null;
 	private Integer rosterid = null;
+	private String teamid = null;
 	private String playername = null;
 	private String eligibility = null;
 	private String dropdate = null;
 	private String selectedrelation = null;
 	private String active = null;
+	private String closeurl = null;
+	
 	
     public editrosterdetailBean() {  
     	//will need to load player profile information for displaying loi
@@ -45,9 +48,30 @@ public class editrosterdetailBean implements Serializable {
         {
     		this.rosterid = Integer.parseInt(hsr.getParameter("playerid").toString());
         }
-    	
+    	if(hsr.getParameter("teamid") != null)
+        {
+    		this.teamid = hsr.getParameter("teamid").toString();
+        }
     	getRosterDetail();
+    	this.closeurl = "editroster.xhtml?teamid=" + this.teamid;
     }  
+    
+    public String getCloseurl(){
+    	return closeurl;
+    }
+    
+    public void setCloseurl(String date){
+    	closeurl=date;
+    }
+    
+    
+    public String getTeamid(){
+    	return teamid;
+    }
+    
+    public void setTeamid(String date){
+    	teamid=date;
+    }
     
     public String getActive(){
     	return active;
@@ -142,7 +166,7 @@ public class editrosterdetailBean implements Serializable {
     		//first get team name
     		CallableStatement cs = db.prepareCall("CALL scaha.updateRosterDetail(?)");
 			cs.setInt("rosterid", this.rosterid);
-			cs.setString("eligible", this.eligibility);
+			cs.setString("in_eligible", this.eligibility);
 			if (this.dropdate.equals("")){
 				cs.setString("dropped", "12/31/2099");
 			} else {
@@ -152,21 +176,16 @@ public class editrosterdetailBean implements Serializable {
 			cs.setString("rostertype", this.selectedrelation);
 			
 		    rs = cs.executeQuery();
-			
-			if (rs != null){
-				
-				while (rs.next()) {
-					this.eligibility = rs.getString("eligibility");
-					this.selectedrelation = rs.getString("rostertype");
-					this.active = rs.getString("active");
-					this.dropdate = rs.getString("dropped");
-					this.playername = rs.getString("playername");
-				}
-				LOGGER.info("We have results for roster detail");
-			}
+			db.commit();
 			db.cleanup();
     		
-    		
+			FacesContext context = FacesContext.getCurrentInstance();
+			try{
+				context.getExternalContext().redirect("editrosterdetail.xhtml?playerid=" + idplayer);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN loading teams");
