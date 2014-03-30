@@ -32,7 +32,6 @@ public class Club extends ScahaObject implements Serializable {
 	private MultiMedia Logo = null;
 	private ClubAdminList cal = null;
 	private List<Team> teams = null;
-	private TeamList Teams = null;
 	
 	/**
 	 * @return the tag
