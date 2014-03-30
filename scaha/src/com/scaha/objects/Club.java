@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -30,6 +31,7 @@ public class Club extends ScahaObject implements Serializable {
 	private String WebSite = null;
 	private MultiMedia Logo = null;
 	private ClubAdminList cal = null;
+	private List<Team> teams = null;
 	
 	/**
 	 * @return the tag
@@ -73,6 +75,14 @@ public class Club extends ScahaObject implements Serializable {
 		
 	}
 	
+	
+	public List<Team> getTeams(){
+		return teams;
+	}
+	
+	public void setTeams(List<Team> list){
+		teams = list;
+	}
 	
 	public String getClubname(){
 		return clubname;

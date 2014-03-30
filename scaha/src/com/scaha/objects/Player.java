@@ -32,10 +32,69 @@ public class Player extends ScahaObject implements Serializable {
 	private String loidate = null;
 	private String playerup = null;
 	private String citizenshiplabel = null;
+	private String eligibility = null;
+	private String drop = null;
+	private String added = null;
+	private String active = null;
+	private String updated = null;
+	private String jerseynumber = null;
 	
 	public Player (){ 
 		
 	}
+	
+	public String getJerseynumber(){
+    	return jerseynumber;
+    }
+    
+    public void setJerseynumber(String fname){
+    	jerseynumber=fname;
+    } 
+	
+	
+	public String getUpdated(){
+    	return updated;
+    }
+    
+    public void setUpdated(String fname){
+    	updated=fname;
+    } 
+	
+	public String getActive(){
+    	return active;
+    }
+    
+    public void setActive(String fname){
+    	active=fname;
+    } 
+	
+	
+	public String getAdded(){
+    	return added;
+    }
+    
+    public void setAdded(String fname){
+    	added=fname;
+    } 
+	
+	
+	public String getDrop(){
+    	return drop;
+    }
+    
+    public void setDrop(String fname){
+    	drop=fname;
+    } 
+	
+	
+	public String getEligibility(){
+    	return eligibility;
+    }
+    
+    public void setEligibility(String fname){
+    	eligibility=fname;
+    } 
+	
 	
 	public String getFirstname(){
     	return firstname;

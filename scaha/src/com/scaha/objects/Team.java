@@ -20,14 +20,40 @@ public class Team extends ScahaObject implements Serializable {
 	private String IDteam = null;
 	private String skillname = null;
 	private String division_name = null;
+	private String activeplayercount = null;
+	private String totalplayercount = null;
+	private String totalcoachescount = null;
 	
 	public Team (String sName, String teamid){ 
-		
 		TeamName = sName;
 		IDteam = teamid;
-		
-	
 	}
+	
+	public String getTotalcoachescount(){
+		return totalcoachescount;
+	}
+	
+	public void setTotalcoachescount(String sName){
+		totalcoachescount = sName;
+	}
+	
+	
+	public String getTotalplayercount(){
+		return totalplayercount;
+	}
+	
+	public void setTotalplayercount(String sName){
+		totalplayercount = sName;
+	}
+	
+	public String getActiveplayercount(){
+		return activeplayercount;
+	}
+	
+	public void setActiveplayercount(String sName){
+		activeplayercount = sName;
+	}
+	
 	
 	public String getSkillname(){
 		return skillname;
@@ -36,6 +62,8 @@ public class Team extends ScahaObject implements Serializable {
 	public void setSkillname(String sName){
 		skillname = sName;
 	}
+	
+	
 	
 	public String getDivisionname(){
 		return division_name;
