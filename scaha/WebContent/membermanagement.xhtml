@@ -54,19 +54,28 @@
  	
  		<p:messages id = "existmem"  showDetail="true"/>
  		
-   	
+   		<div class="NewsTitle">What You Need To Do:</div>
    		<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">  
-    	      <h:outputText style="font-size: 12px;" value="The following information is all the family members registered under your account.
-    	                                          You can add more people to your account, but they have to FIRST be registered as a USA Hockey member."/>  
+    	   <div>The following members tree up under your account.  The only way to add more members is through first registering them through 
+    	   <a target="_Window" href="https://www.usahockeyregistration.com/register_form_input.action">USA Hockey Registration.</a><p/>
+    	   Please fill in all the information accurately on their site.  Our site re-uses all the address and contact information. 
+    	   
+    	   </div>  
    		</p:fieldset>  
 
 	  	<p:spacer width="10" height="35" />
-    
-    	<h:outputText value="#{profileBean.getProfile().getPerson().getFam().getFamilyName()}"/>
+  	
+  		<p:fieldset id="fs3" toggleable="false" toggleSpeed="500">  	      
+	    	<p:commandButton value="Get USAH Info" update="view-members,add-member" id="show-add-members" ajax="false"  
+           actionListener="#{profileBean.setAddMembers()}"/>
+        </p:fieldset>
+        
+	    <p:spacer width="10" height="10" />
+
+    	<div class="NewsTitle">#{profileBean.getProfile().getPerson().getFam().getFamilyName()} </div>
 
  	 	<p:spacer width="10" height="35" />
     
-  		<!--  Here we need to implement at table model  oncomplete="PF('carDialog').show() " rowKey="#{familymember.getFamilyMemberID()}"-->
   		<p:fieldset id="fs2" toggleable="false" toggleSpeed="500">  	      
 			<p:dataTable id="familymembers" var="familymember" value="#{profileBean.getFamilyMembers()}" selection="#{familymemberBean.selectedFamilyMember}" selectionMode = "single">  
 			    <p:ajax event="rowSelect" listener="#{familymemberBean.onFamilyMemberRowSelect}" update=":mp-form:existmem"  />  
@@ -79,13 +88,7 @@
    	    		<p:column headerText="#{profileBean.getCurrentSCAHAHockeySeason()}"><p:outputLabel style="font-family:monospace;!important" value="#{familymember.getScahaHockeyNumber()}" /></p:column>  
  			</p:dataTable> 
     	</p:fieldset>
-    			
-		<p:spacer width="10" height="10" />
-  	
-  		<p:fieldset id="fs3" toggleable="false" toggleSpeed="500">  	      
-	    	<p:commandButton value="Add A New Member" update="view-members,add-member" id="show-add-members" ajax="false"  
-           actionListener="#{profileBean.setAddMembers()}"/>
-        </p:fieldset>
+    	
     </h:panelGroup>
     
 	<ui:fragment id="add-member" rendered="#{profileBean.isAddMember()}">

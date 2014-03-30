@@ -9,7 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import com.gbli.connectors.ScahaDatabase;
@@ -21,7 +26,8 @@ import com.scaha.objects.Team;
 
 //import com.gbli.common.SendMailSSL;
 
-
+@ManagedBean
+@ViewScoped
 public class managerosterBean implements Serializable {
 
 	// Class Level Variables
@@ -32,6 +38,13 @@ public class managerosterBean implements Serializable {
 	private List<Club> clubs = null;
 	private Team selectedteam = null;
 	
+	
+	@PostConstruct
+    public void init() {
+        // In @PostConstruct (will be invoked immediately after construction and dependency/property injection).
+		clubs = genListofClubs();
+    }
+
 	
     public managerosterBean() {  
         
@@ -45,16 +58,16 @@ public class managerosterBean implements Serializable {
 		selectedteam = steam;
 	}
     
-    
-    public List<Club> getListofClubs(){
-		List<Club> templist = new ArrayList<Club>();
-		
+    public List<Club> genListofClubs(){
+
+    	List<Club> templist = new ArrayList<Club>();
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-    	
     	try{
 
 			CallableStatement cs = db.prepareCall("CALL scaha.getClubs()");
-		    rs = cs.executeQuery();
+			CallableStatement csinner = db.prepareCall("CALL scaha.getTeamCountsbyClubId(?)");
+
+		    ResultSet rs = cs.executeQuery();
 			
 			if (rs != null){
 				//need to add to an array
@@ -63,22 +76,27 @@ public class managerosterBean implements Serializable {
 				while (rs.next()) {
 					String idclub = rs.getString("idclubs");
 					String clubname = rs.getString("clubname");
-					
+					LOGGER.info("manage Rosters working on Club:" + clubname);
 					Club club = new Club();
 					club.setClubid(idclub);
 					club.setClubname(clubname);
-	
+					templist.add(club);
+				}
+
+				rs.close();
+				
+				for (Club c : templist) {
+					
 					//need to get list of teams for the club
-					cs = db.prepareCall("CALL scaha.getTeamCountsbyClubId(?)");
-	    		    cs.setInt("pclubid", Integer.parseInt(idclub));
-	    		    rssub = cs.executeQuery();
-	    		    List<Team> tempteamlist = new ArrayList<Team>();
-	    		    
-	    			if (rssub != null){
-	    				
-	    				while (rssub.next()) {
+					csinner.setInt("pclubid", Integer.parseInt(c.getClubid()));
+					rssub = csinner.executeQuery();
+					if (rssub != null){
+						List<Team> tempteamlist = new ArrayList<Team>();
+						while (rssub.next()) {
 	    					String idteam = rssub.getString("idteams");
 	        				String teamname = rssub.getString("teamname");
+	    					LOGGER.info("manage Rosters working on Team:" + teamname);
+	
 	        				String activeplayercount = rssub.getString("activeplayercount");
 	        				String totalplayercount = rssub.getString("totalplayercount");
 	        				String totalcoachcount = rssub.getString("totalcoachcount");
@@ -91,13 +109,14 @@ public class managerosterBean implements Serializable {
 	        				team.setTotalcoachescount(totalcoachcount);
 	        				
 	        				tempteamlist.add(team);
-	        			}
-	    			}
-	    			
-	    			club.setTeams(tempteamlist);
-					templist.add(club);
+						}
+						c.setTeams(tempteamlist);
+						rssub.close();
+					}
 				}
 				LOGGER.info("We have results for division list");
+				cs.close();
+				csinner.close();
 			}
 			db.cleanup();
     		
@@ -105,17 +124,16 @@ public class managerosterBean implements Serializable {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN loading teams");
     		e.printStackTrace();
-    		db.rollback();
     	} finally {
     		//
     		// always clean up after yourself..
     		//
     		db.free();
     	}
-		
-    	setClubs(templist);
-		
-		return getClubs();
+		//
+    	// Return it
+    	//
+    	return templist;
 	}
     
     public List<Club> getClubs(){
