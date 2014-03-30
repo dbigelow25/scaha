@@ -7,6 +7,7 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
+import com.gbli.common.GeneralAttributes;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
@@ -34,7 +35,6 @@ public class ScahaCoach extends Person {
 	
 	private Person MyPerson = null;				// ok.. new strat.. this owns the member object
 	private Person TopPerson = null; 	// This represents the Top owner of this object.. Usually the account holder
-
 
 	//
 	// Lets hold the playerID here.. and allow the super to hold the person...

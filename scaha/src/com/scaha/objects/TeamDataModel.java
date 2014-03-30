@@ -9,6 +9,11 @@ import org.primefaces.model.SelectableDataModel;
 
 public class TeamDataModel extends ListDataModel<Team> implements Serializable, SelectableDataModel<Team> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public TeamDataModel() {  
     }  
   
@@ -16,7 +21,8 @@ public class TeamDataModel extends ListDataModel<Team> implements Serializable, 
         super(data);  
     }  
       
-    @Override  
+    @SuppressWarnings("unchecked")
+	@Override  
     public Team getRowData(String rowKey) {  
         //In a real app, a more efficient way like a query by rowKey should be implemented to deal with huge data  
           

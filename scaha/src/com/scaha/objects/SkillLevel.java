@@ -1,13 +1,8 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
-import java.sql.CallableStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Vector;
 import java.util.logging.Logger;
 
-import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
 public class SkillLevel extends ScahaObject implements Serializable {
@@ -18,9 +13,15 @@ public class SkillLevel extends ScahaObject implements Serializable {
 	
 	private String SkillLevelName = null;
 	private Integer IDskilllevel = null;
+	private String Tag = null;
 	
 	public SkillLevel (){ 
 		
+	}
+	
+	public SkillLevel (Profile _pro, int _id) {
+		ID = _id;
+		setProfile(_pro);
 	}
 	
 	public String getSkilllevelname(){
@@ -37,6 +38,20 @@ public class SkillLevel extends ScahaObject implements Serializable {
 	
 	public void setIdskilllevel(Integer sid){
 		IDskilllevel = sid;
+	}
+
+	/**
+	 * @return the tag
+	 */
+	public String getTag() {
+		return Tag;
+	}
+
+	/**
+	 * @param tag the tag to set
+	 */
+	public void setTag(String tag) {
+		Tag = tag;
 	}
 	
 	

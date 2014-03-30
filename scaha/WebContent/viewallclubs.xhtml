@@ -113,7 +113,7 @@
         <tr>
         <td colspan="2">
            <p:panelGrid id="venues" columns="1">  
-           <div class="NewsTitle"><u>Rink Venues:</u></div> 
+           <div class="NewsTitle">Rink Venues:</div> 
             <div class="NewsDate">
             	Anaheim Ice / 300 W. Lincoln St, Anaehim CA, 92808<br/>
             	(714)692-8776 / www.anaheimice.com
@@ -134,30 +134,34 @@
         </tr>
         </table>
         <div style="width:100%;text-align:right;">
-         <p:commandButton value="Go to Clubs" icon="ui-icon-arrowthickstop-1-w">  
+         <p:commandButton value="Back to Clubs" icon="ui-icon-arrowthickstop-1-w">  
                 <pe:selectDetailLevel level="1"/>  
          </p:commandButton>  
          </div>
         <p:separator />
-		<div class="NewsTitle">Teams for the #{scahaBean.getScahaSeasonList().getCurrentSeason().getDescription()}:</div> 
+		<div class="NewsTitle">Teams for the #{scahaBean.getScahaSeasonList().getCurrentSeason().getDescription()}: (Pulling Last Year For Testing)</div> 
 		<p/>
-			<p:dataTable  var="peep" value="#{clubBean.selectedclub.getCal()}" >
-	            <p:column headerText="Position" style="font-size: 10px;">
-    	             <h:outputText style="font-size: 10px;" value="#{peep.getMyRole().getDesc()}" />
-   	            </p:column >
-	            <p:column headerText="Name" style="font-size: 10px;">
-    	            <h:outputText style="font-size: 10px;" value="#{peep.getsFirstName()} #{peep.getsLastName()}" />
-        	    </p:column>
-	            <p:column headerText="Phone" style="font-size: 10px;">
-    	            <h:outputText style="font-size: 10px;" value="#{peep.getsPhone()}" />
-        	    </p:column>
-	            <p:column headerText="e-mail" style="font-size: 10px;">
-					<h:outputLink value="mailto:#{peep.getsEmail()}">
-    					<f:param name="subject" value="iSCAHA Related" />
-   						 <h:outputText style="font-size: 10px;" value=" #{peep.getsEmail()}" />
-					</h:outputLink>
-        	    </p:column>
-			</p:dataTable>
+		<p:dataTable  var="team" value="#{clubBean.getTeams()}" >
+            <p:column headerText="Division" style="font-size: 12px;">
+   	             <h:outputText style="font-size: 11px;" value="#{team.getDivisionTag()} #{team.getSkillLevelTag()}" />
+            </p:column >
+            <p:column headerText="Team Name " style="font-size: 12px;">
+   	             <h:outputText style="font-size: 12px;" value="#{team.getTeamName()}" />
+            </p:column >
+            <p:column headerText="Head Coach" style="font-size: 12px;">
+   	             <h:outputText style="font-size: 12px;" value="#{empty team.getHeadCoach()  ? 'No Head Coach Set' : team.getHeadCoach().getsFirstName()} #{empty team.getHeadCoach() ? '' : team.getHeadCoach().getsLastName()}" />
+            </p:column >
+            <p:column headerText="e-mail" style="font-size: 12px;">
+   	             <h:outputText style="font-size: 11px;" value="#{empty team.getHeadCoach()  ? 'No e-mail found' : team.getHeadCoach().getsEmail()}" />
+            </p:column >
+            <p:column headerText="Manager" style="font-size: 12px;">
+    	         <h:outputText style="font-size: 12px;" value="#{empty team.getManager()  ? 'No Manager Set' : team.getManager().getsFirstName()} #{empty team.getManager() ? '' : team.getManager().getsLastName()}" />
+            </p:column >
+            <p:column headerText="e-mail" style="font-size: 12px;">
+  	             <h:outputText style="font-size: 11px;" value="#{empty team.getManager()  ? 'No e-mail found' : team.getManager().getsEmail()}" />
+             </p:column >
+         
+		</p:dataTable>
         <p:separator />
         <div style="width:100%">
          	<div class="NewsTitle">Edit Club Profile: (you need Admin access to view this section)</div> 

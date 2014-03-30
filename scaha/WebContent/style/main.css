@@ -9,6 +9,14 @@ img { border-style: none; }
    	border: none;
 }
 
+.ui-datatable-odd {
+	background: none repeat scroll 0 0 #F2F5F9;
+}
+
+.ui-subtable-odd {
+    background: none repeat scroll 0 0 #F2F5F9;
+}
+
 #div-body {
   		width: 900px;
    	vertical-align: top;

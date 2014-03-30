@@ -18,11 +18,16 @@ public class Division extends ScahaObject implements Serializable {
 	
 	private String DivisionName = null;
 	private Integer IDdivision = null;
+	private String Tag = null;
 	
 	public Division (){ 
-		
 	}
 	
+	public Division (Profile _pro, int _id) {
+		setProfile(_pro);
+		ID = _id;
+		IDdivision = new Integer(_id);
+	}
 	public String getDivisionname(){
 		return DivisionName;
 	}
@@ -35,8 +40,8 @@ public class Division extends ScahaObject implements Serializable {
 		return IDdivision;
 	}
 	
-	public void setIddivision(Integer steamid){
-		IDdivision = steamid;
+	public void setIddivision(Integer id){
+		IDdivision = id;
 	}
 	
 	
