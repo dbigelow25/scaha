@@ -102,7 +102,7 @@ public class editrosterdetailBean implements Serializable {
     	return eligibility;
     }
     
-    public void setEligiblity(String eligible){
+    public void setEligibility(String eligible){
     	eligibility=eligible;
     }
     
@@ -164,16 +164,16 @@ public class editrosterdetailBean implements Serializable {
     	
     	try{
     		//first get team name
-    		CallableStatement cs = db.prepareCall("CALL scaha.updateRosterDetail(?)");
+    		CallableStatement cs = db.prepareCall("CALL scaha.updateRosterDetail(?,?,?,?,?)");
 			cs.setInt("rosterid", this.rosterid);
-			cs.setString("in_eligible", this.eligibility);
+			cs.setString("seligible", this.eligibility);
 			if (this.dropdate.equals("")){
-				cs.setString("dropped", "12/31/2099");
+				cs.setString("dropdate", "12/31/2099");
 			} else {
-				cs.setString("dropped", this.dropdate);
+				cs.setString("dropdate", this.dropdate);
 			}
 			cs.setInt("active", Integer.parseInt(this.active));
-			cs.setString("rostertype", this.selectedrelation);
+			cs.setString("rstrtype", this.selectedrelation);
 			
 		    rs = cs.executeQuery();
 			db.commit();
@@ -181,7 +181,7 @@ public class editrosterdetailBean implements Serializable {
     		
 			FacesContext context = FacesContext.getCurrentInstance();
 			try{
-				context.getExternalContext().redirect("editrosterdetail.xhtml?playerid=" + idplayer);
+				context.getExternalContext().redirect("editroster.xhtml?teamid=" + teamid);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
