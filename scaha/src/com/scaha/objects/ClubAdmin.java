@@ -3,6 +3,7 @@
  */
 package com.scaha.objects;
 
+import java.io.Serializable;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.logging.Logger;
@@ -18,7 +19,7 @@ import com.gbli.context.ContextManager;
  * @author dbigelow
  *
  */
-public class ClubAdmin extends Person {
+public class ClubAdmin extends Person implements Serializable {
 	
 	
 	// Class Level Variables
