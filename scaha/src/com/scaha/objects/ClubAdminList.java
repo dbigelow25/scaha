@@ -2,6 +2,7 @@ package com.scaha.objects;
 
 import java.io.Serializable;
 import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,7 +14,6 @@ import javax.faces.model.ListDataModel;
 
 import org.primefaces.model.SelectableDataModel;
 
-import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
 public class ClubAdminList extends ListDataModel<ClubAdmin> implements Serializable, SelectableDataModel<ClubAdmin> {
@@ -25,19 +25,18 @@ public class ClubAdminList extends ListDataModel<ClubAdmin> implements Serializa
     }  
 	
 	/**
-	 * This will get all ScahaNews Items and return a newsItemList
+	 * This will get all ScahaNews Items and return a newsItemList. We pass around a prepared statement because it 
+	 * is a signal to the method that we do not know how nested we are.. so lets save resources
 	 * @param _db
 	 * @return
 	 * @throws SQLException 
 	 */
-	public static ClubAdminList NewClubAdminListFactory(Profile _pro, ScahaDatabase _db, Club _cl) throws SQLException {
+	public static ClubAdminList NewClubAdminListFactory(Profile _pro, PreparedStatement ps, Club _cl) throws SQLException {
 		
 			List<ClubAdmin> data = new ArrayList<ClubAdmin>();
-			
-			Vector<Integer> v = new Vector<Integer>();
-			v.add(_cl.ID);
-			_db.getData("CALL scaha.getClubAdminInfo(?)", v);
-			ResultSet rs = _db.getResultSet();
+
+			ps.setInt(1,_cl.ID);
+			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				int i = 1;
 				Role rl = new Role(rs.getInt(i++),rs.getString(i++), rs.getString(i++),false);

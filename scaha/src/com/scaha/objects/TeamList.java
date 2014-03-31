@@ -1,6 +1,7 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -44,6 +45,8 @@ public class TeamList extends ListDataModel<ScahaTeam> implements Serializable, 
 		List<ScahaTeam> data = new ArrayList<ScahaTeam>();
 		//https://www.google.com/maps/@34.160681,-118.3113211,17z
 		
+		PreparedStatement ps = _db.prepareStatement("call scaha.getAllCoachByTeam(?)");
+		PreparedStatement ps2 = _db.prepareStatement("call scaha.getAllManagerByTeam(?)");
 		
 		Vector<Object> v = new Vector<Object>();
 		v.add(new Integer(_cl.ID));
@@ -84,13 +87,15 @@ public class TeamList extends ListDataModel<ScahaTeam> implements Serializable, 
 			// for any team..
 
 			for (ScahaTeam tm : data) {
-				tm.setCoachs(CoachList.NewCoachListFactory(_pro, _db, tm));
-				tm.setManagers(ManagerList.NewManagerListFactory(_pro, _db, tm));
+				tm.setCoachs(CoachList.NewCoachListFactory(_pro, ps, tm));
+				tm.setManagers(ManagerList.NewManagerListFactory(_pro, ps2, tm));
 			}
 
 			
 		}
-		
+
+		ps.close();
+		ps2.close();
 		LOGGER.info("Finished all Team List Loading!!");
 		return new TeamList(data);
 	}

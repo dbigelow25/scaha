@@ -2,6 +2,7 @@ package com.scaha.objects;
 
 import java.io.Serializable;
 import java.sql.Blob;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -42,31 +43,23 @@ public class ManagerList extends ListDataModel<ScahaManager> implements Serializ
 	 * @return
 	 * @throws SQLException 
 	 */
-	public static ManagerList NewManagerListFactory(Profile _pro, ScahaDatabase _db,  ScahaTeam _tm) throws SQLException {
+	public static ManagerList NewManagerListFactory(Profile _pro, PreparedStatement ps,  ScahaTeam _tm) throws SQLException {
 		
 		List<ScahaManager> data = new ArrayList<ScahaManager>();
 		
-		Vector<Integer> v = new Vector<Integer>();
-		v.add(new Integer(_tm.ID));
-		
-		ResultSet rs = null;
-		if (_db.getData("call scaha.getAllManagerByTeam(?)",v)) {
-			//
-			// lets create new News Items.. and Let them rip
-			//
-			rs = _db.getResultSet();
-			while (rs.next()) {
-				int i = 1;
-				ScahaManager sm = new ScahaManager(rs.getInt(i++),_pro);
-				sm.setsFirstName(rs.getString(i++));
-				sm.setsLastName(rs.getString(i++));
-				sm.getGenatt().put("ROSTERTYPE",rs.getString(i++));
-				sm.setsEmail(rs.getString(i++));
-				sm.setsPhone(rs.getString(i++));
-				data.add(sm);
-			}
-			rs.close();
-			}
+		ps.setInt(1, _tm.ID);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			int i = 1;
+			ScahaManager sc = new ScahaManager(rs.getInt(i++),_pro);
+			sc.setsFirstName(rs.getString(i++));
+			sc.setsLastName(rs.getString(i++));
+			sc.getGenatt().put("ROSTERTYPE",rs.getString(i++));
+			sc.setsEmail(rs.getString(i++));
+			sc.setsPhone(rs.getString(i++));
+			data.add(sc);
+		}
+		rs.close();
 		
 		
 		//
