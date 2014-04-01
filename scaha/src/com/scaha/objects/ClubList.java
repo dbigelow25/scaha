@@ -2,6 +2,7 @@ package com.scaha.objects;
 
 import java.io.Serializable;
 import java.sql.Blob;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -35,7 +36,12 @@ public class ClubList extends ListDataModel<Club> implements Serializable, Selec
 	public static ClubList NewClubListFactory(Profile _pro, ScahaDatabase _db) throws SQLException {
 		
 		List<Club> data = new ArrayList<Club>();
-		
+
+		// for the mulimedia call
+		//
+		PreparedStatement ps = _db.prepareStatement("call scaha.getMultiMedia(?,?,?)");
+		PreparedStatement psCa = _db.prepareStatement("call scaha.getClubAdminInfo(?)");
+
 		ResultSet rs = null;
 		if (_db.getData("call scaha.getAllClubs()")) {
 			//
@@ -62,9 +68,9 @@ public class ClubList extends ListDataModel<Club> implements Serializable, Selec
 
 		for (Club c : data) {
 			MultiMedia mm = new MultiMedia(_pro, Club.MM_ENTITYTYPE, c.ID, Club.MM_ATTTYPE);
-			mm.get(_db);
+			mm.get(ps);
 			c.setLogo(mm);
-			c.setCal(ClubAdminList.NewClubAdminListFactory(_pro, _db, c));
+			c.setCal(ClubAdminList.NewClubAdminListFactory(_pro, psCa, c));
 		}
 		LOGGER.info("Finished all the Club List Loading!!");
 		return new ClubList(data);

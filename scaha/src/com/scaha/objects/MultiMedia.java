@@ -153,9 +153,8 @@ public class MultiMedia extends ScahaObject implements Serializable {
 	 * @param _db
 	 * @throws SQLException 
 	 */
-	public void get(ScahaDatabase _db) throws SQLException {
+	public void get(PreparedStatement ps) throws SQLException {
 		
-		PreparedStatement ps = _db.prepareStatement("call scaha.getMultiMedia(?,?,?)");
 		int i=1;
 		ps.setInt(i++, this.EntitytId);
 		ps.setString(i++, this.EntityType);
@@ -168,7 +167,6 @@ public class MultiMedia extends ScahaObject implements Serializable {
 			LOGGER.info("blob ext is(" + this.Extension + "), " + this.getMmObject().length);
 		}
 		rs.close();
-		ps.close();
 		
 	}
 	

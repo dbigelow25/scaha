@@ -2,6 +2,7 @@ package com.scaha.objects;
 
 import java.io.Serializable;
 import java.sql.Blob;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -42,32 +43,23 @@ public class CoachList extends ListDataModel<ScahaCoach> implements Serializable
 	 * @return
 	 * @throws SQLException 
 	 */
-	public static CoachList NewCoachListFactory(Profile _pro, ScahaDatabase _db,  ScahaTeam _tm) throws SQLException {
+	public static CoachList NewCoachListFactory(Profile _pro, PreparedStatement ps,  ScahaTeam _tm) throws SQLException {
 		
 		List<ScahaCoach> data = new ArrayList<ScahaCoach>();
 		
-		Vector<Integer> v = new Vector<Integer>();
-		v.add(new Integer(_tm.ID));
-		
-		ResultSet rs = null;
-		if (_db.getData("call scaha.getAllCoachByTeam(?)",v)) {
-			//
-			// lets create new News Items.. and Let them rip
-			//
-			rs = _db.getResultSet();
-			while (rs.next()) {
-				int i = 1;
-				ScahaCoach sc = new ScahaCoach(rs.getInt(i++),_pro);
-				sc.setsFirstName(rs.getString(i++));
-				sc.setsLastName(rs.getString(i++));
-				sc.getGenatt().put("ROSTERTYPE",rs.getString(i++));
-				sc.setsEmail(rs.getString(i++));
-				sc.setsPhone(rs.getString(i++));
-				data.add(sc);
-			}
-			rs.close();
-			}
-		
+		ps.setInt(1, _tm.ID);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			int i = 1;
+			ScahaCoach sc = new ScahaCoach(rs.getInt(i++),_pro);
+			sc.setsFirstName(rs.getString(i++));
+			sc.setsLastName(rs.getString(i++));
+			sc.getGenatt().put("ROSTERTYPE",rs.getString(i++));
+			sc.setsEmail(rs.getString(i++));
+			sc.setsPhone(rs.getString(i++));
+			data.add(sc);
+		}
+		rs.close();
 		
 		//
 		// now lets get the second level stuff..
