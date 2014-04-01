@@ -374,24 +374,23 @@ public class DraftPlayersBean implements Serializable {
     	
     	try{
 
-    		Vector<Integer> v = new Vector<Integer>();
-			v.add(Integer.parseInt(selectedPlayerid));
-			db.getData("CALL scaha.addToDelinquency(?)", v);
-		    
+    		CallableStatement cs = db.prepareCall("CALL scaha.addToDelinquency(?)");
+			cs.setInt("iplayerid",Integer.parseInt(selectedPlayerid));
+		    cs.executeQuery();
 			db.commit();		
     		db.cleanup();
-
+    		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"", selectedPlayername + "has been added to the Delinquency List"));
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN Searching FOR " + this.searchcriteria);
     		e.printStackTrace();
-    		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"", "Unable to add " + selectedPlayername + "to the Delinquency List.  The player is not a team"));
+    		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"", "Unable to add " + selectedPlayername + "to the Delinquency List.  The player is not rostered on a team"));
     	} finally {
     		//
     		// always clean up after yourself..
     		//
     		db.free();
-    		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"", selectedPlayername + "has been added to the Delinquency List"));
+    		
     	}
 		
 		
