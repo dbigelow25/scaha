@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
@@ -36,10 +37,9 @@ public class editrosterBean implements Serializable {
 	private Integer teamid = null;
 	private String teamname = null;
 	
-	
-    public editrosterBean() {  
-    	    	
-		//will need to load player profile information for displaying loi
+	@PostConstruct
+    public void init() {
+        // In @PostConstruct (will be invoked immediately after construction and dependency/property injection).
 		HttpServletRequest hsr = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
     	
     	if(hsr.getParameter("teamid") != null)
@@ -49,7 +49,11 @@ public class editrosterBean implements Serializable {
     	
     	getRoster();
 
-    	
+    }
+	
+    public editrosterBean() {  
+    	    	
+		
     }  
     
     public String getTeamname(){
