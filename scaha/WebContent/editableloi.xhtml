@@ -1,6 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<f:metadata>
+<f:event type="preRenderView" listener="#{profileBean.verifyUserLogin()}" />
+</f:metadata>
+
 <ui:composition template="/WEB-INF/templates/layout.xhtml"
 	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:f="http://java.sun.com/jsf/core"
@@ -10,7 +21,7 @@
 	
 	<ui:define name="content">
 		<div id="page-div">
-		<h:form>
+		<h:form id="form">
 		<ui:fragment id="edit-loi">
 			<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">
 				<p:panel id ="panel" header="SCAHA LETTER OF INTENT AND MEMBERSHIP REGISTRATION 2014-2015">
@@ -28,6 +39,7 @@
 								<p:selectOneMenu value="#{loiBean.selectedteam}">
 							    	<f:selectItem itemLabel="Select One" itemValue="0"/>
 							    	<f:selectItems value="#{loiBean.getListofTeams('M')}" var="team" itemLabel="#{team.getTeamname()}" itemValue="#{team.getIdteam()}"/>
+							    	<p:ajax process="@this" listener="#{loiBean.checkDOB()}" event="change" update=":form"  />
 							    </p:selectOneMenu>
 							</td>
 						</tr>
@@ -92,7 +104,7 @@
 				</p:panel>
 			</p:fieldset>
 			<p:spacer width="10" height="10" />
-			<p:fieldset id="fs3" toggleable="false" toggleSpeed="500">
+			<p:fieldset id="fs3" toggleable="false" toggleSpeed="500" rendered="#{loiBean.displayplayerup}">
 				<p:panel id ="panel4" header="Out of Age Division Consent - Acknowledgement and Release (Player Up)">	
 					<h:panelGrid columns="1" cellpadding="5" cellspacing="0" border="0" style="width:100%">
 						<h:column >
@@ -157,3 +169,4 @@
 		</div>
 	</ui:define>
 </ui:composition>
+</html>

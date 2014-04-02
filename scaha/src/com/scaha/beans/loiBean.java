@@ -67,6 +67,7 @@ public class loiBean implements Serializable, MailableObject {
 	private String textbody = null;
 	private Integer parentid = 0;
 	private Boolean bplayerup = null;
+	private Boolean displayplayerup = null;
 	
 	public loiBean() {  
         
@@ -90,10 +91,19 @@ public class loiBean implements Serializable, MailableObject {
         }
     	
     	loadPlayerProfile(selectedplayer);
-
+    	setDisplayplayerup(false);
     	//doing anything else right here
     }  
     
+	public Boolean getDisplayplayerup(){
+		return displayplayerup;
+	}
+	
+	public void setDisplayplayerup(Boolean bplay){
+		displayplayerup=bplay;
+	}
+
+	
 	public Boolean getBplayerup(){
 		return bplayerup;
 	}
@@ -452,6 +462,7 @@ public class loiBean implements Serializable, MailableObject {
         		    	} else {
         		    		displaygender = "Male";
         		    	}
+        				
         			}
     				LOGGER.info("We have results for player details by player id");
     			}
@@ -891,6 +902,12 @@ public class loiBean implements Serializable, MailableObject {
 				
 				while (rs.next()) {
 					teamname = rs.getString("teamname");
+					Integer playerup = rs.getInt("isplayerup");
+					if (playerup.equals(0)){
+						this.setDisplayplayerup(false);
+					}else {
+						this.setDisplayplayerup(true);
+					}
 				}
 				LOGGER.info("We have results for Team name for a person");
 			}
@@ -951,5 +968,53 @@ public class loiBean implements Serializable, MailableObject {
 		
 		return teamname;
 	}
+	
+	public void checkDOB(){
+
+		//perform logic to check if team selected is for player up
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
+			LOGGER.info("verify if user needs to enter player up code");
+			CallableStatement cs = db.prepareCall("CALL scaha.IsPlayerUpNeeded(?,?)");
+			String year = this.dob.substring(0,4);
+			cs.setInt("birthyear",Integer.parseInt(year));
+			cs.setInt("selectedteam", Integer.parseInt(this.selectedteam));
+		    rs = cs.executeQuery();
+			Integer resultcount = 0;
+		    
+		    if (rs != null){
+				
+				while (rs.next()) {
+					resultcount = rs.getInt("divisioncount");
+				}
+				LOGGER.info("We have validation whether player needs player up code or not");
+			}
+			db.cleanup();
+			
+			if (resultcount.equals(0)){
+				this.setDisplayplayerup(true);
+			} else {
+				this.setDisplayplayerup(false);
+			}
+			
+		} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN loading club by profile");
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+		
+		//next lets check if the team selected is too young for the players dob
+		
+	}
+		
+		
+	
 }
 

@@ -1,5 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<f:metadata>
+<f:event type="preRenderView" listener="#{profileBean.verifyUserLogin()}" />
+</f:metadata>
 
 <ui:composition template="/WEB-INF/templates/layout.xhtml"
 	xmlns="http://www.w3.org/1999/xhtml"
@@ -76,7 +86,7 @@
 				</p:dataTable>
 			</p:fieldset> 
 			<p:spacer width="10" height="10" /> 
-			<p:fieldset id="fs2" toggleable="false" toggleSpeed="500">
+			<p:fieldset id="fs2" toggleable="false" toggleSpeed="500" rendered="#{loiBean.displayplayerup}">
 			<p:panel id ="panel4" header="Out of Age Division Consent - Acknowledgement and Release (Player Up)">	
 				<h:panelGrid columns="1" cellpadding="5" cellspacing="0" border="0" style="width:100%">
 					<h:column >
@@ -91,7 +101,7 @@
 				    </h:column>
 		    	</h:panelGrid>
 		    	<h:panelGrid columns="4" cellpadding="5" cellspacing="0" border="0" style="width:100%">
-					<h:column >Parent/Guardian Signature (enter registration code):</h:column>
+					<h:column >Parent/Guardian Signature:</h:column>
 					<h:column >******</h:column>
 					<h:column >Date:</h:column>
 					<h:column ><h:column ><h:outputText value="#{loiBean.currentdate}"/></h:column></h:column>
@@ -116,7 +126,7 @@
 					</h:column>
 		    	</h:panelGrid>
 		    	<h:panelGrid columns="4" cellpadding="5" cellspacing="0" border="0" style="width:100%">
-					<h:column >Parent/Guardian Signature (enter registration code):</h:column>
+					<h:column >Parent/Guardian Signature:</h:column>
 					<h:column >*****</h:column>
 					<h:column >Date:</h:column>
 					<h:column ><h:column ><h:outputText value="#{loiBean.currentdate}"/></h:column></h:column>
@@ -129,3 +139,4 @@
 		</div>
 	</ui:define>
 </ui:composition>
+</html>
