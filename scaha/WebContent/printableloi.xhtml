@@ -86,7 +86,7 @@
 				</p:dataTable>
 			</p:fieldset> 
 			<p:spacer width="10" height="10" /> 
-			<p:fieldset id="fs2" toggleable="false" toggleSpeed="500">
+			<p:fieldset id="fs2" toggleable="false" toggleSpeed="500" rendered="#{loiBean.displayplayerup}">
 			<p:panel id ="panel4" header="Out of Age Division Consent - Acknowledgement and Release (Player Up)">	
 				<h:panelGrid columns="1" cellpadding="5" cellspacing="0" border="0" style="width:100%">
 					<h:column >
@@ -101,7 +101,7 @@
 				    </h:column>
 		    	</h:panelGrid>
 		    	<h:panelGrid columns="4" cellpadding="5" cellspacing="0" border="0" style="width:100%">
-					<h:column >Parent/Guardian Signature (enter registration code):</h:column>
+					<h:column >Parent/Guardian Signature:</h:column>
 					<h:column >******</h:column>
 					<h:column >Date:</h:column>
 					<h:column ><h:column ><h:outputText value="#{loiBean.currentdate}"/></h:column></h:column>
@@ -126,7 +126,7 @@
 					</h:column>
 		    	</h:panelGrid>
 		    	<h:panelGrid columns="4" cellpadding="5" cellspacing="0" border="0" style="width:100%">
-					<h:column >Parent/Guardian Signature (enter registration code):</h:column>
+					<h:column >Parent/Guardian Signature:</h:column>
 					<h:column >*****</h:column>
 					<h:column >Date:</h:column>
 					<h:column ><h:column ><h:outputText value="#{loiBean.currentdate}"/></h:column></h:column>
