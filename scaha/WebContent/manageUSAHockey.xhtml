@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+
+	<!-- 
+	
+	This view is designed to manager memberships.   A single account can manage several memberships (in the family).
+	
+	Right now.. the only way to create a membership is to first start with a USA hockey number for the given master season.
+	
+	Eventually, we will allow the user to select an existing sibling.. and re-register for a new season.. (re-up the membership)
+	
+	 -->  
+
+
+<f:view contentType="text/html">
+    
+ <h:head>
+ 	<f:metadata>
+		<f:event type="preRenderView" listener="#{profileBean.verifyUserLogin()}" />
+	</f:metadata>
+</h:head>	    
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+<ui:define name="content">
+
+<h:form id="form">
+
+<p:wizard id = "wizard" widgetVar="myWizard"  flowListener="#{memberBean.onFlowProcess}" showNavBar="true">  
+
+	<p:tab id="usahockey" title="Step 1: USA Hockey >>">  	 
+	
+	<div class="NewsTitle" style="margin-top:10px;margin-bottom:10px;">Please Enter The  USA Hockey Confirmation Number:</div>
+	
+         <h:panelGrid id="getusahockey" columns="3" cellpadding="10">  
+			<p:outputLabel for="usah-reg" style="display: block;width:150px;!important;font-size:14px;" value="USA Hockey Number:"></p:outputLabel>
+			<p:inputText id="usah-reg" style="font-size:14px;" value="#{memberBean.regnumber}" required="true" requiredMessage="Usa Hockey Number cannot be blank." >
+				<f:validateLength minimum="14" maximum="14" />
+	 			<f:validator validatorId="validateUSAHRegistration" />  
+			</p:inputText>
+			<p:message id="m_usah-reg" style="font-size:12px;" for="usah-reg"/>
+		</h:panelGrid>	
+	
+		<p:commandButton style="..." value="Next" icon="ui-icon-arrow-1-e" 
+    	iconPos="left" type="button" onclick="myWizard.next();" />
+    	
+	</p:tab>
+
+<p:tab id="review" title="Step 2: Review >>">  	
+
+
+	<div class="NewsTitle">Review the Below Information for Accuracy:</div>
+	<p/>
+	<p:fieldset style="font-size:14px;" toggleable="false" toggleSpeed="500"> 
+	Here is your chance to make sure this was the intended person you wanted to pull from USA Hockey.  If it is, proceed to the next step.
+	If this is not the person you wanted to pull, please go back and enter a Different USA Hockey Number.
+	</p:fieldset>
+	<p:spacer height="20px" width="20px" />
+	<p:fieldset toggleable="false" toggleSpeed="500">  
+	<table>
+		<tr>
+		<td>
+		<h:panelGrid columns="2" cellpadding="3">  
+           	<h:outputText style="font-size:14px;display:block;width:175px;!important" value="First Name:" />
+           	<h:outputText style="font-size:14px;" value="#{memberBean.getUsar().getFirstName()}" />
+           	<h:outputText style="font-size:14px;" value="Last Name:" />
+           	<h:outputText style="font-size:14px;" value="#{memberBean.getUsar().getLastName()}" />
+           	<h:outputText style="font-size:14px;" value="Middle Init:" />
+           	<h:outputText style="font-size:14px;" value="#{memberBean.getUsar().getMiddleInit()}" />
+		</h:panelGrid>  
+          	<p:separator id="separator23"/>
+		<h:panelGrid columns="2" cellpadding="3"> 
+			<h:outputText style="font-size:14px;display:block;width:175px;!important" value="Address:" />
+           	<h:outputText style="font-size:14px;" value="#{memberBean.getUsar().getAddress()}" />
+			<h:outputText style="font-size:14px;" value="City:" />
+           	<h:outputText style="font-size:14px;" value="#{memberBean.getUsar().getCity()}" />
+			<h:outputText style="font-size:14px;" value="State, Country:" />
+            <h:outputText style="font-size:14px;" value="#{memberBean.getUsar().getState()}, #{memberBean.getUsar().getCountry()}" />
+           	<h:outputText style="font-size:14px;" value="Zipcode:" />
+           	<h:outputText style="font-size:14px;" value="#{memberBean.getUsar().getZipcode()} #{memberBean.getUsar().getForZip()}" />
+           </h:panelGrid>  
+           </td>
+           <td>
+		<h:panelGrid columns="2" cellpadding="3">  
+           	<h:outputText style="display:block;width:175px;font-size:14px;!important" value="DOB:" />
+           	<h:outputText style="font-size:14px;" value="#{memberBean.getUsar().getDOB()}" />
+           	<h:outputText style="font-size:14px;" value="Citizenship:" />
+           	<h:outputText style="font-size:14px;" value="#{memberBean.getUsar().getCitizen()}" />
+           	<h:outputText style="font-size:14px;" value="Gender:" />
+           	<h:outputText style="font-size:14px;" value="#{memberBean.getUsar().getGender()}" />
+		</h:panelGrid>  
+          	<p:separator id="separator2"/>
+		<h:panelGrid columns="2" cellpadding="3">  
+			<h:outputText style="display:block;width:175px;font-size:14px;!important" value="Parent/Guardian:" />
+           	<h:outputText style="font-size:14px;" value="#{memberBean.getUsar().getPGSFName()} #{memberBean.getUsar().getPGSMName()} #{memberBean.getUsar().getPGSLName()}" />
+           	<h:outputText style="font-size:14px;" value="Home Phone:" />
+           	<h:outputText style="font-size:14px;" value="#{memberBean.getUsar().getHPhone()}" />
+			<h:outputText style="font-size:14px;" value="Work Phone:" />
+           	<h:outputText style="font-size:14px;" value="#{memberBean.getUsar().getBPhone()}" />
+           	<h:outputText style="font-size:14px;" value="e-mail:" />
+           	<h:outputText style="font-size:14px;" value="#{memberBean.getUsar().getEmail()}" />
+           </h:panelGrid>  
+           </td>
+           </tr>
+ 	</table>	
+ 	</p:fieldset>
+	<p:commandButton style="..." value="Back" icon="ui-icon-arrow-1-w" 
+	    iconPos="right" type="button" onclick="myWizard.back();" />
+	<p:spacer width="40px" />
+			
+		<p:commandButton style="..." value="Next" icon="ui-icon-arrow-1-e" 
+    	iconPos="left" type="button" onclick="myWizard.next();" />
+</p:tab>
+    
+<p:tab id="choose" title="Step 3: MemberShip >>">  
+	
+ 	<div class="NewsTitle">Select the Best Match candidate from the list for #{memberBean.getUsar().getFirstName()} #{memberBean.getUsar().getLastName()}</div>
+ 	<p/>
+	<p:fieldset style="font-size:14px;" toggleable="false" toggleSpeed="500"> 
+    Below is a generated list of all our current members that best match this USA Hockey Registration (ranked). <br/>
+    If more than one person was located, please choose the one you think is the correct match. <br/>
+    If there was nothing found that was matching in our system, you have the ability to create a new member by selecting the the New Member Choice and moving to the final screen.
+	</p:fieldset>      
+	<p:spacer height="20px" width="20px" />
+	
+	<p:dataTable id="listofpeople" var="person" value="#{memberBean.getPersons()}"  > 
+		<p:column>
+			<p:commandButton value="Select" actionListener="#{MemberBean.setSelectedPerson(person)}" ajax="false"  onCompletion="myWizard.next();">
+				<f:setPropertyActionListener value="#{person}" target="#{memberBean.selectedPerson}" />
+			</p:commandButton>
+		</p:column>
+		<p:column headerText="Name" style="font-size:12px;text-align: left">  
+			<h:outputText style="font-size:11px;text-align:left;" value="#{person.getsFirstName()} #{person.getsLastName()} #{person.stringID}"/>
+		</p:column>
+ 		
+	</p:dataTable>
+	
+	<p:spacer height="20px" width="20px" />
+	<p:commandButton style="..." value="Back" icon="ui-icon-arrow-1-w" iconPos="right" type="button" onclick="myWizard.back();" />
+	<p:spacer height="20px" width="20px" />
+	<p:commandButton value="Next" icon="ui-icon-arrow-1-e" iconPos="left" type="button" onClick="myWizard.next();" />
+
+        
+</p:tab>
+	
+    <p:tab id="finish" title="Step 4: Wrap Up.">  
+	<div class="NewsTitle"> #{memberBean.selectedPerson} Choose the Options That Best Describe #{memberBean.getUsar().getFirstName()} #{memberBean.getUsar().getLastName()}</div>
+	<p/>
+	<p:fieldset style="font-size:14px;" toggleable="false" toggleSpeed="500"> 
+    Choose which options best describe the member. <p/>
+    Please identify if this person is going to be a Player, a Coach, or a Manager - or some combination of the three this year.
+	</p:fieldset>     
+	<p:spacer height="20px" width="20px" />
+	       
+         
+	
+		<p:commandButton value="Back" icon="ui-icon-arrow-1-w" 
+	    iconPos="right" type="button" onclick="myWizard.back();" />
+	<p:spacer width="40px" />
+			
+		<p:commandButton value="Save New Member" icon="ui-icon-arrow-1-e" 
+    	iconPos="left" type="button" onclick="myWizard.next();" />
+
+	</p:tab>
+	</p:wizard>
+ </h:form>		
+</ui:define>
+</ui:composition>
+</f:view>
+</html>

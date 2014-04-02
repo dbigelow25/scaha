@@ -3,14 +3,23 @@ package com.scaha.beans;
 import java.io.Serializable;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+
+import org.primefaces.event.FlowEvent;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
 
 import com.gbli.common.SendMailSSL;
 import com.gbli.common.USAHRegClient;
@@ -20,6 +29,7 @@ import com.scaha.objects.Family;
 import com.scaha.objects.FamilyMember;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Person;
+import com.scaha.objects.PersonList;
 import com.scaha.objects.Profile;
 import com.scaha.objects.ScahaCoach;
 import com.scaha.objects.ScahaManager;
@@ -27,22 +37,54 @@ import com.scaha.objects.ScahaMember;
 import com.scaha.objects.ScahaPlayer;
 import com.scaha.objects.UsaHockeyRegistration;
 
-public class UsaHockeyBean implements Serializable, MailableObject {
+/**
+ * USAHockeyBean is now a Wizard that does the following:
+ * 
+ * 1) Collects the USA Hockey Number..
+ * 2) I
+ * @author dbigelow
+ *
+ */
+@ManagedBean
+@ViewScoped
+public class MemberBean implements Serializable, MailableObject {
 	
 	
-	private static final long serialVersionUID = 2L;
+	private static final long serialVersionUID = 3L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 
-	/**
-	 * 
-	 */
-	
 	private UsaHockeyRegistration usar = null;
 	private String regnumber = null;
 	private List<String> membertype;  
 	private String relationship = null;
 	private boolean datagood = false;
 	
+	private PersonList Persons = null;
+	private Person selectedPerson = null;  
+	
+	
+	@ManagedProperty(value="#{profileBean}")
+	private ProfileBean pb;
+	
+	/**
+	 * @return the pb
+	 */
+	public ProfileBean getPb() {
+		return pb;
+	}
+
+	/**
+	 * @param pb the pb to set
+	 */
+	public void setPb(ProfileBean pb) {
+		this.pb = pb;
+	}	
+	
+	 @PostConstruct
+	 public void init() {
+		 membertype = new ArrayList<String>(); 
+	 }
+	 
 	/**
 	 * @return the usar
 	 */
@@ -76,7 +118,7 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 	 * 
 	 * @return
 	 */
-	public String fetchUSAHockey() {
+	public boolean fetchUSAHockey() {
 		
 		//
 		// clear it out first!!
@@ -85,43 +127,40 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 		try {
 			
 			this.usar = USAHRegClient.pullRegistartionRecord(this.getRegnumber());
+			
+			if (this.usar == null) {
+				LOGGER.info("usaHockeyBean:Did NOT Get any USAH Number info Back!! BAD SERVICE CALL");
+				FacesContext.getCurrentInstance().addMessage(
+						":member-form",
+	                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Connection ISSUES",
+	                    "Could Not Connect with the USA Hockey database at this time.."));
+			return false;
+
+			}
 
 			if (usar.getFirstName().length()== 0) {
 				FacesContext.getCurrentInstance().addMessage(
-					"mp-form:usah-reg",
+						":member-form",
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "USA Hockey Info Not Found",
                     "Could Not find the USA Registration record."));
-				return "false";
+				return false;
 			} 
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		FacesContext.getCurrentInstance().addMessage(
-				"mp-form:finish-add-mem",
-                new FacesMessage(FacesMessage.SEVERITY_INFO,"Successfull Lookup",
-                "Data looks good, CLICK Save Now to create a new Member."));
-		this.datagood = true;
-		
-		//
-		// We need to set Member Type to Manager.  Because thats what the XX is for
-		//
-		
-		if (this.usar == null) {
-			LOGGER.info("usaHockeyBean:Did NOT Get any USAH Number info Back!! BAD SERVICE CALL");
 			
-		} else if (this.usar.getUSAHnum().contains("XX")) {
+		if (this.usar.getUSAHnum().contains("XX")) {
 			if (!membertype.contains("Manager")) {
 				this.membertype.add("Manager");
 			}
 		}
-		
+		LOGGER.info("fetchUSAHockey made it back alive.");		
 		//
 		// We are not going anywhere.. so simply pass true vs routing..
 		//
-		return "true";
+		return true;
 	}
 
 	
@@ -200,22 +239,25 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 		
 		//
 		//
-		// We have to be really clear here.  First off.. this person can either be brand new.. or and existing member.
+		// We have to be really clear here.  We are hunting for a person record that matches the description of the USA Hockey Record
+		// we are going to search the person records to pull back all records that:
 		//
-		// This current case only deals with a Brand New Person.
+		// 1) match the Last Name and BirthDate of what was pulled.
+		// 
+		// Three things can happen..
 		//
-		// In this case.. we need to
+		// 1) Cannot find that person anywhere.. a totally new person.. So.. we simply create all the records needed
+		// 2) Found that person.. and that person is currently in the requesting families account...
+		// 		This is just like #1.. but the person and family structure is already there..
+		// 3) Found that person.. but that person belongs to another family.
+		//      In this case.. we want to put the person in both families.. since both have claim to them
+		//  
+		// In all cases.. we need to correct the first name with what was sent with USA hockey..
 		//
-		// 1) Create or update the person..
-		// 2) Need to create an object.. for each type they are (player, manager, coach)
-		// 3) Hook them up to the existing family..
-		// 4) If they have not already registered.. we need to create a SCAHA registration
 		//
 		
 		FacesContext context = FacesContext.getCurrentInstance();
-		Application app = context.getApplication();
-		ValueExpression expression = app.getExpressionFactory().createValueExpression(context.getELContext(), "#{profileBean}", Object.class );
-		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
+		
 
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 
@@ -341,12 +383,76 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 		LOGGER.info("usaHockeyBean:reseting member variables...");
 		usar = null;
 		regnumber = null;
-		membertype = null;
+		membertype.clear();
 		relationship = null;
 		datagood = false;
 	}
 	
 	
+	/**
+	 * ok.. This is generated using the USAHockey provided information.  
+	 * 
+	 * We will improve the search capability later.. This one just uses lastname and dob to pull up a list of people.
+	 * 
+	 * We will also use Last Name and First Name 
+	 * 
+	 * we want to sort by most likely on top
+	 * 
+	 * @return
+	 */
+	private PersonList genPersonsList() {
+		
+  	    LOGGER.entering(MemberBean.class.getName(),"genPersonsList:");  
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+
+		LOGGER.info("Is PB.getProfile().. null?:" + pb.getProfile()); 
+
+		PersonList pers = null;
+		try {
+			pers = PersonList.NewPersonListFactory(pb.getProfile(), db, this.usar);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		
+		db.free();
+		
+
+		return pers;
+		
+	}
+	
+	public String onFlowProcess(FlowEvent event) {  
+
+//		<p:commandButton value="Search USAH" update="add-member" id="search-usah" ajax="false" actionListener="#{usahBean.fetchUSAHockey()}"/>
+
+
+        LOGGER.info("Current wizard step:" + event.getOldStep());  
+        LOGGER.info("Next step:" + event.getNewStep());  
+        
+        LOGGER.info("My List is: " + (Persons == null ? null : Persons.toString()));  
+
+
+        //
+        
+        if (event.getNewStep().equals("usahockey")) {
+        	
+        } else if (event.getNewStep().equals("review")) {
+        	if (this.fetchUSAHockey()) {
+        		return event.getNewStep();  
+        	} else {
+           		return event.getOldStep();  
+        	}
+        } else if (event.getNewStep().equals("choose")) {
+            	 			
+			this.Persons = this.genPersonsList();
+			return event.getNewStep();  
+
+		}  else if (event.getNewStep().equals("")) {
+			return "finish";
+		}
+        return event.getNewStep();  
+    }  
 	
 
 	/* (non-Javadoc)
@@ -358,5 +464,46 @@ public class UsaHockeyBean implements Serializable, MailableObject {
 				+ ", dob=" + ", membertype=" + membertype
 				+ ", relationship=" + relationship + "]";
 	}
+
+	/**
+	 * @return the persons
+	 */
+	public PersonList getPersons() {
+		return Persons;
+	}
+
+	/**
+	 * @param persons the persons to set
+	 */
+	public void setPersons(PersonList persons) {
+		Persons = persons;
+	}
+
+	/**
+	 * @return the selectedPerson
+	 */
+	public Person getSelectedPerson() {
+		return selectedPerson;
+	}
+
+	/**
+	 * @param selectedPerson the selectedPerson to set
+	 */
+	public void setSelectedPerson(Person selectedperson) {
+		 LOGGER.info("Setting selected person to..." + selectedperson.toString());
+		this.selectedPerson = selectedperson;
+	}
+	
+	public void onRowSelect(SelectEvent event) {
+		
+		 LOGGER.info("Firing in row select..." + ((Person) event.getObject()).toString());
+	      this.selectedPerson =  (Person) event.getObject();
+	    }
+	 
+    public void onRowUnselect(UnselectEvent event) {
+    	 LOGGER.info("Firing in row un..." + ((Person) event.getObject()).toString());
+	      this.selectedPerson =  null;
+
+    }
 
 }

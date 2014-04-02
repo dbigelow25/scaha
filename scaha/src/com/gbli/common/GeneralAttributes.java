@@ -1,5 +1,6 @@
 package com.gbli.common;
 
+import java.io.Serializable;
 import java.util.Hashtable;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Hashtable;
  * @author David
  *
  */
-public class GeneralAttributes extends java.util.Hashtable<String,String> {
+public class GeneralAttributes extends java.util.Hashtable<String,String> implements Serializable  {
 	/**
 	 * 
 	 */

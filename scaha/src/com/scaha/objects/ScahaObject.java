@@ -17,6 +17,8 @@ public abstract class ScahaObject implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	
 	private Profile m_pro = null;
 	
 	//
@@ -101,4 +103,8 @@ public abstract class ScahaObject implements Serializable {
 		this.genatt = genatt;
 	}
 	
+	public String getGenAttByKey(String _key) {
+		LOGGER.info("getGenAttByKey is:" + _key);
+		return genatt.get(_key);
+	}
 }

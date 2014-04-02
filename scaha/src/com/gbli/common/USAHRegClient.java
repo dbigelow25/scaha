@@ -43,7 +43,7 @@ public class USAHRegClient {
         LOGGER.info("HERE IS cyph:" + cyph);
         
         String [] ans = cyph.split("\\|");
-        
+        LOGGER.info("HERE IS cyph after the split:  len=" + ans.length + ", ans=" + ans);
         UsaHockeyRegistration myUSAHockey =  new UsaHockeyRegistration(0,_strUSAH);
         int i = 2;
         if (ans.length > 2) {
@@ -65,6 +65,7 @@ public class USAHRegClient {
 	        myUSAHockey.setPGSFName(ans[i++]);
 	        myUSAHockey.setPGSMName(ans[i++]);
 	        myUSAHockey.setEmail(ans[i++]);
+	        LOGGER.info("Done Packing and creating the USAHockey Object");
         } else {
 	        myUSAHockey.setLastName("");
 	        myUSAHockey.setFirstName("");
@@ -84,6 +85,7 @@ public class USAHRegClient {
 	        myUSAHockey.setPGSFName("");
 	        myUSAHockey.setPGSMName("");
 	        myUSAHockey.setEmail("");
+	        LOGGER.info("Done Resetting the USA Hockey Object");
         	
         }
 

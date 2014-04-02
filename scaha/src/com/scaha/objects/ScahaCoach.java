@@ -7,7 +7,6 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-import com.gbli.common.GeneralAttributes;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 

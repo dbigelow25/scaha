@@ -26,15 +26,17 @@
         <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
         <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
      </f:facet>
-	<f:metadata>
+<!-- 	<f:metadata>
 		<f:event type="preRenderView" listener="#{profileBean.verifyUserLogin()}" />
 	</f:metadata>
+-->
 </h:head>	    
+
 <h:body>
+
+
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
 <ui:define name="content">
-
- 
 <div id="page-div" width = "700px">
 
  <p:tabMenu activeIndex="1">  
@@ -49,7 +51,9 @@
 
 
   <h:form id="mp-form">
-
+  
+   <p:growl id="growl" sticky="true" showDetail="true"/>  
+  
  	<h:panelGroup id="view-members" rendered="#{profileBean.isViewMembers()}">
  	
  		<p:messages id = "existmem"  showDetail="true"/>
@@ -90,9 +94,13 @@
     	</p:fieldset>
     	
     </h:panelGroup>
-    
+
+
 	<ui:fragment id="add-member" rendered="#{profileBean.isAddMember()}">
-	 
+
+    <p:wizard flowListener="#{usahockeyBean.onFlowProcess}">  
+	<p:tab id="personal" title="Step 1: Enter The USAH Number">  	 
+
 	<p:fieldset id="fs11" toggleable="false" toggleSpeed="500">  
 	
      <p style="font-size: 12px;">You will FIRST need to know the USAHockey Number for the CURRENT SEASON. Enter this in the provided field below, then click the SEARCH USAH.  
@@ -120,34 +128,19 @@
 				</p:inputText>
 	 			<p:message id="m_usah-reg" closable="true" for="usah-reg"/>
 				
-			<p:outputLabel  for = "relationship" value="Relationship (select one)" /> 
-       			<p:selectOneMenu id="relationship" value="#{usahBean.relationship}" style="width: 100px"  required="true" requiredMessage="need to select a relationship type." >         
-            		<f:selectItem itemLabel="Child" itemValue="Child" />
-            		<f:selectItem itemLabel="Spouse" itemValue="Spouse"/>
-            		<f:selectItem itemLabel="Parent" itemValue="Parent"/>
-            		<f:selectItem itemLabel="Relative" itemValue="Relative"/>
-            		<f:selectItem itemLabel="Other" itemValue="Other"/>
-        		</p:selectOneMenu >  
- 
- 			<p:message id="m_relationship" closable="true" for="relationship"/>
- 			
-			<p:outputLabel  for = "member" value="Type (choose all that apply)" /> 
-		 	   <p:selectManyCheckbox  id="member" value="#{usahBean.membertype}" style="width: 125px" required="true" requiredMessage="need to select a member type." layout="grid" columns="1">    
-          			<f:selectItem itemLabel="Player-Skater" itemValue="Player-Skater" />  
-          			<f:selectItem itemLabel="Player-Goalie" itemValue="Player-Goalie" />  
-          			<f:selectItem itemLabel="Coach" itemValue="Coach"/>  
-         			<f:selectItem itemLabel="Manager" itemValue="Manager"/>
-      			</p:selectManyCheckbox>  
- 			<p:message id="m_member" closable="true" for="member"/>
+			
 
 			</h:panelGrid>	
 			
 			<p:commandButton value="Search USAH" update="add-member" id="search-usah" ajax="false" actionListener="#{usahBean.fetchUSAHockey()}"/>
  	
  	</p:fieldset>  
+
+	</p:tab>
 	
-	<p:spacer width="10" height="10" />
-	
+	<p:tab id="address" title="2) Apply To A Person:">  	
+	 
+	 
   	<p:fieldset id="fs222" toggleable="false" toggleSpeed="500">  	      
    		<p style="font-size: 12px;">Information pulled from USA Hockey Membership:</p>  
  		<table>
@@ -198,11 +191,32 @@
             </table>	
    
     </p:fieldset>
+    </p:tab>
     
-    <p:spacer width="10" height="10" />
+    <p:tab id="contact" title="3) Choose Your Options:">  
 	
   	<p:fieldset id="fs23" toggleable="false" toggleSpeed="500">  	      
        <h:panelGrid columns="3" cellpadding="3"> 
+       
+	       <p:outputLabel  for = "relationship" value="Relationship (select one)" /> 
+       			<p:selectOneMenu id="relationship" value="#{usahBean.relationship}" style="width: 100px"  required="true" requiredMessage="need to select a relationship type." >         
+            		<f:selectItem itemLabel="Child" itemValue="Child" />
+            		<f:selectItem itemLabel="Spouse" itemValue="Spouse"/>
+            		<f:selectItem itemLabel="Parent" itemValue="Parent"/>
+            		<f:selectItem itemLabel="Relative" itemValue="Relative"/>
+            		<f:selectItem itemLabel="Other" itemValue="Other"/>
+        		</p:selectOneMenu >  
+ 
+ 			<p:message id="m_relationship" closable="true" for="relationship"/>
+ 			
+			<p:outputLabel  for = "member" value="Type (choose all that apply)" /> 
+		 	   <p:selectManyCheckbox  id="member" value="#{usahBean.membertype}" style="width: 125px" required="true" requiredMessage="need to select a member type." layout="grid" columns="1">    
+          			<f:selectItem itemLabel="Player-Skater" itemValue="Player-Skater" />  
+          			<f:selectItem itemLabel="Player-Goalie" itemValue="Player-Goalie" />  
+          			<f:selectItem itemLabel="Coach" itemValue="Coach"/>  
+         			<f:selectItem itemLabel="Manager" itemValue="Manager"/>
+      			</p:selectManyCheckbox>  
+ 			<p:message id="m_member" closable="true" for="member"/>
             <p:commandButton global="false" rendered="#{usahBean.datagood}" value="Save Now" update="add-member,view-members" id="finish-add-mem" ajax="false" action="#{usahBean.addNewMember()}"/> 
            	 <p:message rendered="#{usahBean.datagood}" id="m_finish-add-mem" closable="true" for="finish-add-mem"/>
            	<p:commandButton value="Cancel" update="add-member" id="cancel-add-mem" immediate="true" ajax="false" action="#{profileBean.cancelAddMember()}" >
@@ -211,6 +225,8 @@
            	 
 		</h:panelGrid>
 	</p:fieldset>
+	</p:tab>
+	</p:wizard>
 	</ui:fragment>            
  </h:form>		
  </div>

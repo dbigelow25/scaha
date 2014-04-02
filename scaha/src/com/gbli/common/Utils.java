@@ -3,6 +3,7 @@
  */
 package com.gbli.common;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -38,7 +39,7 @@ public class Utils {
 	
 	public static void main (String[] args) throws Exception  {
 		
-		genAccountsCoaches();
+		genCoacheProfiles();
 		
 	}
 	
@@ -60,15 +61,17 @@ public class Utils {
 	}
 	
 	
-	//
-	// All this guy does is generate accounts from the import file given by USAHockey
-	//
-	public static void genAccountsParentPlayer() throws SQLException {
+	public static void buildabear() {
 		
 		
-		//
-		// Get a privat database pool going.
-		//
+		
+		
+	}
+	/**
+	 * This is for all the coaches  that were created under someone elses account.  They need to have their own.
+	 */
+	public static void genCoacheProfiles () throws SQLException {
+
 		
 		ContextManager.setLogger("LoadUSAInfo");
 		
@@ -82,6 +85,124 @@ public class Utils {
 		ScahaDatabase db = (ScahaDatabase)dbp2.getDatabase();  // Outer loop
 		ScahaDatabase db2 = (ScahaDatabase)dbp2.getDatabase(); // Inner Loop
 		db2.setAutoCommit(false);
+
+		String mySQL =
+			" SELECT  " +
+			" p1.idperson, " +
+			" p1.fname, " +
+			" p1.lname, " +
+			" p1.altemail, " +
+			" us.workphone, " +
+			" us.pgemail, " +
+			" us.address, " +
+			" us.city, " +
+			" us.state, " +
+			" us.zipcode, " +
+			" us.country, " +
+			" fm.idfamilymember " + 
+			" from scaha.person p1  " +
+			" join scaha.usahockey us on " +
+			" us.idperson = p1.idperson " +
+			" join scaha.familymember fm on  " +
+			" fm.idperson = p1.idperson " +
+			" where p1.idperson in (select idperson from scaha.coach) and p1.idprofile = 0 " +
+			" and (p1.fname, p1.lname) not in (Select p2.fname, p2.lname from scaha.person p2 where idprofile <> 0) ";
+
+		db.getData(mySQL);
+		int i=1;
+		
+		//
+		// ok.. we are here to create new profiles.. persons, family records.. player records.. scaha records.. and 
+		//
+		
+		ResultSet rs = db.getResultSet();
+		while (rs.next()) {
+			int y=1;
+			// lets get the person object here!!
+			int id = rs.getInt(y++);
+			String fname = rs.getString(y++);
+			String lname = rs.getString(y++);	
+			String altemail = rs.getString(y++);	
+			String workphone = rs.getString(y++);	
+			String pgemail = rs.getString(y++);	
+			String address = rs.getString(y++);	
+			String city = rs.getString(y++);	
+			String state = rs.getString(y++);	
+			String zipcode = rs.getString(y++);	
+			String country = rs.getString(y++);			
+			int idfm = rs.getInt(y++);
+
+			
+			Vector<String> v = new Vector<String>();
+			v.add(pgemail);
+			db2.getData("CALL scaha.checkforuser(?)", v);
+		        
+			if (db2.getResultSet() != null && db2.getResultSet().next()){
+				LOGGER.info("Cannot Create Profile due to same e-mail address..." + pgemail +":" + fname + ":" +  lname);
+				db2.getResultSet().close();
+				continue;
+			}
+			db2.getResultSet().close();	
+			
+			// new profile so they can log in ...
+			Profile pro = new Profile(pgemail,pgemail, fname + " " + lname);
+			pro.update(db2);
+
+			// existing person to update all the needed things
+			Person per = new Person(id, pro);
+			
+			per.setsEmail(altemail);
+			per.setsPhone(workphone);
+			per.setsEmail(pgemail);
+			per.setsAddress1(address);
+			per.setsCity(city);
+			per.setsState(state);
+			per.setiZipCode(Integer.parseInt(zipcode.substring(0, 4)));
+			
+			per.update(db2);
+			
+			Family fam = new Family(-1, pro, per);
+			fam.setFamilyName("The " + per.getsFirstName() + " " + per.getsLastName() + " Family");
+			fam.update(db2, false);
+			
+			//
+			// lets update the family member rec
+			//
+			FamilyMember fm = new FamilyMember(pro,fam, per);
+			fm.ID = idfm;
+			fm.setRelationship("Self");
+			fm.updateFamilyMemberStructure(db2);
+			
+			db2.commit();
+			
+		}
+		rs.close();
+	
+		
+		db.free();
+		db2.free();
+		
+	}
+			
+	//
+	// All this guy does is generate accounts from the import file given by USAHockey
+	//
+	public static void genAccountsParentPlayer() throws SQLException {
+		
+		
+		ContextManager.setLogger("LoadUSAInfo");
+		
+		Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+		
+		DatabasePool dbp2 = new DatabasePool(ScahaDatabase.class.getSimpleName(),2);
+		Thread th2 =  new Thread(dbp2);
+		dbp2.setMyThread(th2);
+		th2.start();
+		
+		ScahaDatabase db = (ScahaDatabase)dbp2.getDatabase();  // Outer loop
+		ScahaDatabase db2 = (ScahaDatabase)dbp2.getDatabase(); // Inner Loop
+		db2.setAutoCommit(false);
+		
 
 		String mySQL = 
 				" select distinct " + 
@@ -120,7 +241,7 @@ public class Utils {
 		//
 		
 		Profile pro = null;
-		
+	
 		while (db.getResultSet().next()) {
 			int y=1;
 			String email = db.getResultSet().getString(y++).toLowerCase().trim();

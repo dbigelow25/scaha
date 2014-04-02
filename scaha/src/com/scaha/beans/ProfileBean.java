@@ -7,6 +7,7 @@ import com.scaha.objects.Family;
 import com.scaha.objects.FamilyMember;
 import com.scaha.objects.FamilyMemberDataModel;
 import com.scaha.objects.MailableObject;
+import com.scaha.objects.Person;
 import com.scaha.objects.Profile;
 import com.scaha.objects.Role;
 
@@ -53,7 +54,7 @@ public class ProfileBean implements Serializable,  MailableObject  {
 	private boolean EditPassword = false;
 	private boolean EditMember = false;
 	private boolean AddMember = false;
-	
+	private Person selectedPerson;
 	//
 	// Very archaic way to track changes.. 
 	// profiles are tricky because they are rarely changed..
@@ -479,7 +480,7 @@ public void cancelAddMember() {
 
 	ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
 			"#{usahBean}", Object.class );
-	UsaHockeyBean usah = (UsaHockeyBean) expression.getValue( context.getELContext() );
+	MemberBean usah = (MemberBean) expression.getValue( context.getELContext() );
 	usah.reset();
 	
 }
@@ -939,6 +940,18 @@ public String getCurrentSCAHAHockeySeason() {
  */
 public void setCurrentSCAHAHockeySeason(String currentSCAHAHockeySeason) {
 	this.currentSCAHAHockeySeason = currentSCAHAHockeySeason;
+}
+/**
+ * @return the selectedPerson
+ */
+public Person getSelectedPerson() {
+	return selectedPerson;
+}
+/**
+ * @param selectedPerson the selectedPerson to set
+ */
+public void setSelectedPerson(Person selectedPerson) {
+	this.selectedPerson = selectedPerson;
 }
 
 }
