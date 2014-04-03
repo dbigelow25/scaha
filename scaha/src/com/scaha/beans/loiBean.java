@@ -444,6 +444,13 @@ public class loiBean implements Serializable, MailableObject {
         				lastyearteam = rs.getString("teamname");
         				lastyearclub = rs.getString("clubname");
         				parentid = rs.getInt("parentid");
+        				citizenship = rs.getString("citizenship");
+        				
+        				if (citizenship.equals("CAN")){
+        					citizenship="Canada";
+        				} else if (citizenship.equals("OTH")){
+        					citizenship="Other";
+        				} 
         				
         				DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         				Date date = new Date();
