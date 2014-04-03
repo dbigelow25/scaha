@@ -22,39 +22,45 @@
 <f:view contentType="text/html">
     
  <h:head>
+	 <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+     </f:facet>
  	<f:metadata>
 		<f:event type="preRenderView" listener="#{profileBean.verifyUserLogin()}" />
 	</f:metadata>
+
 </h:head>	    
+
+<h:body>  
 
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
 <ui:define name="content">
 
+<div id="page-div">
 <h:form id="form">
 
+        
 <p:wizard id = "wizard" widgetVar="myWizard"  flowListener="#{memberBean.onFlowProcess}" showNavBar="true">  
 
-	<p:tab id="usahockey" title="Step 1: USA Hockey >>">  	 
+	<p:tab id="usahockey" style="font-size:12px;" title="Step 1: USA Hockey >>">  	 
 	
 	<div class="NewsTitle" style="margin-top:10px;margin-bottom:10px;">Please Enter The  USA Hockey Confirmation Number:</div>
-	
-         <h:panelGrid id="getusahockey" columns="3" cellpadding="10">  
-			<p:outputLabel for="usah-reg" style="display: block;width:150px;!important;font-size:14px;" value="USA Hockey Number:"></p:outputLabel>
-			<p:inputText id="usah-reg" style="font-size:14px;" value="#{memberBean.regnumber}" required="true" requiredMessage="Usa Hockey Number cannot be blank." >
-				<f:validateLength minimum="14" maximum="14" />
-	 			<f:validator validatorId="validateUSAHRegistration" />  
-			</p:inputText>
-			<p:message id="m_usah-reg" style="font-size:12px;" for="usah-reg"/>
-		</h:panelGrid>	
-	
-		<p:commandButton style="..." value="Next" icon="ui-icon-arrow-1-e" 
-    	iconPos="left" type="button" onclick="myWizard.next();" />
-    	
-	</p:tab>
+    <h:panelGrid id="getusahockey" columns="3" cellpadding="10">  
+		<p:outputLabel for="usah-reg" style="display: block;width:150px;!important;font-size:14px;" value="USA Hockey Number:"></p:outputLabel>
+		<p:inputText id="usah-reg" style="font-size:14px;" value="#{memberBean.regnumber}" required="true" requiredMessage="Usa Hockey Number cannot be blank." >
+			<f:validateLength minimum="14" maximum="14" />
+ 			<f:validator validatorId="validateUSAHRegistration" />  
+		</p:inputText>
+		<p:message id="m_usah-reg" style="font-size:12px;" for="usah-reg"/>
+	</h:panelGrid>	
+	<p:fieldset style="font-size:14px;" toggleable="false" toggleSpeed="500"> 
+	<p:commandButton value="Next" icon="ui-icon-arrow-1-e" iconPos="left" type="button" onclick="myWizard.next();" />
+	</p:fieldset>	
+
+</p:tab>
 
 <p:tab id="review" title="Step 2: Review >>">  	
-
-
 	<div class="NewsTitle">Review the Below Information for Accuracy:</div>
 	<p/>
 	<p:fieldset style="font-size:14px;" toggleable="false" toggleSpeed="500"> 
@@ -110,12 +116,13 @@
            </tr>
  	</table>	
  	</p:fieldset>
-	<p:commandButton style="..." value="Back" icon="ui-icon-arrow-1-w" 
-	    iconPos="right" type="button" onclick="myWizard.back();" />
-	<p:spacer width="40px" />
-			
-		<p:commandButton style="..." value="Next" icon="ui-icon-arrow-1-e" 
-    	iconPos="left" type="button" onclick="myWizard.next();" />
+ 	<p:spacer height="20px" width="20px" />
+	<p:fieldset toggleable="false" toggleSpeed="500">  
+ 	<p:commandButton value="Back" icon="ui-icon-arrow-1-w" iconPos="right" type="button" onclick="myWizard.back();" />
+	<p:spacer height="20px" width="20px" />
+	<p:commandButton value="Next" icon="ui-icon-arrow-1-e" iconPos="left" type="button" onclick="myWizard.next();" />
+	</p:fieldset>
+ 	
 </p:tab>
     
 <p:tab id="choose" title="Step 3: MemberShip >>">  
@@ -128,28 +135,33 @@
     If there was nothing found that was matching in our system, you have the ability to create a new member by selecting the the New Member Choice and moving to the final screen.
 	</p:fieldset>      
 	<p:spacer height="20px" width="20px" />
-	
-	<p:dataTable id="listofpeople" var="person" value="#{memberBean.getPersons()}"  > 
-		<p:column>
-			<p:commandButton value="Select" actionListener="#{MemberBean.setSelectedPerson(person)}" ajax="false"  onCompletion="myWizard.next();">
-				<f:setPropertyActionListener value="#{person}" target="#{memberBean.selectedPerson}" />
-			</p:commandButton>
+	<p:dataTable id="listofpeopleout" var="person" value="#{memberBean.getPersons()}" selection="#{memberBean.selectedPerson}" dynamic="false"> 
+	    
+	    <p:column selectionMode="single" style="width:2%" />  
+	 	<p:column headerText="Name" style="font-size:12px;text-align: left">  
+			<h:outputText style="font-size:11px;text-align:left;" value="#{person.getsFirstName()} #{person.getsLastName()}"/>
 		</p:column>
-		<p:column headerText="Name" style="font-size:12px;text-align: left">  
-			<h:outputText style="font-size:11px;text-align:left;" value="#{person.getsFirstName()} #{person.getsLastName()} #{person.stringID}"/>
+ 		<p:column headerText="Birth Day" style="font-size:12px;text-align: left">  
+			<h:outputText style="font-size:12px;text-align:left;" value="#{person.getDob()}"/>
 		</p:column>
- 		
-	</p:dataTable>
-	
+		<p:column headerText="Family Information" style="font-size:12px;text-align: left">  
+			<h:outputText style="font-size:12px;text-align:left;" value="#{person.getXFamilyName()} (#{person.getXRelType()})"/>
+		</p:column>
+		<p:column headerText="Notes" style="font-size:12px;text-align: left">  
+			<h:outputText style="font-size:12px;text-align:left;" value="#{person.getXNotes()}" escape = "false"/>
+		</p:column>
+		
+  	</p:dataTable>
+   	<p:spacer height="20px" width="20px" />
+	<p:fieldset toggleable="false" toggleSpeed="500">  
+ 	<p:commandButton value="Back" icon="ui-icon-arrow-1-w" iconPos="right" type="button" onclick="myWizard.back();" />
 	<p:spacer height="20px" width="20px" />
-	<p:commandButton style="..." value="Back" icon="ui-icon-arrow-1-w" iconPos="right" type="button" onclick="myWizard.back();" />
-	<p:spacer height="20px" width="20px" />
-	<p:commandButton value="Next" icon="ui-icon-arrow-1-e" iconPos="left" type="button" onClick="myWizard.next();" />
-
+	<p:commandButton value="Confirm" icon="ui-icon-arrow-1-e" iconPos="left" type="button" onclick="myWizard.next();" />
+	</p:fieldset> 
         
 </p:tab>
 	
-    <p:tab id="finish" title="Step 4: Wrap Up.">  
+<p:tab id="finish" title="Step 4: Confirmation">  
 	<div class="NewsTitle"> #{memberBean.selectedPerson} Choose the Options That Best Describe #{memberBean.getUsar().getFirstName()} #{memberBean.getUsar().getLastName()}</div>
 	<p/>
 	<p:fieldset style="font-size:14px;" toggleable="false" toggleSpeed="500"> 
@@ -157,20 +169,19 @@
     Please identify if this person is going to be a Player, a Coach, or a Manager - or some combination of the three this year.
 	</p:fieldset>     
 	<p:spacer height="20px" width="20px" />
-	       
-         
-	
-		<p:commandButton value="Back" icon="ui-icon-arrow-1-w" 
-	    iconPos="right" type="button" onclick="myWizard.back();" />
-	<p:spacer width="40px" />
-			
-		<p:commandButton value="Save New Member" icon="ui-icon-arrow-1-e" 
-    	iconPos="left" type="button" onclick="myWizard.next();" />
+	<p:separator /> 
+	<p:commandButton value="Back" icon="ui-icon-arrow-1-w" iconPos="right" type="button" onclick="myWizard.back();" />
+	<p:spacer height="20px" width="20px" />
+		<p:commandButton value="Save New Member" icon="ui-icon-arrow-1-e" iconPos="left" type="button" onclick="myWizard.next();" />
+	<p:separator /> 
+	<p:spacer height="20px" width="20px" />
 
-	</p:tab>
-	</p:wizard>
+</p:tab>
+</p:wizard>
  </h:form>		
+ </div>
 </ui:define>
 </ui:composition>
+</h:body>
 </f:view>
 </html>

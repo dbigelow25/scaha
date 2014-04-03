@@ -33,8 +33,6 @@ public class Person extends ScahaObject implements Serializable {
 	private Family fam = null;
 	private UsaHockeyRegistration UsaHockeyRegistration = null;
 	
-	private String stringID;
-	
 
 	/**
 	 * @return the fam
@@ -91,8 +89,6 @@ public class Person extends ScahaObject implements Serializable {
 			_db.cleanup();
 		}
 		
-		stringID = ID+"";
-		
 		//
 		// Lets round out the family here..
 		//
@@ -110,7 +106,6 @@ public class Person extends ScahaObject implements Serializable {
 		
 		if (_per == null) {
 			this.ID = -1;
-			stringID = "-1";
 			this.setProfile(_pro);
 		} else {
 			ID = _per.ID;
@@ -138,7 +133,6 @@ public class Person extends ScahaObject implements Serializable {
 	public Person (int _id, Profile _pro) {
 		
 		this.ID = _id;
-		this.stringID = ID + "";
 		this.setProfile(_pro);
 	}
 
@@ -150,7 +144,6 @@ public class Person extends ScahaObject implements Serializable {
 	public Person (Profile _pro) {
 		
 		this.ID = -1;
-		this.stringID = ID + "";
 		this.setProfile(_pro);
 	}
 	
@@ -341,7 +334,6 @@ public class Person extends ScahaObject implements Serializable {
 		// Update the new ID from the database...
 		//
 		this.ID = cs.getInt(1);
-		this.stringID = ID +"";
 		cs.close();
 
 		LOGGER.info("HERE IS THE new Person ID:" + this.ID);
@@ -426,11 +418,8 @@ public class Person extends ScahaObject implements Serializable {
 	public String getXRelType() {
 		return getGenAttByKey("RELTYPE");
 	}
-	public String getXAccountHolder() {
-		return getGenAttByKey("ACCOUNTHOLDER");
+	public String getXNotes() {
+		return getGenAttByKey("NOTES");
 	}
 	
-	public String getStringID() {
-		return stringID;
-	}
 }

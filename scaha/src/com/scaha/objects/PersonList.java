@@ -147,7 +147,7 @@ public class PersonList extends ListDataModel<Person> implements Serializable, S
 		List<Person> results = (List<Person>) getWrappedData();  
           
         for(Person result : results) {  
-            if(result.getStringID().equals(rowKey))  
+            if(Integer.toString(result.ID).equals(rowKey))  
                 return result;  
         }  
         return null;  
@@ -155,7 +155,7 @@ public class PersonList extends ListDataModel<Person> implements Serializable, S
   
     @Override  
     public Object getRowKey(Person result) {  
-        return result.getStringID();  
+        return Integer.toString(result.ID);
     }
 
 	

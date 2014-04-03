@@ -14,6 +14,8 @@ import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
@@ -46,7 +48,7 @@ import com.scaha.objects.UsaHockeyRegistration;
  *
  */
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class MemberBean implements Serializable, MailableObject {
 	
 	
@@ -410,6 +412,11 @@ public class MemberBean implements Serializable, MailableObject {
 		PersonList pers = null;
 		try {
 			pers = PersonList.NewPersonListFactory(pb.getProfile(), db, this.usar);
+			for (Person per : pers) {
+				selectedPerson = per;
+				break;
+			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -435,9 +442,7 @@ public class MemberBean implements Serializable, MailableObject {
 
         //
         
-        if (event.getNewStep().equals("usahockey")) {
-        	
-        } else if (event.getNewStep().equals("review")) {
+        if (event.getOldStep().equals("usahockey") || event.getNewStep().equals("review")) {
         	if (this.fetchUSAHockey()) {
         		return event.getNewStep();  
         	} else {
