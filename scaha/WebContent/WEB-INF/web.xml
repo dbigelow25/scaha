@@ -36,7 +36,7 @@
   <context-param>
     <description>State saving method: 'client' or 'server' (=default). See JSF Specification 2.5.2</description>
     <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
-    <param-value>client</param-value>
+    <param-value>server</param-value>
   </context-param>
   <context-param>
     <description>
@@ -88,7 +88,7 @@
 </context-param>
 <context-param>
     <param-name>javax.faces.PARTIAL_STATE_SAVING</param-name>
-    <param-value>true</param-value>
+    <param-value>false</param-value>
 </context-param>
  <!-- ############################################# -->
 <!-- # File upload                                      # -->

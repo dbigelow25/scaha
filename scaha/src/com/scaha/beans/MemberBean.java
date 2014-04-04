@@ -27,6 +27,7 @@ import com.gbli.common.SendMailSSL;
 import com.gbli.common.USAHRegClient;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
+import com.scaha.objects.Club;
 import com.scaha.objects.Family;
 import com.scaha.objects.FamilyMember;
 import com.scaha.objects.MailableObject;
@@ -237,7 +238,7 @@ public class MemberBean implements Serializable, MailableObject {
 	 * This guy adds a new member via a USAHockey pull request...
 	 * @return
 	 */
-	public String addNewMember() {
+	public String createMember() {
 		
 		//
 		//
@@ -260,9 +261,19 @@ public class MemberBean implements Serializable, MailableObject {
 		
 		FacesContext context = FacesContext.getCurrentInstance();
 		
-
+		LOGGER.info("HERERERRERR");
+		
+		context.addMessage(
+				"form:growl",
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "USA Hockey Reg",
+                "You cannot create a member.  There is already a member with the same first name, last name and date of birth!"));
+		
+		if (1==1) return "true";
+	
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 
+		
 		//
 		// Lets start off with the basics person is always implied in the extended object.
 		// we are really just saving off alot of stuff through the objects.. then reloading the family .. once done
@@ -431,18 +442,10 @@ public class MemberBean implements Serializable, MailableObject {
 	
 	public String onFlowProcess(FlowEvent event) {  
 
-//		<p:commandButton value="Search USAH" update="add-member" id="search-usah" ajax="false" actionListener="#{usahBean.fetchUSAHockey()}"/>
-
-
         LOGGER.info("Current wizard step:" + event.getOldStep());  
         LOGGER.info("Next step:" + event.getNewStep());  
         
-        LOGGER.info("My List is: " + (Persons == null ? null : Persons.toString()));  
-
-
-        //
-        
-        if (event.getOldStep().equals("usahockey") || event.getNewStep().equals("review")) {
+        if (event.getOldStep().equals("usahockey") && event.getNewStep().equals("review")) {
         	if (this.fetchUSAHockey()) {
         		return event.getNewStep();  
         	} else {
@@ -451,10 +454,28 @@ public class MemberBean implements Serializable, MailableObject {
         } else if (event.getNewStep().equals("choose")) {
             	 			
 			this.Persons = this.genPersonsList();
-			return event.getNewStep();  
+			this.membertype = new ArrayList<String>();
+			this.relationship = "";
 
-		}  else if (event.getNewStep().equals("")) {
-			return "finish";
+		}  else if (event.getNewStep().equals("finish")) {
+
+			//
+			//
+			// 
+			this.selectedPerson = this.findPersonByID(selectedPerson.ID);
+			
+			this.membertype = new ArrayList<String>();
+			
+			if (selectedPerson.getGenatt().get("ISPLAYER").equals("Y") && selectedPerson.getGenatt().get("ISGOALIE").equals("Y")) membertype.add("Player-Goalie");
+			if (selectedPerson.getGenatt().get("ISPLAYER").equals("Y") && !selectedPerson.getGenatt().get("ISGOALIE").equals("Y")) membertype.add("Player-Skater");
+			if (selectedPerson.getGenatt().get("ISMANAGER").equals("Y")) membertype.add("Manager");
+			if (selectedPerson.getGenatt().get("ISCOACH").equals("Y")) membertype.add("Coach");
+			
+			this.relationship = selectedPerson.getXRelType();
+			
+			//
+			//
+			// 
 		}
         return event.getNewStep();  
     }  
@@ -499,16 +520,14 @@ public class MemberBean implements Serializable, MailableObject {
 		this.selectedPerson = selectedperson;
 	}
 	
-	public void onRowSelect(SelectEvent event) {
-		
-		 LOGGER.info("Firing in row select..." + ((Person) event.getObject()).toString());
-	      this.selectedPerson =  (Person) event.getObject();
-	    }
-	 
-    public void onRowUnselect(UnselectEvent event) {
-    	 LOGGER.info("Firing in row un..." + ((Person) event.getObject()).toString());
-	      this.selectedPerson =  null;
+	public Person findPersonByID (int _id) {
+		for (Person c : Persons) {
+			if (c.ID == _id) { 
+				return c;
+			}
+		}
+		return null;
+	}
 
-    }
 
 }

@@ -6,6 +6,7 @@
      xmlns:ui="http://java.sun.com/jsf/facelets"
      xmlns:p="http://primefaces.org/ui"
      xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:pe="http://primefaces.org/ui/extensions"
 >
 
 	<!-- 
@@ -40,12 +41,15 @@
 <div id="page-div">
 <h:form id="form">
 
+<div style="height:55px;">
+<p:messages id="growl" showDetail="true" autoUpdate="true"  global="true"/>
+</div>
         
 <p:wizard id = "wizard" widgetVar="myWizard"  flowListener="#{memberBean.onFlowProcess}" showNavBar="false">  
-
-	<p:tab id="usahockey" style="font-size:12px;" title="Step 1: USA Hockey >>">  	 
-	
+<p:tab id="usahockey" style="font-size:12px;" title="Step 1: USA Hockey >>">  	 
+	<p/>
 	<div class="NewsTitle" style="margin-top:10px;margin-bottom:10px;">Please Enter The  USA Hockey Confirmation Number:</div>
+	<p/>
     <h:panelGrid id="getusahockey" columns="3" cellpadding="10">  
 		<p:outputLabel for="usah-reg" style="display: block;width:150px;!important;font-size:14px;" value="USA Hockey Number:"></p:outputLabel>
 		<p:inputText id="usah-reg" style="font-size:14px;" value="#{memberBean.regnumber}" required="true" requiredMessage="Usa Hockey Number cannot be blank." >
@@ -61,6 +65,7 @@
 </p:tab>
 
 <p:tab id="review" title="Step 2: Review >>">  	
+	<p/>
 	<div class="NewsTitle">Review the Below Information for Accuracy:</div>
 	<p/>
 	<p:fieldset style="font-size:14px;" toggleable="false" toggleSpeed="500"> 
@@ -118,21 +123,21 @@
  	</p:fieldset>
  	<p:spacer height="20px" width="20px" />
 	<p:fieldset toggleable="false" toggleSpeed="500">  
- 	<p:commandButton value="Back" icon="ui-icon-arrow-1-w" iconPos="right" type="button" onclick="myWizard.back();" />
+ 	<p:commandButton update="form:growl" value="Back" icon="ui-icon-arrow-1-w" iconPos="right" type="button" onclick="myWizard.back();" />
 	<p:spacer height="20px" width="20px" />
-	<p:commandButton value="Next" icon="ui-icon-arrow-1-e" iconPos="left" type="button" onclick="myWizard.next();" />
+	<p:commandButton update="form:growl" value="Next" icon="ui-icon-arrow-1-e" iconPos="left" type="button" onclick="myWizard.next();" />
 	</p:fieldset>
  	
 </p:tab>
     
-<p:tab id="choose" title="Step 3: MemberShip >>">  
-	
- 	<div class="NewsTitle">Select the Best Match candidate from the list for #{memberBean.getUsar().getFirstName()} #{memberBean.getUsar().getLastName()}</div>
+<p:tab id="choose" title="Step 3: Select >>">  
+	<p/>
+ 	<div class="NewsTitle">Select the Best Candidate from the list for #{memberBean.getUsar().getFirstName()} #{memberBean.getUsar().getLastName()}</div>
  	<p/>
 	<p:fieldset style="font-size:14px;" toggleable="false" toggleSpeed="500"> 
     Below is a generated list of all our current members that best match this USA Hockey Registration (ranked). <br/>
     If more than one person was located, please choose the one you think is the correct match. <br/>
-    If there was nothing found that was matching in our system, you have the ability to create a new member by selecting the the New Member Choice and moving to the final screen.
+    If there was nothing found that was matching in our system, you have the ability to create a new member by selecting New Member Choice and moving to the final screen.
 	</p:fieldset>      
 	<p:spacer height="20px" width="20px" />
 	<p:dataTable id="listofpeopleout" var="person" value="#{memberBean.getPersons()}" selection="#{memberBean.selectedPerson}" dynamic="false"> 
@@ -154,32 +159,89 @@
   	</p:dataTable>
    	<p:spacer height="20px" width="20px" />
 	<p:fieldset toggleable="false" toggleSpeed="500">  
- 	<p:commandButton value="Back" icon="ui-icon-arrow-1-w" iconPos="right" type="button" onclick="myWizard.back();" />
+ 	<p:commandButton update="form:growl" value="Back" icon="ui-icon-arrow-1-w" iconPos="right" type="button" onclick="myWizard.back();" />
 	<p:spacer height="20px" width="20px" />
-	<p:commandButton value="Confirm" icon="ui-icon-arrow-1-e" iconPos="left" type="button" onclick="myWizard.next();" />
+	<p:commandButton update="form:growl" value="Confirm" icon="ui-icon-arrow-1-e" iconPos="left" type="button" onclick="myWizard.next();" />
 	</p:fieldset> 
         
 </p:tab>
-	
-<p:tab id="finish" title="Step 4: Confirmation">  
-	<div class="NewsTitle"> #{memberBean.selectedPerson} Choose the Options That Best Describe #{memberBean.getUsar().getFirstName()} #{memberBean.getUsar().getLastName()}</div>
+<p:tab id="finish" title="Step 4: Confirm">
 	<p/>
-	<p:fieldset style="font-size:14px;" toggleable="false" toggleSpeed="500"> 
-    Choose which options best describe the member. <p/>
-    Please identify if this person is going to be a Player, a Coach, or a Manager - or some combination of the three this year.
+	<div class="NewsTitle">Choose the Options That Best Describe #{memberBean.getUsar().getFirstName()} #{memberBean.getUsar().getLastName()}</div>
+	<p/>
+	<p:fieldset style="font-size:12pt;" toggleable="false" toggleSpeed="500"> 
+    <ul>
+    <li>If an EXISTING Member in your account - last year's information will be pre-checked.  You should not have to change much.</li> 
+    <li>If a NEW member to SCAHA- please select the options that best match the player</li>
+    <li>If an EXISTING Member NOT in your account.  You can Register them non the less.   In this case, the option exists to capture the person and place them under your account. (See check-box below)</li>
+    </ul>
+	Once, you are set with all the information, simply click the <b>Create Membership button</b>.  You will receive a confirmation e-mail that contains all the 
+	information you need to participate in SCAHA this season - icluding the Personal Identifcation Number for the new Member.
 	</p:fieldset>     
-	<p:spacer height="20px" width="20px" />
-	<p:separator /> 
-	<p:commandButton value="Back" icon="ui-icon-arrow-1-w" iconPos="right" type="button" onclick="myWizard.back();" />
-	<p:spacer height="20px" width="20px" />
-		<p:commandButton value="Save New Member" icon="ui-icon-arrow-1-e" iconPos="left" type="button" onclick="myWizard.next();" />
-	<p:separator /> 
-	<p:spacer height="20px" width="20px" />
+	<p/>
+	<p:fieldset id="fs23" toggleable="false" toggleSpeed="500">  	      
+       <p:panelGrid columns="2" cellpadding="3"> 
+       
+	       <p:outputLabel   style="font-size:12px;" for = "member" value="Type (choose all that apply)" /> 
+ 	   			<p:selectManyCheckbox  id="member" value="#{memberBean.membertype}" style="width: 500px;font-size:12px;" required="true" requiredMessage="need to select a member type." >    
+          			<f:selectItem itemLabel="Player-Skater" itemValue="Player-Skater" />  
+          			<f:selectItem itemLabel="Player-Goalie" itemValue="Player-Goalie" />  
+          			<f:selectItem itemLabel="Coach" itemValue="Coach"/>  
+         			<f:selectItem itemLabel="Manager" itemValue="Manager"/>
+  				</p:selectManyCheckbox>  
 
+ 	      <p:outputLabel  style="font-size:12px;" for ="relationship" value="Relationship (select one)" /> 
+    		<h:panelGroup>
+				<p:panel id="p1" visible="#{memberBean.selectedPerson.isInFamily()}" >
+	   			<p:selectOneMenu id="relationship" value="#{memberBean.relationship}" style="width:150px;font-size:12px;"  required="true" requiredMessage="need to select a relationship type." >         
+            		<f:selectItem itemLabel="Child" itemValue="Child" />
+            		<f:selectItem itemLabel="Spouse" itemValue="Spouse"/>
+            		<f:selectItem itemLabel="Parent" itemValue="Parent"/>
+            		<f:selectItem itemLabel="Relative" itemValue="Relative"/>
+            		<f:selectItem itemLabel="Other" itemValue="Other"/>
+        		</p:selectOneMenu >  
+	     		</p:panel>
+				<p:panel id="p2" visible="#{not memberBean.selectedPerson.isInFamily()}"  rendered = "#{not memberBean.selectedPerson.isInFamily()}">
+  					<h:outputText style="font-size:12px;text-align:left;" value="This person is currently in #{memberBean.selectedPerson.getXFamilyName()} as #{memberBean.selectedPerson.getXRelType()} "/>
+  					<p:spacer height="22px" width="10px"/>
+				</p:panel>
+			</h:panelGroup> 
+		</p:panelGrid>
+
+		<p:fieldset rendered = "#{not memberBean.selectedPerson.isInFamily()}">
+		  <h:selectBooleanCheckbox id="myCheckbox" onclick="hideOrShow(this.checked)" />
+		  <h:outputText value="The person is NOT currently under your account. By Checking this box we will move them into your account when we create the Membership." />
+	 	</p:fieldset>
+
+	</p:fieldset>
+ 	<p:spacer height="20px" width="20px" />
+	<p:fieldset toggleable="false" toggleSpeed="500">  
+ 	<p:commandButton value="Back" icon="ui-icon-arrow-1-w" iconPos="right" type="button" onclick="myWizard.back();">
+ 	<p:resetInput target="form:growl" /> 
+ 	</p:commandButton>
+	<p:spacer height="20px" width="20px" />
+	<p:commandButton value="Create Membership" update="form:growl" actionListener="#{memberBean.createMember()}" />  
+	</p:fieldset> 
 </p:tab>
 </p:wizard>
+<script type="text/javascript">
+    function hideOrShow(show) {
+        // Get the panel using its ID
+        var obj = document.getElementById("form:p1");
+        var obj2 = document.getElementById("form:p2");
+        if (show) {
+            obj.style.display = "block";
+            obj2.style.display = "none";
+        } else {
+            obj.style.display = "none";
+            obj2.style.display = "block";
+        }
+    }
+</script>
+
  </h:form>		
  </div>
+
 </ui:define>
 </ui:composition>
 </h:body>

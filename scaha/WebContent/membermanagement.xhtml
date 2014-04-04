@@ -26,10 +26,10 @@
         <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
         <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
      </f:facet>
-<!-- 	<f:metadata>
+ 	<f:metadata>
 		<f:event type="preRenderView" listener="#{profileBean.verifyUserLogin()}" />
 	</f:metadata>
--->
+
 </h:head>	    
 
 <h:body>
@@ -37,7 +37,6 @@
 
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
 <ui:define name="content">
-<div id="page-div" width = "700px">
 
  <p:tabMenu activeIndex="1">  
     <p:menuitem value="My Information" url="manageprofile.xhtml"  />  
@@ -45,191 +44,37 @@
     <p:menuitem value="Change Password" url="changepassword.xhtml"/>  
     <p:menuitem value="Manage Roles" url="manageroles.xhtml" />  
 </p:tabMenu>  
-
-<p:spacer width="10" height="10" />
-
-
-
-  <h:form id="mp-form">
-  
-   <p:growl id="growl" sticky="true" showDetail="true"/>  
-  
- 	<h:panelGroup id="view-members" rendered="#{profileBean.isViewMembers()}">
- 	
- 		<p:messages id = "existmem"  showDetail="true"/>
- 		
-   		<div class="NewsTitle">What You Need To Do:</div>
-   		<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">  
-    	   <div>The following members tree up under your account.  The only way to add more members is through first registering them through 
-    	   <a target="_Window" href="https://www.usahockeyregistration.com/register_form_input.action">USA Hockey Registration.</a><p/>
-    	   Please fill in all the information accurately on their site.  Our site re-uses all the address and contact information. 
-    	   
-    	   </div>  
-   		</p:fieldset>  
-
-	  	<p:spacer width="10" height="35" />
-  	
-  		<p:fieldset id="fs3" toggleable="false" toggleSpeed="500">  	      
-	    	<p:commandButton value="Get USAH Info" update="view-members,add-member" id="show-add-members" ajax="false"  
-           actionListener="#{profileBean.setAddMembers()}"/>
-        </p:fieldset>
-        
-	    <p:spacer width="10" height="10" />
-
-    	<div class="NewsTitle">#{profileBean.getProfile().getPerson().getFam().getFamilyName()} </div>
-
- 	 	<p:spacer width="10" height="35" />
-    
-  		<p:fieldset id="fs2" toggleable="false" toggleSpeed="500">  	      
-			<p:dataTable id="familymembers" var="familymember" value="#{profileBean.getFamilyMembers()}" selection="#{familymemberBean.selectedFamilyMember}" selectionMode = "single">  
-			    <p:ajax event="rowSelect" listener="#{familymemberBean.onFamilyMemberRowSelect}" update=":mp-form:existmem"  />  
-        		<p:ajax event="rowUnselect" listener="#{familymemberBean.onFamilyMemberRowUnselect}" />		
-   			    <p:column headerText="Name"><h:outputText value="#{familymember.getsFirstName()} #{familymember.getsLastName()}" /></p:column>  
-   	    		<p:column headerText="Relationship"><h:outputText value="#{familymember.getRelationship()}" /></p:column>		
-   	    		<p:column headerText="DOB."><h:outputText value="#{familymember.getDob()}" /></p:column>  
-   	    		<p:column headerText="CMPs"><h:outputText value="#{familymember.getMembertypes()}" /></p:column>  
-   	    		<p:column headerText="#{profileBean.getCurrentUSAHockeySeason()}"><p:outputLabel style="font-family:monospace;!important" value="#{familymember.getUsaHockeyNumber()}" /></p:column>  
-   	    		<p:column headerText="#{profileBean.getCurrentSCAHAHockeySeason()}"><p:outputLabel style="font-family:monospace;!important" value="#{familymember.getScahaHockeyNumber()}" /></p:column>  
- 			</p:dataTable> 
-    	</p:fieldset>
-    	
-    </h:panelGroup>
-
-
-	<ui:fragment id="add-member" rendered="#{profileBean.isAddMember()}">
-
-    <p:wizard flowListener="#{usahockeyBean.onFlowProcess}">  
-	<p:tab id="personal" title="Step 1: Enter The USAH Number">  	 
-
-	<p:fieldset id="fs11" toggleable="false" toggleSpeed="500">  
-	
-     <p style="font-size: 12px;">You will FIRST need to know the USAHockey Number for the CURRENT SEASON. Enter this in the provided field below, then click the SEARCH USAH.  
-      If the record is found, the information below will be prefilled all the information.  Please review this information then click the SAVE button.  This will create a new member
- and generate a new member number for the year.  This member number will be needed to confirm you at all the SCAHA
- tryouts and is needed to sign any Club LOI electronically.</p>  
-
-   	</p:fieldset>  
-	
-	<p:spacer width="10" height="35" />
-    
-   	<h:outputText value="#{profileBean.getProfile().getPerson().getFam().getFamilyName()}"/>
-	<h:outputText value=" (ADDING A NEW MEMBER TO YOUR ACCOUNT)"/>
-
- 	<p:spacer width="10" height="35" />	
-
-  	<p:fieldset id="fs22" toggleable="false" toggleSpeed="500">  	
-  	      
-	    	<p:focus context="fs22"/>   
-          <h:panelGrid id="add-member-grid" columns="3" cellpadding="3">  
-            
-				<p:outputLabel for="usah-reg" style="display: block;width:125px;!important" value="USA Hockey Number:"></p:outputLabel>
-				<p:inputText id="usah-reg" style="width:100px;" value="#{usahBean.regnumber}" required="true" requiredMessage="Usa Hockey Number cannot be blank.">
-					<f:validator validatorId="validateUSAHRegistration" />
-				</p:inputText>
-	 			<p:message id="m_usah-reg" closable="true" for="usah-reg"/>
-				
-			
-
-			</h:panelGrid>	
-			
-			<p:commandButton value="Search USAH" update="add-member" id="search-usah" ajax="false" actionListener="#{usahBean.fetchUSAHockey()}"/>
- 	
- 	</p:fieldset>  
-
-	</p:tab>
-	
-	<p:tab id="address" title="2) Apply To A Person:">  	
-	 
-	 
-  	<p:fieldset id="fs222" toggleable="false" toggleSpeed="500">  	      
-   		<p style="font-size: 12px;">Information pulled from USA Hockey Membership:</p>  
- 		<table>
-			<tr>
-			<td>
-			<h:panelGrid columns="2" cellpadding="3">  
-            	<h:outputText style="display:block;width:100px;!important" value="First Name:" />
-            	<h:outputText value="#{usahBean.getUsar().getFirstName()}" />
-            	<h:outputText value="Last Name:" />
-            	<h:outputText value="#{usahBean.getUsar().getLastName()}" />
-            	<h:outputText value="Middle Init:" />
-            	<h:outputText value="#{usahBean.getUsar().getMiddleInit()}" />
-			</h:panelGrid>  
-           	<p:separator id="separator23"/>
-			<h:panelGrid columns="2" cellpadding="3"> 
-				<h:outputText style="display:block;width:100px;!important" value="Address:" />
-            	<h:outputText value="#{usahBean.getUsar().getAddress()}" />
-				<h:outputText value="City:" />
-            	<h:outputText value="#{usahBean.getUsar().getCity()}" />
-				<h:outputText value="State, Country:" />
-             	<h:outputText value="#{usahBean.getUsar().getState()}, #{usahBean.getUsar().getCountry()}" />
-            	<h:outputText value="Zipcode:" />
-            	<h:outputText value="#{usahBean.getUsar().getZipcode()} #{usahBean.getUsar().getForZip()}" />
-            </h:panelGrid>  
-            </td>
-            <td>
-			<h:panelGrid columns="2" cellpadding="3">  
-            	<h:outputText style="display:block;width:100px;!important" value="DOB:" />
-            	<h:outputText value="#{usahBean.getUsar().getDOB()}" />
-            	<h:outputText value="Citizenship:" />
-            	<h:outputText value="#{usahBean.getUsar().getCitizen()}" />
-            	<h:outputText value="Gender:" />
-            	<h:outputText value="#{usahBean.getUsar().getGender()}" />
-			</h:panelGrid>  
-           	<p:separator id="separator2"/>
-			<h:panelGrid columns="2" cellpadding="3">  
-				<h:outputText style="display:block;width:100px;!important" value="Parent/Guardian:" />
-            	<h:outputText value="#{usahBean.getUsar().getPGSFName()} #{usahBean.getUsar().getPGSMName()} #{usahBean.getUsar().getPGSLName()}" />
-            	<h:outputText value="Home Phone:" />
-            	<h:outputText value="#{usahBean.getUsar().getHPhone()}" />
-				<h:outputText value="Work Phone:" />
-            	<h:outputText value="#{usahBean.getUsar().getBPhone()}" />
-            	<h:outputText value="e-mail:" />
-            	<h:outputText value="#{usahBean.getUsar().getEmail()}" />
-            </h:panelGrid>  
-            </td>
-            </tr>
-            </table>	
-   
-    </p:fieldset>
-    </p:tab>
-    
-    <p:tab id="contact" title="3) Choose Your Options:">  
-	
-  	<p:fieldset id="fs23" toggleable="false" toggleSpeed="500">  	      
-       <h:panelGrid columns="3" cellpadding="3"> 
-       
-	       <p:outputLabel  for = "relationship" value="Relationship (select one)" /> 
-       			<p:selectOneMenu id="relationship" value="#{usahBean.relationship}" style="width: 100px"  required="true" requiredMessage="need to select a relationship type." >         
-            		<f:selectItem itemLabel="Child" itemValue="Child" />
-            		<f:selectItem itemLabel="Spouse" itemValue="Spouse"/>
-            		<f:selectItem itemLabel="Parent" itemValue="Parent"/>
-            		<f:selectItem itemLabel="Relative" itemValue="Relative"/>
-            		<f:selectItem itemLabel="Other" itemValue="Other"/>
-        		</p:selectOneMenu >  
- 
- 			<p:message id="m_relationship" closable="true" for="relationship"/>
- 			
-			<p:outputLabel  for = "member" value="Type (choose all that apply)" /> 
-		 	   <p:selectManyCheckbox  id="member" value="#{usahBean.membertype}" style="width: 125px" required="true" requiredMessage="need to select a member type." layout="grid" columns="1">    
-          			<f:selectItem itemLabel="Player-Skater" itemValue="Player-Skater" />  
-          			<f:selectItem itemLabel="Player-Goalie" itemValue="Player-Goalie" />  
-          			<f:selectItem itemLabel="Coach" itemValue="Coach"/>  
-         			<f:selectItem itemLabel="Manager" itemValue="Manager"/>
-      			</p:selectManyCheckbox>  
- 			<p:message id="m_member" closable="true" for="member"/>
-            <p:commandButton global="false" rendered="#{usahBean.datagood}" value="Save Now" update="add-member,view-members" id="finish-add-mem" ajax="false" action="#{usahBean.addNewMember()}"/> 
-           	 <p:message rendered="#{usahBean.datagood}" id="m_finish-add-mem" closable="true" for="finish-add-mem"/>
-           	<p:commandButton value="Cancel" update="add-member" id="cancel-add-mem" immediate="true" ajax="false" action="#{profileBean.cancelAddMember()}" >
-            	<p:resetInput target="mp-form" />
-            </p:commandButton>
-           	 
-		</h:panelGrid>
+<div id="page-div">
+<h:form id="mp-form">
+<p/>
+<div class="NewsTitle">#{profileBean.getProfile().getPerson().getFam().getFamilyName()} </div>
+ 	<p/>
+	<p:fieldset id="fs1" style="font-size:10pt;" toggleable="false" toggleSpeed="500">  
+ 		The following members tree up under your account.  The only way to add more members is through first registering them through 
+   		<a target="_Window" href="https://www.usahockeyregistration.com/register_form_input.action">USA Hockey Registration.</a>
+   		Please fill in all the information accurately on their site because we will re-use all of it.. including the contact information for our base on data.
+    </p:fieldset>  
+	<p/>
+   	<p:fieldset id="fs2" toggleable="false" toggleSpeed="500">  	      
+	<p:dataTable id="familymembers" var="familymember" value="#{profileBean.getFamilyMembers()}" selection="#{familymemberBean.selectedFamilyMember}" selectionMode = "single">  
+        <p:column headerText="Name"><h:outputText value="#{familymember.getsFirstName()} #{familymember.getsLastName()}" /></p:column>  
+		<p:column headerText="Relationship"><h:outputText value="#{familymember.getRelationship()}" /></p:column>		
+		<p:column headerText="DOB."><h:outputText value="#{familymember.getDob()}" /></p:column>  
+  		<p:column headerText="CMPs"><h:outputText value="#{familymember.getMembertypes()}" /></p:column>  
+  		<p:column headerText="#{profileBean.getCurrentUSAHockeySeason()}"><p:outputLabel style="font-family:monospace;!important" value="#{familymember.getUsaHockeyNumber()}" /></p:column>  
+		<p:column headerText="#{profileBean.getCurrentSCAHAHockeySeason()}"><p:outputLabel style="font-family:monospace;!important" value="#{familymember.getScahaHockeyNumber()}" /></p:column>  
+	</p:dataTable> 
 	</p:fieldset>
-	</p:tab>
-	</p:wizard>
-	</ui:fragment>            
- </h:form>		
- </div>
+ 	<p:spacer width="10" height="20" />
+  	<p:fieldset id="fs22" style="font-size:10pt;" toggleable="false" toggleSpeed="500">  	      
+	You will need to know the USAHockey Confirmation Number that is generated by the USA Hockey system.  When you have obtained the 14 character number, you can click the below button to start the process.
+	</p:fieldset>
+ 	<p/>
+<p:button  value="Register a Member" id="createMember"  style="width:175px;"  icon="ui-icon-home" href="/manageUSAHockey.xhtml" />
+
+
+ </h:form>	
+ </div>	
 </ui:define>
 </ui:composition>
 </h:body>

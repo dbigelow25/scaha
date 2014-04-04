@@ -48,7 +48,7 @@ public class Person extends ScahaObject implements Serializable {
 		this.fam = fam;
 	}
 
-	protected int ID = 0;
+	public int ID = 0;
 	
 	public Person (ScahaDatabase _db, Profile _pro) {
 		
@@ -422,4 +422,7 @@ public class Person extends ScahaObject implements Serializable {
 		return getGenAttByKey("NOTES");
 	}
 	
+	public String isInFamily () {
+		return getGenAttByKey("INFAMILY");
+	}
 }

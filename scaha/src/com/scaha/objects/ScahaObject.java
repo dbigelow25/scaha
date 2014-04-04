@@ -104,7 +104,6 @@ public abstract class ScahaObject implements Serializable {
 	}
 	
 	public String getGenAttByKey(String _key) {
-		LOGGER.info("getGenAttByKey is:" + _key);
 		return genatt.get(_key);
 	}
 }

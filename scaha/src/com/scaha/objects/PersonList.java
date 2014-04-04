@@ -92,6 +92,10 @@ public class PersonList extends ListDataModel<Person> implements Serializable, S
 				String strRelType = rs.getString(i++);
 				int tmpFamilyid = rs.getInt(i++);
 				String strFamilyName = rs.getString(i++);
+				String strIsPlayer = rs.getString(i++);
+				String strIsCoach = rs.getString(i++);
+				String strIsManager = rs.getString(i++);
+				String strIsGoalie = rs.getString(i++);
 				
 				boolean found = false;
 				for(Person result : data) {  
@@ -106,14 +110,20 @@ public class PersonList extends ListDataModel<Person> implements Serializable, S
 					data.add(per);
 					String  strNotes = "";
 					if (tmpFamilyid != _pro.getPerson().getFamily().ID) {
-						strNotes = strNotes + "The person is <b>not</b> part of your family account<br/>";
+						strNotes = strNotes + "The person is <b>*** NOT ***</b> part of your family account<br/>";
+						per.getGenatt().put("INFAMILY","false");
 					}
 					if (per.ID == _pro.getPerson().ID) {
 						strNotes = strNotes + "This is a selfie (meaning It is you)<br/>";
+						per.getGenatt().put("INFAMILY","true");
 					}
 					per.getGenatt().put("NOTES", strNotes);
 					per.getGenatt().put("RELTYPE",strRelType);
 					per.getGenatt().put("FAMILYNAME",strFamilyName);
+					per.getGenatt().put("ISPLAYER",strIsPlayer);
+					per.getGenatt().put("ISCOACH",strIsCoach);
+					per.getGenatt().put("ISMANAGER",strIsManager);
+					per.getGenatt().put("ISGOALIE",strIsGoalie);
 				}
 			
 			}
@@ -132,6 +142,12 @@ public class PersonList extends ListDataModel<Person> implements Serializable, S
 			per.gleanUSAHinfo(_usah);
 			per.getGenatt().put("RELTYPE","New Member");
 			per.getGenatt().put("FAMILYNAME",_pro.getPerson().getFamily().getFamilyName());
+			per.getGenatt().put("NOTES", "<b>THIS IS A NEW MEMBER TO THE SYSTEM</b><br/>");
+			per.getGenatt().put("ISPLAYER","N");
+			per.getGenatt().put("ISCOACH","N");
+			per.getGenatt().put("ISMANAGER","N");
+			per.getGenatt().put("ISGOALIE","N");
+			per.getGenatt().put("INFAMILY","true");
 			data.add(per);
 		}
 
