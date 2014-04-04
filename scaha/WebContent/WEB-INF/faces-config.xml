@@ -93,7 +93,7 @@
 	<managed-bean>
 		<managed-bean-name>registrarloiBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.registrarloiBean</managed-bean-class>
-		<managed-bean-scope>view</managed-bean-scope>
+		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>reviewcoachloiBean</managed-bean-name>
