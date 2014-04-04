@@ -22,6 +22,7 @@
 	<ui:define name="content">
 		<div id="page-div">
 		<h:form id="form">
+		<p:messages id="loicodemessage" showDetail="true" autoUpdate="true" closable="false" />
 		<ui:fragment id="edit-loi">
 			<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">
 				<p:panel id ="panel" header="SCAHA LETTER OF INTENT AND MEMBERSHIP REGISTRATION 2014-2015">
@@ -149,7 +150,7 @@
 						<h:column >Date:</h:column>
 						<h:column ><h:outputText value="#{loiBean.currentdate}"/></h:column>
 					</h:panelGrid>
-					<p:messages id="loicodemessage" showDetail="true" autoUpdate="true" closable="false" />
+					
 				</p:panel>
 			</p:fieldset>
 			<p:spacer width="10" height="10" />

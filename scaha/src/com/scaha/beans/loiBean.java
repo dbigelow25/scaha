@@ -574,11 +574,15 @@ public class loiBean implements Serializable, MailableObject {
     					resultcount = rs.getInt("idmember");
     				}
     				LOGGER.info("We have player up code validation results for player details by player id");
+    				if (resultcount.equals(0)){
+    					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "The provided LOI signature code is invalid."));
+    				}
     			}
     			db.cleanup();
  				
     		    
     			bplayerup = false;
+    			Integer plupresultcount = 0;
     			//need to verify if player is playing up and if player up code is needed if not provided
     			if (this.playerupcode==null || this.playerupcode==""){
     				//Need to check player up code from family next
@@ -588,29 +592,29 @@ public class loiBean implements Serializable, MailableObject {
 	 				cs.setInt("birthyear",Integer.parseInt(year));
 	 				cs.setInt("selectedteam", Integer.parseInt(this.selectedteam));
 	    		    rs = cs.executeQuery();
-	    			resultcount = 0;
+	    			
 	    		    
 	    		    if (rs != null){
 	    				
 	    				while (rs.next()) {
-	    					resultcount = rs.getInt("divisioncount");
+	    					plupresultcount = rs.getInt("divisioncount");
 	    				}
 	    				LOGGER.info("We have validation whether player needs player up code or not");
 	    			}
 	    			db.cleanup();
 	    			
-	    			if (resultcount.equals(0)){
+	    			if (plupresultcount.equals(0)){
 	    				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "The Player Up Code is required for this player for the division selected."));
 	    				bplayerup=true;
 	    			}
     			}
     			
     			//need to verify player up code if user provided it.
-    			if (this.playerupcode!=null && this.playerupcode!=""){
+    			if (plupresultcount.equals(0)){
     				//Need to check player up code from family next
 	 				LOGGER.info("verify family code provided for player up");
 	 				cs = db.prepareCall("CALL scaha.validateMemberNumber(?,?)");
-	 				cs.setString("memnumber", this.loicode);
+	 				cs.setString("memnumber", this.playerupcode);
 	 				cs.setInt("personid", this.selectedplayer);
 	    		    rs = cs.executeQuery();
 	    			resultcount = 0;
@@ -789,7 +793,7 @@ public class loiBean implements Serializable, MailableObject {
 						e.printStackTrace();
 					} 
     		    } else {
-    		    	FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "The provided LOI signature code is invalid."));
+    		    	
     		    }
     		   
 			} else {
@@ -982,9 +986,30 @@ public class loiBean implements Serializable, MailableObject {
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		
 		try{
-			LOGGER.info("verify if user needs to enter player up code");
-			CallableStatement cs = db.prepareCall("CALL scaha.IsPlayerUpNeeded(?,?)");
+			
+			//first lets check if the team selected is too young for the players dob
+			CallableStatement cs = db.prepareCall("CALL scaha.IsPlayerOlderThanLevel(?,?)");
 			String year = this.dob.substring(0,4);
+			cs.setInt("birthyear",Integer.parseInt(year));
+			cs.setInt("selectedteam", Integer.parseInt(this.selectedteam));
+		    rs = cs.executeQuery();
+			Integer ageoldercount = 0;
+		    
+		    if (rs != null){
+				
+				while (rs.next()) {
+					ageoldercount = rs.getInt("isolder");
+				}
+				LOGGER.info("We have validation whether player needs player up code or not");
+			}
+			db.cleanup();
+			
+			if (ageoldercount.equals(1)){
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "The player is too old for the team selected"));
+			}
+			
+			LOGGER.info("verify if user needs to enter player up code");
+			cs = db.prepareCall("CALL scaha.IsPlayerUpNeeded(?,?)");
 			cs.setInt("birthyear",Integer.parseInt(year));
 			cs.setInt("selectedteam", Integer.parseInt(this.selectedteam));
 		    rs = cs.executeQuery();
@@ -999,12 +1024,14 @@ public class loiBean implements Serializable, MailableObject {
 			}
 			db.cleanup();
 			
-			if (resultcount.equals(0)){
+			if (resultcount.equals(0) && ageoldercount.equals(0)){
 				this.setDisplayplayerup(true);
 			} else {
 				this.setDisplayplayerup(false);
 			}
+		
 			
+			 
 		} catch (SQLException e) {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN loading club by profile");
@@ -1017,7 +1044,7 @@ public class loiBean implements Serializable, MailableObject {
     		db.free();
     	}
 		
-		//next lets check if the team selected is too young for the players dob
+		
 		
 	}
 		
