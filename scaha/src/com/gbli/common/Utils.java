@@ -3,9 +3,13 @@
  */
 package com.gbli.common;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -35,6 +39,9 @@ import com.scaha.objects.UsaHockeyRegistration;
  *
  */
 public class Utils {
+	
+	static Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	
 	
 	
 	public static void main (String[] args) throws Exception  {
@@ -1107,5 +1114,72 @@ public class Utils {
 		}
 		
 		
+	}
+	
+	 /**
+     * 
+     * This will do a merge of Tokens to Values from a text file and bring it back as one whole string
+     * 
+     * The _sparm format is TOKEN:VALUE
+     * 
+     * @return
+     */
+    public static String mailMerge(String _sPath, List<String> _sparms) {
+
+		return mergeTokens(getMailTemplateFromFile(_sPath), _sparms);
+    }
+    
+
+	 /**
+     * 
+     * This will pull the mail template from the file system
+     * 
+     * The _sparm format is TOKEN:VALUE
+     * 
+     * @return
+     */
+    public static String getMailTemplateFromFile(String _sPath) {
+
+    	String sAbsolutePath = ContextManager.getRealPath() + _sPath;
+		LOGGER.info("absolute Path is here:" + sAbsolutePath);
+
+		StringBuffer sb = new StringBuffer();
+		
+    	try (BufferedReader br = new BufferedReader(new FileReader(sAbsolutePath))) {
+    		String sCurrentLine;
+    		while ((sCurrentLine = br.readLine()) != null) {
+    			sb.append(sCurrentLine);
+    		}
+    		br.close();
+    	} catch (IOException ex) {
+    		ex.printStackTrace();
+    	} 
+    		return sb.toString();
+     }
+    
+    /**
+     * Lets pepper with tokens!
+     * 
+     * @param _str
+     * @param _sparms
+     * @return
+     */
+	public static String mergeTokens(String _str, List<String> _sparms) {
+		// TODO Auto-generated method stub
+		//
+		// lets loop through this.. its in pars of 2s  the first being
+		// the target token.  
+		//
+		// where the second one is the value you want to replace it with.
+		
+		for (String s : _sparms ){
+			
+			String[] parts = s.split(":");
+			String stoken = parts[0];
+			String value = parts[1];
+			_str = _str.replace(":"+ stoken + ":",value);
+		}
+		
+		return _str;
 	}
 }

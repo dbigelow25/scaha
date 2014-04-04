@@ -12,28 +12,28 @@
 	
 	<h:form id="myform">
 			<p:panel id ="panel" header="Member Registration Information:">
-				<p:panelGrid columns="4" cellpadding="3">
+				<p:panelGrid style="font-size:10pt;" columns="4" cellpadding="3">
 
-					<p:outputLabel for="firstname" value="First Name" />
-					<p:inputText id="firstname" style="width:150px;" value="#{registrationBean.firstname}" required = "true" requiredMessage="First Name cannot be blank."/>
-					<p:tooltip for="firstname" value="The First name you want to be called by" showEffect="fade" hideEffect="fade" />  
+					<p:outputLabel for="firstname" style="font-size:12pt;" value="First Name" />
+					<p:inputText id="firstname" style="width:225px;font-size:12pt;" value="#{registrationBean.firstname}" required = "true" requiredMessage="First Name cannot be blank."/>
+					<p:tooltip for="firstname" style="font-size:12pt;" value="The First name you want to be called by" showEffect="fade" hideEffect="fade" />  
 					<p:message id="m_firstname" for="firstname" />
 
-					<p:outputLabel for="lastname" value="Last Name" />
-					<p:inputText id="lastname" style="width:150px;" value="#{registrationBean.lastname}" required = "true" requiredMessage="Last Name cannot be blank."/>
-					<p:tooltip for="lastname" value="The Last name you want to be called by" showEffect="fade" hideEffect="fade" />  
+					<p:outputLabel for="lastname" style="font-size:12pt;" value="Last Name" />
+					<p:inputText id="lastname" style="width:225px;font-size:12pt;" value="#{registrationBean.lastname}" required = "true" requiredMessage="Last Name cannot be blank."/>
+					<p:tooltip for="lastname" style="font-size:12pt;" value="The Last name you want to be called by" showEffect="fade" hideEffect="fade" />  
 					<p:message id="m_lastname" for="lastname" />
 
-					<p:outputLabel for="username" value="User Name (e-mail)"/>
-					<p:inputText id="username" style="width:150px;" value="#{registrationBean.username}" required = "true" requiredMessage="User Name cannot be blank.">
+					<p:outputLabel for="username" style="font-size:12pt;" value="User Name (e-mail)"/>
+					<p:inputText id="username" style="width:225px;font-size:12pt;" value="#{registrationBean.username}" required = "true" requiredMessage="User Name cannot be blank.">
 						<f:validator validatorId="validateUserName" />
 						<f:ajax event="blur" render="m_username" />
 					</p:inputText>
-					<p:tooltip for="username" value="Your Usercode is your e-mail.  It needs to be unique to our system" showEffect="fade" hideEffect="fade" />  
-					<p:message id="m_username" for="username" />
+					<p:tooltip for="username" style="font-size:12pt;" value="Your Usercode is your e-mail.  It needs to be unique to our system" showEffect="fade" hideEffect="fade" />  
+					<p:message id="m_username" style="font-size:12pt;" for="username" />
 
-					<p:outputLabel for="password" value="Password:" />
-					<h:inputSecret id="password" style="width:150px;" value="#{registrationBean.password}"
+					<p:outputLabel for="password" style="font-size:12pt;" value="Password:" />
+					<h:inputSecret id="password" style="width:225px;font-size:12pt;" value="#{registrationBean.password}"
 						required="true" requiredMessage="Password cannot be blank.">
 						<f:validator validatorId="confirmPasswordValidator" />
 						<f:attribute name="confirm"
@@ -42,44 +42,47 @@
 							render="m_password" />
 					</h:inputSecret>
 					<p:outputLabel value="" />
-					<p:message id="m_password" for="password" />
+					<p:message style="font-size:12pt;" id="m_password" for="password" />
 
-					<p:outputLabel for="confirm" value="Password (again):" />
-					<h:inputSecret id="confirm" style="width:150px;" binding="#{confirmPassword}">
+					<p:outputLabel for="confirm" style="font-size:12pt;" value="Password (again):" />
+					<h:inputSecret id="confirm" style="width:225px;font-size:12pt;" binding="#{confirmPassword}">
 						<f:ajax event="blur" execute="password confirm"
 							render="m_password m_confirm" />
 					</h:inputSecret>
 					<p:outputLabel value="" />
-					<p:message id="m_confirm" for="confirm" />
+					<p:message style="font-size:12pt;" id="m_confirm" for="confirm" />
 					
-					<p:outputLabel for="nickname" value="Nick Name" />
-					<p:inputText id="nickname" style="width:150px;" value="#{registrationBean.nickname}"/>
-					<p:tooltip for="nickname" value="What will be shown on the site screen.  If blank, your first and last name will be used" showEffect="fade" hideEffect="fade" />  
+					<p:outputLabel style="font-size:12pt;" for="nickname" value="Nick Name" />
+					<p:inputText id="nickname" style="width:225px;font-size:12pt;" value="#{registrationBean.nickname}"/>
+					<p:tooltip for="nickname" style="font-size:12pt;" value="What will be shown on the site screen.  If blank, your first and last name will be used" showEffect="fade" hideEffect="fade" />  
 					<p:message id="m_nickname" for="nickname" />	
 
-					<p:outputLabel for="dob"  value="Date of Birth" />
-					<p:inputMask id="dob" value="#{registrationBean.DOB}" style="width:150px;" mask="99/99/9999" />  
-					<p:tooltip for="dob" value="When were you born?  " showEffect="fade" hideEffect="fade" />  
+					<p:outputLabel for="dob" style="font-size:12pt;" value="Date of Birth" />
+					<p:calendar id="dob"   yearRange="1935:2014" value="#{registrationBean.DOB}" showOn="button" popupIconOnly="false" pattern ="MM/dd/yyyy"  navigator="true" required = "true" requiredMessage="Date of Birth cannot be blank." />
+ 
+					
+<!-- 				<p:inputMask id="dob" value="#{registrationBean.DOB}" style="width:225px;font-size:12pt;" mask="99/99/9999" required = "true" requiredMessage="Date of Birth cannot be blank."/>  
+ -->				<p:tooltip for="dob" style="font-size:12pt;" value="When were you born?  " showEffect="fade" hideEffect="fade" />  
 					<p:message id="m_dob" for="dob" />	
 
-					<p:outputLabel for="gender" value="Gender" />
-				    <p:selectOneMenu id="gender" value="#{registrationBean.gender}">  
+					<p:outputLabel for="gender" style="font-size:12pt;" value="Gender" />
+				    <p:selectOneMenu id="gender" style="font-size:12pt;" value="#{registrationBean.gender}">  
 			            <f:selectItem itemLabel="Male" itemValue="M" />  
            				<f:selectItem itemLabel="Female" itemValue="F" />  
       				</p:selectOneMenu> 
       				
 					<p:message id="m_gender" for="gender" />
-					<p:tooltip for="gender" value="You are either a (M)ale, or a (F)emale" showEffect="fade" hideEffect="fade" /> 
+					<p:tooltip for="gender" style="font-size:12pt;" value="You are either a (M)ale, or a (F)emale" showEffect="fade" hideEffect="fade" /> 
 
-					<p:outputLabel for="phone"  value="Mobile Phone" />
-					<p:inputMask id="phone" value="#{registrationBean.phone}" style="width:150px;" mask="(999) 999-9999" required="true" requiredMessage="A mobile phone is needed"/>  
+					<p:outputLabel for="phone"  style="font-size:12pt;" value="Mobile Phone" />
+					<p:inputMask id="phone" value="#{registrationBean.phone}" style="width:225px;font-size:12pt;" mask="(999) 999-9999" required="true" requiredMessage="A mobile phone is needed"/>  
 					<p:message id="m_phone" for="phone" />
 					<p:tooltip for="phone" value="Put the mobile phone number you want to be contacted with and have alerts sent to" showEffect="fade" hideEffect="fade" /> 
 
-					<p:outputLabel for="email" value="alternate e-mail" />
-					<p:inputText id="email" style="width:150px;" value="#{registrationBean.email}" />
-					<p:tooltip for="email" value="An alternate e-mail to contact you in case your primary e-mail has been corrupted" showEffect="fade" hideEffect="fade" />  
-					<p:message id="m_email" for="email" />					
+					<p:outputLabel for="email" style="font-size:12pt;" value="alternate e-mail" />
+					<p:inputText id="email" style="width:225px;font-size:12pt;" value="#{registrationBean.email}" />
+					<p:tooltip for="email" style="font-size:12pt;" value="An alternate e-mail to contact you in case your primary e-mail has been corrupted" showEffect="fade" hideEffect="fade" />  
+					<p:message id="m_email" style="font-size:12pt;" for="email" />					
 					
 
 			</p:panelGrid>
@@ -87,25 +90,25 @@
 			<p:separator id="customSeparator" style="width:800px;height:2px" />    
 			<p:panelGrid columns="3" cellpadding="3">
 
-					<p:outputLabel for="address" value="Address"/>
+					<p:outputLabel for="address" style="font-size:12pt;" value="Address"/>
 					<p:spacer width="200" height="10" />
 					<p:spacer width="200" height="10" />
-					<p:inputText id="address" style="width:175px;" value="#{registrationBean.address}" required = "true" requiredMessage="Address Cannot be blank." />
-					<p:tooltip for="address" value="Your Street Address in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
+					<p:inputText id="address" style="width:350px;font-size:12pt;" value="#{registrationBean.address}" required = "true" requiredMessage="Address Cannot be blank." />
+					<p:tooltip for="address"  style="font-size:12pt;" value="Your Street Address in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
 					<p:message id="m_address" for="address" />
 					
 			</p:panelGrid>
 					
 			<p:panelGrid columns="3" cellpadding="3">
-					<p:outputLabel for="city" value="City"/>
-					<p:outputLabel for="state" value="State"/>
-					<p:outputLabel for="zip" value="Zip"/>
-					<p:inputText id="city" style="width:175px;" value="#{registrationBean.city}" required = "true" requiredMessage="City cannot be blank." />
-					<p:inputText id="state" style="width:25px;" maxlength="2" value="#{registrationBean.state}" required = "true" requiredMessage="State cannot be blank." />
-					<p:inputText id="zip" style="width:75px;" maxlength="5" value="#{registrationBean.zip}" required = "true" requiredMessage="State cannot be blank." />
-					<p:tooltip for="city" value="The city you live in in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
-					<p:tooltip for="state" value="The state you live in in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
-					<p:tooltip for="zip" value="The Zipcode you live in in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
+					<p:outputLabel for="city" style="font-size:12pt;" value="City"/>
+					<p:outputLabel for="state" style="font-size:12pt;" value="State"/>
+					<p:outputLabel for="zip" style="font-size:12pt;" value="Zip"/>
+					<p:inputText id="city" style="width:175px;font-size:12pt;" value="#{registrationBean.city}" required = "true" requiredMessage="City cannot be blank." />
+					<p:inputText id="state" style="width:25px;font-size:12pt;" maxlength="2" value="#{registrationBean.state}" required = "true" requiredMessage="State cannot be blank." />
+					<p:inputText id="zip" style="width:75px;font-size:12pt;" maxlength="5" value="#{registrationBean.zip}" required = "true" requiredMessage="State cannot be blank." />
+					<p:tooltip for="city" style="font-size:12pt;" value="The city you live in in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
+					<p:tooltip for="state" style="font-size:12pt;"  value="The state you live in in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
+					<p:tooltip for="zip" style="font-size:12pt;" value="The Zipcode you live in in case we have to mail you something the old fashion way..." showEffect="fade" hideEffect="fade" />  
 					<p:message id="m_city" for="city" />
 					<p:message id="m_state" for="state" />
 					<p:message id="m_zip" for="zip" />

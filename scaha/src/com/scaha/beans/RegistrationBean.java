@@ -3,6 +3,8 @@ package com.scaha.beans;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -27,6 +29,9 @@ public class RegistrationBean implements Serializable, MailableObject  {
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	
+	private static String mail_reg_body = Utils.getMailTemplateFromFile("/mail/welcome.html");
+	
 	
 	private String username = null;
 	private String password = null;
@@ -244,11 +249,28 @@ public class RegistrationBean implements Serializable, MailableObject  {
  				if (db.getResultSet() != null && db.getResultSet().next()){
 					// We already have this username.. 
 					// we need to exit and fill the message in the context on the screen.
+ 					
+ 					db.free();
 					return "fail";
 				}
  				
  				db.cleanup();
 
+ 				//
+ 				// We do not want to add a person twice (same first and last name!)
+ 				//
+ 				if (db.checkForPersonByFLDOB(this.getFirstname().toLowerCase(), this.getLastname().toLowerCase(), this.getDOB())) {
+ 					
+ 					FacesContext.getCurrentInstance().addMessage(
+ 							null,
+ 		                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+ 		                    "USA Hockey Reg",
+ 		                    "You cannot create a member.  There is already a member with the same first name, last name and date of birth!"));
+ 					db.free();
+					return "fail";
+
+ 				} 			
+ 				
 				//
 				// we are good to go here..
 				//
@@ -337,12 +359,17 @@ public class RegistrationBean implements Serializable, MailableObject  {
 	@Override
 	public String getSubject() {
 		// TODO Auto-generated method stub
-		return "SCAHA iSite Wecomes you as a new registered user";
+		return "SCAHA iSite Wecomes You as a New Member!";
 	}
 	@Override
 	public String getTextBody() {
 		// TODO Auto-generated method stub
-		return "You have succesfully registered.." + this.getFirstname() + " " + this.getLastname();
+		List<String> myTokens = new ArrayList<String>();
+		myTokens.add("FIRSTNAME:" + this.getFirstname());
+		myTokens.add("LASTNAME:" + this.getLastname());
+		myTokens.add("USERNAME:" + this.getUsername());
+		myTokens.add("PASSWORD:" + this.getPassword());
+		return Utils.mergeTokens(RegistrationBean.mail_reg_body,myTokens);
 	}
 	
 	@Override

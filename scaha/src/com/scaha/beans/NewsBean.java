@@ -2,12 +2,15 @@ package com.scaha.beans;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 
+import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.FamilyMemberDataModel;
@@ -58,6 +61,14 @@ public class NewsBean implements Serializable,  MailableObject  {
 	 */
 	public NewsItem getCurrentNewsItem() {
 		return currentnewsitem;
+	}
+	
+	public String testMerge() {
+		
+		List<String> myTokens = new ArrayList<String>();
+		myTokens.add("FIRSTNAME:David Bigelow");
+		return Utils.mailMerge("/mail/test.mail",myTokens);
+		
 	}
 	/**
 	 * @param currentnewsitem the currentnewsitem to set

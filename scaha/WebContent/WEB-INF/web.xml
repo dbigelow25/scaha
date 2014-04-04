@@ -90,6 +90,12 @@
     <param-name>javax.faces.PARTIAL_STATE_SAVING</param-name>
     <param-value>false</param-value>
 </context-param>
+<!-- To enable encryption -->
+<context-param>
+    <param-name>org.apache.myfaces.USE_ENCRYPTION</param-name>
+    <param-value>false</param-value>
+ </context-param>
+
  <!-- ############################################# -->
 <!-- # File upload                                      # -->
 <!-- ############################################# -->

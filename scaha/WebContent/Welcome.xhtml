@@ -10,6 +10,7 @@
 <ui:define name="content">
 <h:body>
 <div id="news-div">
+
     <p:panel header="Latest SCAHA News" footer="brought to you by iScaha">  
  	<ui:repeat value="#{newsBean.getNewsItemList()}" var="newsitem">
 		<div class="NewsTitle">#{newsitem.title} 
