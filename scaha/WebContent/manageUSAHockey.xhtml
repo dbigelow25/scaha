@@ -169,8 +169,8 @@
 	<p/>
 	<div class="NewsTitle">Choose the Options That Best Describe #{memberBean.getUsar().getFirstName()} #{memberBean.getUsar().getLastName()}</div>
 	<p/>
-	<p:fieldset style="font-size:12pt;" toggleable="false" toggleSpeed="500"> 
-    <ul>
+	<p:fieldset style="font-size:10pt;" toggleable="false" toggleSpeed="500"> 
+    OK... <ul>
     <li>If an EXISTING Member in your account - last year's information will be pre-checked.  You should not have to change much.</li> 
     <li>If a NEW member to SCAHA- please select the options that best match the player</li>
     <li>If an EXISTING Member NOT in your account.  You can Register them non the less.   In this case, the option exists to capture the person and place them under your account. (See check-box below)</li>
@@ -199,6 +199,7 @@
             		<f:selectItem itemLabel="Parent" itemValue="Parent"/>
             		<f:selectItem itemLabel="Relative" itemValue="Relative"/>
             		<f:selectItem itemLabel="Other" itemValue="Other"/>
+	   				<f:selectItem itemLabel="Self" itemValue="Self" />
         		</p:selectOneMenu >  
 	     		</p:panel>
 				<p:panel id="p2" visible="#{not memberBean.selectedPerson.isInFamily()}"  rendered = "#{not memberBean.selectedPerson.isInFamily()}">

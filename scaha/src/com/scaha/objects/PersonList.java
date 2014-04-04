@@ -112,10 +112,11 @@ public class PersonList extends ListDataModel<Person> implements Serializable, S
 					if (tmpFamilyid != _pro.getPerson().getFamily().ID) {
 						strNotes = strNotes + "The person is <b>*** NOT ***</b> part of your family account<br/>";
 						per.getGenatt().put("INFAMILY","false");
+					} else {
+						per.getGenatt().put("INFAMILY","true");
 					}
 					if (per.ID == _pro.getPerson().ID) {
 						strNotes = strNotes + "This is a selfie (meaning It is you)<br/>";
-						per.getGenatt().put("INFAMILY","true");
 					}
 					per.getGenatt().put("NOTES", strNotes);
 					per.getGenatt().put("RELTYPE",strRelType);
