@@ -55,7 +55,7 @@
 			          
 			    </p:dataTable>
 				<h:panelGrid columns="1" cellpadding="5">
-				    <p:commandButton id="generateLoi" value="Add to Delinquency List" actionListener="#{draftplayersBean.addtoDelinquency()}" ajax="true"/>
+				    <p:commandButton id="generateLoi" update="delinquentmessage" value="Add to Delinquency List" actionListener="#{draftplayersBean.addtoDelinquency()}" ajax="true"/>
 					<p:messages id="delinquentmessage" showDetail="true" autoUpdate="true" closable="false" /> 
 				</h:panelGrid>
 				
