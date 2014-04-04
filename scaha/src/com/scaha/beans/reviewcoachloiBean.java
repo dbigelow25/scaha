@@ -122,7 +122,7 @@ public class reviewcoachloiBean implements Serializable {
     			if (rs != null){
     				
     				while (rs.next()) {
-    					String idcoach = rs.getString("idcoachroster");
+    					String idcoach = rs.getString("idroster");
         				String sfirstname = rs.getString("fname");
         				String slastname = rs.getString("lname");
         				String steam = rs.getString("teamname");
