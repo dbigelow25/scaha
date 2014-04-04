@@ -58,11 +58,11 @@
 					<p:message id="m_nickname" for="nickname" />	
 
 					<p:outputLabel for="dob" style="font-size:12pt;" value="Date of Birth" />
-					<p:calendar id="dob"   yearRange="1935:2014" value="#{registrationBean.DOB}" showOn="button" popupIconOnly="false" pattern ="MM/dd/yyyy"  navigator="true" required = "true" requiredMessage="Date of Birth cannot be blank." />
- 
+					<p:inputMask id="dob" style="font-size:12pt;" value="#{registrationBean.DOB}" style="width:150px;" mask="99/99/9999" required = "true" requiredMessage="Date of Birth cannot be blank."/>  
+<!--					<p:calendar id="dob"   yearRange="1935:2014" value="#{registrationBean.DOB}" showOn="button" popupIconOnly="false" pattern ="MM/dd/yyyy"  navigator="true" required = "true" requiredMessage="Date of Birth cannot be blank." />
+  -->
 					
-<!-- 				<p:inputMask id="dob" value="#{registrationBean.DOB}" style="width:225px;font-size:12pt;" mask="99/99/9999" required = "true" requiredMessage="Date of Birth cannot be blank."/>  
- -->				<p:tooltip for="dob" style="font-size:12pt;" value="When were you born?  " showEffect="fade" hideEffect="fade" />  
+					<p:tooltip for="dob" style="font-size:12pt;" value="When were you born?  " showEffect="fade" hideEffect="fade" />  
 					<p:message id="m_dob" for="dob" />	
 
 					<p:outputLabel for="gender" style="font-size:12pt;" value="Gender" />
