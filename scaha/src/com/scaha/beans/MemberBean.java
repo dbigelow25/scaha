@@ -65,6 +65,9 @@ public class MemberBean implements Serializable, MailableObject {
 	private PersonList Persons = null;
 	private Person selectedPerson = null;  
 	
+	private boolean fastforward = false;
+	private boolean restart = false;
+	
 	
 	@ManagedProperty(value="#{profileBean}")
 	private ProfileBean pb;
@@ -267,8 +270,9 @@ public class MemberBean implements Serializable, MailableObject {
 				"form:growl",
                 new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "USA Hockey Reg",
-                "You cannot create a member.  There is already a member with the same first name, last name and date of birth!"));
+                "Membership Creation has been disabled until system test has been complete.  Thank you for excercising our system for us!"));
 		
+		this.reset();
 		if (1==1) return "true";
 	
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
@@ -399,6 +403,11 @@ public class MemberBean implements Serializable, MailableObject {
 		membertype.clear();
 		relationship = null;
 		datagood = false;
+		this.Persons = null;
+		this.selectedPerson = null;
+		this.fastforward = false;
+		this.restart = true;
+		System.gc();
 	}
 	
 	
@@ -444,38 +453,69 @@ public class MemberBean implements Serializable, MailableObject {
 
         LOGGER.info("Current wizard step:" + event.getOldStep());  
         LOGGER.info("Next step:" + event.getNewStep());  
+
+        if (this.fastforward) {
+        	this.fastforward = false;
+        	return "usahockey";
+        }
+        if (this.restart) {
+        	this.restart = false;
+        	return "usahockey";
+        }
         
         if (event.getOldStep().equals("usahockey") && event.getNewStep().equals("review")) {
         	if (this.fetchUSAHockey()) {
-        		return event.getNewStep();  
-        	} else {
-           		return event.getOldStep();  
-        	}
+        		
+        		//
+        		// ok.. lets also load the players here.. if only ONE hit comes back.. we fast forward to the end.. no need to worrry..
+        		//
+    			// 
+    			this.Persons = this.genPersonsList();
+    			this.membertype = new ArrayList<String>();
+    			this.relationship = "";
+    			
+    			// ok.. find the closest match.. if there is only one.. then its eason
+    			if (this.Persons.getRowCount()==1) {
+    				this.selectedPerson =  Persons.iterator().next();
+    				fastforward = true;
+    			} else {  
+    				
+    				for (Person p : Persons) {
+    					if (p.getsFirstName().toLowerCase().equals(this.usar.getFirstName().toLowerCase()) &&
+    							p.getsLastName().toLowerCase().equals(this.usar.getLastName().toLowerCase()) ) {
+    						this.selectedPerson = p; 
+    						break;
+    					}
+    				}
+    			}
+    				
+   				if (selectedPerson.getGenatt().get("ISPLAYER").equals("Y") && selectedPerson.getGenatt().get("ISGOALIE").equals("Y")) membertype.add("Player-Goalie");
+   				if (selectedPerson.getGenatt().get("ISPLAYER").equals("Y") && !selectedPerson.getGenatt().get("ISGOALIE").equals("Y")) membertype.add("Player-Skater");
+   				if (selectedPerson.getGenatt().get("ISMANAGER").equals("Y")) membertype.add("Manager");
+   				if (selectedPerson.getGenatt().get("ISCOACH").equals("Y")) membertype.add("Coach");
+    				
+   				this.relationship = selectedPerson.getXRelType();
+
+   				if (fastforward) return "finish";
+   			}
+        		
         } else if (event.getNewStep().equals("choose")) {
             	 			
-			this.Persons = this.genPersonsList();
-			this.membertype = new ArrayList<String>();
-			this.relationship = "";
+        	// Nothing really here
+        	
 
 		}  else if (event.getNewStep().equals("finish")) {
 
-			//
-			//
-			// 
+
 			this.selectedPerson = this.findPersonByID(selectedPerson.ID);
 			
 			this.membertype = new ArrayList<String>();
-			
 			if (selectedPerson.getGenatt().get("ISPLAYER").equals("Y") && selectedPerson.getGenatt().get("ISGOALIE").equals("Y")) membertype.add("Player-Goalie");
 			if (selectedPerson.getGenatt().get("ISPLAYER").equals("Y") && !selectedPerson.getGenatt().get("ISGOALIE").equals("Y")) membertype.add("Player-Skater");
 			if (selectedPerson.getGenatt().get("ISMANAGER").equals("Y")) membertype.add("Manager");
 			if (selectedPerson.getGenatt().get("ISCOACH").equals("Y")) membertype.add("Coach");
-			
 			this.relationship = selectedPerson.getXRelType();
 			
-			//
-			//
-			// 
 		}
         return event.getNewStep();  
     }  

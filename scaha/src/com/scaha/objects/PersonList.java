@@ -55,20 +55,31 @@ public class PersonList extends ListDataModel<Person> implements Serializable, S
 		LOGGER.info ("USAR:LAST NAME:" + _usah.getLastName());
 		LOGGER.info ("USAR:DOB:" + _usah.getDOB());
 
+		//
+		// OK.. we simply want to seach until we get a hit.. The first SQL is the most likely candidate
+		// All subsequent calls are based upon an empty answer from the previous iteration..
+		//
+		boolean loadnew = false;  // We always load a new person when 1) nothing found.. or if loop 3 or 4 has been triggered 
 		while (true) {
 			loopcount++;
 			if (loopcount ==1) {
 				ps.setString(1,_usah.getFirstName());
 				ps.setString(2,_usah.getLastName());
 				ps.setString(3,_usah.getDOB());
-			} else if (loopcount == 2) {
+			} else if (loopcount == 2  && data.isEmpty()) {
 				ps.setString(1,"NOOP");
 				ps.setString(2,_usah.getLastName());
 				ps.setString(3,_usah.getDOB());
-		//	} else if (loopcount == 3) {
-		//		ps.setString(1,_usah.getFirstName());
-		//			ps.setString(2,_usah.getLastName());
-		//			ps.setString(3,"NOOP");
+			} else if (loopcount == 3 && data.isEmpty()) {
+					ps.setString(1,_usah.getFirstName());
+					ps.setString(2,_usah.getLastName());
+					ps.setString(3,"NOOP");
+					loadnew = true;  // load new person placeholder
+			} else if (loopcount == 4 && data.isEmpty()) {
+					ps.setString(1,"NOOP");
+					ps.setString(2,_usah.getLastName());
+					ps.setString(3,"NOOP");
+					loadnew = true;  // load new person placeholder
 			} else {
 				break;
 			}
@@ -108,15 +119,15 @@ public class PersonList extends ListDataModel<Person> implements Serializable, S
 				
 				if (!found) { 
 					data.add(per);
-					String  strNotes = "";
+					String  strNotes = "<li>This is an existing member to SCAHA</li>";
 					if (tmpFamilyid != _pro.getPerson().getFamily().ID) {
-						strNotes = strNotes + "The person is <b>*** NOT ***</b> part of your family account<br/>";
+						strNotes = strNotes + "<li>The person is <b>*** NOT ***</b> part of your family account<br/>Use Caution when completing this membership.</li>";
 						per.getGenatt().put("INFAMILY","false");
 					} else {
 						per.getGenatt().put("INFAMILY","true");
 					}
 					if (per.ID == _pro.getPerson().ID) {
-						strNotes = strNotes + "This is a selfie (meaning It is you)<br/>";
+						strNotes = strNotes + "<li>This is a selfie - meaning It is You :)</li>";
 					}
 					per.getGenatt().put("NOTES", strNotes);
 					per.getGenatt().put("RELTYPE",strRelType);
@@ -138,12 +149,12 @@ public class PersonList extends ListDataModel<Person> implements Serializable, S
 		ps.close();
 
 
-		if (data.isEmpty()) {
+		if (data.isEmpty() || loadnew) {
 			Person per = new Person(_pro);		// This will be the new person
 			per.gleanUSAHinfo(_usah);
 			per.getGenatt().put("RELTYPE","New Member");
 			per.getGenatt().put("FAMILYNAME",_pro.getPerson().getFamily().getFamilyName());
-			per.getGenatt().put("NOTES", "<b>THIS IS A NEW MEMBER TO THE SYSTEM</b><br/>");
+			per.getGenatt().put("NOTES", "<li><b>THIS IS A NEW MEMBER TO THE SYSTEM</b></li>");
 			per.getGenatt().put("ISPLAYER","N");
 			per.getGenatt().put("ISCOACH","N");
 			per.getGenatt().put("ISMANAGER","N");

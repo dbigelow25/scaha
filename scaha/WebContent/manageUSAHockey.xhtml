@@ -48,7 +48,12 @@
 <p:wizard id = "wizard" widgetVar="myWizard"  flowListener="#{memberBean.onFlowProcess}" showNavBar="false">  
 <p:tab id="usahockey" style="font-size:12px;" title="Step 1: USA Hockey >>">  	 
 	<p/>
-	<div class="NewsTitle" style="margin-top:10px;margin-bottom:10px;">Please Enter The  USA Hockey Confirmation Number:</div>
+	<div class="NewsTitle" style="margin-top:10px;margin-bottom:10px;">Please Enter The  USA Hockey Confirmation Number:<p/>
+	
+	***WE ARE CURRENTLY IN TEST MODE AND WILL ACCEPT 2013 USA MEMBER NUMBERS. <br/>
+	***SAVING HAS BEEN DISABLED (LAST STEP IN THIS PROCESS)
+	
+	</div>
 	<p/>
     <h:panelGrid id="getusahockey" columns="3" cellpadding="10">  
 		<p:outputLabel for="usah-reg" style="display: block;width:150px;!important;font-size:14px;" value="USA Hockey Number:"></p:outputLabel>
@@ -170,13 +175,16 @@
 	<div class="NewsTitle">Choose the Options That Best Describe #{memberBean.getUsar().getFirstName()} #{memberBean.getUsar().getLastName()}</div>
 	<p/>
 	<p:fieldset style="font-size:10pt;" toggleable="false" toggleSpeed="500"> 
-    OK... <ul>
+    Notes about #{memberBean.getUsar().getFirstName()}:<ul>
+	<h:outputText style="font-size:12px;text-align:left;" value="#{memberBean.selectedPerson.getXNotes()}" escape = "false"/>
+    </ul>
+    General Comments:<ul>
     <li>If an EXISTING Member in your account - last year's information will be pre-checked.  You should not have to change much.</li> 
-    <li>If a NEW member to SCAHA- please select the options that best match the player</li>
     <li>If an EXISTING Member NOT in your account.  You can Register them non the less.   In this case, the option exists to capture the person and place them under your account. (See check-box below)</li>
+    <li>If a NEW member to SCAHA - please select the options that best match the player.</li>
     </ul>
 	Once, you are set with all the information, simply click the <b>Create Membership button</b>.  You will receive a confirmation e-mail that contains all the 
-	information you need to participate in SCAHA this season - icluding the Personal Identifcation Number for the new Member.
+	information you need to participate in SCAHA this season - icluding the Personal Identifcation Number for  #{memberBean.getUsar().getFirstName()}.
 	</p:fieldset>     
 	<p/>
 	<p:fieldset id="fs23" toggleable="false" toggleSpeed="500">  	      
