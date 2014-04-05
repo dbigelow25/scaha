@@ -249,51 +249,51 @@ public class adminnavigationBean implements Serializable {
     	return pagecode;
     }
     
-    public void releaseNavigation(){
-        
-    	//need to reload player release list before redirecting due to session object issues.
-    	FacesContext context = FacesContext.getCurrentInstance();
-    	Application app = context.getApplication();
-
-		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
-				"#{playerreleaseBean}", Object.class );
-
-		playerreleaseBean prb = (playerreleaseBean) expression.getValue( context.getELContext() );
-    	prb.setSearchcriteria("");
-    	prb.playerSearch();
-    	
-    	try{
-    		context.getExternalContext().redirect(this.loadPageCode() + ".xhtml");
-    	} catch (IOException e) {
-    		// TODO Auto-generated catch block
-    		e.printStackTrace();
-    	}
-    	    	
-    }
-    
-    public void releaseNavigation(){
-        
-    	//need to reload player release list before redirecting due to session object issues.
-    	FacesContext context = FacesContext.getCurrentInstance();
-    	Application app = context.getApplication();
-
-		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
-				"#{playerreleaseBean}", Object.class );
-
-		playerreleaseBean prb = (playerreleaseBean) expression.getValue( context.getELContext() );
-    	prb.setSearchcriteria("");
-    	prb.playerSearch();
-    	
-    	try{
-    		context.getExternalContext().redirect(this.loadPageCode() + ".xhtml");
-    	} catch (IOException e) {
-    		// TODO Auto-generated catch block
-    		e.printStackTrace();
-    	}
-    	    	
-    }
-    
     public void reviewreleaseNavigation(){
+        
+    	//need to reload player release list before redirecting due to session object issues.
+    	FacesContext context = FacesContext.getCurrentInstance();
+    	Application app = context.getApplication();
+
+		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{playerreleaseBean}", Object.class );
+
+		playerreleaseBean prb = (playerreleaseBean) expression.getValue( context.getELContext() );
+    	prb.setSearchcriteria("");
+    	prb.playerSearch();
+    	
+    	try{
+    		context.getExternalContext().redirect(this.loadPageCode() + ".xhtml");
+    	} catch (IOException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}
+    	    	
+    }
+    
+    public void releaseNavigation(){
+        
+    	//need to reload player release list before redirecting due to session object issues.
+    	FacesContext context = FacesContext.getCurrentInstance();
+    	Application app = context.getApplication();
+
+		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{playerreleaseBean}", Object.class );
+
+		playerreleaseBean prb = (playerreleaseBean) expression.getValue( context.getELContext() );
+    	prb.setSearchcriteria("");
+    	prb.playerSearch();
+    	
+    	try{
+    		context.getExternalContext().redirect(this.loadPageCode() + ".xhtml");
+    	} catch (IOException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}
+    	    	
+    }
+    
+    public void scahareviewreleaseNavigation(){
         
     	//need to reload player release list before redirecting due to session object issues.
     	FacesContext context = FacesContext.getCurrentInstance();
@@ -303,7 +303,7 @@ public class adminnavigationBean implements Serializable {
 				"#{reviewreleaseBean}", Object.class );
 
 		reviewreleaseBean prb = (reviewreleaseBean) expression.getValue( context.getELContext() );
-    	prb.getReleases();
+    	prb.releasesDisplay();
     	
     	try{
     		context.getExternalContext().redirect(this.loadPageCode() + ".xhtml");

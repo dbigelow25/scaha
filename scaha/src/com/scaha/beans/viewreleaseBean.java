@@ -513,9 +513,17 @@ public class viewreleaseBean implements Serializable, MailableObject {
 				mail.sendMail();
 				db.commit();
 				return "True";*/
-				
-    		    FacesContext context = FacesContext.getCurrentInstance();
-	    		try{
+    		    
+    		    
+				FacesContext context = FacesContext.getCurrentInstance();
+    		    Application app = context.getApplication();
+    		    ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+    					"#{reviewreleaseBean}", Object.class );
+
+    			reviewreleaseBean prb = (reviewreleaseBean) expression.getValue( context.getELContext() );
+    	    	prb.releasesDisplay();
+
+    		    try{
 					context.getExternalContext().redirect("confirmrelease.xhtml");
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
