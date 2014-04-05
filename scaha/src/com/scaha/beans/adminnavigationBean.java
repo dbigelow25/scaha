@@ -249,7 +249,7 @@ public class adminnavigationBean implements Serializable {
     	return pagecode;
     }
     
-    public void releaseNavigation(){
+    public void reviewreleaseNavigation(){
         
     	//need to reload player release list before redirecting due to session object issues.
     	FacesContext context = FacesContext.getCurrentInstance();
@@ -270,4 +270,5 @@ public class adminnavigationBean implements Serializable {
     	}
     	    	
     }
+
 }
