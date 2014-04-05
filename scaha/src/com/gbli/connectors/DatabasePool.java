@@ -85,15 +85,15 @@ public class DatabasePool implements Runnable {
 		//
 		for (int i=0; i < m_iCount;i++) {
 			Database db = m_vConnections.get(i);
+			db.setInUse();
 			db.close();
 			LOGGER.info(this.m_vConnections.get(i).toString() + ":" + "Closing out connection..");
 		}
-	
-		
 
 		//
 		//  gracefull shutdown.
 		//
+		m_vConnections.clear();
 		
 	}
 	

@@ -138,20 +138,7 @@ public class Database {
 	public void free() {
 
 		try {
-			m_rsmd = null;
-			if (m_rs != null) {
-				m_rs.close();
-				m_rs = null;
-			}
-			if (m_stmt != null) {
-				m_stmt.close();
-			}
-			if (m_pstmt != null) {
-				m_pstmt.close();
-			}
-			if (m_cstmt != null) {
-				m_cstmt.close();
-			}
+			this.cleanup();
 			m_con.setAutoCommit(true); // Always set it back.. caller may have been lazy
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -189,12 +176,15 @@ public class Database {
 
 	}
 
+	/**
+	 * This clears everything up and closes everything down for the database..
+	 * 
+	 */
 	public void close() {
 
 		LOGGER.finest(this + "Close Out Connection:" + this.m_iId);
-
-		this.free();
 		try {
+			this.cleanup();
 			m_con.close();
 		} catch (SQLException ex) {
 			ex.printStackTrace();

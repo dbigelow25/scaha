@@ -11,14 +11,11 @@
 
 	<!-- 
 	
-	This view is designed to manager memberships.   A single account can manage several memberships (in the family).
-	
-	Right now.. the only way to create a membership is to first start with a USA hockey number for the given master season.
-	
-	Eventually, we will allow the user to select an existing sibling.. and re-register for a new season.. (re-up the membership)
+	This view is designed to manage USA Hockey memberships.   A single account can manage several memberships (in the family).
+	The only way to create a membership is to first start with a USA hockey number for the given master season.
+	You then import the membernumber, and we attempt to marry it with an existing member record
 	
 	 -->  
-
 
 <f:view contentType="text/html">
     
@@ -30,7 +27,6 @@
  	<f:metadata>
 		<f:event type="preRenderView" listener="#{profileBean.verifyUserLogin()}" />
 	</f:metadata>
-
 </h:head>	    
 
 <h:body>  
@@ -50,7 +46,8 @@
 	<p/>
 	<div class="NewsTitle" style="margin-top:10px;margin-bottom:10px;">Please Enter The  USA Hockey Confirmation Number:<p/>
 	
-	***WE ARE CURRENTLY IN TEST MODE AND WILL ACCEPT 2013 USA MEMBER NUMBERS. <br/>
+	***WE ARE CURRENTLY IN TEST MODE<br/> 
+	*** AND WILL ACCEPT 2013 USA MEMBER NUMBERS. <br/>
 	***SAVING HAS BEEN DISABLED (LAST STEP IN THIS PROCESS)
 	
 	</div>

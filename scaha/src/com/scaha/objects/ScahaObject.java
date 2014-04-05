@@ -106,4 +106,16 @@ public abstract class ScahaObject implements Serializable {
 	public String getGenAttByKey(String _key) {
 		return genatt.get(_key);
 	}
+	
+	/**
+	 * close out and set everything to null
+	 */
+	public void clear() {
+		
+		this.vct.clear();
+		this.hsh.clear();
+		this.m_pro = null;
+		this.genatt.clear();
+
+	}
 }
