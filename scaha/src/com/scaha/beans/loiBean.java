@@ -14,12 +14,15 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
+import com.gbli.common.SendMailSSL;
+import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.FamilyRow;
@@ -34,6 +37,8 @@ public class loiBean implements Serializable, MailableObject {
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	private static String mail_reg_body = Utils.getMailTemplateFromFile("/mail/loireceipt.html");
+	
 	transient private ResultSet rs = null;
 	private String selectedteam = null;
 	private String selectedgirlsteam = null;
@@ -64,14 +69,13 @@ public class loiBean implements Serializable, MailableObject {
 	private String to = null;
 	private String subject = null;
 	private String cc = null;
-	private String textbody = null;
 	private Integer parentid = 0;
 	private Boolean bplayerup = null;
 	private Boolean displayplayerup = null;
 	
-	public loiBean() {  
-        
-    	//hard code value until we load session variable
+	@PostConstruct
+    public void init() {
+		//hard code value until we load session variable
     	clubid = 1;
     	FacesContext context = FacesContext.getCurrentInstance();
     	Application app = context.getApplication();
@@ -92,7 +96,11 @@ public class loiBean implements Serializable, MailableObject {
     	
     	loadPlayerProfile(selectedplayer);
     	setDisplayplayerup(false);
-    	//doing anything else right here
+    }
+	
+	
+	public loiBean() {  
+        
     }  
     
 	public Boolean getDisplayplayerup(){
@@ -129,13 +137,34 @@ public class loiBean implements Serializable, MailableObject {
     	subject = ssubject;
     }
     
-	public String getTextBody() {
+    public String getTextBody() {
 		// TODO Auto-generated method stub
-		return textbody;
-	}
-	
-	public void setTextBody(String stextbody){
-		textbody = stextbody;
+		List<String> myTokens = new ArrayList<String>();
+		myTokens.add("LOIDATE:" + this.currentdate);
+		myTokens.add("FIRSTNAME:" + this.firstname);
+		myTokens.add("LASTNAME:" + this.lastname);
+		myTokens.add("CLUBNAME:" + this.getClubName());
+		myTokens.add("SELECTEDBOYSTEAM:" + this.displayselectedteam + " ");
+		myTokens.add("SELECTEDGRLSTEAM:" + this.displayselectedgirlsteam + " ");
+		myTokens.add("DOB:" + this.dob);
+		myTokens.add("CITIZENSHIP:" + this.citizenship);
+		myTokens.add("GENDER:" + this.displaygender);
+		myTokens.add("ADDRESS:" + this.address);
+		myTokens.add("CITY:" + this.city);
+		myTokens.add("STATE:" + this.state);
+		myTokens.add("ZIP:" + this.zip);
+		if (this.lastyearclub==null){
+			myTokens.add("LASTYEARCLUB:  ");
+		}else {
+			myTokens.add("LASTYEARCLUB:" + this.lastyearclub);
+		}
+		if (this.lastyearteam==null){
+			myTokens.add("LASTYEARTEAM:  ");
+		}else {
+			myTokens.add("LASTYEARTEAM:" + this.lastyearteam);
+		}
+		
+		return Utils.mergeTokens(loiBean.mail_reg_body,myTokens);
 	}
 	
 	public String getPreApprovedCC() {
@@ -351,10 +380,7 @@ public class loiBean implements Serializable, MailableObject {
 
     		if (db.setAutoCommit(false)) {
     		
-    			//Vector<Integer> v = new Vector<Integer>();
-    			//v.add(1);
-    			//db.getData("CALL scaha.getTeamsByClub(?)", v);
-    		    CallableStatement cs = db.prepareCall("CALL scaha.getTeamsByClub(?,?)");
+    			CallableStatement cs = db.prepareCall("CALL scaha.getTeamsByClub(?,?)");
     		    cs.setInt("pclubid", clubid);
     		    cs.setString("gender", gender);
     			rs = cs.executeQuery();
@@ -556,9 +582,6 @@ public class loiBean implements Serializable, MailableObject {
 
 			if (db.setAutoCommit(false)) {
 			
-				
-				
-				
 				//Need to check loi code from family first
  				LOGGER.info("verify loi code provided");
  				CallableStatement cs = db.prepareCall("CALL scaha.validateMemberNumber(?,?)");
@@ -774,15 +797,20 @@ public class loiBean implements Serializable, MailableObject {
 	    			}
 					
 	    		    
+	    		    //hard my email address for testing purposes
+	    		    to = "lahockeyfan2@yahoo.com";
 	    		    this.setToMailAddress(to);
-	    		    this.setTextBody("Player " + this.firstname + " " + this.lastname + " signed an loi for club " + this.getClubName());
+	    		    this.setPreApprovedCC("");
 	    		    this.setSubject(this.firstname + " " + this.lastname + " LOI with " + this.getClubName());
 	    		    
-					/*SendMailSSL mail = new SendMailSSL(this);
-					LOGGER.info("Finished creating mail object for " + this.getUsername());
+					SendMailSSL mail = new SendMailSSL(this);
+					LOGGER.info("Finished creating mail object for " + this.firstname + " " + this.lastname + " LOI with " + this.getClubName());
 					mail.sendMail();
+					
 					db.commit();
-					return "True";*/
+					rs.close();
+					db.cleanup();
+					//return "True";
 					
 					FacesContext context = FacesContext.getCurrentInstance();
 		    		origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
