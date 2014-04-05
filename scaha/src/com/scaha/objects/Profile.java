@@ -255,4 +255,19 @@ public class Profile extends ScahaObject {
 	public void setSuperUser(boolean superUser) {
 		SuperUser = superUser;
 	}
+	
+	/**
+	 * This performs a topical cleanup..
+	 * 
+	 */
+	public void clear () {
+		
+		super.clear();
+		this.m_al.clear();
+		this.m_al = null;
+		this.m_rc.clear();
+		this.m_rc = null;
+		this.m_per = null;
+	}
 }
+

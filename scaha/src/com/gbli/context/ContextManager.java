@@ -22,22 +22,27 @@ import com.gbli.connectors.ScahaDatabase;
 import com.gbli.logging.MyLogger;
 
 /**
+ * This is an interem object that manages the context of this application.  It gets / sets app parms 
+ * and runs the database pooling, etc.
+ * 
+ * To Do List:
+ * 
+ * 1) Migrate to an Application Scope Bean for a Web Based appl
+ * 
  * @author dbigelow
  * 
  */
 public class ContextManager implements ServletContextListener {
-
 	
 	//
-	// Class Info
+	// Static Member Variables
 	//
-	private static final long serialVersionUID = 1L;
-	private static final String ATTRIBUTE_NAME = "config";
-	private static boolean c_bLoaded = false;
-	private static String c_sPath = null;
-	private static ServletContext c_context;
-	private static String c_sLoggerContext = null;	// Used to determine logger Name
-	private static Logger c_Logger = null;  // Used to initailize the logger
+	private static final String ATTRIBUTE_NAME = "config";  // Give this config a handle to the system
+	private static boolean c_bLoaded = false;    			// Make shift block to determine if the context has completed loading
+	private static String c_sPath = null;					// What is the absolute path of the running app
+	private static ServletContext c_context;				// This is the Context of the Servlet App
+	private static String c_sLoggerContext = null;			// Used to determine logger Name
+	private static Logger c_Logger = null;  				// Used to initialize the logger
 	private static Hashtable<String, DatabasePool> c_hDBPools = new Hashtable<String, DatabasePool>();  // Used to hold a map of database pools
 	
 	/*
@@ -49,21 +54,19 @@ public class ContextManager implements ServletContextListener {
 	 */
 	@Override
 	public void contextInitialized(ServletContextEvent _contextEvent) {
-		// TODO Auto-generated method stub
 		
-		 synchronized (this) {
+		//
+		// We want to make sure this is the only thread running this section.  Vs getting two race conditions.
+		//
+		synchronized (this) {
 
 			if (!c_bLoaded) {
-
 				
-				// Lets get this object into the context
-				c_context = _contextEvent.getServletContext();
-				c_context.setAttribute(ATTRIBUTE_NAME, this);
-				// Lets get the context class variables all squared away
-				c_sPath = c_context.getRealPath("/");
-				c_sLoggerContext = "scaha";
+				c_context = _contextEvent.getServletContext();  // Retrieve the Context from the Startup
+				c_context.setAttribute(ATTRIBUTE_NAME, this);  	// Set this as the context 
+				c_sPath = c_context.getRealPath("/");  			// Get the real path
+				c_sLoggerContext = "scaha";						// Set the logger context
 
-				
 				//
 				// STEP 1 Lets Get the Logger Established right now
 				//
@@ -96,10 +99,8 @@ public class ContextManager implements ServletContextListener {
 					c_Logger.info("***** Mail Info is:" + SendMailSSL.getUsername() + ", " + SendMailSSL.getPassword());
 					ic.close();
 				} catch (NamingException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
 				
 				//
 				DatabasePool dbp2 = new DatabasePool(ScahaDatabase.class.getSimpleName(),ipc.intValue());
@@ -119,19 +120,28 @@ public class ContextManager implements ServletContextListener {
 
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * When the context is unhooked from the Web App Server.. we need to clean things up.
+	 * Here is where we can do alot to null out all objects and session/app info 
+	 * and perform a final garbage collection process to make sure there are no membery leaks 
 	 * 
-	 * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.
-	 * ServletContextEvent)
+	 * Again, this will be part of an application context session bean.. 
+	 * 
+	 * To Do:
+	 * 
+	 * 	1) Clean up each database connection
+	 * 	2) Clean up the logger
+	 *  3) Make sure all referenece variable in this object are nulled out
 	 */
 	@Override
 	public void contextDestroyed(ServletContextEvent _contextEvent) {
-		// TODO Auto-generated method stub
 
 		//
-		// Shut down all the databasebpool Thread
-		
+		// Right now.. lets loop through all the database pools and request shutdown
+		//
+		//
+		// We have to make sure each database object is properly closing and cleaning up all the connections
+		//
 		for (Enumeration<DatabasePool> en = c_hDBPools.elements(); en.hasMoreElements();) {
 			DatabasePool dp = en.nextElement();
 			c_Logger.info("Found a Database Pool to Shut Down!");
@@ -145,18 +155,21 @@ public class ContextManager implements ServletContextListener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			//
+			// Lets Shut down the logger handles and close files..
+			//
+			
+			try {
+				MyLogger.shutdown();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			c_hDBPools.clear();
+			c_Logger = null;
 		}	
-		
-		c_Logger.info("Context Destroyed...");
 
-	}
-
-	
-	//
-	// Returns the ContextManagerObject
-	//
-	public static ContextManager getInstance() {
-		return (ContextManager) c_context.getAttribute(ATTRIBUTE_NAME);
 	}
 
 	public static String getRealPath() {
@@ -174,6 +187,11 @@ public class ContextManager implements ServletContextListener {
 		return c_hDBPools.get(_sClassName).getDatabase();
 	}
 	
+	/**
+	 * This sets up the LOGGER for the given context
+	 * 
+	 * @param _strloggerContext
+	 */
 	public static void setLogger(String _strloggerContext) {
 		//
 		// STEP 1 Lets Get the Logger Established right now

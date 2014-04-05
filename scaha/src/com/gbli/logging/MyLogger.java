@@ -30,9 +30,9 @@ public class MyLogger {
   static private Formatter m_formatterHTML;
   
   
-  private final static Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+  private static Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
   
-  static public void setup() throws IOException {
+  public static void setup() throws IOException {
     
 	  //
 	  // Here we set up how we want it to run..
@@ -55,8 +55,31 @@ public class MyLogger {
     LOGGER.addHandler(m_fileHTML);
     
     LOGGER.info("Logger set to: " + LOGGER.getLevel());
-    
   }
+
+  /**
+   * Shutting Down The logging Utility.
+   * 
+   * @throws IOException
+   */
+  public static void shutdown() throws IOException {
+
+	  LOGGER.info("Shutting down Logger Utility.");
+	  LOGGER.removeHandler(m_fileTxt);
+	  LOGGER.removeHandler(m_fileHTML);
+	  m_fileTxt.flush();
+      m_fileTxt.close();
+	  m_fileHTML.flush();
+      m_fileHTML.close();
+      m_fileHTML = null;
+      m_fileTxt = null;
+      m_formatterTxt = null;
+      m_formatterHTML = null;
+      LOGGER = null;
+	  
+  }
+  
+  
   
  } 
 
