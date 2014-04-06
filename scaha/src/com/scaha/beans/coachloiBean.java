@@ -14,12 +14,15 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
+import com.gbli.common.SendMailSSL;
+import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.MailableObject;
@@ -33,6 +36,7 @@ public class coachloiBean implements Serializable, MailableObject {
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	private static String mail_reg_body = Utils.getMailTemplateFromFile("/mail/coachloireceipt.html");
 	transient private ResultSet rs = null;
 	private List<String> selectedteams = null;
 	private List<String> selectedgirlsteams = null;
@@ -73,11 +77,10 @@ public class coachloiBean implements Serializable, MailableObject {
 	private String textbody = null;
 	private String clubname = "";
 	
-	
-    
-    public coachloiBean() {  
-        
-    	//hard code value until we load session variable
+	@PostConstruct
+    public void init() {
+		//hard code value until we load session variable
+		//hard code value until we load session variable
     	clubid = 1;
     	
     	//load profile id from which we can get club id later
@@ -101,6 +104,11 @@ public class coachloiBean implements Serializable, MailableObject {
     	
     	loadCoachProfile(selectedcoach);
 
+    }
+    
+    public coachloiBean() {  
+        
+    	
     	//doing anything else right here
     }  
     
@@ -125,12 +133,27 @@ public class coachloiBean implements Serializable, MailableObject {
     
 	public String getTextBody() {
 		// TODO Auto-generated method stub
-		return textbody;
+		List<String> myTokens = new ArrayList<String>();
+		myTokens.add("LOIDATE:" + this.currentdate);
+		myTokens.add("FIRSTNAME:" + this.firstname);
+		myTokens.add("LASTNAME:" + this.lastname);
+		myTokens.add("CLUBNAME:" + this.getClubName());
+		myTokens.add("BOYSTEAMS:" + this.displayselectedteam + " ");
+		myTokens.add("GIRLSTEAMS:" + this.displayselectedgirlsteam + " ");
+		myTokens.add("ADDRESS:" + this.address);
+		myTokens.add("CITY:" + this.city);
+		myTokens.add("STATE:" + this.state);
+		myTokens.add("ZIP:" + this.zip);
+		myTokens.add("SCREENINGEXPIRES:" + this.screeningexpires);
+		myTokens.add("CEPNUM:" + this.cepnumber);
+		myTokens.add("CEPLEVEL:" + this.cepleveldisplay);
+		myTokens.add("CEPEXPIRES:" + this.cepexpires);
+		myTokens.add("CEPMODULE:" + this.cepmoduledisplaystring);
+		myTokens.add("HOMENUMBER:" + this.homenumber);
+		myTokens.add("EMAIL:" + this.email);
+		return Utils.mergeTokens(coachloiBean.mail_reg_body,myTokens);
 	}
 	
-	public void setTextBody(String stextbody){
-		textbody = stextbody;
-	}
 	
 	public String getPreApprovedCC() {
 		// TODO Auto-generated method stub
@@ -618,6 +641,15 @@ public class coachloiBean implements Serializable, MailableObject {
     				
     				while (rs.next()) {
     					teamname = rs.getString("teamname");
+    					if (displayselectedteam==null){
+    						displayselectedteam = teamname;
+    					} else {
+    						if (displayselectedteam.equals("")){
+	    						displayselectedteam = teamname;
+	    					} else {
+	    						displayselectedteam = displayselectedteam + "," + teamname;
+	    					}
+    					}
     					tempteams.add(teamname);
     				}
     				LOGGER.info("We have results for teams for the coach");
@@ -638,6 +670,18 @@ public class coachloiBean implements Serializable, MailableObject {
     				
     				while (rs.next()) {
     					teamname = rs.getString("teamname");
+    					if (displayselectedgirlsteam==null){
+    						displayselectedgirlsteam = teamname;
+    					} else {
+    						if (displayselectedgirlsteam.equals("")){
+    							displayselectedgirlsteam = teamname;
+	    					} else {
+	    						displayselectedgirlsteam = displayselectedgirlsteam + "," + teamname;
+	    					}
+    					}
+    					
+    					
+    					
     					tempgirlteams.add(teamname);
     				}
     				LOGGER.info("We have results for teams for the coach");
@@ -820,15 +864,17 @@ public class coachloiBean implements Serializable, MailableObject {
 		    		    db.commit();
 	    		    }
 	    		    
-					
+					to = "lahockeyfan2@yahoo.com";
 	    		    this.setToMailAddress(to);
-	    		    this.setTextBody("Coach " + this.firstname + " " + this.lastname + " signed an loi for club " + this.getClubName());
+	    		    this.setPreApprovedCC("");
 	    		    this.setSubject(this.firstname + " " + this.lastname + " LOI with " + this.getClubName());
 	    		    
-					/*SendMailSSL mail = new SendMailSSL(this);
+					SendMailSSL mail = new SendMailSSL(this);
 					LOGGER.info("Finished creating mail object for ");
 					mail.sendMail();
-					db.commit();*/
+					db.commit();
+					rs.close();
+					db.cleanup();
 					
 					
 					FacesContext context = FacesContext.getCurrentInstance();
