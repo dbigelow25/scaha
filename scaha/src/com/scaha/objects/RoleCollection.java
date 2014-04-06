@@ -24,8 +24,9 @@ public class RoleCollection extends ScahaObject  {
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	
 	
-	static String sGetAllRoles = "call scaha.getAllRoles()";
-	static String sGelAllRolesByProfile = "call scaha.getAllRolesByProfile(?)";
+	static String sGetAllRoles = "call scaha.getAllRoles()";  // The returns all possible roles in the system
+	static String sGetAllRolesByProfile = "call scaha.getAllRolesByProfile(?)";  // This just returns all direct roles
+	static String sGetAllImpRolesByProfile = "call scaha.getAllImpliedRolesByProfile(?)";   // This one returns the role Hierarchy
 
 	/**
 	 * This creates a tree type object of all roles and their interrelations
@@ -96,7 +97,7 @@ public class RoleCollection extends ScahaObject  {
 		vct.add(new Integer(_pro.ID));
 		
 		
-		if (_db.getData(sGelAllRolesByProfile,vct)) {
+		if (_db.getData(sGetAllImpRolesByProfile,vct)) {
 			ResultSet rs = _db.getResultSet();
 			while (rs.next()) {
 				int i = 1;
@@ -106,7 +107,7 @@ public class RoleCollection extends ScahaObject  {
 				int iparentid = rs.getInt(i++);
 				boolean idr = (rs.getInt(i++) == 1 ? true : false);
 				// lets see if this role has already been stubbed out in this collection
-				LOGGER.info("getAllRolesByProfile:" + id + ":" + sName + ":" + sDesc +":" + iparentid + ":" + idr);
+				LOGGER.info("getAllImpliedRolesByProfile:" + id + ":" + sName + ":" + sDesc +":" + iparentid + ":" + idr);
 				if (sName.equals("SUSER")) _pro.setSuperUser(true);
 				Role rl = (Role)this.get(id,Role.class.getSimpleName());
 				if (rl == null) {
