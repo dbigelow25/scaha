@@ -13,18 +13,18 @@ import com.gbli.context.ContextManager;
 
 public abstract class ScahaObject implements Serializable {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
-	
+	private static int newID = 0;
 	private Profile m_pro = null;
+	
 	
 	//
 	//  This represents the Key for the object
 	//
 	public int ID = -1;
+	
+	
 	
 	
 	
@@ -118,4 +118,9 @@ public abstract class ScahaObject implements Serializable {
 		this.genatt.clear();
 
 	}
+	
+	protected static synchronized int getNewID() {
+		return ScahaObject.newID++;
+	}
+	
 }

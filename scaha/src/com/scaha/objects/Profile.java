@@ -93,6 +93,14 @@ public class Profile extends ScahaObject {
 	}
 
 	/**
+	 * Here we need to simply get a new ID Number.. that is negative to denote a new Object vs
+	 * one in the database
+	 */
+	public Profile() {
+		this.ID = Profile.getNewID();
+	}
+
+	/**
 	 * verify - Gathers the profile information from the target system
 	 * If it returns false.. authentication failed.
 	 * 

@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -32,16 +33,25 @@ public class ScahaBean implements Serializable,  MailableObject {
 	//
 	private ClubList ScahaClubList  = null;
 	private GeneralSeasonList ScahaSeasonList = null;
+	private Profile DefaultProfile = null;
 	
 	 @PostConstruct
 	 public void init() {
 		 
 		 LOGGER.info("ScahaBean PostConstruct Init: Logger level at:" + LOGGER.getLevel());
 		 LOGGER.setLevel(Level.ALL);
+		 this.setDefaultProfile(new Profile());
 		 refreshBean();
+
 		 
 	 }
-	
+	 
+	 @PreDestroy
+	 public void cleanup() {
+		 ScahaClubList = null;
+		 ScahaSeasonList = null;
+		 DefaultProfile = null;
+	 }
 
 	 public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -55,10 +65,9 @@ public class ScahaBean implements Serializable,  MailableObject {
 	public void refreshBean() {
 		 
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-		Profile pro = new Profile(0);
 		try {
-			setScahaClubList(ClubList.NewClubListFactory(new Profile(0), db));
-			setScahaSeasonList(GeneralSeasonList.NewClubListFactory(pro, db, "SCAHA"));
+			setScahaClubList(ClubList.NewClubListFactory(this.DefaultProfile, db));
+			setScahaSeasonList(GeneralSeasonList.NewClubListFactory(this.DefaultProfile, db, "SCAHA"));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -131,5 +140,21 @@ public class ScahaBean implements Serializable,  MailableObject {
 	 */
 	public void setScahaSeasonList(GeneralSeasonList scahaSeasonList) {
 		ScahaSeasonList = scahaSeasonList;
+	}
+
+
+	/**
+	 * @return the defaultProfile
+	 */
+	public Profile getDefaultProfile() {
+		return DefaultProfile;
+	}
+
+
+	/**
+	 * @param defaultProfile the defaultProfile to set
+	 */
+	public void setDefaultProfile(Profile defaultProfile) {
+		DefaultProfile = defaultProfile;
 	}
 }

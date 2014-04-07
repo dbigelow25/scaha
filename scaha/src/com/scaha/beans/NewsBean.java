@@ -8,6 +8,9 @@ import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import com.gbli.common.Utils;
@@ -19,10 +22,14 @@ import com.scaha.objects.NewsItem;
 import com.scaha.objects.NewsItemList;
 import com.scaha.objects.Profile;
 
+@ManagedBean
+@ViewScoped
 public class NewsBean implements Serializable,  MailableObject  {
 
-	//
-	// Class Level Variables
+
+	@ManagedProperty(value="#{scahaBean}")
+    private ScahaBean scaha;
+	
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	private NewsItem currentnewsitem = null;
@@ -80,7 +87,7 @@ public class NewsBean implements Serializable,  MailableObject  {
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		NewsItemList nil = null;
 		try {
-			nil = NewsItemList.NewsItemListFactory(new Profile(-1), db, "12/12/2013");
+			nil = NewsItemList.NewsItemListFactory(scaha.getDefaultProfile(), db, "12/12/2013");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -106,5 +113,19 @@ public class NewsBean implements Serializable,  MailableObject  {
 		db.free();
 		LOGGER.info(current.toString());
 
+	}
+	
+	/**
+	 * @return the scaha
+	 */
+	public ScahaBean getScaha() {
+		return scaha;
+	}
+
+	/**
+	 * @param scaha the scaha to set
+	 */
+	public void setScaha(ScahaBean scaha) {
+		this.scaha = scaha;
 	}
 }
