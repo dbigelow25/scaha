@@ -38,6 +38,13 @@ img { border-style: none; }
    	float:right;
 }
 
+.PageTitle
+{
+	margin-top: 7px;
+	color: #880000;
+	font: 14pt "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+}
+
 .NewsTitle
 {
 	margin-top: 7px;

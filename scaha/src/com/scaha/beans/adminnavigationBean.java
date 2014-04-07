@@ -256,7 +256,7 @@ public class adminnavigationBean implements Serializable {
     	Application app = context.getApplication();
 
 		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
-				"#{playerreleaseBean}", Object.class );
+				"#{reviewreleaseBean}", Object.class );
 
 		reviewreleaseBean prb = (reviewreleaseBean) expression.getValue( context.getELContext() );
     	prb.getReleases();

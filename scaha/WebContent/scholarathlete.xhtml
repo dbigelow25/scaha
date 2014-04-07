@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+>
+<ui:define name="content">
+<h:body>
+<div id="calendar-div">
+    <p:panel header="SCAHA Scholar Athletes 2014-2015" footer="brought to you by iScaha">  
+ 		<table id="subpage" style="border-collapse: collapse;">
+			<tr>
+				<td>
+					Congratulations to those who qualified as SCAHA Scholar Athletes! We are proud to honor the following players who have earned our new Scholar Athlete patch.
+				</td>
+			</tr>
+		</table>
+ 		<p:dataTable var="scholarathlete" value="#{scholarathleteBean.getScholarAthletes()}" border="1">  
+	        <p:column headerText="Name" style="text-align: center">  
+	            <h:outputText value="#{scholarathlete.getName()}" />  
+	        </p:column>  
+	        <p:column headerText="Club" style="text-align: center">  
+	            <h:outputText value="#{scholarathlete.getClub()}" />  
+	        </p:column>  
+	        <p:column headerText="Division" style="text-align: center">  
+	            <h:outputText value="#{scholarathlete.getDivision()}"/>
+	        </p:column>  
+		</p:dataTable>
+ 	</p:panel>
+</div>
+</h:body>
+</ui:define>
+</ui:composition>
