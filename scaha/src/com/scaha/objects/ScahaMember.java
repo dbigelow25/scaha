@@ -10,7 +10,7 @@ import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
-public class ScahaMember extends ScahaObject implements Serializable, MailableObject {
+public class ScahaMember extends ScahaObject implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
@@ -61,6 +61,7 @@ public class ScahaMember extends ScahaObject implements Serializable, MailableOb
 	 */
 	public void setMyPerson(Person myPerson) {
 		MyPerson = myPerson;
+		MyPerson.setSMember(this);
 	}
 	/**
 	 * @return the sCAHANumber
@@ -152,48 +153,6 @@ public class ScahaMember extends ScahaObject implements Serializable, MailableOb
 		cs.close();
 		_db.cleanup();
 
-	}
-	
-	@Override
-	public String getSubject() {
-		return "SCAHA Membership Information For " + this.MyPerson.getsFirstName() + " " + this.MyPerson.getsLastName();
-	}
-	@Override
-	public String getTextBody() {
-		
-		String strBody = "Hello There: your USA Hockey Number is: " + this.MyPerson.getUsaHockeyRegistration().getUSAHnum();
-		
-		strBody = strBody + "/nHere is your SCAHA Membership number: " + this.getSCAHANumber();
-		
-		return strBody;
-		
-		
-	}
-	@Override
-	public String getPreApprovedCC() {
-		// TODO Auto-generated method stub
-		return "";
-	}
-	@Override
-	public String getToMailAddress() {
-		/**
-		 *  The mailto address is going to two people.. if different.
-		 *  
-		 *  The owner of the account..
-		 *  and the e-mail on the usahockeyregistration..
-		 */
-		
-		/**
-		 *  The top person has both an e-mail in the profile and an e-mail (alt if their person record)
-		 */
-		
-		LOGGER.info("SendMail To:" +this.getProfile().getUserName() + (TopPerson.getsEmail() != null ? "," + TopPerson.getsEmail() : ""));
-		
-		return this.getProfile().getUserName() + (TopPerson.getsEmail() != null ? "," + TopPerson.getsEmail() : "");
-		
-		//+ ", " + this.getMyPerson().getsEmail();
-		
-	
 	}
 	
 

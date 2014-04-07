@@ -4,6 +4,8 @@
 package com.gbli.common;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -32,6 +34,17 @@ import com.scaha.objects.ScahaManager;
 import com.scaha.objects.ScahaMember;
 import com.scaha.objects.ScahaPlayer;
 import com.scaha.objects.UsaHockeyRegistration;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import org.krysalis.barcode4j.impl.code128.Code128Bean;
+import org.krysalis.barcode4j.impl.code39.Code39Bean;
+import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
+import org.krysalis.barcode4j.tools.UnitConv;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 
 /**
@@ -1181,5 +1194,48 @@ public class Utils {
 		}
 		
 		return _str;
+	}
+	
+	private static byte [] createBarCode39 (String _barcodeme) {
+
+          Code39Bean bean39 = new Code39Bean();
+          final int dpi = 160;
+          byte [] bout = null;
+
+          try {
+
+          //Configure the barcode generator
+          bean39.setModuleWidth(UnitConv.in2mm(2.8f / dpi));
+
+          bean39.doQuietZone(false);
+
+          ByteArrayOutputStream out = new ByteArrayOutputStream ();
+
+          //Set up the canvas provider for monochrome PNG output
+          BitmapCanvasProvider canvas = new BitmapCanvasProvider(
+              out, "image/x-png", dpi, BufferedImage.TYPE_BYTE_BINARY, false, 0);
+
+          //Generate the barcode
+          bean39.generateBarcode(canvas, _barcodeme);
+       
+          //Signal end of generation
+          canvas.finish();
+        
+          System.out.println("Bar Code is generated successfully…");
+          
+          bout = out.toByteArray();
+          
+          
+        }
+        catch (IOException ex) {
+            ex.printStackTrace();
+        }
+ 
+          return bout;
+        
+    }
+
+	public static StreamedContent getStreamedBarCodeContent(String _barcodeme) {
+		return new DefaultStreamedContent(new ByteArrayInputStream(Utils.createBarCode39(_barcodeme)),"image/x-png");
 	}
 }

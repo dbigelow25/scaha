@@ -11,6 +11,14 @@
 <h:body>
 <div id="news-div">
 
+
+<!--  Testing embedded barcode images - This works!
+
+		<p:graphicImage id="logoimage1" value="#{profileBean.getSampleBarCode()}"  >
+		<f:param id = "target" name="target" value="3" />
+		</p:graphicImage> 
+		
+-->
     <p:panel header="Latest SCAHA News" footer="brought to you by iScaha">  
  	<ui:repeat value="#{newsBean.getNewsItemList()}" var="newsitem">
 		<div class="NewsTitle">#{newsitem.title} 

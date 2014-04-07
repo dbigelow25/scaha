@@ -78,7 +78,7 @@ public class SendMailSSL {
  			LOGGER.info("Instansiating a new message for e-mail...");
  			
 			Message message = new MimeMessage(m_sess);
-			message.setFrom(new InternetAddress(SendMailSSL.getUsername(),"iScaha Online InfoHub"));
+			message.setFrom(new InternetAddress(SendMailSSL.getUsername()+"@iscaha.com","iScaha Online InfoHub"));
 			message.setRecipients(Message.RecipientType.TO,	InternetAddress.parse(m_mo.getToMailAddress()));
 			//
 			// Add the Blind CC's

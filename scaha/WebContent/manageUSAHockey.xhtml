@@ -44,24 +44,19 @@
 <p:wizard id = "wizard" widgetVar="myWizard"  flowListener="#{memberBean.onFlowProcess}" showNavBar="false">  
 <p:tab id="usahockey" style="font-size:12px;" title="Step 1: USA Hockey >>">  	 
 	<p/>
-	<div class="NewsTitle" style="margin-top:10px;margin-bottom:10px;">Please Enter The  USA Hockey Confirmation Number:<p/>
-	
-	***WE ARE CURRENTLY IN TEST MODE<br/> 
-	*** AND WILL ACCEPT 2013 USA MEMBER NUMBERS. <br/>
-	***SAVING HAS BEEN DISABLED (LAST STEP IN THIS PROCESS)
-	
+	<div class="NewsTitle" style="margin-top:10px;margin-bottom:10px;">Please Enter The  USA Hockey Confirmation Number:
 	</div>
 	<p/>
     <h:panelGrid id="getusahockey" columns="3" cellpadding="10">  
 		<p:outputLabel for="usah-reg" style="display: block;width:150px;!important;font-size:14px;" value="USA Hockey Number:"></p:outputLabel>
-		<p:inputText id="usah-reg" style="font-size:14px;" value="#{memberBean.regnumber}" required="true" requiredMessage="Usa Hockey Number cannot be blank." >
+		<p:inputText id="usah-reg" binding="#{memberBean.mcomponent}" style="font-size:14px;" value="#{memberBean.regnumber}" required="true" requiredMessage="Usa Hockey Number cannot be blank." >
 			<f:validateLength minimum="14" maximum="14" />
  			<f:validator validatorId="validateUSAHRegistration" />  
 		</p:inputText>
 		<p:message id="m_usah-reg" style="font-size:12px;" for="usah-reg"/>
 	</h:panelGrid>	
 	<p:fieldset style="font-size:14px;" toggleable="false" toggleSpeed="500"> 
-	<p:commandButton value="Next" icon="ui-icon-arrow-1-e" iconPos="left" type="button" onclick="myWizard.next();" />
+		<p:commandButton  id="btnUSAfetch"  value="Next" icon="ui-icon-arrow-1-e" iconPos="left" type="button" onclick="myWizard.next();" />
 	</p:fieldset>	
 
 </p:tab>
@@ -215,7 +210,7 @@
 		</p:panelGrid>
 
 		<p:fieldset rendered = "#{not memberBean.selectedPerson.isInFamily()}">
-		  <h:selectBooleanCheckbox id="myCheckbox" onclick="hideOrShow(this.checked)" />
+		  <h:selectBooleanCheckbox id="myCheckbox" onclick="hideOrShow(this.checked)" value="#{memberBean.stealme}"/>
 		  <h:outputText value="The person is NOT currently under your account. By Checking this box we will move them into your account when we create the Membership." />
 	 	</p:fieldset>
 
@@ -226,7 +221,7 @@
  	<p:resetInput target="form:growl" /> 
  	</p:commandButton>
 	<p:spacer height="20px" width="20px" />
-	<p:commandButton value="Create Membership" update="form:growl" actionListener="#{memberBean.createMember()}" />  
+	<p:commandButton value="Create Membership" ajax= "false" update="form:growl" action="#{memberBean.createMember()}" />  
 	</p:fieldset> 
 </p:tab>
 </p:wizard>

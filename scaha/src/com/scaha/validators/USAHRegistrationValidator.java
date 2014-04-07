@@ -62,11 +62,11 @@ public class USAHRegistrationValidator implements Validator {
 			// 
 			if (db.getResultSet() != null && db.getResultSet().next()){
 				if (db.getResultSet().getInt(1) > 0) {
-//					FacesMessage message = new FacesMessage();
-//		        	message.setSeverity(FacesMessage.SEVERITY_ERROR);
-//		        	message.setSummary("USA Hockey Registration.");
-//		        	message.setDetail("The reg number has already been claimed.");
-//		            throw new ValidatorException(message);
+					FacesMessage message = new FacesMessage();
+		        	message.setSeverity(FacesMessage.SEVERITY_ERROR);
+		        	message.setSummary("USA Hockey Registration.");
+		        	message.setDetail("The reg number has already been claimed.");
+		            throw new ValidatorException(message);
 				}
 			}
 			
@@ -81,11 +81,11 @@ public class USAHRegistrationValidator implements Validator {
 			// 
 			if (!db.getResultSet().next()){
 
-//				FacesMessage message = new FacesMessage();
-//				message.setSeverity(FacesMessage.SEVERITY_ERROR);
-//				message.setSummary("USA Hockey Registration.");
-//				message.setDetail("This Number is NOT for the current registration year.  Please check your number and try again.");
-//				throw new ValidatorException(message);
+				FacesMessage message = new FacesMessage();
+				message.setSeverity(FacesMessage.SEVERITY_ERROR);
+				message.setSummary("USA Hockey Registration.");
+				message.setDetail("This Number is NOT for the current registration year.  Please check your number and try again.");
+				throw new ValidatorException(message);
 			}
 			
 		} catch (SQLException e) {

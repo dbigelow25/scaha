@@ -17,6 +17,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.event.FlowEvent;
@@ -67,7 +68,9 @@ public class MemberBean implements Serializable, MailableObject {
 	
 	private boolean fastforward = false;
 	private boolean restart = false;
+	private boolean stealme = false;
 	
+	private transient UIComponent mcomponent;
 	
 	@ManagedProperty(value="#{profileBean}")
 	private ProfileBean pb;
@@ -126,6 +129,8 @@ public class MemberBean implements Serializable, MailableObject {
 	 */
 	public boolean fetchUSAHockey() {
 		
+		
+		FacesContext context = FacesContext.getCurrentInstance();
 		//
 		// clear it out first!!
 		//
@@ -137,18 +142,26 @@ public class MemberBean implements Serializable, MailableObject {
 			if (this.usar == null) {
 				LOGGER.info("usaHockeyBean:Did NOT Get any USAH Number info Back!! BAD SERVICE CALL");
 				FacesContext.getCurrentInstance().addMessage(
-						":member-form",
+						mcomponent.getClientId(),
 	                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Connection ISSUES",
 	                    "Could Not Connect with the USA Hockey database at this time.."));
-			return false;
+				return false;
 
 			}
 
-			if (usar.getFirstName().length()== 0) {
-				FacesContext.getCurrentInstance().addMessage(
-						":member-form",
+			//
+			// If we got nothing back at all from the first name
+			//
+			// Then we did not find anything.
+			//
+			if (usar.getFirstName().trim().length()== 0) {
+				
+				LOGGER.info(mcomponent.getClientId());
+				context.addMessage(
+						mcomponent.getClientId(),
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "USA Hockey Info Not Found",
-                    "Could Not find the USA Registration record."));
+                    "Could Not find the USA Registration record. Please check your number and try again"));
+
 				return false;
 			} 
 			
@@ -172,15 +185,19 @@ public class MemberBean implements Serializable, MailableObject {
 	
 	@Override
 	public String getSubject() {
-		// TODO Auto-generated method stub
-		return "Congradulations, you have successfully registered";
+		return "SCAHA Membership Information For " + this.selectedPerson.getsFirstName() + " " + this.selectedPerson.getsLastName();
 	}
 	@Override
 	public String getTextBody() {
-		// TODO Auto-generated method stub
-		return "";
+		
+		String strBody = "Hello There: your USA Hockey Number is: " + this.selectedPerson.getUsaHockeyRegistration().getUSAHnum();
+		
+		strBody = strBody + "/nHere is your SCAHA Membership number: " + this.selectedPerson.getSMember().getSCAHANumber();
+		
+		return strBody;
+		
+		
 	}
-	
 	@Override
 	public String getPreApprovedCC() {
 		// TODO Auto-generated method stub
@@ -188,11 +205,23 @@ public class MemberBean implements Serializable, MailableObject {
 	}
 	@Override
 	public String getToMailAddress() {
-		// TODO Auto-generated method stub
-		//return this.email + "," + ((this.altemail == null || this.altemail.isEmpty()) ? "" : this.altemail);
-		return "";
 		
+		/**
+		 *  The top person has both an e-mail in the profile and an e-mail (alt if their person record)
+		 */
+		Profile tpro = pb.getProfile();
+		Person tper = tpro.getPerson();
+		
+		LOGGER.info("SendMail To:" + tpro.getUserName() + (tper.getsEmail() != null ? "," + tper.getsEmail() : ""));
+		
+		return tpro.getUserName() + (tper.getsEmail() != null ? "," + tper.getsEmail() : "")  + 
+				"";
+		
+		//			(this.selectedPerson.getsEmail() != null ? "," + this.selectedPerson : "");
+		
+	
 	}
+	
 
 	/**
 	 * @return the membertype
@@ -265,19 +294,22 @@ public class MemberBean implements Serializable, MailableObject {
 		FacesContext context = FacesContext.getCurrentInstance();
 		
 		LOGGER.info("HERERERRERR");
+		Profile pro = pb.getProfile();   // This is the profile of the user
+		Person tper = pro.getPerson();   //  This is their person record who controlls the account
+		Family tfam = tper.getFamily();  //  This is their Family Structure
 		
-		context.addMessage(
-				"form:growl",
-                new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "USA Hockey Reg",
-                "Membership Creation has been disabled until system test has been complete.  Thank you for excercising our system for us!"));
-		
-		this.reset();
-		if (1==1) return "true";
-	
+		Person per = this.selectedPerson;
+		ScahaManager sm = null;
+		ScahaPlayer sp = null;
+		ScahaCoach sc = null;		
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-
-		
+		boolean newpeep = false;
+		if (per.ID < 1) {
+			newpeep = true;
+			LOGGER.info("THIS IS A NEW PERSON");
+		} else {
+			LOGGER.info("THIS IS AN EXISTING PERSON");
+		}
 		//
 		// Lets start off with the basics person is always implied in the extended object.
 		// we are really just saving off alot of stuff through the objects.. then reloading the family .. once done
@@ -288,103 +320,94 @@ public class MemberBean implements Serializable, MailableObject {
 		// We must stop this add in its tracks and tell them to use an update existing family member function
 		//
 		try {
-			if (db.checkForPersonByFLDOB(usar.getFirstName(), usar.getLastName(), usar.getDOB())) {
+			if (db.checkForPersonByFLDOB(usar.getFirstName(), usar.getLastName(), usar.getDOB()) && newpeep ) {
 				
 				FacesContext.getCurrentInstance().addMessage(
-						"mp-form:usah-reg",
+						"form:growl",
 	                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                    "USA Hockey Reg",
 	                    "You cannot create a member.  There is already a member with the same first name, last name and date of birth!"));
 				
-			} else {
+				return "false";
+
+			}
+			// And we need to create the membership record as well..
+			//
+			// Here is where we update everything at once.
+			// we have auto commit off so its an all or nothing approach.
+			//
+			//
+			//  we have either
+			//
+			//  1) An existing person that is outside the family.. all we want to do where is create a membership.. update the person record
+			//  	Possibly create a coach and or manager record if one not already created
+			//		In addition.. if they are going to be stolen.. we do it here and tree them up to the owners family..
+			//
+			//  2) If its a new person.. we just do the normal stuff.
+			//
+			//
+			//
+			//  This is either a new person.. or an existing person to the system..
+			//
+
+			//
+			// Is this a new person...
+			//
+		
+
+			per.gleanUSAHinfo(this.usar);
+			per.update(db);
+			usar.update(db, per);
+			ScahaMember mem = new ScahaMember(pro,per);
+			mem.setSCAHAYear(this.usar.getMemberShipYear());
+			LOGGER.info("Time to Create the Membership.. ");
+			mem.generateMembership(db);
+			mem.setTopPerson(tper);
+				
+			LOGGER.info("Member Type is" + membertype.toString());
+				
+			//
+			// ok.. lets update the trifecta and see if it sticks!!
+			//
+			if (membertype.contains("Manager")) {
+				sm = new ScahaManager(pro,per);
+				sm.update(db);
+			}
+			if (membertype.contains("Coach")) {
+				sc = new ScahaCoach(pro,per);
+				sc.update(db);
+
+			}
+			if (membertype.contains("Player-Goalie") || membertype.contains("Player-Skater")) {
+				sp = new ScahaPlayer(pro, per);
+				sp.gleanUSAHinfo(this.usar);
+				if (membertype.contains("Player-Goalie")) {
+					sp.setGoalie(true);
+				}
+				sp.update(db);
+			}
 	
-				//
-				// Lets check to see if this person .. "looks" like another person
-				// if it does.. we need to route them to a confirmation screen that they are indeed going to add 
-				//
+			//
+			// Now we need to get the Family Object from the Person in the Profile..
+			// and add this person to the database.. and the object
+			//
+			// no matter how many types of people we have.. they all point to the same person...
 			
-				Profile pro = pb.getProfile();   // This is the profile of the user
-				Person tper = pro.getPerson();   //  This is their person record
-				Family tfam = tper.getFamily();  //  This is their Family Structure
-				
-				Person per = new Person(pro);		// This will be the new person
-				ScahaManager sm = null;
-				ScahaPlayer sp = null;
-				ScahaCoach sc = null;
-				ScahaMember mem = null;
-				
-		
-				// And we need to create the membership record as well..
-				//
-				// Here is where we update everything at once.
-				// we have auto commit off so its an all or nothing approach.
-				//
-				db.setAutoCommit(false);
-				//
-		
-				per.gleanUSAHinfo(this.usar);
-				per.update(db);
-				usar.update(db, per);
-				
-				mem = new ScahaMember(pro,per);
-				mem.setSCAHAYear(this.usar.getMemberShipYear());
-				LOGGER.info("Time to Create the Membership.. ");
-				mem.generateMembership(db);
-				mem.setTopPerson(tper);
-				
-				LOGGER.info("Member Type is" + membertype.toString());
-				
-				//
-				// ok.. lets update the trifecta and see if it sticks!!
-				//
-				if (membertype.contains("Manager")) {
-					sm = new ScahaManager(pro,per);
-					sm.update(db);
-				}
-				if (membertype.contains("Coach")) {
-					sc = new ScahaCoach(pro,per);
-					sc.update(db);
-	
-				}
-				if (membertype.contains("Player-Goalie") || membertype.contains("Player-Skater")) {
-					sp = new ScahaPlayer(pro, per);
-					sp.gleanUSAHinfo(this.usar);
-					if (membertype.contains("Player-Goalie")) {
-						sp.setGoalie(true);
-					}
-					sp.update(db);
-				}
-		
-				//
-				// Now we need to get the Family Object from the Person in the Profile..
-				// and add this person to the database.. and the object
-				//
-				// no matter how many types of people we have.. they all point to the same person...
+			LOGGER.info("STEAL ME is:" + this.stealme);
+			if (newpeep || (!newpeep && this.stealme)) {
 				FamilyMember fm = new FamilyMember(pro, tfam, per);
 				fm.setRelationship(this.getRelationship());
 				fm.updateFamilyMemberStructure(db);
-				
+				//
 				// ok.. since we are good.. lets get a new family structure for the pic.
-				
+				//
 				tper.setFam(null);
 				tper.setFam(new Family(db, tper));
-				
-				db.free();
-	            context.addMessage(null, new FacesMessage("Successful", "I think we saved something.."));  
-	            
-	            //
-	            // Lets go back to view mode.. i know .. its a bad name.. but we are in a hurry
-	            //
-	            pb.cancelAddMember();
-	        
-	            
-	            //
-	            //  We also have to create an e-mail record.. possibly formated in HTML..
-	            //
-	        	// We want to create a family called the <lastname> family...
-				SendMailSSL mail = new SendMailSSL(mem);
-				mail.sendMail();
+
 			}
+			
+			SendMailSSL mail = new SendMailSSL(this);
+			mail.sendMail();
             
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -392,7 +415,19 @@ public class MemberBean implements Serializable, MailableObject {
 		
 		db.free();
 		
-		return "true";
+		//
+		// This keeps the message alive between redirects!
+		//
+		context.getExternalContext().getFlash().setKeepMessages(true);			
+		
+
+		context.addMessage(
+				null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO,
+                "Member Add a Success",
+                "You have successfully Added/Updated a new member for the upcoming season..  You will be receiving a confirmation e-mail shortly"));
+				
+		return "Welcome.xhtml?faces-redirect=true";
 
 	}
 	
@@ -497,6 +532,11 @@ public class MemberBean implements Serializable, MailableObject {
    				this.relationship = selectedPerson.getXRelType();
 
    				if (fastforward) return "finish";
+   			} else {
+   				//
+   				// stay put..
+   				//
+   				return "usahockey";
    			}
         		
         } else if (event.getNewStep().equals("choose")) {
@@ -567,6 +607,34 @@ public class MemberBean implements Serializable, MailableObject {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * @return the mcomponent
+	 */
+	public UIComponent getMcomponent() {
+		return mcomponent;
+	}
+
+	/**
+	 * @param mcomponent the mcomponent to set
+	 */
+	public void setMcomponent(UIComponent mcomponent) {
+		this.mcomponent = mcomponent;
+	}
+
+	/**
+	 * @return the stealme
+	 */
+	public Boolean getStealme() {
+		return stealme;
+	}
+
+	/**
+	 * @param stealme the stealme to set
+	 */
+	public void setStealme(Boolean stealme) {
+		this.stealme = stealme;
 	}
 
 

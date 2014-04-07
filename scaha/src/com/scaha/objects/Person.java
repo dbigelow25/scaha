@@ -32,6 +32,7 @@ public class Person extends ScahaObject implements Serializable {
 	private int iZipCode = 0;
 	private Family fam = null;
 	private UsaHockeyRegistration UsaHockeyRegistration = null;
+	private ScahaMember SMember = null;
 	
 
 	/**
@@ -424,5 +425,19 @@ public class Person extends ScahaObject implements Serializable {
 	
 	public String isInFamily () {
 		return getGenAttByKey("INFAMILY");
+	}
+
+	/**
+	 * @return the sMember
+	 */
+	public ScahaMember getSMember() {
+		return SMember;
+	}
+
+	/**
+	 * @param sMember the sMember to set
+	 */
+	public void setSMember(ScahaMember sMember) {
+		SMember = sMember;
 	}
 }

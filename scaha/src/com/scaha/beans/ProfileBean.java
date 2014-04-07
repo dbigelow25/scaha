@@ -1,6 +1,7 @@
 package com.scaha.beans;
 
 import com.gbli.common.SendMailSSL;
+import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Family;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
+import org.primefaces.model.StreamedContent;
 
 
 /**
@@ -74,7 +76,6 @@ public class ProfileBean implements Serializable,  MailableObject  {
 	private String  currentUSAHockeySeason = "Needs call to DB";
 	private String  currentSCAHAHockeySeason = "Needs call to DB";
 	
-
 	/**
 	 * 
 	 */
@@ -954,4 +955,7 @@ public void setSelectedPerson(Person selectedPerson) {
 	this.selectedPerson = selectedPerson;
 }
 
+public StreamedContent getSampleBarCode() {
+	return Utils.getStreamedBarCodeContent("1234567890");
+}
 }

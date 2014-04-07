@@ -22,10 +22,10 @@ public class ScahaCoach extends Person {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	
-	private String screeningexpires = null;   // iTS A Date
-	private String cepnumber = null;
+	private String screeningexpires = "01/01/1980";   // iTS A Date
+	private String cepnumber = "";
 	private int ceplevel = 0;
-	private String cepexpires = null;  // Its a Date
+	private String cepexpires = "01/01/1980";  // Its a Date
 	private int u8 = 0;
 	private int u10 = 0;
 	private int u12 = 0;
