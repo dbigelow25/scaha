@@ -3,9 +3,14 @@ package com.scaha.beans;
 import java.io.Serializable;
 import java.util.logging.Logger;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
+import org.primefaces.model.StreamedContent;
 
+import com.gbli.common.Utils;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.FamilyMember;
 import com.scaha.objects.MailableObject;
@@ -19,7 +24,7 @@ public class FamilyMemberBean  implements Serializable,  MailableObject  {
 	//
 	// Account Management.. this is when they select a family member to change something
 	//
-	private FamilyMember selectedFamilyMember = null;
+	private FamilyMember currentFM = null;
 	
 	/**
 	 * @param args
@@ -51,19 +56,19 @@ public class FamilyMemberBean  implements Serializable,  MailableObject  {
 	/**
 	 * @return the selectedFamilyMember
 	 */
-	public FamilyMember getSelectedFamilyMember() {
-		return selectedFamilyMember;
+	public FamilyMember getCurrentFM() {
+		return currentFM;
 	}
 	/**
 	 * @param selectedFamilyMember the selectedFamilyMember to set
 	 */
-	public void setSelectedFamilyMember(FamilyMember selectedFamilyMember) {
-		this.selectedFamilyMember = selectedFamilyMember;
-		if (this.selectedFamilyMember == null) {
+	public void setCurrentFM(FamilyMember selectedFamilyMember) {
+		this.currentFM = selectedFamilyMember;
+		if (this.currentFM == null) {
 			LOGGER.info("We have a null family member coming across ...");
 			
 		} else {
-			LOGGER.info("I am selected Family Member: " + this.selectedFamilyMember.ID);
+			LOGGER.info("I am selected Family Member: " + this.currentFM.ID);
 		}
 	}
 

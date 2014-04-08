@@ -5,6 +5,9 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
+import org.primefaces.model.StreamedContent;
+
+import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
@@ -133,5 +136,8 @@ public class FamilyMember extends Person implements Serializable {
 	public int getFamilyMemberID() {
 		return ID;
 	}
-	
+
+	public StreamedContent getCurrentFMsSCAHAMemberAsBarCode() {
+		return Utils.getStreamedBarCodeContent(this.getScahaHockeyNumber());
+	}
 }

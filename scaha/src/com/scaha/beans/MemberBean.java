@@ -1,34 +1,24 @@
 package com.scaha.beans;
 
 import java.io.Serializable;
-import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.el.ValueExpression;
-import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.event.FlowEvent;
-import org.primefaces.event.SelectEvent;
-import org.primefaces.event.UnselectEvent;
-
 import com.gbli.common.SendMailSSL;
 import com.gbli.common.USAHRegClient;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
-import com.scaha.objects.Club;
 import com.scaha.objects.Family;
 import com.scaha.objects.FamilyMember;
 import com.scaha.objects.MailableObject;
@@ -353,7 +343,15 @@ public class MemberBean implements Serializable, MailableObject {
 			//
 			// Is this a new person...
 			//
-		
+
+			
+			//
+			// lets quickly see if you are trying to steal yourself into your own account
+			//
+			
+			if (this.stealme && tper.ID == per.ID) {
+				per = tper;
+			}
 
 			per.gleanUSAHinfo(this.usar);
 			per.update(db);
@@ -394,7 +392,7 @@ public class MemberBean implements Serializable, MailableObject {
 			// no matter how many types of people we have.. they all point to the same person...
 			
 			LOGGER.info("STEAL ME is:" + this.stealme);
-			if (newpeep || (!newpeep && this.stealme)) {
+			if (newpeep || (!newpeep && this.stealme && per.ID != tper.ID)) {
 				FamilyMember fm = new FamilyMember(pro, tfam, per);
 				fm.setRelationship(this.getRelationship());
 				fm.updateFamilyMemberStructure(db);
