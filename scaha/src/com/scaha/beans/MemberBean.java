@@ -17,6 +17,7 @@ import javax.faces.context.FacesContext;
 import org.primefaces.event.FlowEvent;
 import com.gbli.common.SendMailSSL;
 import com.gbli.common.USAHRegClient;
+import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Family;
@@ -43,9 +44,10 @@ import com.scaha.objects.UsaHockeyRegistration;
 @SessionScoped
 public class MemberBean implements Serializable, MailableObject {
 	
-	
 	private static final long serialVersionUID = 3L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	private static String mail_body = Utils.getMailTemplateFromFile("/mail/seasonpass.html");
+	private String MergedBody = null;
 
 	private UsaHockeyRegistration usar = null;
 	private String regnumber = null;
@@ -64,7 +66,23 @@ public class MemberBean implements Serializable, MailableObject {
 	
 	@ManagedProperty(value="#{profileBean}")
 	private ProfileBean pb;
+	@ManagedProperty(value="#{scahaBean}")
+	private ScahaBean scaha;
 	
+	/**
+	 * @return the scaha
+	 */
+	public ScahaBean getScaha() {
+		return scaha;
+	}
+
+	/**
+	 * @param scaha the scaha to set
+	 */
+	public void setScaha(ScahaBean scaha) {
+		this.scaha = scaha;
+	}
+
 	/**
 	 * @return the pb
 	 */
@@ -172,6 +190,20 @@ public class MemberBean implements Serializable, MailableObject {
 		return true;
 	}
 
+	private void buildMailBody(Person tper, Person per, UsaHockeyRegistration usar2, ScahaMember mem) {
+	
+		// TODO Auto-generated method stub
+		List<String> myTokens = new ArrayList<String>();
+		myTokens.add("PFIRST:" + per.getsFirstName());
+		myTokens.add("PLAST:" + per.getsLastName());
+		myTokens.add("FIRSTNAME:" + tper.getsFirstName());
+		myTokens.add("LASTNAME:" + tper.getsLastName());
+		myTokens.add("USAHNUM:" + usar2.getUSAHnum());
+		myTokens.add("SCAHANUM:" + mem.getSCAHANumber());
+		myTokens.add("SEASON:" + scaha.getScahaSeasonList().getCurrentSeason().getDescription());
+		this.MergedBody =  Utils.mergeTokens(MemberBean.mail_body,myTokens);
+		
+	}
 	
 	@Override
 	public String getSubject() {
@@ -180,14 +212,10 @@ public class MemberBean implements Serializable, MailableObject {
 	@Override
 	public String getTextBody() {
 		
-		String strBody = "Hello There: your USA Hockey Number is: " + this.selectedPerson.getUsaHockeyRegistration().getUSAHnum();
-		
-		strBody = strBody + "/nHere is your SCAHA Membership number: " + this.selectedPerson.getSMember().getSCAHANumber();
-		
-		return strBody;
-		
+			return this.MergedBody;
 		
 	}
+
 	@Override
 	public String getPreApprovedCC() {
 		// TODO Auto-generated method stub
@@ -404,9 +432,10 @@ public class MemberBean implements Serializable, MailableObject {
 
 			}
 			
+			this.buildMailBody(tper, per, usar, mem);
 			SendMailSSL mail = new SendMailSSL(this);
 			mail.sendMail();
-            
+			
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
@@ -429,6 +458,8 @@ public class MemberBean implements Serializable, MailableObject {
 
 	}
 	
+
+
 	public void reset() {
 		LOGGER.info("usaHockeyBean:reseting member variables...");
 		usar = null;
