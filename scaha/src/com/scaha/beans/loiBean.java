@@ -38,7 +38,7 @@ public class loiBean implements Serializable, MailableObject {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	private static String mail_reg_body = Utils.getMailTemplateFromFile("/mail/loireceipt.html");
-	
+	private static String girlsmail_reg_body = Utils.getMailTemplateFromFile("/mail/girlsloireceipt.html");
 	transient private ResultSet rs = null;
 	private String selectedteam = null;
 	private String selectedgirlsteam = null;
@@ -145,6 +145,11 @@ public class loiBean implements Serializable, MailableObject {
 		myTokens.add("LASTNAME:" + this.lastname);
 		myTokens.add("CLUBNAME:" + this.getClubName());
 		myTokens.add("SELECTEDBOYSTEAM:" + this.displayselectedteam + " ");
+		if (this.displayselectedgirlsteam==null){
+			myTokens.add("SELECTEDGRLSTEAM: ");
+		}else {
+			myTokens.add("SELECTEDGRLSTEAM:" + this.displayselectedgirlsteam + " ");
+		}
 		myTokens.add("SELECTEDGRLSTEAM:" + this.displayselectedgirlsteam + " ");
 		myTokens.add("DOB:" + this.dob);
 		myTokens.add("CITIZENSHIP:" + this.citizenship);
@@ -164,7 +169,12 @@ public class loiBean implements Serializable, MailableObject {
 			myTokens.add("LASTYEARTEAM:" + this.lastyearteam);
 		}
 		
-		return Utils.mergeTokens(loiBean.mail_reg_body,myTokens);
+		if (this.displayselectedgirlsteam==null){
+			return Utils.mergeTokens(loiBean.mail_reg_body,myTokens);
+		} else {
+			return Utils.mergeTokens(loiBean.girlsmail_reg_body,myTokens);
+		}
+		
 	}
 	
 	public String getPreApprovedCC() {
