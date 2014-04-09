@@ -92,7 +92,7 @@ public class SendMailSSL {
 			Transport.send(message);
 
 			LOGGER.info("Completed Sending E-mail...");
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOGGER.info(e.getMessage());
