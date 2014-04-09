@@ -76,6 +76,8 @@ public class coachloiBean implements Serializable, MailableObject {
 	private String cc = null;
 	private String textbody = null;
 	private String clubname = "";
+	private String listofboysteams;
+	private String listofgirlsteams;
 	
 	@PostConstruct
     public void init() {
@@ -113,6 +115,25 @@ public class coachloiBean implements Serializable, MailableObject {
     }  
     
     
+    public String getListofgirlsteams() {
+		// TODO Auto-generated method stub
+		return listofgirlsteams;
+	}
+    
+    public void setListofgirlsteams(String ssubject){
+    	listofgirlsteams = ssubject;
+    }
+    
+    
+    public String getListofboysteams() {
+		// TODO Auto-generated method stub
+		return listofboysteams;
+	}
+    
+    public void setListofboysteams(String ssubject){
+    	listofboysteams = ssubject;
+    }
+    
     public String getClubname() {
 		// TODO Auto-generated method stub
 		return clubname;
@@ -138,8 +159,16 @@ public class coachloiBean implements Serializable, MailableObject {
 		myTokens.add("FIRSTNAME:" + this.firstname);
 		myTokens.add("LASTNAME:" + this.lastname);
 		myTokens.add("CLUBNAME:" + this.getClubName());
-		myTokens.add("BOYSTEAMS:" + this.displayselectedteam + " ");
-		myTokens.add("GIRLSTEAMS:" + this.displayselectedgirlsteam + " ");
+		if (this.listofboysteams==null){
+			myTokens.add("BOYSTEAMS:  ");
+		} else {
+			myTokens.add("BOYSTEAMS:" + this.listofboysteams + " ");
+		}
+		if (this.listofgirlsteams==null){
+			myTokens.add("GIRLSTEAMS:  ");
+		}else {
+			myTokens.add("GIRLSTEAMS:" + this.listofgirlsteams + " ");
+		}
 		myTokens.add("ADDRESS:" + this.address);
 		myTokens.add("CITY:" + this.city);
 		myTokens.add("STATE:" + this.state);
@@ -807,6 +836,18 @@ public class coachloiBean implements Serializable, MailableObject {
 		    		    cs.setInt("iteamid", Integer.parseInt(this.selectedteams.get(i)));
 		    		    cs.setInt("setyear", 2014);
 		    		    rs = cs.executeQuery();
+		    		    
+		    		    if (rs != null){
+		    				while (rs.next()) {
+		    					if (this.listofboysteams==null){
+		    						this.listofboysteams = rs.getString("teamname");
+		    					} else {
+		    						this.listofboysteams = this.listofboysteams + "<br>" + rs.getString("teamname");
+		    					}
+		    				}
+		    				LOGGER.info("We have player up code validation results for player details by player id");
+		    			}
+		    			
 					}
 	    		    
 	    		    //need to add to the coach roster table for each girls team selected
@@ -817,7 +858,17 @@ public class coachloiBean implements Serializable, MailableObject {
 		    		    cs.setInt("iteamid", Integer.parseInt(this.selectedgirlsteams.get(i)));
 		    		    cs.setInt("setyear", 2014);
 		    		    rs = cs.executeQuery();
-					}
+		    		    if (rs != null){
+		    				while (rs.next()) {
+		    					if (this.listofgirlsteams==null){
+		    						this.listofgirlsteams = rs.getString("teamname");
+		    					} else {
+		    						this.listofgirlsteams = this.listofgirlsteams + "<br>" + rs.getString("teamname");
+		    					}
+		    				}
+		    				LOGGER.info("We have player up code validation results for player details by player id");
+		    			}
+		    		}
 	    			
 	    		    
 	    			LOGGER.info("Sending email to club registrar, family, and scaha registrar");
@@ -864,7 +915,9 @@ public class coachloiBean implements Serializable, MailableObject {
 		    		    db.commit();
 	    		    }
 	    		    
-					to = "lahockeyfan2@yahoo.com";
+					
+	    			
+	    			to = "lahockeyfan2@yahoo.com";
 	    		    this.setToMailAddress(to);
 	    		    this.setPreApprovedCC("");
 	    		    this.setSubject(this.firstname + " " + this.lastname + " LOI with " + this.getClubName());

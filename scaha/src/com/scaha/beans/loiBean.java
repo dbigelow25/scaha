@@ -150,7 +150,7 @@ public class loiBean implements Serializable, MailableObject {
 		}else {
 			myTokens.add("SELECTEDGRLSTEAM:" + this.displayselectedgirlsteam + " ");
 		}
-		myTokens.add("SELECTEDGRLSTEAM:" + this.displayselectedgirlsteam + " ");
+		
 		myTokens.add("DOB:" + this.dob);
 		myTokens.add("CITIZENSHIP:" + this.citizenship);
 		myTokens.add("GENDER:" + this.displaygender);
@@ -616,6 +616,7 @@ public class loiBean implements Serializable, MailableObject {
     		    
     			bplayerup = false;
     			Integer plupresultcount = 0;
+    			
     			//need to verify if player is playing up and if player up code is needed if not provided
     			if (this.playerupcode==null || this.playerupcode==""){
     				//Need to check player up code from family next
@@ -636,14 +637,19 @@ public class loiBean implements Serializable, MailableObject {
 	    			}
 	    			db.cleanup();
 	    			
-	    			if (plupresultcount.equals(0)){
+	    			if (plupresultcount.equals(0) && this.selectedgirlsteam==null){
 	    				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "The Player Up Code is required for this player for the division selected."));
 	    				bplayerup=true;
+	    			} else {
+	    				if (!(this.selectedgirlsteam==null)){
+	    					resultcount=1;
+	    				}
 	    			}
+	    			
     			}
     			
     			//need to verify player up code if user provided it.
-    			if (plupresultcount.equals(0)){
+    			if (plupresultcount.equals(0) && this.selectedgirlsteam==null){
     				//Need to check player up code from family next
 	 				LOGGER.info("verify family code provided for player up");
 	 				cs = db.prepareCall("CALL scaha.validateMemberNumber(?,?)");
@@ -661,10 +667,11 @@ public class loiBean implements Serializable, MailableObject {
 	    			}
 	    			db.cleanup();
 	    			
-	    			if (resultcount.equals(0)){
+	    			if (resultcount.equals(0) && this.selectedgirlsteam==null){
 	    				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "The provided Player Up signature code is invalid."));
 	    			} else {
 	    				bplayerup=true;
+	    				
 	    			}
     			}
 	    		
@@ -1018,7 +1025,7 @@ public class loiBean implements Serializable, MailableObject {
 		return teamname;
 	}
 	
-	public void checkDOB(){
+	public void checkDOB(String sourceteam){
 
 		//perform logic to check if team selected is for player up
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
@@ -1026,48 +1033,64 @@ public class loiBean implements Serializable, MailableObject {
 		try{
 			
 			//first lets check if the team selected is too young for the players dob
-			CallableStatement cs = db.prepareCall("CALL scaha.IsPlayerOlderThanLevel(?,?)");
-			String year = this.dob.substring(0,4);
-			cs.setInt("birthyear",Integer.parseInt(year));
-			cs.setInt("selectedteam", Integer.parseInt(this.selectedteam));
-		    rs = cs.executeQuery();
-			Integer ageoldercount = 0;
-		    
-		    if (rs != null){
-				
-				while (rs.next()) {
-					ageoldercount = rs.getInt("isolder");
-				}
-				LOGGER.info("We have validation whether player needs player up code or not");
-			}
-			db.cleanup();
-			
-			if (ageoldercount.equals(1)){
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "The player is too old for the team selected"));
-			}
-			
-			LOGGER.info("verify if user needs to enter player up code");
-			cs = db.prepareCall("CALL scaha.IsPlayerUpNeeded(?,?)");
-			cs.setInt("birthyear",Integer.parseInt(year));
-			cs.setInt("selectedteam", Integer.parseInt(this.selectedteam));
-		    rs = cs.executeQuery();
 			Integer resultcount = 0;
-		    
-		    if (rs != null){
+			Integer ageoldercount = 0;
+			if (sourceteam.equals("M")){
+				CallableStatement cs = db.prepareCall("CALL scaha.IsPlayerOlderThanLevel(?,?)");
+				String year = this.dob.substring(0,4);
+				cs.setInt("birthyear",Integer.parseInt(year));
+				cs.setInt("selectedteam", Integer.parseInt(this.selectedteam));
 				
-				while (rs.next()) {
-					resultcount = rs.getInt("divisioncount");
+			    rs = cs.executeQuery();
+				
+			    
+			    if (rs != null){
+					
+					while (rs.next()) {
+						ageoldercount = rs.getInt("isolder");
+					}
+					LOGGER.info("We have validation whether player needs player up code or not");
 				}
-				LOGGER.info("We have validation whether player needs player up code or not");
+				db.cleanup();
+				
+				if (ageoldercount.equals(1)){
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "The player is too old for the team selected"));
+				}
+				
+				LOGGER.info("verify if user needs to enter player up code");
+				cs = db.prepareCall("CALL scaha.IsPlayerUpNeeded(?,?)");
+				cs.setInt("birthyear",Integer.parseInt(year));
+				if (sourceteam.equals("M")){
+					cs.setInt("selectedteam", Integer.parseInt(this.selectedteam));
+				}else {
+					cs.setInt("selectedteam", Integer.parseInt(this.selectedgirlsteam));
+				}
+				
+			    rs = cs.executeQuery();
+				
+			    
+			    if (rs != null){
+					
+					while (rs.next()) {
+						resultcount = rs.getInt("divisioncount");
+					}
+					LOGGER.info("We have validation whether player needs player up code or not");
+				}
+				db.cleanup();
+			} else {
+				resultcount = 1;
 			}
-			db.cleanup();
-			
 			if (resultcount.equals(0) && ageoldercount.equals(0)){
 				this.setDisplayplayerup(true);
 			} else {
 				this.setDisplayplayerup(false);
 			}
 		
+			if (sourceteam.equals("M")){
+				this.selectedgirlsteam=null;
+			} else {
+				this.selectedteam=null;
+			}
 			
 			 
 		} catch (SQLException e) {

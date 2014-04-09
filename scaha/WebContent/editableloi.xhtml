@@ -40,7 +40,7 @@
 								<p:selectOneMenu value="#{loiBean.selectedteam}">
 							    	<f:selectItem itemLabel="Select One" itemValue="0"/>
 							    	<f:selectItems value="#{loiBean.getListofTeams('M')}" var="team" itemLabel="#{team.getTeamname()}" itemValue="#{team.getIdteam()}"/>
-							    	<p:ajax process="@this" listener="#{loiBean.checkDOB()}" event="change" update=":form"  />
+							    	<p:ajax process="@this" listener="#{loiBean.checkDOB('M')}" event="change" update=":form"  />
 							    </p:selectOneMenu>
 							</td>
 						</tr>
@@ -50,6 +50,7 @@
 								<p:selectOneMenu value="#{loiBean.selectedgirlsteam}" rendered="#{loiBean.displaygirlteam}">
 							    	<f:selectItem itemLabel="Select One" itemValue="0"/>
 							    	<f:selectItems value="#{loiBean.getListofTeams('F')}" var="team" itemLabel="#{team.getTeamname()}" itemValue="#{team.getIdteam()}"/>
+							    	<p:ajax process="@this" listener="#{loiBean.checkDOB('F')}" event="change" update=":form"  />
 							    </p:selectOneMenu>
 							</td>
 						</tr>
