@@ -75,7 +75,7 @@
 	  	<p:spacer width="10" height="10" />
 
 		<p:fieldset id="fs3">
-             <p:commandButton value="Edit This Data" id="show-edit-per" ajax="false"  
+             <p:commandButton update="edit-pers-grid" value="Edit This Data" id="show-edit-per" ajax="false"  
              actionListener="#{profileBean.setEditPerson()}"/> 
          </p:fieldset>
 
@@ -92,7 +92,15 @@
 	
 	<p:fieldset id="fs5">
 		
-			<h:panelGrid columns="3" cellpadding="3" id="edit-pers-grid">  
+			<p:panelGrid columns="3" cellpadding="3" id="edit-pers-grid">  
+		
+					<p:outputLabel for="username" value="User Name (e-mail):" />
+					<p:inputText id="username" style="width:150px;" value="#{profileBean.chgUserName}">
+						<f:validator validatorId="validateUserName" />
+						<f:ajax event="blur" render="m_username" />
+					</p:inputText>
+					<p:message id="m_username" style="font-size:12pt;" for="username" />
+		
 					<p:outputLabel for="firstname" value="First Name"></p:outputLabel>
 					<p:inputText id="firstname" style="width:150px;" value="#{profileBean.chgFirstName}" />
 					<p:message id="m_firstname" closable="true" for="firstname"/>
@@ -124,9 +132,9 @@
 					<p:inputMask id="phone" value="#{profileBean.chgPhone}" style="width:150px;" mask="(999) 999-9999" />  
 					<p:message id="m_phone" closable="true" for="phone"/>
 
-			</h:panelGrid>
+			</p:panelGrid>
 
-			<h:panelGrid columns="4" cellpadding="3" id="edit-pers-addr-grid">
+			<p:panelGrid columns="4" cellpadding="3" id="edit-pers-addr-grid">
 					<p:outputLabel for="address" value="Address"></p:outputLabel>
 					<p:outputLabel for="city" value="City"></p:outputLabel>
 					<p:outputLabel for="state" value="State"></p:outputLabel>
@@ -135,7 +143,7 @@
 					<p:inputText id="city" style="width:175px;" value="#{profileBean.chgCity}" />
 					<p:inputMask  id="state" style="width:25px;" maxlength="2" value="#{profileBean.chgState}" mask="aa"/>
 					<p:inputMask id="zip" style="width:75px;" maxlength="5" value="#{profileBean.chgZip}" mask="99999"/>
-			</h:panelGrid>
+			</p:panelGrid>
 			
 		</p:fieldset>
 			
@@ -147,11 +155,9 @@
              <p:commandButton value="Update Information" update="edit-pers,view-pers" id="finish-edit-per" ajax="false"  
              actionListener="#{profileBean.updatePersonInfo()}"/>
              			
-			<p:commandButton value="Cancel" update="edit-pers,view-pers" id="cancel-edit-per" ajax="false"  
-             actionListener="#{profileBean.setNotEditPerson()}">
-             	<p:ajax update="edit-pers" resetValues="true" />   
-             </p:commandButton>
-             
+			<p:commandButton value="Cancel" update="edit-pers,view-pers" id="cancel-edit-per"  actionListener="#{profileBean.setNotEditPerson()}" immediate="true" ajax="false">  
+       			 <p:resetInput target="fs5" />  
+    		</p:commandButton>  
 
 
 		</p:fieldset>
