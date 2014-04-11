@@ -166,6 +166,10 @@ public class Profile extends ScahaObject {
 		return this.m_sUser;
 	}
 	
+	public void setUserName(String _semail) {
+		this.m_sUser = _semail;
+	}
+
 	public void setNickName(String _sNickName) {
 		this.m_sNickName = _sNickName;
 	}

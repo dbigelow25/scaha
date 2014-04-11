@@ -61,6 +61,7 @@ public class ProfileBean implements Serializable,  MailableObject  {
 	// Very archaic way to track changes.. 
 	// profiles are tricky because they are rarely changed..
 	//
+	private String  chgUserName = null;
 	private String  chgFirstName = null;
 	private String  chgLastName = null;
 	private String  chgNickName = null;
@@ -409,6 +410,7 @@ public void setEditPerson() {
 	this.chgZip = this.getZipCode();
 	this.chgDOB = this.getDOB();
 	this.chgGender = this.getGender();
+	this.chgUserName = this.getUserName();
 	
 	EditPerson = true;
 	EditPassword = false;
@@ -419,6 +421,21 @@ public void setEditPerson() {
  */
 public void setNotEditPerson() {
 	EditPerson = false;
+
+	// Initialize everything
+	//
+	this.chgAddress = this.getAddress();
+	this.chgFirstName = this.getFirstName();
+	this.chgLastName = this.getLastName();
+	this.chgAltEmail = this.getAltemail();
+	this.chgNickName = this.getNickName();
+	this.chgCity = this.getCity();
+	this.chgState = this.getState();
+	this.chgPhone = this.getPhone();
+	this.chgZip = this.getZipCode();
+	this.chgDOB = this.getDOB();
+	this.chgGender = this.getGender();
+	this.chgUserName = this.getUserName();	
 }
 
 /**
@@ -505,7 +522,8 @@ public void cancelAddMember() {
 	
 		//
 		// in the end.. we simply turn off the edit so that edit screen will dissappear
-		
+
+		if (!this.chgUserName.isEmpty()) pro.setUserName(this.chgUserName);
 		if (!this.chgDOB.isEmpty()) pro.getPerson().setDob(this.chgDOB);
 		if (!this.chgGender.isEmpty()) pro.getPerson().setGender(this.chgGender);
 		if (!this.chgAddress.isEmpty()) pro.getPerson().setsAddress1(this.chgAddress);
@@ -957,5 +975,17 @@ public void setSelectedPerson(Person selectedPerson) {
 
 public StreamedContent getSampleBarCode() {
 	return Utils.getStreamedBarCodeContent("1234567890");
+}
+/**
+ * @return the chgUserName
+ */
+public String getChgUserName() {
+	return chgUserName;
+}
+/**
+ * @param chgUserName the chgUserName to set
+ */
+public void setChgUserName(String chgUserName) {
+	this.chgUserName = chgUserName;
 }
 }

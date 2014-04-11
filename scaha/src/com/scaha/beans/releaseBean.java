@@ -10,12 +10,14 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
 import com.gbli.common.SendMailSSL;
+import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Club;
@@ -32,6 +34,8 @@ public class releaseBean implements Serializable, MailableObject {
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	private static String mail_permreg_body = Utils.getMailTemplateFromFile("/mail/permanentrelease.html");
+	private static String mail_tempreg_body = Utils.getMailTemplateFromFile("/mail/temporaryrelease.html");
 	transient private ResultSet rs = null;
 	private String firstname = null;
 	private String lastname = null;
@@ -63,10 +67,17 @@ public class releaseBean implements Serializable, MailableObject {
 	private String clubname = null;
 	private Boolean displaypermanent = null;
 	private Boolean displaytemporary = null;
+	private String displayreason = null;
+	private String displaysuspension = null;
+	private String displayacceptingclub = null;
+	private String displayacceptingdivision = null;
+	private String displayacceptingskilllevel = null;
+	private String displayfinancial = null;
 	
-	public releaseBean() {  
-        
-    	//hard code value until we load session variable
+	
+	@PostConstruct
+    public void init() {
+		//hard code value until we load session variable
     	FacesContext context = FacesContext.getCurrentInstance();
     	Application app = context.getApplication();
 
@@ -95,7 +106,73 @@ public class releaseBean implements Serializable, MailableObject {
     	loadPlayerProfile(selectedplayer);
 
     	//doing anything else right here
+
+    }
+	
+	public releaseBean() {  
+        
+    	
     }  
+	
+	public String getDisplayfinancial() {
+		// TODO Auto-generated method stub
+		return displayfinancial;
+	}
+    
+    public void setDisplayfinancial(String snum){
+    	displayfinancial = snum;
+    }
+	
+	
+	public String getDisplayacceptingskilllevel() {
+		// TODO Auto-generated method stub
+		return displayacceptingskilllevel;
+	}
+    
+    public void setDisplayacceptingskilllevel(String snum){
+    	displayacceptingskilllevel = snum;
+    }
+	
+	
+	public String getDisplayacceptingdivision() {
+		// TODO Auto-generated method stub
+		return displayacceptingdivision;
+	}
+    
+    public void setDisplayacceptingdivision(String snum){
+    	displayacceptingdivision = snum;
+    }
+	
+	
+	public String getDisplayacceptingclub() {
+		// TODO Auto-generated method stub
+		return displayacceptingclub;
+	}
+    
+    public void setDisplayacceptingclub(String snum){
+    	displayacceptingclub = snum;
+    }
+	
+	
+	public String getDisplaysuspension() {
+		// TODO Auto-generated method stub
+		return displaysuspension;
+	}
+    
+    public void setDisplaysuspension(String snum){
+    	displaysuspension = snum;
+    }
+	
+	
+	public String getDisplayreason() {
+		// TODO Auto-generated method stub
+		return displayreason;
+	}
+    
+    public void setDisplayreason(String snum){
+    	displayreason = snum;
+    }
+	
 	
 	public Boolean getDisplaypermanent() {
 		// TODO Auto-generated method stub
@@ -260,12 +337,54 @@ public class releaseBean implements Serializable, MailableObject {
     
 	public String getTextBody() {
 		// TODO Auto-generated method stub
-		return textbody;
+		List<String> myTokens = new ArrayList<String>();
+		myTokens.add("RELEASEDATE:" + " ");
+		myTokens.add("FIRSTNAME:" + this.firstname);
+		myTokens.add("LASTNAME:" + this.lastname);
+		myTokens.add("CLUBNAME:" + this.clubname);
+		myTokens.add("DOB:" + this.dob);
+		myTokens.add("USANUMBER:" + this.usanumber);
+		myTokens.add("PARENTNAME:" + this.parentname);
+		myTokens.add("PARENTEMAIL:" + this.parentemail);
+		myTokens.add("REASON:" + this.displayreason);
+		myTokens.add("SUSPENSION:" + this.displaysuspension);
+		if (this.displaypermanent){
+			myTokens.add("FINANCIAL:" + this.displayfinancial);
+		}
+		if (this.displaytemporary){
+			myTokens.add("BEGINNINGDATE:" + this.beginningdate);
+			myTokens.add("ENDINGDATE:" + this.endingdate);
+		}
+		myTokens.add("RELEASINGCLUB:" + this.releasingclubdivision);
+		if (this.displayacceptingclub==null){
+			myTokens.add("ACCEPTINGCLUB: ");
+		}else {
+			myTokens.add("ACCEPTINGCLUB:" + this.displayacceptingclub);
+		}
+		if (this.displayacceptingdivision==null){
+			myTokens.add("DIVISION:  ");
+		} else {
+			myTokens.add("DIVISION:" + this.displayacceptingdivision);
+		}
+		if (this.displayacceptingskilllevel==null){
+			myTokens.add("SKILLLEVEL:  ");
+		}else {
+			myTokens.add("SKILLLEVEL:" + this.displayacceptingskilllevel);
+		}
+		
+		myTokens.add("COMMENTS:" + this.comments);
+		
+		String result = null;
+		if (this.displaypermanent){
+			result = Utils.mergeTokens(releaseBean.mail_permreg_body,myTokens);
+		}
+		if (this.displaytemporary){
+			result = Utils.mergeTokens(releaseBean.mail_tempreg_body,myTokens);
+		}
+		
+		return result;
 	}
 	
-	public void setTextBody(String stextbody){
-		textbody = stextbody;
-	}
 	
 	public String getPreApprovedCC() {
 		// TODO Auto-generated method stub
@@ -730,9 +849,35 @@ public class releaseBean implements Serializable, MailableObject {
     			}
     			
     		    cs.executeQuery();
-    			db.commit();
-    			db.cleanup();
     			
+    		    //need to get display values for all lookup fields for the email sent.
+    		    LOGGER.info("Sending email to club registrar, family, and scaha registrar");
+    			cs = db.prepareCall("CALL scaha.getReleaseLookups(?,?,?,?,?,?)");
+    		    cs.setInt("reason", Integer.parseInt(this.selectedreason));
+    			cs.setInt("suspension", Integer.parseInt(this.selectedsuspension));
+    			cs.setInt("acceptingclub", Integer.parseInt(this.selectedacceptingclub));
+    			cs.setInt("acceptingdivision", Integer.parseInt(this.selectedacceptingdivision));
+    			cs.setInt("acceptingskilllevel", Integer.parseInt(this.selectedacceptingskilllevel));
+    			if (this.selectedfinancial==null){
+    				cs.setInt("financial", 0);
+    			} else {
+    				cs.setInt("financial", Integer.parseInt(this.selectedfinancial));
+    			}
+    			
+    			rs = cs.executeQuery();
+    			if (rs != null){
+    				
+    				while (rs.next()) {
+    					this.displayreason = rs.getString("reasonname");
+    					this.displaysuspension = rs.getString("suspension");
+    					this.displayacceptingclub = rs.getString("acceptingclubname");
+    					this.displayacceptingdivision = rs.getString("division_name");
+    					this.displayacceptingskilllevel = rs.getString("levelsname");
+    					this.displayfinancial = rs.getString("financial");
+    				}
+    				LOGGER.info("We have results for club list");
+    			}
+    			db.cleanup();
     			//need to send email to club registrars, family, and scaha registrar
     			//first releasing club
     			LOGGER.info("Sending email to club registrar, family, and scaha registrar");
@@ -764,24 +909,28 @@ public class releaseBean implements Serializable, MailableObject {
     				}
     			}
     		    
+    		    db.commit();
+    			cs.close();
+    		    db.cleanup();
+    			
+    		    
     		    //and now the family email
     		    to = to + ',' + this.getParentemail();
     		    
     		    //use this will testing the site.  send emails to rob's personal account
-    		    to = "lahockeyfan2@yahoo.com";
     		    
+    		    to = "lahockeyfan2@yahoo.com";
     		    this.setToMailAddress(to);
     		    this.cc="";
-    		    this.setTextBody("Player " + this.firstname + " " + this.lastname + " has been released from club " + this.clubname);
     		    this.setSubject(this.firstname + " " + this.lastname + " Released from " + this.clubname);
     		    
 				SendMailSSL mail = new SendMailSSL(this);
 				LOGGER.info("Finished creating mail object for Release");
 				mail.sendMail();
 				
-				
+    		    
     		    FacesContext context = FacesContext.getCurrentInstance();
-	    		try{
+    		    try{
 					context.getExternalContext().redirect("startplayerrelease.xhtml");
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
