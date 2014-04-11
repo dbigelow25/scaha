@@ -39,6 +39,7 @@ public class loiBean implements Serializable, MailableObject {
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	private static String mail_reg_body = Utils.getMailTemplateFromFile("/mail/loireceipt.html");
 	private static String girlsmail_reg_body = Utils.getMailTemplateFromFile("/mail/girlsloireceipt.html");
+	private static String playerupmail_reg_body = Utils.getMailTemplateFromFile("/mail/playeruploireceipt.html");
 	transient private ResultSet rs = null;
 	private String selectedteam = null;
 	private String selectedgirlsteam = null;
@@ -170,7 +171,11 @@ public class loiBean implements Serializable, MailableObject {
 		}
 		
 		if (this.displayselectedgirlsteam==null){
-			return Utils.mergeTokens(loiBean.mail_reg_body,myTokens);
+			if (bplayerup){
+				return Utils.mergeTokens(loiBean.playerupmail_reg_body,myTokens);
+			} else {
+				return Utils.mergeTokens(loiBean.mail_reg_body,myTokens);
+			}
 		} else {
 			return Utils.mergeTokens(loiBean.girlsmail_reg_body,myTokens);
 		}
