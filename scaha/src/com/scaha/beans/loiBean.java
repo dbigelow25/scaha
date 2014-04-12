@@ -715,7 +715,7 @@ public class loiBean implements Serializable, MailableObject {
 	    		    
 	    		    
 	    		    
-	    		    if ((selectedgirlsteam!=null) && (!selectedgirlsteam.equals(""))){
+	    		    if ((!selectedgirlsteam.equals("0")) && (selectedgirlsteam!=null) && (!selectedgirlsteam.equals(""))){
 	    		    	cs.setInt("iteamid", Integer.parseInt(this.selectedgirlsteam));
 	    		    }else{
 	    		    	cs.setInt("iteamid", Integer.parseInt(this.selectedteam));
@@ -1040,6 +1040,7 @@ public class loiBean implements Serializable, MailableObject {
 			//first lets check if the team selected is too young for the players dob
 			Integer resultcount = 0;
 			Integer ageoldercount = 0;
+			Integer pwtobtmcount = 0;
 			if (sourceteam.equals("M")){
 				CallableStatement cs = db.prepareCall("CALL scaha.IsPlayerOlderThanLevel(?,?)");
 				String year = this.dob.substring(0,4);
@@ -1062,6 +1063,8 @@ public class loiBean implements Serializable, MailableObject {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "The player is too old for the team selected"));
 				}
 				
+				
+				//need to check if player up code is needed
 				LOGGER.info("verify if user needs to enter player up code");
 				cs = db.prepareCall("CALL scaha.IsPlayerUpNeeded(?,?)");
 				cs.setInt("birthyear",Integer.parseInt(year));
@@ -1081,14 +1084,41 @@ public class loiBean implements Serializable, MailableObject {
 					}
 					LOGGER.info("We have validation whether player needs player up code or not");
 				}
+			    
+			    //need to check if player is peewee trying to play up in bantam b
+			    LOGGER.info("verify if user is player up for pw to bantam");
+				cs = db.prepareCall("CALL scaha.IsPlayerUPPeeweeToBantam(?,?)");
+				cs.setInt("birthyear",Integer.parseInt(year));
+				if (sourceteam.equals("M")){
+					cs.setInt("selectedteam", Integer.parseInt(this.selectedteam));
+				}else {
+					cs.setInt("selectedteam", Integer.parseInt(this.selectedgirlsteam));
+				}
+				
+			    rs = cs.executeQuery();
+				
+			    if (rs != null){
+					
+					while (rs.next()) {
+						pwtobtmcount = rs.getInt("divisioncount");
+					}
+					LOGGER.info("We have validation whether player needs player up code or not");
+				}
 				db.cleanup();
+			    
 			} else {
 				resultcount = 1;
 			}
-			if (resultcount.equals(0) && ageoldercount.equals(0)){
+			
+			
+			if (resultcount.equals(0) && ageoldercount.equals(0) && pwtobtmcount.equals(0)){
 				this.setDisplayplayerup(true);
 			} else {
 				this.setDisplayplayerup(false);
+				if (pwtobtmcount.equals(1)){
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "Player up from peewee to bantams is not allowed."));
+					this.selectedteam=null;
+				}
 			}
 		
 			if (sourceteam.equals("M")){

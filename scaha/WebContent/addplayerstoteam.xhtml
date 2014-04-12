@@ -22,17 +22,17 @@
 	<ui:define name="content">
 	
 	<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top">  
-    	<h:outputText value="SCAHA" style="color:#FFCC00;font-size:36px;" />  
-	</p:notificationBar>  
-  
-		<h:form>	
+    	<h:outputText value="SCAHA" style="color:#FFCC00;font-size:36px;" />
+    	
+    </p:notificationBar>  
+  	
+		<h:form>
+			<p:messages id="loimessage" showDetail="true" autoUpdate="true" closable="false" />	
 			<p:fieldset>	
 			<p:panel id ="panel" header="Search for Player:">
 				<h:panelGrid columns="2" cellpadding="5">
 					<p:inputText id="searchforplayer" style="width:150px;" value="#{draftplayersBean.searchcriteria}" required="false" requiredMessage="Enter a minimum of 5 characters to execute search."/>
 					<p:commandButton id="executesearch" value="Search" actionListener="#{draftplayersBean.playerSearch()}" ajax="true" update="playersearchresult"/>
-					<p:tooltip for="searchforplayer" value="Enter at least 5 characters to generate a list of matching players" showEffect="fade" hideEffect="fade" />  
-					<p:message id="m_searchforplayer" for="searchforplayer" />
 				</h:panelGrid>
 				<br></br>	
 				<p:dataTable id="playersearchresult" var="result" value="#{draftplayersBean.getResultdatamodel()}" selection="#{draftplayersBean.selectedplayer}"  paginator="true" rows="10" >
@@ -53,12 +53,12 @@
 			            <h:outputText value="#{result.getAddress()}" />  
 			        </p:column>
 			    </p:dataTable>
-				<p:messages id="loimessage" showDetail="true" autoUpdate="true" closable="false" /> 
 		</p:panel>
 		</p:fieldset>
 		<br></br>
 		<p:fieldset>
-			<div align="center"><p:commandButton id="generateLoi" value="Generate LOI" actionListener="#{draftplayersBean.generateLOI()}" ajax="true"/></div>
+			
+			<div align="center"><p:commandButton id="generateLoi" value="Generate LOI" actionListener="#{draftplayersBean.generateLOI()}" ajax="true" update="loimessage"/></div>
 		</p:fieldset>
 		<br></br>
 		<p:fieldset>

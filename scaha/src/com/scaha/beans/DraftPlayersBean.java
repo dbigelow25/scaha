@@ -315,14 +315,11 @@ public class DraftPlayersBean implements Serializable {
     	
     	try{
 
-    		
-			Vector<Integer> v = new Vector<Integer>();
-			v.add(Integer.parseInt(playerid));
-			db.getData("CALL scaha.isPlayerRostered(?)", v);
-		    
-			if (db.getResultSet() != null){
-				//need to add to an array
-				rs = db.getResultSet();
+    		CallableStatement cs = db.prepareCall("CALL scaha.isPlayerRostered(?)");
+		    cs.setInt("in_idPerson", Integer.parseInt(playerid));
+		    rs = cs.executeQuery();
+			
+			if (rs != null){
 				if (rs.next()){
 					previousTeamID = rs.getInt("idteam");
 	    			
