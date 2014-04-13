@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
+import javax.el.ValueExpression;
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -21,6 +24,7 @@ import com.gbli.context.ContextManager;
 import com.scaha.objects.Result;
 import com.scaha.objects.ResultDataModel;
 import com.scaha.objects.Team;
+import com.scaha.objects.TeamDataModel;
 
 //import com.gbli.common.SendMailSSL;
 
@@ -38,16 +42,61 @@ public class DraftPlayersBean implements Serializable {
     private List<Result> results = null;
     private ResultDataModel resultDataModel = null;
 	private String origin = null;
+	private Boolean ishighschool = null;
+	private Integer profileid = 0;
+	private Integer clubid = null;
     
-    public DraftPlayersBean() {  
-        results = new ArrayList<Result>();  
-          
-        playerSearch(); 
-  
-        resultDataModel = new ResultDataModel(results);
+	@PostConstruct
+    public void init() {
+		results = new ArrayList<Result>();  
         
         //will need to load player profile information
-    }  
+  
+        clubid = 1;  
+        FacesContext context = FacesContext.getCurrentInstance();
+    	Application app = context.getApplication();
+
+		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{profileBean}", Object.class );
+
+		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
+    	this.setProfid(pb.getProfile().ID);
+        getClubID();
+        isClubHighSchool();
+    	
+        playerSearch(); 
+        
+        resultDataModel = new ResultDataModel(results);
+  
+	}
+	
+    public DraftPlayersBean() {  
+          }  
+    
+    public Integer getClubid(){
+    	return clubid;
+    }
+    
+    public void setClubid(Integer sclub){
+    	clubid = sclub;
+    }
+    
+    
+    public Integer getProfid(){
+    	return profileid;
+    }
+    
+    public void setProfid(Integer idprofile){
+    	profileid = idprofile;
+    }
+    
+    public Boolean getIshighschool(){
+    	return ishighschool;
+    }
+    
+    public void setIshighschool(Boolean value){
+    	ishighschool = value;
+    }
     
     public Result getSelectedplayer(){
 		return selectedplayer;
@@ -315,8 +364,13 @@ public class DraftPlayersBean implements Serializable {
     	
     	try{
 
-    		CallableStatement cs = db.prepareCall("CALL scaha.isPlayerRostered(?)");
-		    cs.setInt("in_idPerson", Integer.parseInt(playerid));
+    		CallableStatement cs = null;
+    		if (this.ishighschool){
+    			cs = db.prepareCall("CALL scaha.isPlayerRosteredHS(?)");
+    		}else {
+    			cs = db.prepareCall("CALL scaha.isPlayerRostered(?)");
+    		}
+    		cs.setInt("in_idPerson", Integer.parseInt(playerid));
 		    rs = cs.executeQuery();
 			
 			if (rs != null){
@@ -391,6 +445,79 @@ public class DraftPlayersBean implements Serializable {
     	}
 		
 		
+    }
+    
+    public void isClubHighSchool(){
+		
+		//first lets get club id for the logged in profile
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		Integer isschool = 0;
+		try{
+			Vector<Integer> v = new Vector<Integer>();
+			v.add(this.clubid);
+			db.getData("CALL scaha.IsClubHighSchool(?)", v);
+		    
+			if (db.getResultSet() != null){
+				//need to add to an array
+				rs = db.getResultSet();
+				
+				while (rs.next()) {
+						isschool = rs.getInt("result");
+					}
+				LOGGER.info("We have results for club is a high school");
+			}
+			db.cleanup();
+			
+			if (isschool.equals(0)){
+				this.ishighschool=false;
+			}else{
+				this.ishighschool=true;
+			}
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN loading club by profile");
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+    }
+    
+    public void getClubID(){
+		
+		//first lets get club id for the logged in profile
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
+			Vector<Integer> v = new Vector<Integer>();
+			v.add(this.getProfid());
+			db.getData("CALL scaha.getClubforPerson(?)", v);
+		    
+			if (db.getResultSet() != null){
+				//need to add to an array
+				rs = db.getResultSet();
+				
+				while (rs.next()) {
+					this.clubid = rs.getInt("idclub");
+					}
+				LOGGER.info("We have results for club for a profile");
+			}
+			db.cleanup();
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN loading club by profile");
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+
     }
 }
 

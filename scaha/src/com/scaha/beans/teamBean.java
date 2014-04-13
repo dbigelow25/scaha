@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
@@ -40,9 +42,11 @@ public class teamBean implements Serializable {
 	private Team selectedteam = null;
 	private String teamstabletitle = null;
 	private Integer profileid = 0;
+	private Boolean ishighschool = null;
 	
-    public teamBean() {  
-        teams = new ArrayList<Team>();  
+	@PostConstruct
+    public void init() {
+		teams = new ArrayList<Team>();  
         TeamDataModel = new TeamDataModel(teams);
         
         idclub = 1;  
@@ -55,14 +59,25 @@ public class teamBean implements Serializable {
 		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
     	this.setProfid(pb.getProfile().ID);
         getClubID();
+        isClubHighSchool();
     	
         populateTableTitle(idclub);
         teamsForClub(idclub); 
-  
-        
-        
+
+	}
+	
+    public teamBean() {  
         
     }  
+    
+    public Boolean getIshighschool(){
+    	return ishighschool;
+    }
+    
+    public void setIshighschool(Boolean value){
+    	ishighschool = value;
+    }
+    
     
     public Integer getProfid(){
     	return profileid;
@@ -125,7 +140,14 @@ public class teamBean implements Serializable {
     			//Vector<Integer> v = new Vector<Integer>();
     			//v.add(1);
     			//db.getData("CALL scaha.getTeamsByClub(?)", v);
-    		    CallableStatement cs = db.prepareCall("CALL scaha.getDivisions()");
+    		    CallableStatement cs = null;
+    		    
+    		    if (this.ishighschool){
+    		    	cs = db.prepareCall("CALL scaha.getDivisionsForHighSchool()");
+    		    } else {
+    		    	cs = db.prepareCall("CALL scaha.getDivisionsForSCAHA()");
+    		    }
+    		    
     		    rs = cs.executeQuery();
     			
     			if (rs != null){
@@ -185,7 +207,15 @@ public class teamBean implements Serializable {
     			//Vector<Integer> v = new Vector<Integer>();
     			//v.add(1);
     			//db.getData("CALL scaha.getTeamsByClub(?)", v);
-    		    CallableStatement cs = db.prepareCall("CALL scaha.getSkilllevels()");
+    		    CallableStatement cs = null;
+    		    
+    		    if (this.ishighschool){
+    		    	cs = db.prepareCall("CALL scaha.getSkilllevelsForHighSchool()");
+    		    } else {
+    		    	cs = db.prepareCall("CALL scaha.getSkilllevelsForSCAHA()");
+    		    }
+    		    
+    		    
     		    rs = cs.executeQuery();
     			
     			if (rs != null){
@@ -414,7 +444,7 @@ public class teamBean implements Serializable {
     	
     }
     
-public void getClubID(){
+    public void getClubID(){
 		
 		//first lets get club id for the logged in profile
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
@@ -445,7 +475,48 @@ public void getClubID(){
     		//
     		db.free();
     	}
-		
+
+    }
+	
+    public void isClubHighSchool(){
+			
+			//first lets get club id for the logged in profile
+			ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+			Integer isschool = 0;
+			try{
+				Vector<Integer> v = new Vector<Integer>();
+				v.add(this.idclub);
+				db.getData("CALL scaha.IsClubHighSchool(?)", v);
+			    
+				if (db.getResultSet() != null){
+					//need to add to an array
+					rs = db.getResultSet();
+					
+					while (rs.next()) {
+							isschool = rs.getInt("result");
+						}
+					LOGGER.info("We have results for club is a high school");
+				}
+				db.cleanup();
+				
+				if (isschool.equals(0)){
+					this.ishighschool=false;
+				}else{
+					this.ishighschool=true;
+				}
+	    	} catch (SQLException e) {
+	    		// TODO Auto-generated catch block
+	    		LOGGER.info("ERROR IN loading club by profile");
+	    		e.printStackTrace();
+	    		db.rollback();
+	    	} finally {
+	    		//
+	    		// always clean up after yourself..
+	    		//
+	    		db.free();
+	    	}
 	}
+
+
 }
 

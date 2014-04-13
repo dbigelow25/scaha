@@ -73,11 +73,11 @@ public class loiBean implements Serializable, MailableObject {
 	private Integer parentid = 0;
 	private Boolean bplayerup = null;
 	private Boolean displayplayerup = null;
+	private Boolean ishighschool = null;
 	
 	@PostConstruct
     public void init() {
 		//hard code value until we load session variable
-    	clubid = 1;
     	FacesContext context = FacesContext.getCurrentInstance();
     	Application app = context.getApplication();
 
@@ -86,6 +86,8 @@ public class loiBean implements Serializable, MailableObject {
 
 		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
     	this.setProfid(pb.getProfile().ID);
+    	getClubID();
+    	isClubHighSchool();
     	
 		//will need to load player profile information for displaying loi
 		HttpServletRequest hsr = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
@@ -103,6 +105,14 @@ public class loiBean implements Serializable, MailableObject {
 	public loiBean() {  
         
     }  
+    
+	public Boolean getIshighschool(){
+    	return ishighschool;
+    }
+    
+    public void setIshighschool(Boolean value){
+    	ishighschool = value;
+    }
     
 	public Boolean getDisplayplayerup(){
 		return displayplayerup;
@@ -499,7 +509,11 @@ public class loiBean implements Serializable, MailableObject {
         				
         				//need to set the boolean used to display the girl team option or not
         				if (gender.equals("F")){
-        					displaygirlteam = true;
+        					if (this.ishighschool){
+        						displaygirlteam = false;
+        					} else {
+        						displaygirlteam = true;
+        					}
         				} else {
         					displaygirlteam = false;
         				}
@@ -712,14 +726,16 @@ public class loiBean implements Serializable, MailableObject {
 	    		    	cs.setInt("playerup",0);
 	    		    }
 	    		    
+	    		    if (selectedgirlsteam!=null){
+	    		    	if ((!selectedgirlsteam.equals("0")) && (!selectedgirlsteam.equals(""))){
+		    		    	cs.setInt("iteamid", Integer.parseInt(this.selectedgirlsteam));
+		    		    }else{
+		    		    	cs.setInt("iteamid", Integer.parseInt(this.selectedteam));
+		    		    }
+		    		}else {
+		    			cs.setInt("iteamid", Integer.parseInt(this.selectedteam));
+		    		}
 	    		    
-	    		    
-	    		    
-	    		    if ((!selectedgirlsteam.equals("0")) && (selectedgirlsteam!=null) && (!selectedgirlsteam.equals(""))){
-	    		    	cs.setInt("iteamid", Integer.parseInt(this.selectedgirlsteam));
-	    		    }else{
-	    		    	cs.setInt("iteamid", Integer.parseInt(this.selectedteam));
-	    		    }
 	    		    rs = cs.executeQuery();
 					
 	    		    //need to get team name for the newly selected team
@@ -1144,7 +1160,78 @@ public class loiBean implements Serializable, MailableObject {
 		
 	}
 		
+public void getClubID(){
 		
+		//first lets get club id for the logged in profile
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
+			Vector<Integer> v = new Vector<Integer>();
+			v.add(this.getProfid());
+			db.getData("CALL scaha.getClubforPerson(?)", v);
+		    
+			if (db.getResultSet() != null){
+				//need to add to an array
+				rs = db.getResultSet();
+				
+				while (rs.next()) {
+					this.clubid = rs.getInt("idclub");
+					}
+				LOGGER.info("We have results for club for a profile");
+			}
+			db.cleanup();
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN loading club by profile");
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+
+    }
+	
+	public void isClubHighSchool(){
+		
+		//first lets get club id for the logged in profile
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		Integer isschool = 0;
+		try{
+			Vector<Integer> v = new Vector<Integer>();
+			v.add(this.clubid);
+			db.getData("CALL scaha.IsClubHighSchool(?)", v);
+		    
+			if (db.getResultSet() != null){
+				//need to add to an array
+				rs = db.getResultSet();
+				
+				while (rs.next()) {
+						isschool = rs.getInt("result");
+					}
+				LOGGER.info("We have results for club is a high school");
+			}
+			db.cleanup();
+			
+			if (isschool.equals(0)){
+				this.ishighschool=false;
+			}else{
+				this.ishighschool=true;
+			}
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN loading club by profile");
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+}
 	
 }
 
