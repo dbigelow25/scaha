@@ -26,12 +26,11 @@
 		    <p:menuitem value="Transfer Information" url="#{rosteractionBean.gotoTransferInformation}" icon="ui-icon-star" />  
 		    <p:menuitem value="Citizenship Information" url="#{rosteractionBean.gotoCitizenship}" />  
 		</p:tabMenu>  
-		<h:form id="mess">
-    		<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />    
-		</h:form>
+			    
 		<p:spacer width="10" height="10" />
 		<ui:fragment id="edit-transfers" >
 			<h:form>
+				<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
 				<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">  
 		    	    <h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" width="100%">
 						<h:column><b>2014 Transfer for <h:outputText value="#{rosteractionBean.playername}"/></b></h:column>
@@ -62,7 +61,7 @@
 				</p:fieldset>
 				<p:spacer width="10" height="10" />
 				<p:fieldset id="fs3" toggleable="false" toggleSpeed="500">
-					<div align="center"><p:commandButton id="completetransfer" value="Save Transfer" actionListener="#{rosteractionBean.completeTransfer()}" ajax="true"/></div>
+					<div align="center"><p:commandButton update="messages" id="completetransfer" value="Save Transfer" actionListener="#{rosteractionBean.completeTransfer()}" ajax="true"/></div>
 				</p:fieldset>
 				</h:form>
 				<p:spacer width="10" height="10" />

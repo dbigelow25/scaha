@@ -267,7 +267,7 @@ public class reviewcoachloiBean implements Serializable {
 	public void voidLoi(Coach selectedPlayer){
 		
 		String sidcoach = selectedPlayer.getIdcoach();
-		String coachname = selectedPlayer.getCoachname();
+		String coachname = selectedPlayer.getFirstname() + " " + selectedPlayer.getLastname();
 		
 		//need to set to void
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
@@ -288,7 +288,7 @@ public class reviewcoachloiBean implements Serializable {
     			LOGGER.info("We are voiding the loi for coach id:" + sidcoach);
     		    
     			FacesContext context = FacesContext.getCurrentInstance();  
-                context.addMessage(null, new FacesMessage("Successful", "You have voided the loi for:" + coachname));
+                context.addMessage(null, new FacesMessage("Successful", "You have voided the loi for: " + coachname));
 			} else {
 		
 			}
