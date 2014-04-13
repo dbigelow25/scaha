@@ -220,24 +220,6 @@ public class coachrosteractionBean implements Serializable {
         				cepnumber = rs.getString("cepnumber");
         				ceplevel = rs.getInt("ceplevel");
         				
-        				/*if (ceplevel.equals("1")){
-        					ceplevel = "Level 1";
-        				}
-        				if (ceplevel.equals("2")){
-        					ceplevel = "Level 2";
-        				}
-        				if (ceplevel.equals("3")){
-        					ceplevel = "Level 3";
-        				}
-        				if (ceplevel.equals("4")){
-        					ceplevel = "Level 4";
-        				}
-        				if (ceplevel.equals("5")){
-        					ceplevel = "Level 5";
-        				}
-        				if (ceplevel.equals("0")){
-        					ceplevel = "";
-        				}*/
         				cepexpires = rs.getString("cepexpires");
         				
         				List<String> templist = new ArrayList<String>();
@@ -270,6 +252,7 @@ public class coachrosteractionBean implements Serializable {
         			}
     				LOGGER.info("We have results for coach details by coach id");
     			}
+    			rs.close();
     			db.cleanup();
     		} else {
     		
@@ -343,6 +326,7 @@ public class coachrosteractionBean implements Serializable {
     		    rs = cs.executeQuery();
     			
     		    db.commit();
+    		    rs.close();
     			db.cleanup();
  				
     		    //logging 

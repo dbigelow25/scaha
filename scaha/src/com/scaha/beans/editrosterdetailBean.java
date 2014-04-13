@@ -232,6 +232,7 @@ public class editrosterdetailBean implements Serializable {
     				}
     				LOGGER.info("We have results for team list by club");
     			}
+    			rs.close();
     			db.cleanup();
     		} else {
     		
@@ -287,6 +288,7 @@ public class editrosterdetailBean implements Serializable {
 				}
 				LOGGER.info("We have results for roster detail");
 			}
+			rs.close();
 			db.cleanup();
     		
     		
@@ -322,7 +324,7 @@ public class editrosterdetailBean implements Serializable {
 				cs.setInt("active", Integer.parseInt(this.active));
 				cs.setString("rstrtype", this.selectedrelation);
 				
-			    rs = cs.executeQuery();
+			    cs.executeQuery();
 				
 			    if (this.active.equals("0") && !this.selectedteam.equals("0")){
 			    	cs = db.prepareCall("CALL scaha.addRosterDetail(?,?,?,?,?,?)");
@@ -337,7 +339,7 @@ public class editrosterdetailBean implements Serializable {
 					cs.setString("rstrtype", this.newselectedrelation);
 					cs.setInt("personid", this.personid);
 					
-				    rs = cs.executeQuery();
+				    cs.executeQuery();
 				}
 			    
 			    db.commit();

@@ -423,6 +423,7 @@ public class loiBean implements Serializable, MailableObject {
     				}
     				LOGGER.info("We have results for team list by club");
     			}
+    			rs.close();
     			db.cleanup();
     		} else {
     		
@@ -528,6 +529,7 @@ public class loiBean implements Serializable, MailableObject {
         			}
     				LOGGER.info("We have results for player details by player id");
     			}
+    			rs.close();
     			db.cleanup();
     		} else {
     		
@@ -567,12 +569,6 @@ public class loiBean implements Serializable, MailableObject {
     					String pphone = rs.getString("phone");
     					String prelation = rs.getString("reltype");
     					
-    					/*String areacode = pphone.substring(0,3);
-    					String prefix = pphone.substring(3,6);
-    					String suffix = pphone.substring(6,10);
-    					
-    					pphone = "(" + areacode + ") " + prefix + "-" + suffix;*/
-    					
     					FamilyRow row = new FamilyRow();
     					row.setFirstname(pfirstname);
     					row.setLastname(plastname);
@@ -584,6 +580,7 @@ public class loiBean implements Serializable, MailableObject {
     					}
     				LOGGER.info("We have results for parents list by person id");
     			}
+    			rs.close();
     			db.cleanup();
     		} else {
     		
@@ -630,10 +627,10 @@ public class loiBean implements Serializable, MailableObject {
     					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "The provided LOI signature code is invalid."));
     				}
     			}
-    			db.cleanup();
+    			rs.close();
+    		    db.cleanup();
  				
-    		    
-    			bplayerup = false;
+    		    bplayerup = false;
     			Integer plupresultcount = 0;
     			
     			//need to verify if player is playing up and if player up code is needed if not provided
@@ -645,7 +642,6 @@ public class loiBean implements Serializable, MailableObject {
 	 				cs.setInt("birthyear",Integer.parseInt(year));
 	 				cs.setInt("selectedteam", Integer.parseInt(this.selectedteam));
 	    		    rs = cs.executeQuery();
-	    			
 	    		    
 	    		    if (rs != null){
 	    				
@@ -654,7 +650,8 @@ public class loiBean implements Serializable, MailableObject {
 	    				}
 	    				LOGGER.info("We have validation whether player needs player up code or not");
 	    			}
-	    			db.cleanup();
+	    			rs.close();
+	    		    db.cleanup();
 	    			
 	    			if (plupresultcount.equals(0) && this.selectedgirlsteam==null){
 	    				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "The Player Up Code is required for this player for the division selected."));
@@ -684,6 +681,7 @@ public class loiBean implements Serializable, MailableObject {
 	    				}
 	    				LOGGER.info("We have code validation results for player details by player id");
 	    			}
+	    		    rs.close();
 	    			db.cleanup();
 	    			
 	    			if (resultcount.equals(0) && this.selectedgirlsteam==null){
@@ -714,7 +712,7 @@ public class loiBean implements Serializable, MailableObject {
 	    		    cs.setString("icity", this.city);
 	    		    cs.setString("istate", this.state);
 	    		    cs.setString("izipcode", this.zip);
-	    			rs = cs.executeQuery();
+	    			cs.executeQuery();
 	    			
 					LOGGER.info("updating roster record");
 					cs = db.prepareCall("CALL scaha.addRoster(?,?,?)");
@@ -736,7 +734,7 @@ public class loiBean implements Serializable, MailableObject {
 		    			cs.setInt("iteamid", Integer.parseInt(this.selectedteam));
 		    		}
 	    		    
-	    		    rs = cs.executeQuery();
+	    		    cs.executeQuery();
 					
 	    		    //need to get team name for the newly selected team
 	    			if (this.selectedteam!=null && !this.selectedteam.equals("")){
@@ -755,6 +753,7 @@ public class loiBean implements Serializable, MailableObject {
 			    				}
 			    				LOGGER.info("We have loaded the team name for printable loi");
 			    			}
+			    			rs.close();
 			    			db.cleanup();
 		    			}
 	    			}
@@ -776,6 +775,7 @@ public class loiBean implements Serializable, MailableObject {
 			    				}
 			    				LOGGER.info("We have loaded the girls team name for printable loi");
 			    			}
+			    			rs.close();
 			    			db.cleanup();
 		    			}
 	    			}
@@ -790,7 +790,7 @@ public class loiBean implements Serializable, MailableObject {
 	    					to = rs.getString("usercode");
 	    				}
 	    			}
-					
+					rs.close();
 	    		    
 	    			//need to check if scaha registrar has received an email today
 	    		    //set value to 0 and then check if the current date is less than 8/1/2014 if it is then we want
@@ -809,6 +809,7 @@ public class loiBean implements Serializable, MailableObject {
 		    					emailsenttoday = rs.getInt("emailcount");
 		    				}
 		    			}
+		    		    rs.close();
 	    		    }
 	    		    
 	    		    if (emailsenttoday.equals(0)){
@@ -819,9 +820,10 @@ public class loiBean implements Serializable, MailableObject {
 		    					to = to + ',' + rs.getString("usercode");
 		    				}
 		    			}
+		    		    rs.close();
 		    		    
 		    		    cs = db.prepareCall("CALL scaha.setSCAHARegistrarEmail()");
-		    		    rs = cs.executeQuery();
+		    		    cs.executeQuery();
 		    		    db.commit();
 	    		    }
 	    		    
@@ -833,6 +835,7 @@ public class loiBean implements Serializable, MailableObject {
 	    					to = to + ',' + rs.getString("usercode");
 	    				}
 	    			}
+	    		    rs.close();
 					
 	    		    
 	    		    //hard my email address for testing purposes
@@ -846,7 +849,6 @@ public class loiBean implements Serializable, MailableObject {
 					mail.sendMail();
 					
 					db.commit();
-					rs.close();
 					db.cleanup();
 					//return "True";
 					
@@ -888,7 +890,6 @@ public class loiBean implements Serializable, MailableObject {
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		
 		try{
-
     			
 			Vector<Integer> v = new Vector<Integer>();
 			v.add(this.getProfid());
@@ -903,6 +904,7 @@ public class loiBean implements Serializable, MailableObject {
 					
 					}
 				LOGGER.info("We have results for club for a profile");
+				rs.close();
 			}
 			
 			db.cleanup();
@@ -919,6 +921,7 @@ public class loiBean implements Serializable, MailableObject {
 				while (rs.next()) {
 					clubname = rs.getString("clubname");
 				}
+				rs.close();
 				LOGGER.info("We have results for club name");
 			}
 			
@@ -986,6 +989,7 @@ public class loiBean implements Serializable, MailableObject {
 						this.setDisplayplayerup(true);
 					}
 				}
+				rs.close();
 				LOGGER.info("We have results for Team name for a person");
 			}
 			
@@ -1026,6 +1030,7 @@ public class loiBean implements Serializable, MailableObject {
 				while (rs.next()) {
 					teamname = rs.getString("teamname");
 				}
+				rs.close();
 				LOGGER.info("We have results for Team name for a person");
 			}
 			
@@ -1064,15 +1069,14 @@ public class loiBean implements Serializable, MailableObject {
 				cs.setInt("selectedteam", Integer.parseInt(this.selectedteam));
 				
 			    rs = cs.executeQuery();
-				
-			    
-			    if (rs != null){
+				if (rs != null){
 					
 					while (rs.next()) {
 						ageoldercount = rs.getInt("isolder");
 					}
 					LOGGER.info("We have validation whether player needs player up code or not");
 				}
+				rs.close();
 				db.cleanup();
 				
 				if (ageoldercount.equals(1)){
@@ -1100,6 +1104,7 @@ public class loiBean implements Serializable, MailableObject {
 					}
 					LOGGER.info("We have validation whether player needs player up code or not");
 				}
+			    rs.close();
 			    
 			    //need to check if player is peewee trying to play up in bantam b
 			    LOGGER.info("verify if user is player up for pw to bantam");
@@ -1120,6 +1125,7 @@ public class loiBean implements Serializable, MailableObject {
 					}
 					LOGGER.info("We have validation whether player needs player up code or not");
 				}
+			    rs.close();
 				db.cleanup();
 			    
 			} else {
@@ -1177,6 +1183,7 @@ public void getClubID(){
 				while (rs.next()) {
 					this.clubid = rs.getInt("idclub");
 					}
+				rs.close();
 				LOGGER.info("We have results for club for a profile");
 			}
 			db.cleanup();
@@ -1211,6 +1218,7 @@ public void getClubID(){
 				while (rs.next()) {
 						isschool = rs.getInt("result");
 					}
+				rs.close();
 				LOGGER.info("We have results for club is a high school");
 			}
 			db.cleanup();
@@ -1231,7 +1239,7 @@ public void getClubID(){
     		//
     		db.free();
     	}
-}
+	}
 	
 }
 

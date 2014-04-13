@@ -152,6 +152,7 @@ public class DraftPlayersBean implements Serializable {
     				}
     				LOGGER.info("We have results for team list by club");
     			}
+    			rs.close();
     			db.cleanup();
     		} else {
     		
@@ -252,7 +253,7 @@ public class DraftPlayersBean implements Serializable {
     				LOGGER.info("We have results for search criteria " + this.searchcriteria);
     				
     			}
-    				
+    			rs.close();
     			db.cleanup();
 
     			LOGGER.info("We have searched players for " + this.searchcriteria);
@@ -337,7 +338,7 @@ public class DraftPlayersBean implements Serializable {
 					LOGGER.info("We have matching delinquency for:" + playerid);
 				}
 			}
-    				
+    		rs.close();
     		db.cleanup();
 
     	} catch (SQLException e) {
@@ -380,8 +381,8 @@ public class DraftPlayersBean implements Serializable {
 					LOGGER.info("We have matching delinquency for:" + playerid);
 				}
 			}
-    				
-    			db.cleanup();
+    		rs.close();		
+    		db.cleanup();
 
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
@@ -466,6 +467,7 @@ public class DraftPlayersBean implements Serializable {
 					}
 				LOGGER.info("We have results for club is a high school");
 			}
+			rs.close();
 			db.cleanup();
 			
 			if (isschool.equals(0)){
@@ -505,6 +507,7 @@ public class DraftPlayersBean implements Serializable {
 					}
 				LOGGER.info("We have results for club for a profile");
 			}
+			rs.close();
 			db.cleanup();
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block

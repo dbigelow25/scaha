@@ -343,6 +343,7 @@ public class viewreleaseBean implements Serializable, MailableObject {
     				}
     				LOGGER.info("We have results for status list");
     			}
+    			rs.close();
     			db.cleanup();
     		} else {
     		
@@ -417,6 +418,7 @@ public class viewreleaseBean implements Serializable, MailableObject {
         					this.displaytemporary = true;
         				}
         			}
+    				rs.close();
     				LOGGER.info("We have results for player details by player id");
     			}
     			db.cleanup();
@@ -490,7 +492,7 @@ public class viewreleaseBean implements Serializable, MailableObject {
     					to = to + rs.getString("releasingemail");
     				}
     			}
-    		    
+    		    rs.close();
     		    
     		    
     		    //
@@ -502,6 +504,7 @@ public class viewreleaseBean implements Serializable, MailableObject {
     					to = to + ',' + rs.getString("usercode");
     				}
     			}
+    		    rs.close();
     		    
     		    //and now the family email
     		    to = to + ',' + this.getParentemail();
@@ -509,13 +512,6 @@ public class viewreleaseBean implements Serializable, MailableObject {
     		    this.setToMailAddress(to);
     		    this.setTextBody("Player " + this.firstname + " " + this.lastname + " Notes From SCAHA");
     		    this.setSubject(this.firstname + " " + this.lastname + " Released Notes from SCAHA");
-    		    
-				/*SendMailSSL mail = new SendMailSSL(this);
-				LOGGER.info("Finished creating mail object for " + this.getUsername());
-				mail.sendMail();
-				db.commit();
-				return "True";*/
-    		    
     		    
 				FacesContext context = FacesContext.getCurrentInstance();
     		    Application app = context.getApplication();

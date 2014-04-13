@@ -116,6 +116,7 @@ public class managecalitemBean implements Serializable {
         			}
     				LOGGER.info("We have results for calendar item:" + this.calendarid.toString());
     			}
+    			rs.close();
     			db.cleanup();
     		} else {
 
@@ -164,7 +165,7 @@ public class managecalitemBean implements Serializable {
     		    cs.setString("enddate", this.enddate);
     		    cs.setString("eventname", this.eventname);
     		    cs.setString("eventlocation", this.eventlocation);
-    		    rs=cs.executeQuery();
+    		    cs.executeQuery();
     		    db.commit();
     			db.cleanup();
  				

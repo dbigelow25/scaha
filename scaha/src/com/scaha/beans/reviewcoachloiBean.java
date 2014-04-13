@@ -158,7 +158,7 @@ public class reviewcoachloiBean implements Serializable {
         				ocoach.setGirls(girls);
         				tempresult.add(ocoach);
     				}
-    				
+    				rs.close();
     				LOGGER.info("We have results for lois for the lookup date" + date.toString());
     				
     			}
@@ -234,6 +234,7 @@ public class reviewcoachloiBean implements Serializable {
     				}
     				LOGGER.info("We have results for division list");
     			}
+    			rs.close();
     			db.cleanup();
     		} else {
     		
@@ -279,7 +280,7 @@ public class reviewcoachloiBean implements Serializable {
  				LOGGER.info("verify loi code provided");
  				CallableStatement cs = db.prepareCall("CALL scaha.setcoachtoVoid(?)");
     		    cs.setInt("coachid", Integer.parseInt(sidcoach));
-    		    rs=cs.executeQuery();
+    		    cs.executeQuery();
     		    db.commit();
     			db.cleanup();
  				
@@ -331,7 +332,8 @@ public class reviewcoachloiBean implements Serializable {
         			}
     				LOGGER.info("We have results for person id by coach");
     			}
-    			db.commit();
+    			rs.close();
+    		    db.commit();
     			db.cleanup();
  			} else {
 		
@@ -382,6 +384,7 @@ public class reviewcoachloiBean implements Serializable {
         			}
     				LOGGER.info("We have results for person id by coach");
     			}
+    		    rs.close();
     			db.commit();
     			db.cleanup();
  			} else {

@@ -198,7 +198,7 @@ public class reviewloiBean implements Serializable {
     				LOGGER.info("We have results for lois for the lookup date" + date.toString());
     				
     			}
-    				
+    			rs.close();	
     			db.cleanup();
     		} else {
 
@@ -257,15 +257,10 @@ public class reviewloiBean implements Serializable {
 
     		if (db.setAutoCommit(false)) {
     		
-    			//Vector<Integer> v = new Vector<Integer>();
-    			//v.add(1);
-    			//db.getData("CALL scaha.getTeamsByClub(?)", v);
-    		    CallableStatement cs = db.prepareCall("CALL scaha.getClubs()");
+    			CallableStatement cs = db.prepareCall("CALL scaha.getClubs()");
     		    rs = cs.executeQuery();
     			
     			if (rs != null){
-    				//need to add to an array
-    				//rs = db.getResultSet();
     				
     				while (rs.next()) {
     					String idclub = rs.getString("idclubs");
@@ -279,6 +274,7 @@ public class reviewloiBean implements Serializable {
     				}
     				LOGGER.info("We have results for division list");
     			}
+    			rs.close();
     			db.cleanup();
     		} else {
     		
@@ -337,7 +333,7 @@ public class reviewloiBean implements Serializable {
  				LOGGER.info("verify loi code provided");
  				CallableStatement cs = db.prepareCall("CALL scaha.settoVoid(?)");
     		    cs.setInt("playerid", Integer.parseInt(sidplayer));
-    		    rs=cs.executeQuery();
+    		    cs.executeQuery();
     		    
     		    db.commit();
     			db.cleanup();

@@ -519,6 +519,8 @@ public class coachloiBean implements Serializable, MailableObject {
     				}
     				LOGGER.info("We have results for team list by club");
     			}
+    			rs.close();
+    			cs.close();
     			db.cleanup();
     		} else {
     		
@@ -655,6 +657,7 @@ public class coachloiBean implements Serializable, MailableObject {
         			}
     				LOGGER.info("We have results for player details by player id");
     			}
+    			rs.close();
     			db.cleanup();
     			
     			//need to get list of boys teams signed for
@@ -685,6 +688,7 @@ public class coachloiBean implements Serializable, MailableObject {
     			}
     			this.setBoysteams(tempteams);
     			teamname = "";
+    			rs.close();
     			db.cleanup();
     			
     			//need to get list of girls teams signed for
@@ -717,6 +721,7 @@ public class coachloiBean implements Serializable, MailableObject {
     			}
     			this.setGirlsteams(tempgirlteams);
     			teamname = "";
+    			rs.close();
     			db.cleanup();
     			
     			
@@ -765,7 +770,8 @@ public class coachloiBean implements Serializable, MailableObject {
     				}
     				LOGGER.info("We have player up code validation results for player details by player id");
     			}
-    			db.cleanup();
+    		    rs.close();
+    		    db.cleanup();
  				
     		    
     			if (resultcount > 0){
@@ -779,7 +785,7 @@ public class coachloiBean implements Serializable, MailableObject {
 	    		    cs.setString("istate", this.state);
 	    		    cs.setString("izipcode", this.zip);
 	    		    rs = cs.executeQuery();
-	    			
+	    			rs.close();
 	    			//need to save coaches screening and cep stuff
 	    			LOGGER.info("updating coach record");
 	 				cs = db.prepareCall("CALL scaha.updateCoach(?,?,?,?,?,?,?,?,?,?,?)");
@@ -825,14 +831,13 @@ public class coachloiBean implements Serializable, MailableObject {
 	    		    cs.setInt("u18", u18);
 	    		    cs.setInt("ugirls", ugirls);
 	    		    rs = cs.executeQuery();
+	    			rs.close();
 	    			
-	    			
-					
+	    		    cs = db.prepareCall("CALL scaha.addCoachRoster(?,?,?)");
 	    		    //need to add to the coach roster table for each boys team
 	    			for (int i = 0; i < this.selectedteams.size(); i++) {
 	    		    	LOGGER.info("updating coach roster record for:" + this.selectedteams.get(i));
-						cs = db.prepareCall("CALL scaha.addCoachRoster(?,?,?)");
-		    		    cs.setInt("ipersonid", this.selectedcoach);
+						cs.setInt("ipersonid", this.selectedcoach);
 		    		    cs.setInt("iteamid", Integer.parseInt(this.selectedteams.get(i)));
 		    		    cs.setInt("setyear", 2014);
 		    		    rs = cs.executeQuery();
@@ -849,11 +854,13 @@ public class coachloiBean implements Serializable, MailableObject {
 		    			}
 		    			
 					}
+	    		    rs.close();
 	    		    
+	    		    cs = db.prepareCall("CALL scaha.addCoachRoster(?,?,?)");
 	    		    //need to add to the coach roster table for each girls team selected
 	    			for (int i = 0; i < this.selectedgirlsteams.size(); i++) {
 		    		    	LOGGER.info("updating coach roster record for:" + this.selectedgirlsteams.get(i));
-						cs = db.prepareCall("CALL scaha.addCoachRoster(?,?,?)");
+						
 						cs.setInt("ipersonid", this.selectedcoach);
 		    		    cs.setInt("iteamid", Integer.parseInt(this.selectedgirlsteams.get(i)));
 		    		    cs.setInt("setyear", 2014);
@@ -869,7 +876,7 @@ public class coachloiBean implements Serializable, MailableObject {
 		    				LOGGER.info("We have player up code validation results for player details by player id");
 		    			}
 		    		}
-	    			
+	    			rs.close();
 	    		    
 	    			LOGGER.info("Sending email to club registrar, family, and scaha registrar");
 	    			cs = db.prepareCall("CALL scaha.getClubRegistrarEmail(?)");
@@ -880,7 +887,7 @@ public class coachloiBean implements Serializable, MailableObject {
 	    					to = rs.getString("usercode");
 	    				}
 	    			}
-					
+					rs.close();
 	    		    
 	    			//need to check if scaha registrar has received an email today
 	    		    //set value to 0 and then check if the current date is less than 8/1/2014 if it is then we want
@@ -899,6 +906,7 @@ public class coachloiBean implements Serializable, MailableObject {
 		    					emailsenttoday = rs.getInt("emailcount");
 		    				}
 		    			}
+		    		    rs.close();
 	    		    }
 	    		    
 	    			if (emailsenttoday.equals(0)){
@@ -909,11 +917,13 @@ public class coachloiBean implements Serializable, MailableObject {
 		    					to = to + ',' + rs.getString("usercode");
 		    				}
 		    			}
+		    		    rs.close();
 		    		    
 		    		    cs = db.prepareCall("CALL scaha.setSCAHARegistrarEmail()");
 		    		    rs = cs.executeQuery();
 		    		    db.commit();
-	    		    }
+		    		    rs.close();
+		    		}
 	    		    
 					
 	    			
@@ -926,7 +936,6 @@ public class coachloiBean implements Serializable, MailableObject {
 					LOGGER.info("Finished creating mail object for ");
 					mail.sendMail();
 					db.commit();
-					rs.close();
 					db.cleanup();
 					
 					
@@ -984,7 +993,7 @@ public class coachloiBean implements Serializable, MailableObject {
 					}
 				LOGGER.info("We have results for club for a profile");
 			}
-			
+			rs.close();
 			db.cleanup();
     		
 			//now lets retrieve club name
@@ -1001,7 +1010,7 @@ public class coachloiBean implements Serializable, MailableObject {
 				}
 				LOGGER.info("We have results for club name");
 			}
-			
+			rs.close();
 			db.cleanup();
 			
     	} catch (SQLException e) {
@@ -1051,7 +1060,7 @@ public class coachloiBean implements Serializable, MailableObject {
 				}
 				LOGGER.info("We have results for Team name for a person");
 			}
-			
+			rs.close();
 			db.cleanup();
     		
 		} catch (SQLException e) {
@@ -1091,7 +1100,7 @@ public class coachloiBean implements Serializable, MailableObject {
 				}
 				LOGGER.info("We have results for Team name for a person");
 			}
-			
+			rs.close();
 			db.cleanup();
     		
 		} catch (SQLException e) {

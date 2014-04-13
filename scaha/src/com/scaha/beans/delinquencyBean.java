@@ -132,7 +132,7 @@ public class delinquencyBean implements Serializable {
     				LOGGER.info("We have results for delinquency list");
     				
     			}
-    				
+    			rs.close();	
     			db.cleanup();
     		} else {
 
@@ -191,6 +191,7 @@ public class delinquencyBean implements Serializable {
     		    cs.setInt("iplayerid", Integer.parseInt(sidplayer));
     		    rs=cs.executeQuery();
     		    db.commit();
+    		    rs.close();
     			db.cleanup();
  				
     		    //logging 

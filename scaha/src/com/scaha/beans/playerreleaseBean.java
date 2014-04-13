@@ -150,7 +150,7 @@ public class playerreleaseBean implements Serializable {
     				LOGGER.info("We have results for search criteria " + this.searchcriteria);
     				
     			}
-    				
+    			rs.close();	
     			db.cleanup();
 
     			LOGGER.info("We have searched players for " + this.searchcriteria);
@@ -186,7 +186,6 @@ public Integer loadClubid(){
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		
 		try{
-
     			
 			Vector<Integer> v = new Vector<Integer>();
 			v.add(this.getProfid());
@@ -199,6 +198,7 @@ public Integer loadClubid(){
 				while (rs.next()) {
 					clubid = rs.getInt("idclub");
 					}
+				rs.close();
 				LOGGER.info("We have results for club for a profile");
 			}
 			

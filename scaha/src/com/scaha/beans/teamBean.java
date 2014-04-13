@@ -166,6 +166,7 @@ public class teamBean implements Serializable {
     				}
     				LOGGER.info("We have results for division list");
     			}
+    			rs.close();
     			db.cleanup();
     		} else {
     		
@@ -234,6 +235,7 @@ public class teamBean implements Serializable {
     				}
     				LOGGER.info("We have results for division list");
     			}
+    			rs.close();
     			db.cleanup();
     		} else {
     		
@@ -305,7 +307,7 @@ public class teamBean implements Serializable {
     				LOGGER.info("We have results for teams by club" + idclub);
     				
     			}
-    				
+    			rs.close();	
     			db.cleanup();
 
     			LOGGER.info("We have tried to retrieve teams for club" + idclub);
@@ -355,7 +357,7 @@ public class teamBean implements Serializable {
     		    cs.setInt("divisionsid", Integer.parseInt(this.selecteddivision));
     			cs.setInt("currentyear", 2014);
     		    
-    		    rs = cs.executeQuery();
+    		    cs.executeQuery();
     			
     			db.cleanup();
     		} else {
@@ -411,7 +413,7 @@ public class teamBean implements Serializable {
     				LOGGER.info("We have results for teams by club" + idclub);
     				
     			}
-    				
+    			rs.close();	
     			db.cleanup();
 
     			LOGGER.info("We have tried to retrieve teams for club" + idclub);
@@ -461,6 +463,7 @@ public class teamBean implements Serializable {
 				while (rs.next()) {
 					this.idclub = rs.getInt("idclub");
 					}
+				rs.close();
 				LOGGER.info("We have results for club for a profile");
 			}
 			db.cleanup();
@@ -497,6 +500,7 @@ public class teamBean implements Serializable {
 						}
 					LOGGER.info("We have results for club is a high school");
 				}
+				rs.close();
 				db.cleanup();
 				
 				if (isschool.equals(0)){

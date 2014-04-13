@@ -172,6 +172,7 @@ public class rosteractionBean implements Serializable {
         				
         				
         			}
+    				rs.close();
     				LOGGER.info("We have results for player details by player id");
     			}
     			db.cleanup();
@@ -212,7 +213,7 @@ public class rosteractionBean implements Serializable {
     		    }else{
     		    	cs.setString("sexpirationdate",this.expirationdate);
     		    }
-    		    rs = cs.executeQuery();
+    		    cs.executeQuery();
     			
     		    db.commit();
     			db.cleanup();
@@ -254,7 +255,7 @@ public class rosteractionBean implements Serializable {
     		    cs.setInt("playerid", Integer.parseInt(this.selectedplayer));
     		    cs.setInt("certificate", this.birthcertificate);
     		    
-    		    rs = cs.executeQuery();
+    		    cs.executeQuery();
     		    
     		    db.commit();
     			db.cleanup();

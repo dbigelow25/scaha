@@ -100,6 +100,7 @@ public class managecalendarBean implements Serializable {
     				
     				LOGGER.info("We have results for calendar items");
     			}
+    			rs.close();
     			db.cleanup();
     		} else {
 
@@ -153,7 +154,7 @@ public class managecalendarBean implements Serializable {
  				LOGGER.info("remove calendar item from list");
  				CallableStatement cs = db.prepareCall("CALL scaha.deleteCalendar(?)");
     		    cs.setInt("calendarid", calenderid);
-    		    rs=cs.executeQuery();
+    		    cs.executeQuery();
     		    db.commit();
     			db.cleanup();
  				

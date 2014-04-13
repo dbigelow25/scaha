@@ -104,6 +104,7 @@ public class DraftCoachesBean implements Serializable {
     				}
     				LOGGER.info("We have results for team list by club");
     			}
+    			rs.close();
     			db.cleanup();
     		} else {
     		
@@ -170,8 +171,6 @@ public class DraftCoachesBean implements Serializable {
     				//need to add to an array
     				rs = db.getResultSet();
     				
-    						
-    				
     				while (rs.next()) {
     					String idperson = rs.getString("idperson");
         				String coachname = rs.getString("fname") + " " + db.getResultSet().getString("lname");
@@ -202,7 +201,8 @@ public class DraftCoachesBean implements Serializable {
     				LOGGER.info("We have results for search criteria " + this.searchcriteria);
     				
     			}
-    				
+    			
+    			rs.close();
     			db.cleanup();
 
     			LOGGER.info("We have searched players for " + this.searchcriteria);

@@ -99,6 +99,7 @@ public class editrosterBean implements Serializable {
 				}
 				LOGGER.info("We have results for team name");
 			}
+			rs.close();
 			db.cleanup();
     		
     		//next get roster
@@ -135,6 +136,7 @@ public class editrosterBean implements Serializable {
 				}
 				LOGGER.info("We have results for team roster");
 			}
+			rs.close();
 			db.cleanup();
     		
     	} catch (SQLException e) {
