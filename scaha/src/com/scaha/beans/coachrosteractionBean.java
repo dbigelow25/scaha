@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
@@ -42,8 +43,9 @@ public class coachrosteractionBean implements Serializable {
 	private String girls = null;
 	private List<String> cepmodulesselected = null;
 	
-    public coachrosteractionBean() {  
-        //will need to load coach profile information for displaying certification details
+	@PostConstruct
+    public void init() {
+	    //will need to load coach profile information for displaying certification details
     	
     	
     	HttpServletRequest hsr = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();

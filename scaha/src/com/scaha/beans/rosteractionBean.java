@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
@@ -40,8 +41,9 @@ public class rosteractionBean implements Serializable {
 	private String gotoTransferInformation = null;
 	private String gotoCitizenship = null;
 	
-    public rosteractionBean() {  
-        //will need to load player profile information for displaying citienship and transfer informatoin
+	@PostConstruct
+    public void init() {
+	    //will need to load player profile information for displaying citienship and transfer informatoin
     	transfer = 0;
     	transferindefinite = 0;
     	transferid = 0;

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
+
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.CalendarItem;
@@ -21,7 +23,8 @@ public class CalendarBean implements Serializable{
 	private List<CalendarItem> calendaritems = null;
 	transient private ResultSet rs = null;
 	
-	public CalendarBean() {
+	@PostConstruct
+    public void init() {
 		//lets load the calendar on instantiation
 		loadCalendarList();
 	}

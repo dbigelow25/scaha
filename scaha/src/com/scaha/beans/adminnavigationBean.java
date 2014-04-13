@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
@@ -22,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.FamilyRow;
+import com.scaha.objects.Result;
+import com.scaha.objects.ResultDataModel;
 import com.scaha.objects.Team;
 
 //import com.gbli.common.SendMailSSL;
@@ -36,8 +39,9 @@ public class adminnavigationBean implements Serializable {
 	private Boolean scaharegistrar = null;
 	private String pagecode = null;
 	
-    public adminnavigationBean() {  
-        //need to get the roles and setup the navigation permissions
+	@PostConstruct
+    public void init() {
+		//need to get the roles and setup the navigation permissions
     	FacesContext context = FacesContext.getCurrentInstance();
     	Application app = context.getApplication();
 
@@ -46,9 +50,9 @@ public class adminnavigationBean implements Serializable {
 
 		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
     	setRoleflags(pb);
-
-    	
-    	
+	}
+	
+    public adminnavigationBean() {  
     	
     }  
  

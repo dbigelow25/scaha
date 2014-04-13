@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -38,8 +39,9 @@ public class DraftCoachesBean implements Serializable {
     private List<Result> results = null;
     private ResultDataModel resultDataModel = null;
 	
-    public DraftCoachesBean() {  
-        results = new ArrayList<Result>();  
+    @PostConstruct
+    public void init() {
+	    results = new ArrayList<Result>();  
           
         coachSearch(); 
   

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
@@ -39,8 +40,9 @@ public class reviewcoachloiBean implements Serializable {
 	private String selectedcoachid = null;
 	
 	
-    public reviewcoachloiBean() {  
-        coaches = new ArrayList<Coach>();  
+	@PostConstruct
+    public void init() {
+	    coaches = new ArrayList<Coach>();  
         CoachDataModel = new CoachDataModel(coaches);
         this.setSelectedtabledisplay("1");
         

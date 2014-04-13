@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
@@ -58,8 +59,9 @@ public class viewreleaseBean implements Serializable, MailableObject {
 	private String selectedstatus = null;
 	
 	
-	public viewreleaseBean() {  
-        
+	@PostConstruct
+    public void init() {
+	    
     	//will need to load player profile information for displaying loi
 		HttpServletRequest hsr = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
     	

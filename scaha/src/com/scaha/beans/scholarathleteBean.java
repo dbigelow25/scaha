@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
@@ -34,8 +35,9 @@ public class scholarathleteBean implements Serializable {
     private Integer clubid = null;
     private Integer profileid = null;
 	
-    public scholarathleteBean() {  
-        
+    @PostConstruct
+    public void init() {
+	    
     }  
     
     public Integer getProfid(){

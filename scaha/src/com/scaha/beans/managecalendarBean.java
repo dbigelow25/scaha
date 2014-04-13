@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
@@ -35,8 +36,9 @@ public class managecalendarBean implements Serializable {
     private String selectedcalendarid = null;
 	
 	
-    public managecalendarBean() {  
-        calendaritems = new ArrayList<CalendarItem>();  
+    @PostConstruct
+    public void init() {
+	    calendaritems = new ArrayList<CalendarItem>();  
         CalendarDataModel = new CalendarDataModel(calendaritems);
         
         calendarDisplay(); 

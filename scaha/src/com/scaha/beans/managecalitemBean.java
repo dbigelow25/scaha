@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
@@ -34,8 +35,9 @@ public class managecalitemBean implements Serializable {
 	private String eventlocation = null;
 	
 	
-    public managecalitemBean() {  
-    	//need to get item's calendar id if it exists
+	@PostConstruct
+    public void init() {
+		//need to get item's calendar id if it exists
     	//will need to load player profile information for displaying loi
 		HttpServletRequest hsr = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
     	

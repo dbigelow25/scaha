@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
@@ -37,8 +38,9 @@ public class delinquencyBean implements Serializable {
 	private String selectedplayerid = null;
 	
 	
-    public delinquencyBean() {  
-        players = new ArrayList<Player>();  
+	@PostConstruct
+    public void init() {
+	    players = new ArrayList<Player>();  
         PlayerDataModel = new PlayerDataModel(players);
         
         playersDisplay(); 
