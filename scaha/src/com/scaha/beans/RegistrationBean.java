@@ -247,9 +247,11 @@ public class RegistrationBean implements Serializable, MailableObject  {
  				db.getData("CALL scaha.checkforuser(?)", v);
 			        
  				if (db.getResultSet() != null && db.getResultSet().next()){
-					// We already have this username.. 
-					// we need to exit and fill the message in the context on the screen.
- 					
+ 					FacesContext.getCurrentInstance().addMessage(
+ 							"myform:username",
+ 		                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+ 		                    "USA Hockey Reg",
+ 		                    "You cannot use this username.  A username already exists in the system!"));
  					db.free();
 					return "fail";
 				}

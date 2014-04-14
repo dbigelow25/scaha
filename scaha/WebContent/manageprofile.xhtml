@@ -96,8 +96,7 @@
 		
 					<p:outputLabel for="username" value="User Name (e-mail):" />
 					<p:inputText id="username" style="width:150px;" value="#{profileBean.chgUserName}">
-						<f:validator validatorId="validateUserName" />
-						<f:ajax event="blur" render="m_username" />
+					
 					</p:inputText>
 					<p:message id="m_username" style="font-size:12pt;" for="username" />
 		

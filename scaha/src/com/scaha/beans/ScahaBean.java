@@ -2,6 +2,7 @@ package com.scaha.beans;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,10 +15,14 @@ import javax.faces.bean.ViewScoped;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Club;
+import com.scaha.objects.ClubAdmin;
+import com.scaha.objects.ClubAdminList;
 import com.scaha.objects.ClubList;
 import com.scaha.objects.GeneralSeasonList;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Profile;
+import com.scaha.objects.ScahaTeam;
+import com.scaha.objects.TeamList;
 
 @ManagedBean
 @ApplicationScoped
@@ -63,7 +68,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 	 * 
 	 */
 	public void refreshBean() {
-		 
+		
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		try {
 			setScahaClubList(ClubList.NewClubListFactory(this.DefaultProfile, db));
@@ -75,6 +80,41 @@ public class ScahaBean implements Serializable,  MailableObject {
 		db.free();
 		 
 	 }
+	
+	public void refreshClubList() {
+
+		this.resetClubLists();
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		try {
+			setScahaClubList(ClubList.NewClubListFactory(this.DefaultProfile, db));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.free();
+	}
+
+	@SuppressWarnings("unchecked")
+	private void resetClubLists() {
+		if (this.ScahaClubList != null) {
+			List<Club> list = (List<Club>) this.ScahaClubList.getWrappedData();
+			for (Club c : list) {
+				ClubAdminList cal = c.getCal();
+				TeamList tl = c.getScahaTeams();
+				if (cal != null) {
+					List<ClubAdmin> lca = (List<ClubAdmin>) cal.getWrappedData();
+					lca.clear();
+				}
+				if (tl != null) {
+					List<ScahaTeam> lst = (List<ScahaTeam>) tl.getWrappedData();
+					lst.clear();
+				}
+			}
+			list.clear();
+		}
+			
+	}
 	@Override
 	public String getSubject() {
 		// TODO Auto-generated method stub

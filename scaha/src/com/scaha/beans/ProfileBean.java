@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.el.ValueExpression;
@@ -523,46 +524,64 @@ public void cancelAddMember() {
 		//
 		// in the end.. we simply turn off the edit so that edit screen will dissappear
 
-		if (!this.chgUserName.isEmpty()) pro.setUserName(this.chgUserName);
-		if (!this.chgDOB.isEmpty()) pro.getPerson().setDob(this.chgDOB);
-		if (!this.chgGender.isEmpty()) pro.getPerson().setGender(this.chgGender);
-		if (!this.chgAddress.isEmpty()) pro.getPerson().setsAddress1(this.chgAddress);
-		if (!this.chgCity.isEmpty()) pro.getPerson().setsCity(this.chgCity);
-		if (!this.chgState.isEmpty()) pro.getPerson().setsState(this.chgState);
-		if (!this.chgZip.isEmpty()) pro.getPerson().setiZipCode(Integer.parseInt(this.chgZip));
-		if (!this.chgFirstName.isEmpty()) pro.getPerson().setsFirstName(this.chgFirstName);
-		if (!this.chgLastName.isEmpty()) pro.getPerson().setsLastName(this.chgLastName);
-		if (!this.chgNickName.isEmpty()) pro.setNickName(this.chgNickName);
-		if (!this.chgAltEmail.isEmpty()) pro.getPerson().setsEmail(this.chgAltEmail);
-		if (!this.chgPhone.isEmpty()) pro.getPerson().setsPhone(this.chgPhone);
-		
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-		
-		try{
 	
-			if (db.setAutoCommit(false)) {
+		try{
 			
-				pro.update(db);
-				pro.getPerson().update(db);
-				db.commit();
-				db.free();
-				FacesContext context = FacesContext.getCurrentInstance();  
-				context.addMessage(null, new FacesMessage("Successful", "Your Changes have been successfully posted and saved..."));  
-				LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM the manage Profile Page..");
-				LOGGER.info("Sending Test mail here...");
-				//SendMailSSL mail = new SendMailSSL(this);
-				//LOGGER.info("Finished creating mail object for " + this.getUsername());
-				//mail.sendMail();
+			
+			if (!this.chgUserName.isEmpty() && !pro.getUserName().equals(this.chgUserName)) {
+				Vector<String> v = new Vector<String>();
+				v.add(this.chgUserName);
+				db.getData("CALL scaha.checkforuser(?)", v);
+		        
+				if (db.getResultSet() != null && db.getResultSet().next()){
+					FacesContext.getCurrentInstance().addMessage(
+							"me-form:username",
+		                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+		                    "USA Hockey Reg",
+		                    "You cannot use this username.  A username already exists in the system!"));
+					db.getResultSet().close();
+					db.free();
+					return;
+				}
+				db.getResultSet().close();
+
 			}
+			
+			db.cleanup();
+	
+			if (!this.chgUserName.isEmpty()) pro.setUserName(this.chgUserName);
+			if (!this.chgDOB.isEmpty()) pro.getPerson().setDob(this.chgDOB);
+			if (!this.chgGender.isEmpty()) pro.getPerson().setGender(this.chgGender);
+			if (!this.chgAddress.isEmpty()) pro.getPerson().setsAddress1(this.chgAddress);
+			if (!this.chgCity.isEmpty()) pro.getPerson().setsCity(this.chgCity);
+			if (!this.chgState.isEmpty()) pro.getPerson().setsState(this.chgState);
+			if (!this.chgZip.isEmpty()) pro.getPerson().setiZipCode(Integer.parseInt(this.chgZip));
+			if (!this.chgFirstName.isEmpty()) pro.getPerson().setsFirstName(this.chgFirstName);
+			if (!this.chgLastName.isEmpty()) pro.getPerson().setsLastName(this.chgLastName);
+			if (!this.chgNickName.isEmpty()) pro.setNickName(this.chgNickName);
+			if (!this.chgAltEmail.isEmpty()) pro.getPerson().setsEmail(this.chgAltEmail);
+			if (!this.chgPhone.isEmpty()) pro.getPerson().setsPhone(this.chgPhone);
+		
+		
+			pro.update(db);
+			pro.getPerson().update(db);
+			FacesContext context = FacesContext.getCurrentInstance();  
+			context.addMessage(null, new FacesMessage("Successful", "Your Changes have been successfully posted and saved..."));  
+			LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM the manage Profile Page..");
+			LOGGER.info("Sending Test mail here...");
+			//SendMailSSL mail = new SendMailSSL(this);
+			//LOGGER.info("Finished creating mail object for " + this.getUsername());
+			//mail.sendMail();
+		
 		} catch (SQLException e) {
-		// TODO Auto-generated catch block
 			LOGGER.info("ERROR IN Profile Change User Attributes PROCESS FOR " + this.getCompleteName());
 			e.printStackTrace();
 			db.rollback();
 			db.free();
 		}
 	
-		
+		db.free();
 		setNotEditPerson();
 		
 	}
