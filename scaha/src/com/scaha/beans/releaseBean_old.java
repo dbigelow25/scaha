@@ -29,7 +29,7 @@ import com.scaha.objects.SkillLevel;
 //import com.gbli.common.SendMailSSL;
 
 
-public class releaseBean implements Serializable, MailableObject {
+public class releaseBean_old implements Serializable, MailableObject {
 
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
@@ -109,7 +109,7 @@ public class releaseBean implements Serializable, MailableObject {
 
     }
 	
-	public releaseBean() {  
+	public releaseBean_old() {  
         
     	
     }  
@@ -376,10 +376,10 @@ public class releaseBean implements Serializable, MailableObject {
 		
 		String result = null;
 		if (this.displaypermanent){
-			result = Utils.mergeTokens(releaseBean.mail_permreg_body,myTokens);
+			result = Utils.mergeTokens(releaseBean_old.mail_permreg_body,myTokens);
 		}
 		if (this.displaytemporary){
-			result = Utils.mergeTokens(releaseBean.mail_tempreg_body,myTokens);
+			result = Utils.mergeTokens(releaseBean_old.mail_tempreg_body,myTokens);
 		}
 		
 		return result;
