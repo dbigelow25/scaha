@@ -119,7 +119,7 @@ public class ScahaDatabase extends Database {
 		cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 		cs.setString(2, strAnswer);
 		cs.execute();
-		strAnswer = cs.getString(1);
+		strAnswer = cs.getString(2);
 		cs.close();
 		return strAnswer.equals("Y");
 		
@@ -142,7 +142,7 @@ public class ScahaDatabase extends Database {
 		cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 		cs.setString(2, strAnswer);
 		cs.execute();
-		strAnswer = cs.getString(1);
+		strAnswer = cs.getString(2);
 		cs.close();
 		return strAnswer.equals("Y");
 		
