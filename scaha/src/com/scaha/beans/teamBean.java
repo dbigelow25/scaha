@@ -10,11 +10,10 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.el.ValueExpression;
-import javax.faces.application.Application;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Division;
@@ -24,13 +23,18 @@ import com.scaha.objects.TeamDataModel;
 
 //import com.gbli.common.SendMailSSL;
 
-
+@ManagedBean
+@SessionScoped
 public class teamBean implements Serializable {
 
-	// Class Level Variables
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
-	transient private ResultSet rs = null;
+
+	@ManagedProperty(value="#{scahaBean}")
+    private ScahaBean scaha;
+	@ManagedProperty(value="#{profileBean}")
+	private ProfileBean pb;
+
 	private List<Team> teams = null;
     private List<Division> divisions= null;
     private List<SkillLevel> skilllevels= null;
@@ -50,13 +54,6 @@ public class teamBean implements Serializable {
         TeamDataModel = new TeamDataModel(teams);
         
         idclub = 1;  
-        FacesContext context = FacesContext.getCurrentInstance();
-    	Application app = context.getApplication();
-
-		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
-				"#{profileBean}", Object.class );
-
-		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
     	this.setProfid(pb.getProfile().ID);
         getClubID();
         isClubHighSchool();
@@ -135,47 +132,32 @@ public class teamBean implements Serializable {
     	
     	try{
 
-    		if (db.setAutoCommit(false)) {
-    		
-    			//Vector<Integer> v = new Vector<Integer>();
-    			//v.add(1);
-    			//db.getData("CALL scaha.getTeamsByClub(?)", v);
-    		    CallableStatement cs = null;
+   		    CallableStatement cs = null;
+   		    
+		    if (this.ishighschool){
+		    	cs = db.prepareCall("CALL scaha.getDivisionsForHighSchool()");
+		    } else {
+		    	cs = db.prepareCall("CALL scaha.getDivisionsForSCAHA()");
+		    }
     		    
-    		    if (this.ishighschool){
-    		    	cs = db.prepareCall("CALL scaha.getDivisionsForHighSchool()");
-    		    } else {
-    		    	cs = db.prepareCall("CALL scaha.getDivisionsForSCAHA()");
-    		    }
-    		    
-    		    rs = cs.executeQuery();
+		    ResultSet rs = cs.executeQuery();
+			while (rs.next()) {
+				Integer iddivision = rs.getInt("iddivisions");
+    			String divisionname = rs.getString("division_name");
     			
-    			if (rs != null){
-    				//need to add to an array
-    				//rs = db.getResultSet();
-    				
-    				while (rs.next()) {
-    					Integer iddivision = rs.getInt("iddivisions");
-        				String divisionname = rs.getString("division_name");
-        				
-        				Division division = new Division();
-        				division.setDivisionname(divisionname);
-        				division.setIddivision(iddivision);
-        						
-        				templist.add(division);
-    				}
-    				LOGGER.info("We have results for division list");
-    			}
-    			rs.close();
-    			db.cleanup();
-    		} else {
-    		
-    		}
+    			Division division = new Division();
+    			division.setDivisionname(divisionname);
+    			division.setIddivision(iddivision);
+    						
+    			templist.add(division);
+			}
+   			LOGGER.info("We have results for division list");
+   			rs.close();
+   			cs.close();
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN loading teams");
     		e.printStackTrace();
-    		db.rollback();
     	} finally {
     		//
     		// always clean up after yourself..
@@ -184,7 +166,6 @@ public class teamBean implements Serializable {
     	}
 		
     	setDivisions(templist);
-		
 		return getDivisions();
 	}
 	
@@ -202,49 +183,40 @@ public class teamBean implements Serializable {
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	
     	try{
-
-    		if (db.setAutoCommit(false)) {
     		
-    			//Vector<Integer> v = new Vector<Integer>();
-    			//v.add(1);
-    			//db.getData("CALL scaha.getTeamsByClub(?)", v);
-    		    CallableStatement cs = null;
-    		    
-    		    if (this.ishighschool){
-    		    	cs = db.prepareCall("CALL scaha.getSkilllevelsForHighSchool()");
-    		    } else {
-    		    	cs = db.prepareCall("CALL scaha.getSkilllevelsForSCAHA()");
-    		    }
-    		    
-    		    
-    		    rs = cs.executeQuery();
+		    CallableStatement cs = null;
+		    
+		    if (this.ishighschool){
+		    	cs = db.prepareCall("CALL scaha.getSkilllevelsForHighSchool()");
+		    } else {
+		    	cs = db.prepareCall("CALL scaha.getSkilllevelsForSCAHA()");
+		    }
+		    
+		    
+		    ResultSet rs = cs.executeQuery();
     			
-    			if (rs != null){
-    				//need to add to an array
-    				//rs = db.getResultSet();
+			if (rs != null){
+				//need to add to an array
+				//rs = db.getResultSet();
+				
+				while (rs.next()) {
+					Integer idskilllevel = rs.getInt("idskilllevels");
+    				String levelsname = rs.getString("levelsname");
     				
-    				while (rs.next()) {
-    					Integer idskilllevel = rs.getInt("idskilllevels");
-        				String levelsname = rs.getString("levelsname");
-        				
-        				SkillLevel level = new SkillLevel();
-        				level.setSkilllevelname(levelsname);
-        				level.setIdskilllevel(idskilllevel);
-        						
-        				templist.add(level);
-    				}
-    				LOGGER.info("We have results for division list");
-    			}
-    			rs.close();
-    			db.cleanup();
-    		} else {
-    		
-    		}
+    				SkillLevel level = new SkillLevel();
+    				level.setSkilllevelname(levelsname);
+    				level.setIdskilllevel(idskilllevel);
+    						
+    				templist.add(level);
+				}
+				LOGGER.info("We have results for division list");
+			}
+			rs.close();
+			db.cleanup();
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN loading teams");
     		e.printStackTrace();
-    		db.rollback();
     	} finally {
     		//
     		// always clean up after yourself..
@@ -253,7 +225,6 @@ public class teamBean implements Serializable {
     	}
 		
     	setSkilllevels(templist);
-		
 		return getSkilllevels();
 	}
 	
@@ -282,40 +253,35 @@ public class teamBean implements Serializable {
     	List<Team> tempresult = new ArrayList<Team>();
     	
     	try{
-
-    		if (db.setAutoCommit(false)) {
     			
-    			CallableStatement cs = db.prepareCall("CALL scaha.getTeamsForRegistrarList(?,?)");
-    		    cs.setInt("clubid", idclub);
-    		    cs.setInt("inputyear", 2014);
-    		    rs = cs.executeQuery();
+			CallableStatement cs = db.prepareCall("CALL scaha.getTeamsForRegistrarList(?,?)");
+		    cs.setInt("clubid", idclub);
+		    cs.setInt("inputyear", 2014);
+		    ResultSet rs = cs.executeQuery();
     			
-    			if (rs != null){
+			if (rs != null){
+				
+				while (rs.next()) {
+					String idteam = rs.getString("idteams");
+    				String steamname = rs.getString("teamname");
+    				String skillname= rs.getString("levelsname");
+    				String division_name = rs.getString("division_name");
     				
-    				while (rs.next()) {
-    					String idteam = rs.getString("idteams");
-        				String steamname = rs.getString("teamname");
-        				String skillname= rs.getString("levelsname");
-        				String division_name = rs.getString("division_name");
-        				
-        				Team oteam = new Team(steamname,idteam);
-        				oteam.setDivisionname(division_name);
-        				oteam.setSkillname(skillname);
-        				tempresult.add(oteam);
-    				}
-    				
-    				LOGGER.info("We have results for teams by club" + idclub);
-    				
-    			}
-    			rs.close();	
-    			db.cleanup();
+    				Team oteam = new Team(steamname,idteam);
+    				oteam.setDivisionname(division_name);
+    				oteam.setSkillname(skillname);
+    				tempresult.add(oteam);
+				}
+				
+				LOGGER.info("We have results for teams by club" + idclub);
+				
+			}
+   			rs.close();	
+    		cs.close();
+   			db.cleanup();
 
-    			LOGGER.info("We have tried to retrieve teams for club" + idclub);
-    			//return "true";
-    		} else {
-    			//return "False";
-    		}
-    		
+   			LOGGER.info("We have tried to retrieve teams for club" + idclub);
+    			
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN Searching FOR Teams for club:" + idclub);
@@ -340,34 +306,43 @@ public class teamBean implements Serializable {
     public void setTeamdatamodel(TeamDataModel odatamodel){
     	TeamDataModel = odatamodel;
     }
-    
-    
+
+    /**
+     * This simply saves a new team to the system.
+     * 
+     */
     public void saveTeam(){
-    	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	LOGGER.info("JHEREHRERERERR");
+   		// Log it for test
+		LOGGER.info("Here are team Add Parms:" + this.idclub + ":" + this.teamname + ":" + 
+				getteamgender() + ":" + this.selectedskilllevel + ":"+ this.selecteddivision + ":2014:");
+		if (scaha == null) {
+			LOGGER.info("SCAHA IS NULL!!");
+		} else if (scaha.getScahaSeasonList() == null) {
+			LOGGER.info("SCAHA SEASON LIST IS NULL!!");
+		} else if (scaha.getScahaSeasonList().getCurrentSeason() == null) {
+			LOGGER.info("SCAHA DEFAULT SEASON IS NULL!!");
+		} else {
+			LOGGER.info(scaha.getScahaSeasonList().getCurrentSeason().toString());
+		}
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	
     	try{
-
-    		if (db.setAutoCommit(false)) {
-    		
-    			CallableStatement cs = db.prepareCall("CALL scaha.addTeam(?,?,?,?,?,?)");
-    			cs.setInt("pclubid", this.idclub);
-    		    cs.setString("teamname", this.teamname);
-    		    cs.setString("teamgender", getteamgender());
-    		    cs.setInt("skilllevelid", Integer.parseInt(this.selectedskilllevel));
-    		    cs.setInt("divisionsid", Integer.parseInt(this.selecteddivision));
-    			cs.setInt("currentyear", 2014);
-    		    
-    		    cs.executeQuery();
-    			
-    			db.cleanup();
-    		} else {
-    		
-    		}
+ 			CallableStatement cs = db.prepareCall("CALL scaha.addTeam(?,?,?,?,?,?,?)");
+			cs.setInt("pclubid", this.idclub);
+		    cs.setString("teamname", this.teamname);
+		    cs.setString("teamgender", getteamgender());
+		    cs.setInt("skilllevelid", Integer.parseInt(this.selectedskilllevel));
+		    cs.setInt("divisionsid", Integer.parseInt(this.selecteddivision));
+			cs.setInt("currentyear", 2014);
+			cs.setString("in_seasontag", scaha.getScahaSeasonList().getCurrentSeason().getTag());
+			cs.executeUpdate();
+			cs.close();
+			LOGGER.info("Saved a new team");
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN loading teams");
     		e.printStackTrace();
-    		db.rollback();
     	} finally {
     		//
     		// always clean up after yourself..
@@ -379,6 +354,7 @@ public class teamBean implements Serializable {
     	this.setSelecteddivision(null);
     	this.setSelectedskilllevel(null);
     	this.setTeamname(null);
+    	
     }
     
     private String getteamgender(){
@@ -397,36 +373,27 @@ public class teamBean implements Serializable {
     	
     	try{
 
-    		if (db.setAutoCommit(false)) {
-    			
-    			CallableStatement cs = db.prepareCall("CALL scaha.getClubNamebyId(?)");
-    		    cs.setInt("clubid", idclub);
-    		    rs = cs.executeQuery();
-    			
-    			if (rs != null){
-    				
-    				while (rs.next()) {
-    					String sclubname = rs.getString("clubname");
-        				this.setTeamstabletitle("2014 " + sclubname + " Teams");
-        			}
-    				
-    				LOGGER.info("We have results for teams by club" + idclub);
-    				
-    			}
-    			rs.close();	
-    			db.cleanup();
+   			CallableStatement cs = db.prepareCall("CALL scaha.getClubNamebyId(?)");
+   		    cs.setInt("clubid", idclub);
+   		    ResultSet rs = cs.executeQuery();
+   			
+			while (rs.next()) {
+				String sclubname = rs.getString("clubname");
+   				this.setTeamstabletitle("2014 " + sclubname + " Teams");
+   			}
+				
+			LOGGER.info("We have results for teams by club" + idclub);
+				
+			rs.close();	
+			cs.close();
+			db.cleanup();
 
-    			LOGGER.info("We have tried to retrieve teams for club" + idclub);
-    			//return "true";
-    		} else {
-    			//return "False";
-    		}
+			LOGGER.info("We have tried to retrieve teams for club" + idclub);
     		
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN Searching FOR Teams for club:" + idclub);
     		e.printStackTrace();
-    		db.rollback();
     	} finally {
     		//
     		// always clean up after yourself..
@@ -455,18 +422,12 @@ public class teamBean implements Serializable {
 			Vector<Integer> v = new Vector<Integer>();
 			v.add(this.getProfid());
 			db.getData("CALL scaha.getClubforPerson(?)", v);
-		    
-			if (db.getResultSet() != null){
-				//need to add to an array
-				rs = db.getResultSet();
-				
-				while (rs.next()) {
-					this.idclub = rs.getInt("idclub");
-					}
-				rs.close();
-				LOGGER.info("We have results for club for a profile");
+		    ResultSet rs = db.getResultSet();
+			while (rs.next()) {
+				this.idclub = rs.getInt("idclub");
 			}
-			db.cleanup();
+			rs.close();
+			LOGGER.info("We have results for club for a profile");
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN loading club by profile");
@@ -490,17 +451,11 @@ public class teamBean implements Serializable {
 				Vector<Integer> v = new Vector<Integer>();
 				v.add(this.idclub);
 				db.getData("CALL scaha.IsClubHighSchool(?)", v);
-			    
-				if (db.getResultSet() != null){
-					//need to add to an array
-					rs = db.getResultSet();
-					
-					while (rs.next()) {
-							isschool = rs.getInt("result");
-						}
-					LOGGER.info("We have results for club is a high school");
+			    ResultSet rs = db.getResultSet();
+				while (rs.next()) {
+					isschool = rs.getInt("result");
 				}
-				rs.close();
+				LOGGER.info("We have results for club is a high school");
 				db.cleanup();
 				
 				if (isschool.equals(0)){
@@ -519,6 +474,36 @@ public class teamBean implements Serializable {
 	    		//
 	    		db.free();
 	    	}
+	}
+
+    
+    /**
+	 * @return the scaha
+	 */
+	public ScahaBean getScaha() {
+		return scaha;
+	}
+
+	/**
+	 * @param scaha the scaha to set
+	 */
+	public void setScaha(ScahaBean scaha) {
+		this.scaha = scaha;
+	}
+
+	
+	/**
+	 * @return the pb
+	 */
+	public ProfileBean getPb() {
+		return pb;
+	}
+
+	/**
+	 * @param pb the pb to set
+	 */
+	public void setPb(ProfileBean pb) {
+		this.pb = pb;
 	}
 
 

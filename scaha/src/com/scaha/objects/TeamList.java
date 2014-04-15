@@ -50,8 +50,7 @@ public class TeamList extends ListDataModel<ScahaTeam> implements Serializable, 
 		
 		Vector<Object> v = new Vector<Object>();
 		v.add(new Integer(_cl.ID));
-//		v.add( _gs.getTag());
-		v.add( "SCAHA-1314");   // hardcode for now TODO
+		v.add( _gs.getTag());
 		
 		if (_db.getData("call scaha.getAllTeamsByClubAndSeason(?,?)",v)) {
 			

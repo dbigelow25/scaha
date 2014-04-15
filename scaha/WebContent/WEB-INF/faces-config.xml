@@ -25,11 +25,6 @@
 		<managed-bean-class>com.scaha.beans.PicklistRoleBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
-		<managed-bean>
-		<managed-bean-name>tabtrackBean</managed-bean-name>
-		<managed-bean-class>com.scaha.beans.TabTrackBean</managed-bean-class>
-		<managed-bean-scope>view</managed-bean-scope>
-	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>registrationBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.RegistrationBean</managed-bean-class>
@@ -59,11 +54,6 @@
 		<managed-bean-name>coachloiBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.coachloiBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
-	</managed-bean>
-	<managed-bean>
-		<managed-bean-name>teamBean</managed-bean-name>
-		<managed-bean-class>com.scaha.beans.teamBean</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>reviewloiBean</managed-bean-name>

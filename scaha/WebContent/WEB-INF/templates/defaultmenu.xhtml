@@ -34,28 +34,27 @@
 </p:toolbarGroup>
 <p:toolbarGroup align="left" rendered="#{not empty profileBean.getProfile()}"> 
 	<p:menuButton id="customer"  style="width:125px;" value="My Actions" type="button">  
-		<p:menuitem style="font-size: 12px;width:125px;" value="Reload Club List" url="#{scahaBean.refreshClubList()}" rendered="#{not empty profileBean.getProfile()}"/>
-		<p:menuitem style="font-size: 12px;width:125px;" value="Register for Scaha" url="manageUSAHockey.xhtml" rendered="#{not empty profileBean.getProfile()}"/>
-  		<p:menuitem style="font-size: 12px;" value="Add Player To Delinquency List" url="addplayerdelinquent.xhtml" rendered="#{adminnavigationBean.scaharegistrar}"/>
-		<p:menuitem style="font-size: 12px;" value="Add Teams" url="addteams.xhtml" rendered="#{adminnavigationBean.clubregistrar}"/>
-		<p:menuitem style="font-size: 12px;" value="Create Player LOI" url="loinavigation.xhtml?pagecode=addplayerstoteam" rendered="#{adminnavigationBean.clubregistrar}"/>
-		<p:menuitem style="font-size: 12px;" value="Create Coach LOI" url="loinavigation.xhtml?pagecode=addcoachestoteam" rendered="#{adminnavigationBean.clubregistrar}"/>
-		<p:menuitem style="font-size: 12px;" value="Review LOI's" url="registrarviewlois.xhtml" rendered="#{adminnavigationBean.clubregistrar}"/>
-		<p:menuitem style="font-size: 12px;" value="Release Player" url="releasenavigation.xhtml?pagecode=startplayerrelease" rendered="#{adminnavigationBean.clubregistrar}"/>
-		<p:menuitem style="font-size: 12px;" value="View Delinquency List" url="sessionnavigation.xhtml?pagecode=clubviewdelinquencylist" rendered="#{adminnavigationBean.clubregistrar}"/>
-		<p:menuitem style="font-size: 12px;" value="Confirm Player LOI's" url="loinavigation.xhtml?pagecode=confirmlois" rendered="#{adminnavigationBean.scaharegistrar}"/>
-		<p:menuitem style="font-size: 12px;" value="Confirm Coach LOI's" url="confirmcoachlois.xhtml" rendered="#{adminnavigationBean.scaharegistrar}"/>
-		<p:menuitem style="font-size: 12px;" value="Manage Rosters" url="managerosters.xhtml" rendered="#{adminnavigationBean.scaharegistrar}"/>
-		<p:menuitem style="font-size: 12px;" value="View Delinquency List" url="sessionnavigation.xhtml?pagecode=viewdelinquencylist" rendered="#{adminnavigationBean.scaharegistrar}"/>
-		<p:menuitem style="font-size: 12px;" value="View Releases" url="reviewreleasenavigation.xhtml?pagecode=confirmrelease" rendered="#{adminnavigationBean.scaharegistrar}"/>
+		<p:menuitem style="font-size: 10pt;width:225px;" value="Manage Profile"  url="manageprofile.xhtml" icon="ui-icon-extlink" rendered="#{not empty profileBean.getProfile()}"/>  
+   		<p:menuitem style="font-size: 10pt;width:225px;" value="Register For Scaha" icon="ui-icon-extlink" url="manageUSAHockey.xhtml" rendered="#{not empty profileBean.getProfile()}"/>
+  		<p:separator />  
+		<p:menuitem style="font-size: 10pt;width:225px;" value="Add Player To D-List" url="addplayerdelinquent.xhtml" rendered="#{adminnavigationBean.scaharegistrar}"/>
+		<p:menuitem style="font-size: 10pt;width:225px;" value="Add Teams" url="addteams.xhtml" rendered="#{adminnavigationBean.clubregistrar}"/>
+		<p:menuitem style="font-size: 10pt;width:225px;" value="Create Player LOI" url="loinavigation.xhtml?pagecode=addplayerstoteam" rendered="#{adminnavigationBean.clubregistrar}"/>
+		<p:menuitem style="font-size: 10pt;width:225px;" value="Create Coach LOI" url="loinavigation.xhtml?pagecode=addcoachestoteam" rendered="#{adminnavigationBean.clubregistrar}"/>
+		<p:menuitem style="font-size: 10pt;width:225px;" value="Review LOI's" url="registrarviewlois.xhtml" rendered="#{adminnavigationBean.clubregistrar}"/>
+		<p:menuitem style="font-size: 10pt;width:225px;" value="Release Player" url="releasenavigation.xhtml?pagecode=startplayerrelease" rendered="#{adminnavigationBean.clubregistrar}"/>
+		<p:menuitem style="font-size: 10pt;width:225px;" value="View Club D-List" url="sessionnavigation.xhtml?pagecode=clubviewdelinquencylist" rendered="#{adminnavigationBean.clubregistrar}"/>
+		<p:menuitem style="font-size: 10pt;width:225px;" value="Confirm Player LOI's" url="loinavigation.xhtml?pagecode=confirmlois" rendered="#{adminnavigationBean.scaharegistrar}"/>
+		<p:menuitem style="font-size: 10pt;width:225px;" value="Confirm Coach LOI's" url="confirmcoachlois.xhtml" rendered="#{adminnavigationBean.scaharegistrar}"/>
+		<p:menuitem style="font-size: 10pt;width:225px;" value="Manage Rosters" url="managerosters.xhtml" rendered="#{adminnavigationBean.scaharegistrar}"/>
+		<p:menuitem style="font-size: 10pt;width:225px;" value="View D-List" url="sessionnavigation.xhtml?pagecode=viewdelinquencylist" rendered="#{adminnavigationBean.scaharegistrar}"/>
+		<p:menuitem style="font-size: 10pt;width:225px;" value="View Releases" url="reviewreleasenavigation.xhtml?pagecode=confirmrelease" rendered="#{adminnavigationBean.scaharegistrar}"/>
    </p:menuButton> 
 </p:toolbarGroup>
 <p:toolbarGroup align="right" rendered="#{not empty profileBean.getProfile()}"> 
 			<h:outputText value="Welcome #{profileBean.getNickName()}"></h:outputText>
 			<p:separator />  
        		<p:menuButton value="Options" iconPos="right">  
-   				<p:menuitem style="font-size: 11px;" value="Manage Profile"  url="manageprofile.xhtml" icon="ui-icon-extlink"/>  
-   				<p:separator />  
     				<p:menuitem style="font-size: 11px;" value="Change Password"  url="changepassword.xhtml" icon="ui-icon-extlink"/>  
    				<p:separator />  
    				<p:menuitem style="font-size: 11px;" value="Logout" actionListener="#{profileBean.logout}" ajax="false"/>  
