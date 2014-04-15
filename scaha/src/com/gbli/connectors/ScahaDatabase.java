@@ -101,6 +101,52 @@ public class ScahaDatabase extends Database {
 		return strAnswer.equals("Y");
 		
 	}
+	
+	/**
+	 *  General utility to check to see if  this person has yet to verify his bc
+	 *  
+	 * @param _sfname
+	 * @param _slname
+	 * @param _sDOB
+	 * @return
+	 * @throws SQLException 
+	 */
+	public boolean checkForBC(int _idPerson) throws SQLException {
+
+		String strAnswer = "N";
+		CallableStatement cs = this.prepareCall("call scaha.checkForBC(?,?)");
+		cs.setInt(1, _idPerson);
+		cs.registerOutParameter(2, java.sql.Types.VARCHAR);
+		cs.setString(2, strAnswer);
+		cs.execute();
+		strAnswer = cs.getString(1);
+		cs.close();
+		return strAnswer.equals("Y");
+		
+	}
+	
+	/**
+	 *  General utility to check to see if  this person has yet to verify his bc
+	 *  
+	 * @param _sfname
+	 * @param _slname
+	 * @param _sDOB
+	 * @return
+	 * @throws SQLException 
+	 */
+	public boolean isPersonPlayer(int _idPerson) throws SQLException {
+
+		String strAnswer = "N";
+		CallableStatement cs = this.prepareCall("call scaha.isPersonPlayer(?,?)");
+		cs.setInt(1, _idPerson);
+		cs.registerOutParameter(2, java.sql.Types.VARCHAR);
+		cs.setString(2, strAnswer);
+		cs.execute();
+		strAnswer = cs.getString(1);
+		cs.close();
+		return strAnswer.equals("Y");
+		
+	}
 }
 
 

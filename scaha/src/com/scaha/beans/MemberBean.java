@@ -190,7 +190,7 @@ public class MemberBean implements Serializable, MailableObject {
 		return true;
 	}
 
-	private void buildMailBody(Person tper, Person per, UsaHockeyRegistration usar2, ScahaMember mem) {
+	private void buildMailBody(ScahaDatabase _db, Person tper, Person per, UsaHockeyRegistration usar2, ScahaMember mem) {
 	
 		// TODO Auto-generated method stub
 		List<String> myTokens = new ArrayList<String>();
@@ -201,6 +201,22 @@ public class MemberBean implements Serializable, MailableObject {
 		myTokens.add("USAHNUM:" + usar2.getUSAHnum());
 		myTokens.add("SCAHANUM:" + mem.getSCAHANumber());
 		myTokens.add("SEASON:" + scaha.getScahaSeasonList().getCurrentSeason().getDescription());
+		try {
+			if (_db.isPersonPlayer(per.ID)) {
+				if (_db.checkForBC(per.ID)) {
+					myTokens.add("BCSENTENCE:" + "We already have the Player's Birth Certificate on file so you do not need to bring a copy to any SCAHA tryout.");
+				} else {
+					myTokens.add("BCSENTENCE:" + "MAKE SURE TO BRING A COPY OF THE PLAYER'S Birth Certificate to ALL  SCAHA TRYOUTS.  We do not have any BC on file for this player yet.");
+				}
+			} else {
+				myTokens.add("BCSENTENCE:" + "You have not registered this person as a SCAHA player, so no Birth Certificate Needed.");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		myTokens.add("SEASON:" + scaha.getScahaSeasonList().getCurrentSeason().getDescription());
+			
 		this.MergedBody =  Utils.mergeTokens(MemberBean.mail_body,myTokens);
 		
 	}
@@ -432,7 +448,7 @@ public class MemberBean implements Serializable, MailableObject {
 
 			}
 			
-			this.buildMailBody(tper, per, usar, mem);
+			this.buildMailBody(db, tper, per, usar, mem);
 			SendMailSSL mail = new SendMailSSL(this);
 			mail.sendMail();
 			
