@@ -44,7 +44,7 @@
 	<ui:fragment id="view-pers" rendered="#{profileBean.isViewPerson()}">
 	
   		<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">  
-    	      <h:outputText style="font-size: 12px;" value="The following information is your personal account information.  Please change any contact
+    	      <h:outputText style="font-size: 12pt;"  value="The following information is your personal account information.  Please change any contact
                                                        you need to.  The only thing you cannot change is your usercode. "/>  
    		</p:fieldset>  
 	
@@ -53,22 +53,22 @@
   		<p:fieldset id="fs2" toggleable="false" toggleSpeed="500">  	
   		
          	<p:panelGrid id ="view-pers-grid" columns="2" cellpadding="5">  
-            	<h:outputText value="User Name (e-mail):" />
-            	<h:outputText value="#{profileBean.getUserName()}" />
-            	<h:outputText value="Name:" />
-            	<h:outputText value="#{profileBean.getCompleteName()}" />
-            	<h:outputText value="Nick Name:" />
-            	<h:outputText value="#{profileBean.getNickName()}" />
-            	<h:outputText value="Gender:" />
-            	<h:outputText value="#{profileBean.getGender()}"/>
-            	<h:outputText value="Birth Day:" />
-            	<h:outputText value="#{profileBean.getDOB()}"/>
-            	<h:outputText value="Phone Number:" />
-            	<h:outputText value="#{profileBean.getPhoneNumber()}"/>
-            	<h:outputText value="Alt Email:" />
-            	<h:outputText value="#{profileBean.getAltemail()}"/>
-            	<h:outputText value="Address:" />
-            	<h:outputText value="#{profileBean.getCompleteAddress()}" />
+            	<h:outputText style="font-size: 10pt;" value="User Name (e-mail):" />
+            	<h:outputText style="font-size: 10pt;" value="#{profileBean.getUserName()}" />
+            	<h:outputText style="font-size: 10pt;" value="Name:" />
+            	<h:outputText style="font-size: 10pt;" value="#{profileBean.getCompleteName()}" />
+            	<h:outputText style="font-size: 10pt;" value="Nick Name:" />
+            	<h:outputText style="font-size: 10pt;" value="#{profileBean.getNickName()}" />
+            	<h:outputText style="font-size: 10pt;" value="Gender:" />
+            	<h:outputText style="font-size: 10pt;" value="#{profileBean.getGender()}"/>
+            	<h:outputText style="font-size: 10pt;" value="Birth Day:" />
+            	<h:outputText style="font-size: 10pt;" value="#{profileBean.getDOB()}"/>
+            	<h:outputText style="font-size: 10pt;" value="Phone Number:" />
+            	<h:outputText style="font-size: 10pt;" value="#{profileBean.getPhoneNumber()}"/>
+            	<h:outputText style="font-size: 10pt;" value="Alt Email:" />
+            	<h:outputText style="font-size: 10pt;" value="#{profileBean.getAltemail()}"/>
+            	<h:outputText style="font-size: 10pt;" value="Address:" />
+            	<h:outputText style="font-size: 10pt;" value="#{profileBean.getCompleteAddress()}" />
             </p:panelGrid>  
 		</p:fieldset>
 
@@ -94,54 +94,54 @@
 		
 			<p:panelGrid columns="3" cellpadding="3" id="edit-pers-grid">  
 		
-					<p:outputLabel for="username" value="User Name (e-mail):" />
-					<p:inputText id="username" style="width:150px;" value="#{profileBean.chgUserName}">
+					<p:outputLabel style="font-size: 10pt;"  for="username" value="User Name (e-mail):" />
+					<p:inputText id="username" style="width:200px;font-size:10pt;" value="#{profileBean.chgUserName}">
 					
 					</p:inputText>
 					<p:message id="m_username" style="font-size:12pt;" for="username" />
 		
-					<p:outputLabel for="firstname" value="First Name"></p:outputLabel>
-					<p:inputText id="firstname" style="width:150px;" value="#{profileBean.chgFirstName}" />
+					<p:outputLabel style="font-size: 10pt;" for="firstname" value="First Name"></p:outputLabel>
+					<p:inputText id="firstname" style="width:200px;font-size:10pt;" value="#{profileBean.chgFirstName}" />
 					<p:message id="m_firstname" closable="true" for="firstname"/>
 					
-					<p:outputLabel for="lastname" value="Last Name" ></p:outputLabel>
-					<p:inputText id="lastname" style="width:150px;" value="#{profileBean.chgLastName}" />
+					<p:outputLabel style="font-size: 10pt;"  for="lastname" value="Last Name" ></p:outputLabel>
+					<p:inputText id="lastname" style="width:200px;font-size:10pt;" value="#{profileBean.chgLastName}" />
 					<p:message id="m_lastname" closable="true" for="lastname"/>
 					
-					<p:outputLabel for="nickname" value="Nick Name"></p:outputLabel>
-					<p:inputText id="nickname" style="width:150px;" value="#{profileBean.chgNickName}"/>
+					<p:outputLabel style="font-size: 10pt;"  for="nickname" value="Nick Name"></p:outputLabel>
+					<p:inputText id="nickname" style="width:200px;font-size:10pt;" value="#{profileBean.chgNickName}"/>
 					<p:message id="m_nickname" closable="false" for="nickname"/>
 
-					<p:outputLabel for="dob"  value="Date of Birth:"></p:outputLabel>
-					<p:inputMask id="dob" value="#{profileBean.chgDOB}" style="width:150px;" mask="99/99/9999" />  
+					<p:outputLabel style="font-size: 10pt;"  for="dob"  value="Date of Birth:"></p:outputLabel>
+					<p:inputMask id="dob" value="#{profileBean.chgDOB}" style="width:150px;font-size:10pt;" mask="99/99/9999" />  
 					<p:message id="m_dob" closable="false" for="dob"/>
 
-					<p:outputLabel for="gender" value="Gender:" ></p:outputLabel>
-				    <p:selectOneMenu id="gender" value="#{profileBean.chgGender}">  
+					<p:outputLabel style="font-size: 10pt;"  for="gender" value="Gender:" ></p:outputLabel>
+				    <p:selectOneMenu id="gender" style="font-size: 10pt;" value="#{profileBean.chgGender}">  
 			            <f:selectItem itemLabel="Male" itemValue="M"></f:selectItem> 
            				<f:selectItem itemLabel="Female" itemValue="F"></f:selectItem> 
       				</p:selectOneMenu> 		
       				<p:message id="m_gender" closable="true" for="gender"/>			
 
-					<p:outputLabel for="email" value="alternate eMail:"></p:outputLabel>
-					<p:inputText id="email" style="width:150px;" value="#{profileBean.chgAltEmail}" />
+					<p:outputLabel style="font-size: 10pt;"  for="email" value="alternate eMail:"></p:outputLabel>
+					<p:inputText id="email" style="width:200px;font-size:10pt;" value="#{profileBean.chgAltEmail}" />
 					<p:message id="m_email" closable="true" for="email"/>
 
-					<p:outputLabel for="phone"  value="Mobile Phone"></p:outputLabel>
-					<p:inputMask id="phone" value="#{profileBean.chgPhone}" style="width:150px;" mask="(999) 999-9999" />  
+					<p:outputLabel style="font-size: 10pt;"  for="phone"  value="Mobile Phone"></p:outputLabel>
+					<p:inputMask id="phone" value="#{profileBean.chgPhone}" style="width:150px;font-size:10pt;" mask="(999) 999-9999" />  
 					<p:message id="m_phone" closable="true" for="phone"/>
 
 			</p:panelGrid>
 
 			<p:panelGrid columns="4" cellpadding="3" id="edit-pers-addr-grid">
-					<p:outputLabel for="address" value="Address"></p:outputLabel>
-					<p:outputLabel for="city" value="City"></p:outputLabel>
-					<p:outputLabel for="state" value="State"></p:outputLabel>
-					<p:outputLabel for="zip" value="Zip"></p:outputLabel>
-					<p:inputText id="address" style="width:175px;" value="#{profileBean.chgAddress}" />
-					<p:inputText id="city" style="width:175px;" value="#{profileBean.chgCity}" />
-					<p:inputMask  id="state" style="width:25px;" maxlength="2" value="#{profileBean.chgState}" mask="aa"/>
-					<p:inputMask id="zip" style="width:75px;" maxlength="5" value="#{profileBean.chgZip}" mask="99999"/>
+					<p:outputLabel style="font-size: 10pt;"  for="address" value="Address"></p:outputLabel>
+					<p:outputLabel style="font-size: 10pt;" for="city" value="City"></p:outputLabel>
+					<p:outputLabel style="font-size: 10pt;" for="state" value="State"></p:outputLabel>
+					<p:outputLabel style="font-size: 10pt;"  for="zip" value="Zip"></p:outputLabel>
+					<p:inputText id="address" style="width:250px;font-size:10pt;" value="#{profileBean.chgAddress}" />
+					<p:inputText id="city" style="width:200px;font-size:10pt;" value="#{profileBean.chgCity}" />
+					<p:inputMask  id="state" style="width:50px;font-size:10pt;" maxlength="2" value="#{profileBean.chgState}" mask="aa"/>
+					<p:inputMask id="zip" style="width:100px;font-size:10pt;" maxlength="5" value="#{profileBean.chgZip}" mask="99999"/>
 			</p:panelGrid>
 			
 		</p:fieldset>

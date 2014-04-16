@@ -11,10 +11,13 @@ import com.scaha.objects.MailableObject;
 import com.scaha.objects.Person;
 import com.scaha.objects.Profile;
 import com.scaha.objects.Role;
+import com.scaha.objects.ScahaMember;
+import com.scaha.objects.UsaHockeyRegistration;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -43,6 +46,8 @@ public class ProfileBean implements Serializable,  MailableObject  {
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 
+	private static String mail_body_chng_profile = Utils.getMailTemplateFromFile("mail/changeprofile.html");
+	private String MergedBody = null;
 	private String name = null;
     private String live_password = null;  // This is the live password they used to login..
 	private Profile pro = null;  // This holds all the information regarding a person in the system
@@ -563,18 +568,17 @@ public void cancelAddMember() {
 			if (!this.chgAltEmail.isEmpty()) pro.getPerson().setsEmail(this.chgAltEmail);
 			if (!this.chgPhone.isEmpty()) pro.getPerson().setsPhone(this.chgPhone);
 		
-		
 			pro.update(db);
 			pro.getPerson().update(db);
 			FacesContext context = FacesContext.getCurrentInstance();  
 			context.addMessage(null, new FacesMessage("Successful", "Your Changes have been successfully posted and saved..."));  
-			LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM the manage Profile Page..");
-			LOGGER.info("Sending Test mail here...");
-			//SendMailSSL mail = new SendMailSSL(this);
-			//LOGGER.info("Finished creating mail object for " + this.getUsername());
-			//mail.sendMail();
+			this.buildMailBody(ProfileBean.mail_body_chng_profile, pro.getPerson());
+			SendMailSSL mail = new SendMailSSL(this);
+			LOGGER.info("Finished creating mail object for " + pro.getPerson().getsFirstName());
+			mail.sendMail();
 		
 		} catch (SQLException e) {
+			
 			LOGGER.info("ERROR IN Profile Change User Attributes PROCESS FOR " + this.getCompleteName());
 			e.printStackTrace();
 			db.rollback();
@@ -942,7 +946,7 @@ public String getSubject()  {
 	
 }
 public String getTextBody() {
-	return "You have recently changed your password.  If this was not you.. please get in contact with a SCAHA rep ASAP!!";
+	return this.MergedBody;
 }
 
 public String getPreApprovedCC() {
@@ -1006,5 +1010,16 @@ public String getChgUserName() {
  */
 public void setChgUserName(String chgUserName) {
 	this.chgUserName = chgUserName;
+}
+
+private void buildMailBody(String _strMailBody, Person per) {
+	
+	// TODO Auto-generated method stub
+	List<String> myTokens = new ArrayList<String>();
+	myTokens.add("PFIRST:" + per.getsFirstName());
+	myTokens.add("PLAST:" + per.getsLastName());
+		
+	this.MergedBody =  Utils.mergeTokens(_strMailBody,myTokens);
+	
 }
 }
