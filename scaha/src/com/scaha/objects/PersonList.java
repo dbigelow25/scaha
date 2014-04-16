@@ -75,11 +75,11 @@ public class PersonList extends ListDataModel<Person> implements Serializable, S
 					ps.setString(2,_usah.getLastName());
 					ps.setString(3,"NOOP");
 					loadnew = true;  // load new person placeholder
-			} else if (loopcount == 4 && data.isEmpty()) {
-					ps.setString(1,"NOOP");
-					ps.setString(2,_usah.getLastName());
-					ps.setString(3,"NOOP");
-					loadnew = true;  // load new person placeholder
+//			} else if (loopcount == 4 && data.isEmpty()) {
+//					ps.setString(1,"NOOP");
+//					ps.setString(2,_usah.getLastName());
+//					ps.setString(3,"NOOP");
+//					loadnew = true;  // load new person placeholder
 			} else {
 				break;
 			}

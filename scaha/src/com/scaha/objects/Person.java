@@ -402,8 +402,7 @@ public class Person extends ScahaObject implements Serializable {
 		setCitizenship(usar.getCitizen());
 		setDob(usar.getDOB());
 		setGender(usar.getGender());
-		this.setsEmail(usar.getEmail()); // Always carry this through to the actual person
-		
+		this.setsEmail(usar.getEmail().toLowerCase()); // Always carry this through to the actual person
 	}
 	
 	public int getPersonID() {
