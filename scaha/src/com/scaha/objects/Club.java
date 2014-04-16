@@ -22,7 +22,6 @@ public class Club extends ScahaObject implements Serializable {
 	public static final String MM_ENTITYTYPE = "CLUB";
 	public static final String MM_ATTTYPE = "LOGO";
 	
-	
 	private String Tag = null;
 	private String Sname = null;
 	private String clubname = null;
@@ -33,6 +32,7 @@ public class Club extends ScahaObject implements Serializable {
 	private ClubAdminList cal = null;
 	private List<Team> teams = null; // This is from LOI side
 	private TeamList Teams = null;
+	private VenueList Venues = null;
 	
 	/**
 	 * @return the tag
@@ -190,6 +190,20 @@ public class Club extends ScahaObject implements Serializable {
 	public void setScahaTeams(TeamList teams) {
 		LOGGER.info("Setting Team List for Club:" + this.getClubname());
 		Teams = teams;
+	}
+
+	/**
+	 * @return the venues
+	 */
+	public VenueList getVenues() {
+		return Venues;
+	}
+
+	/**
+	 * @param venues the venues to set
+	 */
+	public void setVenues(VenueList venues) {
+		Venues = venues;
 	}
 	
 }

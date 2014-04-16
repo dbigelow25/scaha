@@ -111,25 +111,17 @@
 		</td>
         </tr>
         <tr>
-        <td colspan="2">
-           <p:panelGrid id="venues" columns="1">  
-           <div class="NewsTitle">Rink Venues:</div> 
+        <td valign="top" colspan="2">
+        <div class="NewsTitle">Rink Venues:</div> 
+			<ui:repeat var="venue" value="#{clubBean.selectedclub.getVenues()}">
+           	<p:panelGrid id="venues" columns="1">  
             <div class="NewsDate">
-            	Anaheim Ice / 300 W. Lincoln St, Anaehim CA, 92808<br/>
-            	(714)692-8776 / www.anaheimice.com
+            	#{venue.getDescription()} / #{venue.getAddress()}, #{venue.getCity()} #{venue.getState()}, #{venue.getZipcode()}<br/>
+            	#{venue.getPhone()} - <i><a href="#{venue.getWebsite()}" target="_blank">#{venue.getWebsite()}</a></i> 
         	</div> 
 			<p class="GeneralGap" />
-	        <div class="NewsDate">
-            	Westminster Ice  / 300 W. Lincoln St, Anaehim CA, 92808<br/>
-            	(714)692-8776 / www.anaheimice.com
-        	</div> 
-        		<p class="GeneralGap" />
-        	<div class="NewsDate">
-            	Lakewood Ice  / 300 W. Lincoln St, Anaehim CA, 92808<br/>
-            	(714)692-8776 / www.anaheimice.com
-        	</div> 
-
-        </p:panelGrid>
+	        </p:panelGrid>
+			</ui:repeat>
         </td>
         </tr>
         </table>
