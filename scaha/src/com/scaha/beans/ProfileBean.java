@@ -204,6 +204,23 @@ public class ProfileBean implements Serializable,  MailableObject  {
 		}
 	}
     
+    
+    public void verifySU(){
+ 		FacesContext context = FacesContext.getCurrentInstance();
+ 		try{
+ 			if(pro == null){
+ 				this.origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
+ 				context.getExternalContext().redirect("Welcome.xhtml");
+ 			} else if(!pro.isSuperUser()){
+ 				this.origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
+ 				context.getExternalContext().redirect("Welcome.xhtml");
+ 			}
+
+ 		}catch (Exception e){
+ 			e.printStackTrace();
+ 		}
+ 	}
+    
     /**
      * This will get expanded once rolls are set up
      * @return
