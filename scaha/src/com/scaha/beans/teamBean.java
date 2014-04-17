@@ -14,9 +14,14 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+
+import com.gbli.common.SendMailSSL;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Division;
+import com.scaha.objects.MailableObject;
+import com.scaha.objects.Person;
+import com.scaha.objects.Profile;
 import com.scaha.objects.SkillLevel;
 import com.scaha.objects.Team;
 import com.scaha.objects.TeamDataModel;
@@ -25,7 +30,7 @@ import com.scaha.objects.TeamDataModel;
 
 @ManagedBean
 @SessionScoped
-public class teamBean implements Serializable {
+public class teamBean implements Serializable, MailableObject {
 
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
@@ -312,7 +317,6 @@ public class teamBean implements Serializable {
      * 
      */
     public void saveTeam(){
-    	LOGGER.info("JHEREHRERERERR");
    		// Log it for test
 		LOGGER.info("Here are team Add Parms:" + this.idclub + ":" + this.teamname + ":" + 
 				getteamgender() + ":" + this.selectedskilllevel + ":"+ this.selecteddivision + ":2014:");
@@ -340,7 +344,6 @@ public class teamBean implements Serializable {
 			cs.close();
 			LOGGER.info("Saved a new team");
     	} catch (SQLException e) {
-    		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN loading teams");
     		e.printStackTrace();
     	} finally {
@@ -349,7 +352,10 @@ public class teamBean implements Serializable {
     		//
     		db.free();
     	}
-    	
+
+    	SendMailSSL mail = new SendMailSSL(this);
+		mail.sendMail();
+		
     	teamsForClub(idclub);
     	this.setSelecteddivision(null);
     	this.setSelectedskilllevel(null);
@@ -506,6 +512,30 @@ public class teamBean implements Serializable {
 		this.pb = pb;
 	}
 
+	@Override
+	public String getSubject() {
+		return "A New Team was Added for ClubID: " + this.idclub;
+	}
+	@Override
+	public String getTextBody() {
+		return "A New team was added to the Club:" + this.teamname + ":"  + getteamgender() + ":" + this.selectedskilllevel + ":" + this.selecteddivision + "<\\p>" +
+	            "This team was added by:" + pb.getFirstName() + " " + pb.getLastName();
+	}
+
+	@Override
+	public String getPreApprovedCC() {
+		// TODO Auto-generated method stub
+		return "online@iscaha.com,scheduler@iscaha.com";
+	}
+	
+	@Override
+	public String getToMailAddress() {
+		//
+		// Tmp hardcoded.. we simply need to pull the e-mail for the Scaha Registrar
+		//
+		return "dux8fan@aol.com";
+	
+	}
 
 }
 

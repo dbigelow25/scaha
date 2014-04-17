@@ -377,7 +377,7 @@ public class RegistrationBean implements Serializable, MailableObject  {
 	@Override
 	public String getPreApprovedCC() {
 		// TODO Auto-generated method stub
-		return "";
+		return "online@iscaha.com,scheduler@iscaha.com";
 	}
 	@Override
 	public String getToMailAddress() {

@@ -967,7 +967,7 @@ public String getTextBody() {
 }
 
 public String getPreApprovedCC() {
-	return "";
+	return "online@iscaha.com,scheduler@iscaha.com";
 }
 
 public String getToMailAddress() {
