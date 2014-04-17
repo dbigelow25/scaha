@@ -10,36 +10,43 @@
 	xmlns:pe="http://primefaces.org/ui/extensions">
 	
 <ui:define name="content">
+
+<h:form>
+Club Image goes here - <h>Team Name follows</h>
+<p:accordionPanel activeIndex="0" >
+	<p:tab title="SCAHA Games" >
+		<div align="center">Your games needing action are listed below.  You will be responsible to provide the details and upload the scoresheet for your home games.</div>
+		<p:dataTable id="scahagames" var="testgame" value="#{managerBean.getGamesdatamodel()}" selection="#{managerBean.selectedgame}" paginator="true" rows="10" autoupdate="false">
+            <f:facet name="header">  
+	        	2014-2015 SCAHA GAMES
+	        </f:facet> 
+	         <p:column headerText="Date">  
+	            <h:outputText value="#{testgame.getDate()}" />  
+	        </p:column>  
+	        <p:column headerText="Visiting Team">  
+	        	<!-- need to add image object here -->
+	            <h:outputText value="#{testgame.getVisitor()}" />  
+	        </p:column>
+	        <p:column headerText="Home Team">  
+	        	<!-- need to add image object here -->
+	            <h:outputText value="#{testgame.getHome()}" />  
+	        </p:column>
+	        <p:column headerText="Time">  
+	            <h:outputText value="#{testgame.getTime()}" />  
+	        </p:column>
+	        <p:column headerText="">
+	        	<p:splitButton id="game" icon="ui-icon-folder-open"  >
+			        <p:menuitem value="Add Details" action="#{playerreleaseBean.startPermanentRelease(testgame)}" />
+			        <p:menuitem value="Add Scoresheet" action="#{playerreleaseBean.startTemporaryRelease(testgame)}" />
+			    </p:splitButton>
+	        </p:column>  
+	    </p:dataTable>
 	
-<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top">  
-   	<h:outputText value="SCAHA" style="color:#FFCC00;font-size:36px;" />  
-</p:notificationBar>  
-
-<div id="page-div">	
-
-	<h:form id="clubsmenu"  >
-		<p:layout fullPage="true">  
-  
-		    <p:layoutUnit position="north" size="100" header="Top" resizable="true" closable="true" collapsible="true">  
-		          <div style="float:left;vertical-align:middle;width:75px;font-size: 12px;">
-		          	<p:graphicImage id="logoimage1" value="#{clubBean.getClubLogoByParmId()}"  >
-		          		<f:param id = "target" name="target" value="#{club.getClubID()}" />
-		 			</p:graphicImage> 
-				</div>
-		    </p:layoutUnit>  
-		    <p:layoutUnit position="west" size="300" header="Left" resizable="true" closable="true" collapsible="true">  
-		        <h:outputText value="Tournament Info Here" />  
-		    </p:layoutUnit>  
-		  	<p:layoutUnit position="east" size="200" header="Right" resizable="true" closable="true" collapsible="true" effect="drop">  
-		        <h:outputText value="Exhibition Games" />  
-		    </p:layoutUnit>  
-		    <p:layoutUnit position="center">  
-		            Regular Season Games  
-		    </p:layoutUnit>  
-  
-		</p:layout>  
-	</h:form>
-<p:separator />
-</div>
+	</p:tab>
+	
+	<p:tab title="Tournament Games" >Tournament games</p:tab>
+	<p:tab title="Exhibition Games" >scaha games</p:tab>
+</p:accordionPanel>	
+</h:form>
 </ui:define>
 </ui:composition>

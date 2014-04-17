@@ -24,7 +24,12 @@
 <link rel="shortcut icon" href="images/favicon.ico"/>
  </h:head>
 <h:body>
-
+<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();"/>  
+              
+<p:dialog widgetVar="statusDialog" header="Processing"
+        draggable="false" closable="false">  
+    <p:graphicImage value="images/ajaxloadingbar.gif" />  
+</p:dialog> 
 <link rel="stylesheet" type="text/css" href="/scaha/style/main.css"/> 
 
 <div id="div-body">
