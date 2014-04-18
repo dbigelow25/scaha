@@ -12,27 +12,51 @@
 <ui:define name="content">
 
 <h:form>
-Club Image goes here - <h>Team Name follows</h>
+<table width="100%">
+	<tr>
+		<td>
+			<p:graphicImage id="managerlogo" value="#{clubBean.getClubLogoByParmId()}"  >
+				<f:param id = "target" name="target" value="#{managerBean.getIdclub()}" />
+			</p:graphicImage>
+		</td>
+		<td valign="middle" align="left">- <h3>Bantam A - Manager Portal</h3></td>
+	</tr>
+</table>
+  
 <p:accordionPanel activeIndex="0" >
 	<p:tab title="SCAHA Games" >
 		<div align="center">Your games needing action are listed below.  You will be responsible to provide the details and upload the scoresheet for your home games.</div>
-		<p:dataTable id="scahagames" var="testgame" value="#{managerBean.getGamesdatamodel()}" selection="#{managerBean.selectedgame}" paginator="true" rows="10" autoupdate="false">
+		<p:dataTable id="scahagames" var="TempGame" value="#{managerBean.getTempGamedatamodel()}" selection="#{managerBean.selectedgame}" paginator="true" rows="10" autoupdate="false">
             <f:facet name="header">  
 	        	2014-2015 SCAHA GAMES
 	        </f:facet> 
 	         <p:column headerText="Date">  
-	            <h:outputText value="#{testgame.getDate()}" />  
+	            <h:outputText value="#{TempGame.getDate()}" />  
 	        </p:column>  
 	        <p:column headerText="Visiting Team">  
-	        	<!-- need to add image object here -->
-	            <h:outputText value="#{testgame.getVisitor()}" />  
+	        	<p:graphicImage id="logoimage1" value="#{clubBean.getClubLogoByParmId()}"  >
+            		<f:param id = "target" name="target" value="1" />
+		 		</p:graphicImage> 
+	            <h:outputText value="#{TempGame.getVisitor()}" />  
+	        </p:column>
+	        <p:column headerText="Score">  
+	        	<h:outputText value="#{TempGame.getAwayscore()}" />  
 	        </p:column>
 	        <p:column headerText="Home Team">  
+	        	<p:graphicImage id="logoimage1" value="#{clubBean.getClubLogoByParmId()}"  >
+	            		<f:param id = "target" name="target" value="2" />
+			 	</p:graphicImage> 
+	            <h:outputText value="#{TempGame.getHome()}" />  
+	        </p:column>
+	        <p:column headerText="Score">  
 	        	<!-- need to add image object here -->
-	            <h:outputText value="#{testgame.getHome()}" />  
+	            <h:outputText value="#{TempGame.getHomescore()}" />  
 	        </p:column>
 	        <p:column headerText="Time">  
-	            <h:outputText value="#{testgame.getTime()}" />  
+	            <h:outputText value="#{TempGame.getTime()}" />  
+	        </p:column>
+	        <p:column headerText="Location">  
+	            <h:outputText value="#{TempGame.getLocation()}" />  
 	        </p:column>
 	        <p:column headerText="">
 	        	<p:splitButton id="game" icon="ui-icon-folder-open"  >
