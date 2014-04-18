@@ -116,7 +116,8 @@
 			<ui:repeat var="venue" value="#{clubBean.selectedclub.getVenues()}">
            	<p:panelGrid id="venues" columns="1">  
             <div class="NewsDate">
-            	#{venue.getDescription()} / #{venue.getAddress()}, #{venue.getCity()} #{venue.getState()}, #{venue.getZipcode()}<br/>
+            	#{venue.getDescription()} <br/>
+            	#{venue.getAddress()}, #{venue.getCity()} #{venue.getState()}, #{venue.getZipcode()}<br/>
             	#{venue.getPhone()} - <i><a href="#{venue.getWebsite()}" target="_blank">#{venue.getWebsite()}</a></i> 
         	</div> 
 			<p class="GeneralGap" />
