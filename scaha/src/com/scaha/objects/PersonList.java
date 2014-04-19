@@ -166,6 +166,43 @@ public class PersonList extends ListDataModel<Person> implements Serializable, S
 		return new PersonList(data);
 	}
 
+	
+	/**
+	 * This will get all Coaches for a given Team and Season
+	 * @param _db
+	 * @return
+	 * @throws SQLException 
+	 */
+	public static PersonList NewPersonListFactory(ScahaDatabase _db,  String _strLastName) throws SQLException {
+	
+		
+		LOGGER.info ("getPersonWithProfileByLastNamePattern:" + _strLastName);
+		List<Person> data = new ArrayList<Person>();
+		PreparedStatement ps = _db.prepareStatement("call scaha.getPersonWithProfileByLastNamePattern(?)");
+		ps.setString(1,_strLastName);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			int i = 1;
+			Person per = new Person(rs.getInt(i++));
+			LOGGER.info("Person ID is:" + per.ID);
+			per.setsFirstName(rs.getString(i++));
+			per.setsLastName(rs.getString(i++));
+			per.setsEmail(rs.getString(i++));
+			per.setsPhone(rs.getString(i++));
+			per.setsAddress1(rs.getString(i++));
+			per.setsCity(rs.getString(i++));
+			per.setsState(rs.getString(i++));
+			per.setiZipCode(rs.getInt(i++));
+			per.setGender(rs.getString(i++));
+			per.setDob(rs.getString(i++));
+			per.setCitizenship(rs.getString(i++));
+			data.add(per);
+		}
+		rs.close();
+		ps.close();
+		
+		return new PersonList(data);
+	}
     
     @Override  
     public Person getRowData(String rowKey) {  
@@ -186,5 +223,40 @@ public class PersonList extends ListDataModel<Person> implements Serializable, S
         return Integer.toString(result.ID);
     }
 
-	
+    /**
+     * Pull back a list of persons matching the persn ID
+     * 
+     * @param _db
+     * @param _number
+     * @return
+     * @throws SQLException 
+     */
+	public static PersonList NewPersonListFactory(ScahaDatabase _db, int _number) throws SQLException {
+		LOGGER.info ("getPersonByID:" + _number);
+		List<Person> data = new ArrayList<Person>();
+		PreparedStatement ps = _db.prepareStatement("call scaha.getPersonByID(?)");
+		ps.setInt(1,_number);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			int i = 1;
+			Person per = new Person(rs.getInt(i++));
+			LOGGER.info("Person ID is:" + per.ID);
+			per.setsFirstName(rs.getString(i++));
+			per.setsLastName(rs.getString(i++));
+			per.setsEmail(rs.getString(i++));
+			per.setsPhone(rs.getString(i++));
+			per.setsAddress1(rs.getString(i++));
+			per.setsCity(rs.getString(i++));
+			per.setsState(rs.getString(i++));
+			per.setiZipCode(rs.getInt(i++));
+			per.setGender(rs.getString(i++));
+			per.setDob(rs.getString(i++));
+			per.setCitizenship(rs.getString(i++));
+			data.add(per);
+		}
+		rs.close();
+		ps.close();
+		
+		return new PersonList(data);
+	}
 }

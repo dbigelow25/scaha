@@ -18,7 +18,7 @@ import com.gbli.context.ContextManager;
 
 public class ClubAdminList extends ListDataModel<ClubAdmin> implements Serializable, SelectableDataModel<ClubAdmin> {
 	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	
 	public ClubAdminList() {  
@@ -80,5 +80,18 @@ public class ClubAdminList extends ListDataModel<ClubAdmin> implements Serializa
         return Integer.toString(result.ID);  
     }
 
+	public Person getStaffer(String _strPattern) {
+		LOGGER.info("gettingStaffer, lookinig for pattern:" + _strPattern);
+		@SuppressWarnings("unchecked")
+		List<ClubAdmin> results = (List<ClubAdmin>) getWrappedData();  
+		for(ClubAdmin result : results) {  
+    		LOGGER.info("Looking at:" + result);
+    		if(result.getMyRole().getName().equals(_strPattern))  {
+    			LOGGER.info("Found it:" + result);
+                return (Person)result;  
+    		}
+		}
+		return null;  
+	}
 	
 }

@@ -148,6 +148,11 @@ public class Person extends ScahaObject implements Serializable {
 		this.setProfile(_pro);
 	}
 	
+	public Person(int int1) {
+		// TODO Auto-generated constructor stub
+		this.ID = int1;
+	}
+
 	/**
 	 * @return the sPhone
 	 */

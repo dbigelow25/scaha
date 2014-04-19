@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -27,13 +28,19 @@ import com.gbli.context.ContextManager;
 import com.scaha.objects.Club;
 import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.MailableObject;
+import com.scaha.objects.Person;
+import com.scaha.objects.PersonList;
 import com.scaha.objects.Profile;
 import com.scaha.objects.TeamList;
 
 @ManagedBean
 @SessionScoped
 public class ClubBean implements Serializable,  MailableObject {
-	
+
+	private Person currentPresident;  
+    private Person currentRegistrar;  
+	private Person currentIceConvenor;
+ 
 	@ManagedProperty(value="#{scahaBean}")
     private ScahaBean scaha;
 	
@@ -61,7 +68,7 @@ public class ClubBean implements Serializable,  MailableObject {
 	
 	//
 	// Class Level Variables
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	
 	//
@@ -100,8 +107,8 @@ public class ClubBean implements Serializable,  MailableObject {
 	        db.free();
 	        return "true";
     } 
-
-    public Club getSelectedclub(){
+	
+	public Club getSelectedclub(){
     	return selectedclub;
     }
     
@@ -276,4 +283,95 @@ public class ClubBean implements Serializable,  MailableObject {
 		// no.. 
 		return selectedTeamList;
 	}
+
+	
+	 public void setUpStaffEditing() {
+		this.setCurrentPresident(getSelectedclub().getCal().getStaffer("C-PRES"));
+		this.setCurrentRegistrar(getSelectedclub().getCal().getStaffer("C-REG"));
+		this.setCurrentIceConvenor(getSelectedclub().getCal().getStaffer("C-ICE"));
+	 }
+	 
+	 @SuppressWarnings("unchecked")
+	 public List<Person> completePerson(String query) {  
+    	if (query.length() > 2) {
+    		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    		PersonList pl = null;
+			try {
+				pl = PersonList.NewPersonListFactory(db, query);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			db.free();
+			return (List<Person>) pl.getWrappedData();
+    	}
+    	return null;
+		
+	 } 
+	 
+	 /**
+	 * This saves the Club object and along with it.. any changes
+	 * @return
+	 */
+	public String saveStaff() {  
+	        FacesMessage message =  
+	            new FacesMessage(FacesMessage.SEVERITY_INFO, "Club " + getSelectedclub().getClubname() + " has been saved", null);  
+	        FacesContext.getCurrentInstance().addMessage(null, message);  
+	        ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+//		        try {
+//		        	
+//		        	//
+//		        	// Save the staff for the club!
+//		        	//
+//					
+//				} catch (SQLException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+	        db.free();
+	        return "true";
+    }
+
+	/**
+	 * @return the currentIceConvenor
+	 */
+	public Person getCurrentIceConvenor() {
+		return currentIceConvenor;
+	}
+
+	/**
+	 * @param currentIceConvenor the currentIceConvenor to set
+	 */
+	public void setCurrentIceConvenor(Person currentIceConvenor) {
+		this.currentIceConvenor = currentIceConvenor;
+	}
+
+	/**
+	 * @return the currentPresident
+	 */
+	public Person getCurrentPresident() {
+		return currentPresident;
+	}
+
+	/**
+	 * @param currentPresident the currentPresident to set
+	 */
+	public void setCurrentPresident(Person currentPresident) {
+		this.currentPresident = currentPresident;
+	}
+
+	/**
+	 * @return the currentRegistrar
+	 */
+	public Person getCurrentRegistrar() {
+		return currentRegistrar;
+	}
+
+	/**
+	 * @param currentRegistrar the currentRegistrar to set
+	 */
+	public void setCurrentRegistrar(Person currentRegistrar) {
+		this.currentRegistrar = currentRegistrar;
+	} 
+
 }
