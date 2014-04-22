@@ -347,15 +347,23 @@ public class ClubBean implements Serializable,  MailableObject {
 		        }
 	
 		        if (curReg == null && this.currentRegistrar != null) { 
+		        	LOGGER.info("Curr Registrar is null.. selected Registrar is NOT");
 		        	db.updateClubRegistrar(pb.getProfile(),this.selectedclub, curReg, this.currentRegistrar);
 		        } else if (curReg != null && curReg.ID != this.currentRegistrar.ID) {
+		        	LOGGER.info("Curr Registrar is NOT null.. selected Registrar and cur Registrar are different");
 		        	db.updateClubRegistrar(pb.getProfile(),this.selectedclub, curReg, this.currentRegistrar);
+		        } else {
+		        	LOGGER.info("Could Not tell if the Registrar changed");
 		        }
 	
 		        if (curIce == null && this.currentIceConvenor != null) { 
+		        	LOGGER.info("Curr IceMan is null.. selected IceMan is NOT");
+	        	db.updateClubIceConvenor(pb.getProfile(),this.selectedclub, curIce, this.currentIceConvenor);
+		        } else if (curIce != null && curIce.ID != this.currentIceConvenor.ID) {
+		        	LOGGER.info("Curr IceMan is NOT null.. selected IceMan and cur IceMan are different");
 		        	db.updateClubIceConvenor(pb.getProfile(),this.selectedclub, curIce, this.currentIceConvenor);
-		        } else if (curPres != null && curIce.ID != this.currentIceConvenor.ID) {
-		        	db.updateClubIceConvenor(pb.getProfile(),this.selectedclub, curIce, this.currentIceConvenor);
+		        } else {
+		        	LOGGER.info("Could Not tell if the Ice Man changed");
 		        }
 	        
 		        //
@@ -368,14 +376,15 @@ public class ClubBean implements Serializable,  MailableObject {
 				List<ClubAdmin> lca = (List<ClubAdmin>)this.selectedclub.getCal().getWrappedData();
 				lca.clear();
 				PreparedStatement psCa = db.prepareStatement("call scaha.getClubAdminInfo(?)");
+				LOGGER.info("Reloading the Club Staff Information Back to the Object");
 				this.selectedclub.setCal(ClubAdminList.NewClubAdminListFactory(pb.getProfile(), psCa, selectedclub));
 				psCa.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} finally {
+		        db.free();
 			}
-	        db.free();
-	        
 	        
 	        //
 	        // now we need to send out e-mails to all effected partied!!
