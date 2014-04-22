@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
@@ -26,6 +27,8 @@ import org.primefaces.model.StreamedContent;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Club;
+import com.scaha.objects.ClubAdmin;
+import com.scaha.objects.ClubAdminList;
 import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Person;
@@ -314,21 +317,69 @@ public class ClubBean implements Serializable,  MailableObject {
 	 * @return
 	 */
 	public String saveStaff() {  
-	        FacesMessage message =  
-	            new FacesMessage(FacesMessage.SEVERITY_INFO, "Club " + getSelectedclub().getClubname() + " has been saved", null);  
-	        FacesContext.getCurrentInstance().addMessage(null, message);  
+		
 	        ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-//		        try {
-//		        	
-//		        	//
-//		        	// Save the staff for the club!
-//		        	//
-//					
-//				} catch (SQLException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+	        
+	        //
+	        // ok.. we track three Club Staff Positions right now!
+	        // so. we have to see if they have changed or not.. 
+	        // if they have changed.. we save
+	        // if they are the same.. do nothing
+	        
+	        Person curPres = getSelectedclub().getCal().getStaffer("C-PRES");
+	        Person curReg = getSelectedclub().getCal().getStaffer("C-REG");
+	        Person curIce = getSelectedclub().getCal().getStaffer("C-ICE");
+	       
+	        try {
+
+		        //
+		        // There is a much more general way to do this.. but we do not have time.. and we need to be non abstract
+		        // to make support easier.
+		        //
+		        if (curPres == null && this.currentPresident != null) { 
+		        	LOGGER.info("Curr President is null.. selected president is NOT");
+		        	db.updateClubPresident(pb.getProfile(),this.selectedclub, curPres, this.currentPresident);
+		        } else if (curPres != null && curPres.ID != this.currentPresident.ID) {
+		        	LOGGER.info("Curr President is NOT null.. selected president and cur president are different");
+		        	db.updateClubPresident(pb.getProfile(),this.selectedclub, curPres, this.currentPresident);
+		        } else {
+		        	LOGGER.info("Could Not tell if the president changed");
+		        }
+	
+		        if (curReg == null && this.currentRegistrar != null) { 
+		        	db.updateClubRegistrar(pb.getProfile(),this.selectedclub, curReg, this.currentRegistrar);
+		        } else if (curReg != null && curReg.ID != this.currentRegistrar.ID) {
+		        	db.updateClubRegistrar(pb.getProfile(),this.selectedclub, curReg, this.currentRegistrar);
+		        }
+	
+		        if (curIce == null && this.currentIceConvenor != null) { 
+		        	db.updateClubIceConvenor(pb.getProfile(),this.selectedclub, curIce, this.currentIceConvenor);
+		        } else if (curPres != null && curIce.ID != this.currentIceConvenor.ID) {
+		        	db.updateClubIceConvenor(pb.getProfile(),this.selectedclub, curIce, this.currentIceConvenor);
+		        }
+	        
+		        //
+		        // Wait.. we need to get updated the ClubAdmin section of the global Club List here!
+		        //
+		        //
+		        // Crude but effective
+		        //
+		        @SuppressWarnings("unchecked")
+				List<ClubAdmin> lca = (List<ClubAdmin>)this.selectedclub.getCal().getWrappedData();
+				lca.clear();
+				PreparedStatement psCa = db.prepareStatement("call scaha.getClubAdminInfo(?)");
+				this.selectedclub.setCal(ClubAdminList.NewClubAdminListFactory(pb.getProfile(), psCa, selectedclub));
+				psCa.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	        db.free();
+	        
+	        
+	        //
+	        // now we need to send out e-mails to all effected partied!!
+	        //
 	        return "true";
     }
 

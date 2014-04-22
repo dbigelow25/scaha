@@ -12,6 +12,10 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 import com.gbli.context.ContextManager;
+import com.scaha.objects.Club;
+import com.scaha.objects.Person;
+import com.scaha.objects.Profile;
+
 import java.sql.PreparedStatement;
 import org.w3c.dom.ls.LSException;
 
@@ -29,6 +33,7 @@ public class ScahaDatabase extends Database {
 	public static String c_sp_profile = "Call scaha.profile(?,?)";
 	public static String c_sp_actionlist = "Call scaha.getActionTree(?)";
 	public static String c_PS_CHECK_FOR_USER = "Call scaha.checkForUser(?)";
+	public static String cs_UPDATE_CLUB_STAFFER = "call scaha.updateClubStaffer(?,?,?,?)";
 	
 	
 	public ScahaDatabase(int _iId, String _sDriver, String _sURL, String _sUser, String _sPwd) {
@@ -146,6 +151,40 @@ public class ScahaDatabase extends Database {
 		cs.close();
 		return strAnswer.equals("Y");
 		
+	}
+
+	public void updateClubPresident(Profile profile, Club _c, Person _oldPrez, Person _newPrez) throws SQLException {
+		
+		CallableStatement cs = this.prepareCall(ScahaDatabase.cs_UPDATE_CLUB_STAFFER);
+		cs.setInt(1, _c.ID);
+		cs.setInt(2, (_oldPrez == null ? 0 :_oldPrez.ID));
+		cs.setInt(3, _newPrez.ID);
+		cs.setString(4,"C-PRES");
+		cs.execute();
+		cs.close();
+		// TODO Auto-generated method stub
+	}
+
+	public void updateClubRegistrar(Profile profile, Club _c, Person _oldPrez, Person _newPrez) throws SQLException {
+		
+		CallableStatement cs = this.prepareCall(ScahaDatabase.cs_UPDATE_CLUB_STAFFER);
+		cs.setInt(1, _c.ID);
+		cs.setInt(2, (_oldPrez == null ? 0 :_oldPrez.ID));
+		cs.setInt(3, _newPrez.ID);
+		cs.setString(4,"C-REG");
+		cs.execute();
+		cs.close();
+		// TODO Auto-generated method stub
+	}
+
+	public void updateClubIceConvenor(Profile profile, Club _c, Person _oldPrez, Person _newPrez) throws SQLException {
+		CallableStatement cs = this.prepareCall(ScahaDatabase.cs_UPDATE_CLUB_STAFFER);
+		cs.setInt(1, _c.ID);
+		cs.setInt(2, (_oldPrez == null ? 0 :_oldPrez.ID));
+		cs.setInt(3, _newPrez.ID);
+		cs.setString(4,"C-ICE");
+		cs.execute();
+		cs.close();
 	}
 }
 

@@ -53,8 +53,7 @@
     	            #{peep.getsPhone()}
         	    </p:column>
 	            <p:column>
-					<h:outputLink value="mailto:#{peep.getsEmail()}">
-    					<f:param name="subject" value="iSCAHA Related" />
+					<h:outputLink value="mailto:#{peep.getsEmail()}?subject=iScaha%20Related">
    						 <h:outputText style="font-size: 12px;" value=" #{peep.getsEmail()}" />
 					</h:outputLink>
         	    </p:column>
@@ -102,8 +101,7 @@
     	            <h:outputText style="font-size: 10px;" value="#{peep.getsPhone()}" />
         	    </p:column>
 	            <p:column headerText="e-mail" style="font-size: 10px;">
-					<h:outputLink value="mailto:#{peep.getsEmail()}">
-    					<f:param name="subject" value="iSCAHA Related" />
+					<h:outputLink value="mailto:#{peep.getsEmail()}?subject=iScaha%20Related">
    						 <h:outputText style="font-size: 10px;" value=" #{peep.getsEmail()}" />
 					</h:outputLink>
         	    </p:column>
@@ -198,7 +196,7 @@
                    #{p.sEmail}
                 </p:column>    
 		  	</p:autoComplete>          	
-		  	<p:outputLabel style="font-size: 10pt;" value="Ice Convenier:" />
+		  	<p:outputLabel style="font-size: 10pt;" value="Ice Convener:" />
 			<p:autoComplete value="#{clubBean.currentIceConvenor}" id="basicPojoIce" completeMethod="#{clubBean.completePerson}"  
              var="p" itemLabel="#{p.sFirstName} #{p.sLastName}" itemValue="#{p}" converter="personConverter" forceSelection="true">
                <p:column style="width:200px;">  
@@ -213,7 +211,8 @@
            	<p:outputLabel style="font-size: 10pt;" value="Director of Managers:" />
            	<p:inputText style="font-size: 10pt;" value=""/>
     </p:panelGrid>  
-    <p:commandButton value="Save with success" actionListener="#{clubBean.saveStaff()}"  style="margin-top:10px;" icon="ui-icon-disk" oncomplete="peepdlg.hide()" />  
+    <p:commandButton value="Save with success" update="peeps" actionListener="#{clubBean.saveStaff()}"  style="margin-top:10px;" icon="ui-icon-disk" oncomplete="peepdlg.hide()" />  
+    <p:commandButton value="Cancel" reset="true" style="margin-top:10px;" icon="ui-icon-disk" oncomplete="peepdlg.hide()" />  
 
 	</p:dialog>
 
