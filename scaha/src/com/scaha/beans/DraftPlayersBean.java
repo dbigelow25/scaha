@@ -419,24 +419,24 @@ public class DraftPlayersBean implements Serializable {
     
     public void addtoDelinquency(){
     	Result tempResult = selectedplayer;
-    	String selectedPlayerid = tempResult.getIdplayer();
+    	int selectedPlayerid = Integer.parseInt(tempResult.getIdplayer());
     	String selectedPlayername = tempResult.getPlayername();
     	
+    	LOGGER.info("Adding to D-List: playerid=" + selectedPlayerid + " ,selectedPlayerName=" + selectedPlayername);
     	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	
     	try{
-
+    		
     		CallableStatement cs = db.prepareCall("CALL scaha.addToDelinquency(?)");
-			cs.setInt("iplayerid",Integer.parseInt(selectedPlayerid));
-		    cs.executeQuery();
-			db.commit();		
-    		db.cleanup();
+			cs.setInt(1,selectedPlayerid);
+		    cs.executeUpdate();
+		    cs.close();
     		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"", selectedPlayername + "has been added to the Delinquency List"));
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN Searching FOR " + this.searchcriteria);
     		e.printStackTrace();
-    		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"", "Unable to add " + selectedPlayername + "to the Delinquency List.  The player is not rostered on a team"));
+    		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"", "Due to a SQL System error, we were unable to add " + selectedPlayername + "to the Delinquency List."));
     	} finally {
     		//
     		// always clean up after yourself..
