@@ -36,22 +36,36 @@
 	<p:layout id="layout" style="min-width:800px;min-height:700px;">
  		<p:layoutUnit id="left" position="west" size="200" resizable="false" closable="false" collapsible="false" header="Team Roster" >
 			<h:form id="rosterform">		
-			<p:dataTable id="teamroster" rowKey="#{Player.getIdplayer()}" var="Player" value="#{managerBean.getPlayerdatamodel()}" selection="#{managerBean.selectedplayer}" selectionMode="single" >
-	            <p:column headerText="#">  
-	            	<h:outputText value="#{Player.getJerseynumber()}" />
-		           <!-- <p:cellEditor>  
-	                   	<f:facet name="output"><h:outputText value="#{Player.getJerseynumber()}" /></f:facet>  
-	                   	<f:facet name="input"><p:inputText id="jerseyInput#{Player.getIdplayer()}" value="#{Player.getJerseynumber()}" style="width:25px"/></f:facet>  
-	               </p:cellEditor> -->
+			<p:dataTable id="playersearchresult" var="rosteredit" value="#{managerBean.getRostereditdatamodel()}" selection="#{managerBean.selectedplayer}"  editable="true" editMode="cell">
+                
+            	<p:ajax event="cellEdit" actionListener="#{managerBean.onCellEdit(event)}" />
+                
+                <p:column headerText="#" style="width:25px;">  
+	               <p:cellEditor>  
+	                   	<f:facet name="output"><h:outputText value="#{rosteredit.jerseynumber}" /></f:facet>  
+	                   	<f:facet name="input"><p:inputText id="jerseyInput" value="#{rosteredit.jerseynumber}" style="width:25px"/></f:facet>  
+	               </p:cellEditor>
 		        </p:column>  
 		        <p:column headerText="Last Name">  
-		        	<h:outputText value="#{Player.getLastname()}" />  
+		        	<h:outputText value="#{rosteredit.getLastname()}" />  
 		        </p:column>
 		        <p:column headerText="First Name">  
-		        	<h:outputText value="#{Player.getFirstname()}" />  
+		        	<h:outputText value="#{rosteredit.getFirstname()}" />  
 		        </p:column>
-		    </p:dataTable>
-		    </h:form>
+			          
+			 </p:dataTable>
+			 <p:dataTable id="coachesresult" var="rosteredit" value="#{managerBean.getRostercoachdatamodel()}" >
+                <p:column style="width:25px;">  
+	                   	<h:outputText value="#{rosteredit.jerseynumber}" />  
+	            </p:column>  
+		        <p:column>  
+		        	<h:outputText value="#{rosteredit.getLastname()}" />  
+		        </p:column>
+		        <p:column>  
+		        	<h:outputText value="#{rosteredit.getFirstname()}" />  
+		        </p:column>
+			 </p:dataTable> 
+			 </h:form>
 		</p:layoutUnit>
 		
 		<p:layoutUnit id="center" position="center" header="Games">

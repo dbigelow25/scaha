@@ -4,10 +4,7 @@ import java.io.Serializable;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Vector;
 import java.util.logging.Logger;
-
-import org.primefaces.event.CellEditEvent;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
@@ -20,7 +17,7 @@ public class RosterEdit extends ScahaObject implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
-	
+	transient private ResultSet rs = null;
 	
 	private String firstname = null;
 	private String lastname = null;
@@ -38,10 +35,39 @@ public class RosterEdit extends ScahaObject implements Serializable {
     
     public void setJerseynumber(String fname){
     	if (fname!=oldjerseynumber){
-    		jerseynumber=fname;
-    	}	
     		//need to set and execute db call here
-    		 else {
+    		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+        	
+        	try{
+        		//first get team name
+        		CallableStatement cs = db.prepareCall("CALL scaha.updateJerseyNumber(?,?)");
+    			cs.setInt("rosterid", Integer.parseInt(this.IDplayer));
+    			cs.setString("newjerseynumber", fname);
+    		    cs.executeQuery();
+    			db.commit();
+    		    db.cleanup();
+        		
+        		LOGGER.info("We have updated the jersey number rosterid:" + this.IDplayer + "jersey number: " + fname);
+    			
+        		
+        	} catch (SQLException e) {
+        		// TODO Auto-generated catch block
+        		LOGGER.info("ERROR IN updating jersey number");
+        		e.printStackTrace();
+        		db.rollback();
+        	} finally {
+        		//
+        		// always clean up after yourself..
+        		//
+        		db.free();
+        	}
+    		
+    		//finaly set the old name to match what we saved in the db
+    		jerseynumber=fname;
+    		oldjerseynumber=fname;
+    	}	
+    		
+    	 else {
     		jerseynumber=fname;
     	}
     	

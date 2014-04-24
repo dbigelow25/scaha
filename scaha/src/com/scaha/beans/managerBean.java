@@ -42,6 +42,7 @@ public class managerBean implements Serializable {
 
 	transient private ResultSet rs = null;
 	private List<RosterEdit> players = null;
+	private List<RosterEdit> coaches = null;
 	private Integer teamid = null;
 	private String teamname = null;
 	
@@ -51,7 +52,8 @@ public class managerBean implements Serializable {
     private TempGameDataModel TempGameDataModel = null;
     private TournamentGameDataModel TournamentGameDataModel = null;
     private RosterEditDataModel RosterEditDataModel = null;
-	private TempGame selectedgame = null;
+    private RosterEditDataModel RosterCoachDataModel = null;
+    private TempGame selectedgame = null;
 	private TournamentGame selectedtournamentgame = null;
 	private Integer idclub = null;
 	private Integer profileid = 0;
@@ -338,8 +340,18 @@ public class managerBean implements Serializable {
     	RosterEditDataModel = odatamodel;
     }
     
+    public RosterEditDataModel getRostercoachdatamodel(){
+    	return RosterCoachDataModel;
+    }
+    
+    public void setRostercoachdatamodel(RosterEditDataModel odatamodel){
+    	RosterCoachDataModel = odatamodel;
+    }
+    
+    
 	public void getRoster(){
 		List<RosterEdit> templist = new ArrayList<RosterEdit>();
+		List<RosterEdit> templist2 = new ArrayList<RosterEdit>();
 		
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	
@@ -359,8 +371,8 @@ public class managerBean implements Serializable {
 			rs.close();
 			db.cleanup();
     		
-    		//next get roster
-			cs = db.prepareCall("CALL scaha.getRosterByTeamId(?)");
+    		//next get player roster
+			cs = db.prepareCall("CALL scaha.getRosterPlayersByTeamID(?)");
 			cs.setInt("teamid", this.teamid);
 		    rs = cs.executeQuery();
 			
@@ -385,6 +397,33 @@ public class managerBean implements Serializable {
 				LOGGER.info("We have results for team roster");
 			}
 			rs.close();
+			
+			cs = db.prepareCall("CALL scaha.getRosterCoachesByTeamID(?)");
+			cs.setInt("teamid", this.teamid);
+		    rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					String playerid = rs.getString("idroster");
+					String fname = rs.getString("fname");
+					String lname = rs.getString("lname");
+					String jerseynumber = rs.getString("jerseynumber");
+					
+					
+					RosterEdit player = new RosterEdit();
+					player.setIdplayer(playerid);
+					player.setFirstname(fname);
+					player.setLastname(lname);
+					player.setOldjerseynumber(jerseynumber);
+					player.setJerseynumber(jerseynumber);
+					
+					templist2.add(player);
+				}
+				LOGGER.info("We have results for team roster");
+			}
+			rs.close();
+			
 			db.cleanup();
     		
     	} catch (SQLException e) {
@@ -400,7 +439,9 @@ public class managerBean implements Serializable {
     	}
 		
     	setPlayers(templist);
+    	setCoaches(templist2);
     	RosterEditDataModel = new RosterEditDataModel(players);
+    	RosterCoachDataModel = new RosterEditDataModel(coaches);
 	}
     
     public List<RosterEdit> getPlayers(){
@@ -410,6 +451,15 @@ public class managerBean implements Serializable {
 	public void setPlayers(List<RosterEdit> list){
 		players = list;
 	}
+	
+	public List<RosterEdit> getCoaches(){
+		return coaches;
+	}
+	
+	public void setCoaches(List<RosterEdit> list){
+		coaches = list;
+	}
+	
 	
 	 public void editGame(TempGame sgame) {  
 	        String oldValue = sgame.getHome();

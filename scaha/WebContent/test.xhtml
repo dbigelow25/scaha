@@ -26,7 +26,7 @@
 			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="false" /> 	
 			<p:dataTable id="playersearchresult" var="rosteredit" value="#{managerBean.getRostereditdatamodel()}" selection="#{managerBean.selectedplayer}"  editable="true" editMode="cell">
                 
-                <p:ajax event="cellEdit" actionListener="#{managerBean.onCellEdit(event)}" />
+            	<p:ajax event="cellEdit" actionListener="#{managerBean.onCellEdit(event)}" />
                 
                 <p:column headerText="#">  
 	               <p:cellEditor>  
@@ -41,9 +41,19 @@
 		        	<h:outputText value="#{rosteredit.getFirstname()}" />  
 		        </p:column>
 			          
-			    </p:dataTable>
+			 </p:dataTable>
+			 <p:dataTable id="coachesresult" var="rosteredit" value="#{managerBean.getRostercoachdatamodel()}" >
+                <p:column>  
+	                   	<h:outputText value="#{rosteredit.jerseynumber}" />  
+	            </p:column>  
+		        <p:column>  
+		        	<h:outputText value="#{rosteredit.getLastname()}" />  
+		        </p:column>
+		        <p:column>  
+		        	<h:outputText value="#{rosteredit.getFirstname()}" />  
+		        </p:column>
+			 </p:dataTable>   
 			    
-			    <p:commandButton id="generateLoi" value="Add to Delinquency List" actionListener="#{managerBean.onCellEdit()}" ajax="true"/>
 				</h:form>
 			
 </ui:define>
