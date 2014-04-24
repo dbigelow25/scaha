@@ -206,4 +206,12 @@ public class Club extends ScahaObject implements Serializable {
 		Venues = venues;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return this.getClubname();
+	}
+	
 }

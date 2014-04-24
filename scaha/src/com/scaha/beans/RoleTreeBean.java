@@ -71,7 +71,9 @@ public class RoleTreeBean implements Serializable {
      * @param _node
      */
     public void addChild(Role _rl, TreeNode _node) {
-    	TreeNode node = new CheckboxTreeNode(_rl.getName() + " - " + _rl.getDesc(), _node); 
+    	TreeNode node = new CheckboxTreeNode(_rl, _node); 
+    	
+    	
     	for (int i=0;i < _rl.getSize();i++) {
 			Role rl = (Role)_rl.getAt(i);
 			addChild(rl, node);

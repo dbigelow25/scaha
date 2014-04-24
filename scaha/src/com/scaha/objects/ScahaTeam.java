@@ -191,19 +191,6 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 		ScheduleTags = scheduleTags;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "ScahaTeam [id=" + ID + ", TeamClub=" + TeamClub + ", TeamDivision="
-				+ TeamDivision + ", TeamSkillLevel=" + TeamSkillLevel
-				+ ", TeamName=" + TeamName + ", TeamGender=" + TeamGender
-				+ ", SeasonTag=" + SeasonTag + ", SkillLevelTag="
-				+ SkillLevelTag + ", DivisionTag=" + DivisionTag
-				+ ", ScheduleTags=" + ScheduleTags + ", IsExhibition="
-				+ IsExhibition + "]";
-	}
 
 	/**
 	 * @return the coachs
@@ -231,6 +218,14 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 	 */
 	public void setManagers(ManagerList managers) {
 		Managers = managers;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return this.getTeamName() + " " + this.getDivisionTag() + " " + this.getSkillLevelTag();
 	}
 	
 		

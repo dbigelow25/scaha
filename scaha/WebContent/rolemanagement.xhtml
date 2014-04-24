@@ -18,17 +18,27 @@
   
     <p:growl id="messages" showDetail="true" escape="false"/>  
   
-    <p:tree value="#{roletreeBean.root}" var="node"  
-            selectionMode="checkbox"  
-            selection="#{roletreeBean.selectedNodes}">  
+    <p:tree value="#{roletreeBean.root}" var="node"  selectionMode="checkbox" selection="#{roletreeBean.selectedNodes}">  
   
         <p:treeNode>  
             <h:outputText value="#{node}" />  
         </p:treeNode>  
     </p:tree>  
+    
+      <p:commandButton value="Display Selected" update="messages" style="margin:20px 0 20px 0;"  
+                    actionListener="#{roletreeBean.displaySelectedMultiple}" id="btnDisplay"/>  
+  
+
+    <p:tree value="#{mailTreeBean.root}" var="node"  selectionMode="checkbox" selection="#{mailTreeBean.selectedNodes}">  
+  
+        <p:treeNode>  
+            <h:outputText value="#{node}" />  
+        </p:treeNode>  
+    </p:tree>  
+
   
     <p:commandButton value="Display Selected" update="messages" style="margin:20px 0 20px 0;"  
-                    actionListener="#{roletreeBean.displaySelectedMultiple}" id="btnDisplay"/>  
+                    actionListener="#{mailTreeBean.displaySelectedMultiple}" id="btnClubDisplay"/>  
   
 <p:growl id="msg" showDetail="true" escape="false" />  
   

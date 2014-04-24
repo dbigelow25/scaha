@@ -32,13 +32,13 @@
 	<h:form>
 			<p:panel id ="panel" header="2014 Delinquency List:">
 				<p:dataTable id="listofplayers" var="player" rowKey="#{player.IDplayer}" value="#{delinquencyBean.getPlayerdatamodel()}" selection="#{delinquencyBean.selectedplayer}" paginator="true" rows="10" autoupdate="false">
-                	<p:column filterBy="firstname" filterMatchMode="contains" filterStyle="width:50px" headerText="First Name">  
+                	<p:column filterBy="firstname" filterMatchMode="contains" filterStyle="width:100px" headerText="First Name">  
 			            <h:outputText value="#{player.getFirstname()}" />  
 			        </p:column>  
-			        <p:column filterBy="lastname" filterMatchMode="contains" filterStyle="width:50px" headerText="Last Name">  
+			        <p:column sortBy="lastname" filterBy="lastname" filterMatchMode="contains" filterStyle="width:100px" headerText="Last Name">  
 			            <h:outputText value="#{player.getLastname()}" />  
 			        </p:column>  
-			        <p:column headerText="2014 Team">  
+			        <p:column sortBy="currentteam" filterBy="currentteam" headerText="2014 Team" filterMatchMode="contains"  filterStyle="width:150px">   
 			            <h:outputText value="#{player.getCurrentteam()}" />  
 			        </p:column>
 			        <p:column headerText="DOB">  
