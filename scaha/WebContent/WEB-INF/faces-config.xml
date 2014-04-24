@@ -45,6 +45,7 @@
 		<managed-bean-class>com.scaha.beans.DraftCoachesBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
+	
 	<managed-bean>
 		<managed-bean-name>loiBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.loiBean</managed-bean-class>

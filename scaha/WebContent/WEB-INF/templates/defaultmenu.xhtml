@@ -50,6 +50,7 @@
 		<p:menuitem style="font-size: 10pt;width:225px;" value="Manage Rosters" url="managerosters.xhtml" rendered="#{adminnavigationBean.scaharegistrar}"/>
 		<p:menuitem style="font-size: 10pt;width:225px;" value="View D-List" url="sessionnavigation.xhtml?pagecode=viewdelinquencylist" rendered="#{adminnavigationBean.scaharegistrar}"/>
 		<p:menuitem style="font-size: 10pt;width:225px;" value="View Releases" url="reviewreleasenavigation.xhtml?pagecode=confirmrelease" rendered="#{adminnavigationBean.scaharegistrar}"/>
+		<p:menuitem style="font-size: 10pt;width:225px;" value="Manager Portal(Not PR)" url="managerportal.xhtml" rendered="#{profileBean.isSuperUser()}"/>
    </p:menuButton> 
 </p:toolbarGroup>
 <p:toolbarGroup align="right" rendered="#{not empty profileBean.getProfile()}"> 

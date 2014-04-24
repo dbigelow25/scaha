@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.primefaces.event.CellEditEvent;
+
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
@@ -51,8 +53,7 @@ public class Player extends ScahaObject implements Serializable {
     	jerseynumber=fname;
     } 
 	
-	
-	public String getUpdated(){
+    public String getUpdated(){
     	return updated;
     }
     

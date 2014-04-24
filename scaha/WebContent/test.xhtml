@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui" 
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+<f:view contentType="text/html">
+<h:head>
+	 <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+     </f:facet>
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{profileBean.verifySU()}" />
+	</f:metadata>
+</h:head>
+<h:body>	
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+<ui:define name="content">
+
+			<h:form id="rosterform">	
+			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="false" /> 	
+			<p:dataTable id="playersearchresult" var="rosteredit" value="#{managerBean.getRostereditdatamodel()}" selection="#{managerBean.selectedplayer}"  editable="true" editMode="cell">
+                
+                <p:ajax event="cellEdit" actionListener="#{managerBean.onCellEdit(event)}" />
+                
+                <p:column headerText="#">  
+	               <p:cellEditor>  
+	                   	<f:facet name="output"><h:outputText value="#{rosteredit.jerseynumber}" /></f:facet>  
+	                   	<f:facet name="input"><p:inputText id="jerseyInput" value="#{rosteredit.jerseynumber}" style="width:25px"/></f:facet>  
+	               </p:cellEditor>
+		        </p:column>  
+		        <p:column headerText="Last Name">  
+		        	<h:outputText value="#{rosteredit.getLastname()}" />  
+		        </p:column>
+		        <p:column headerText="First Name">  
+		        	<h:outputText value="#{rosteredit.getFirstname()}" />  
+		        </p:column>
+			          
+			    </p:dataTable>
+			    
+			    <p:commandButton id="generateLoi" value="Add to Delinquency List" actionListener="#{managerBean.onCellEdit()}" ajax="true"/>
+				</h:form>
+			
+</ui:define>
+</ui:composition>
+</h:body>
+</f:view>
+</html>

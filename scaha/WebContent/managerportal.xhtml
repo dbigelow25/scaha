@@ -1,76 +1,149 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<ui:composition template="/WEB-INF/templates/layout.xhtml"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:pe="http://primefaces.org/ui/extensions">
-	
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui" 
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+<f:view contentType="text/html">
+<h:head>
+	 <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+     </f:facet>
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{profileBean.verifySU()}" />
+	</f:metadata>
+</h:head>
+<h:body>	
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
 <ui:define name="content">
 
-<h:form>
-<table width="100%">
-	<tr>
-		<td>
-			<p:graphicImage id="managerlogo" value="#{clubBean.getClubLogoByParmId()}"  >
-				<f:param id = "target" name="target" value="#{managerBean.getIdclub()}" />
-			</p:graphicImage>
-		</td>
-		<td valign="middle" align="left">- <h3>Bantam A - Manager Portal</h3></td>
-	</tr>
-</table>
-  
-<p:accordionPanel activeIndex="0" >
-	<p:tab title="SCAHA Games" >
-		<div align="center">Your games needing action are listed below.  You will be responsible to provide the details and upload the scoresheet for your home games.</div>
-		<p:dataTable id="scahagames" var="TempGame" value="#{managerBean.getTempGamedatamodel()}" selection="#{managerBean.selectedgame}" paginator="true" rows="10" autoupdate="false">
-            <f:facet name="header">  
-	        	2014-2015 SCAHA GAMES
-	        </f:facet> 
-	         <p:column headerText="Date">  
-	            <h:outputText value="#{TempGame.getDate()}" />  
-	        </p:column>  
-	        <p:column headerText="Visiting Team">  
-	        	<p:graphicImage id="logoimage1" value="#{clubBean.getClubLogoByParmId()}"  >
-            		<f:param id = "target" name="target" value="1" />
-		 		</p:graphicImage> 
-	            <h:outputText value="#{TempGame.getVisitor()}" />  
-	        </p:column>
-	        <p:column headerText="Score">  
-	        	<h:outputText value="#{TempGame.getAwayscore()}" />  
-	        </p:column>
-	        <p:column headerText="Home Team">  
-	        	<p:graphicImage id="logoimage1" value="#{clubBean.getClubLogoByParmId()}"  >
-	            		<f:param id = "target" name="target" value="2" />
-			 	</p:graphicImage> 
-	            <h:outputText value="#{TempGame.getHome()}" />  
-	        </p:column>
-	        <p:column headerText="Score">  
-	        	<!-- need to add image object here -->
-	            <h:outputText value="#{TempGame.getHomescore()}" />  
-	        </p:column>
-	        <p:column headerText="Time">  
-	            <h:outputText value="#{TempGame.getTime()}" />  
-	        </p:column>
-	        <p:column headerText="Location">  
-	            <h:outputText value="#{TempGame.getLocation()}" />  
-	        </p:column>
-	        <p:column headerText="">
-	        	<p:splitButton id="game" icon="ui-icon-folder-open"  >
-			        <p:menuitem value="Add Details" action="#{playerreleaseBean.startPermanentRelease(testgame)}" />
-			        <p:menuitem value="Add Scoresheet" action="#{playerreleaseBean.startTemporaryRelease(testgame)}" />
-			    </p:splitButton>
-	        </p:column>  
-	    </p:dataTable>
+	<table width="100%">
+		<tr>
+			<td>
+				<p:graphicImage width="50" height="50" id="managerlogo" value="#{clubBean.getClubLogoByParmId()}"  >
+					<f:param name="target" value="#{managerBean.getIdclub()}" />
+				</p:graphicImage>
+			</td>
+			<td valign="middle" align="left">- <h3><h:outputText value="#{managerBean.teamname}" /> - Manager Portal</h3></td>
+		</tr>
+	</table>
 	
-	</p:tab>
-	
-	<p:tab title="Tournament Games" >Tournament games</p:tab>
-	<p:tab title="Exhibition Games" >scaha games</p:tab>
-</p:accordionPanel>	
-</h:form>
+	<p:layout id="layout" style="min-width:800px;min-height:700px;">
+ 		<p:layoutUnit id="left" position="west" size="200" resizable="false" closable="false" collapsible="false" header="Team Roster" >
+			<h:form id="rosterform">		
+			<p:dataTable id="teamroster" rowKey="#{Player.getIdplayer()}" var="Player" value="#{managerBean.getPlayerdatamodel()}" selection="#{managerBean.selectedplayer}" selectionMode="single" >
+	            <p:column headerText="#">  
+	            	<h:outputText value="#{Player.getJerseynumber()}" />
+		           <!-- <p:cellEditor>  
+	                   	<f:facet name="output"><h:outputText value="#{Player.getJerseynumber()}" /></f:facet>  
+	                   	<f:facet name="input"><p:inputText id="jerseyInput#{Player.getIdplayer()}" value="#{Player.getJerseynumber()}" style="width:25px"/></f:facet>  
+	               </p:cellEditor> -->
+		        </p:column>  
+		        <p:column headerText="Last Name">  
+		        	<h:outputText value="#{Player.getLastname()}" />  
+		        </p:column>
+		        <p:column headerText="First Name">  
+		        	<h:outputText value="#{Player.getFirstname()}" />  
+		        </p:column>
+		    </p:dataTable>
+		    </h:form>
+		</p:layoutUnit>
+		
+		<p:layoutUnit id="center" position="center" header="Games">
+			<p:accordionPanel activeIndex="1" >
+				<p:tab title="SCAHA Games" >
+					<h:form id="scahagameform">
+					<div align="center">Your games needing action are listed below.  You will be responsible to provide the details and upload the scoresheet for your home games.</div>
+					<p:dataTable id="scahagames" var="TempGame" value="#{managerBean.getTempGamedatamodel()}" selection="#{managerBean.selectedgame}" selectionMode="single" paginator="true" rows="10" autoupdate="false">
+			            <f:facet name="header">  
+				        	2014-2015 SCAHA GAMES
+				        </f:facet> 
+				         <p:column headerText="Date">  
+				            <h:outputText value="#{TempGame.getDate()}" />  
+				        </p:column>  
+				        <p:column headerText="Visiting Team">  
+				        	<p:graphicImage id="logoimageAway#{TempGame.getIdgame()}" width="30" height="30" value="#{clubBean.getClubLogoByParmId()}"  >
+			            		<f:param name="target" value="1" />
+					 		</p:graphicImage> 
+				            <h:outputText value="#{TempGame.getVisitor()}" />  
+				        </p:column>
+				        <p:column headerText="Score">  
+				        	<h:outputText value="#{TempGame.getAwayscore()}" />  
+				        </p:column>
+				        <p:column headerText="Home Team">  
+				        	<p:graphicImage id="logoimageHome#{TempGame.getIdgame()}" width="30" height="30" value="#{clubBean.getClubLogoByParmId()}"  >
+				            		<f:param name="target" value="2" />
+						 	</p:graphicImage> 
+				            <h:outputText value="#{TempGame.getHome()}" />  
+				        </p:column>
+				        <p:column headerText="Score">  
+				        	<!-- need to add image object here -->
+				            <h:outputText value="#{TempGame.getHomescore()}" />  
+				        </p:column>
+				        <p:column headerText="Time">  
+				            <h:outputText value="#{TempGame.getTime()}" />  
+				        </p:column>
+				        <p:column headerText="Location">  
+				            <h:outputText value="#{TempGame.getLocation()}" />  
+				        </p:column>
+				        <p:column headerText="">
+				        	<p:splitButton id="game" icon="ui-icon-folder-open"  >
+						        <p:menuitem value="Add Details" action="#{managerBean.editGame(TempGame)}" />
+						        <p:menuitem value="Add Scoresheet" action="#{playerreleaseBean.startTemporaryRelease(testgame)}" />
+						    </p:splitButton>
+				        </p:column>  
+				    </p:dataTable>
+					</h:form>
+				</p:tab>
+				
+				<p:tab title="Tournament Games" >
+					<h:form id="tourngameform">
+					<div align="left">Your tournament is coming up soon, have you received your schedule?  Input games here</div><br></br>
+					<p:dataTable id="tournamentgames" var="TournamentGame" value="#{managerBean.getTournamentgamedatamodel()}" selection="#{managerBean.selectedtournamentgame}" paginator="true" rows="10" autoupdate="false">
+			            <f:facet name="header">  
+				        	2014-2015 TOURNAMENT GAMES
+				        </f:facet> 
+				         <p:column headerText="Date">  
+				            <h:outputText value="#{TournamentGame.getDate()}" />  
+				        </p:column>  
+				        <p:column headerText="Time">  
+				            <h:outputText value="#{TournamentGame.getTime()}" />  
+				        </p:column>
+				        <p:column headerText="Opponent">  
+				        	<h:outputText value="#{TournamentGame.getOpponent()}" />  
+				        </p:column>
+				        <p:column headerText="Location">  
+				        	<h:outputText value="#{TournamentGame.getLocation()}" />  
+				        </p:column>
+				        <p:column headerText="Tournament Name">  
+				        	<h:outputText value="#{TournamentGame.getTournamentname()}" />  
+				        </p:column>
+				        <p:column headerText="Status">  
+				        	<h:outputText value="#{TournamentGame.getStatus()}" />  
+				        </p:column>
+				        <p:column headerText="">
+				        	<p:splitButton id="tourngame" icon="ui-icon-folder-open"  >
+						        <p:menuitem value="Add Details" action="#{playerreleaseBean.startPermanentRelease(testgame)}" />
+						        <p:menuitem value="Add Scoresheet" action="#{playerreleaseBean.startTemporaryRelease(testgame)}" />
+						    </p:splitButton>
+				        </p:column>  
+				    </p:dataTable>
+				    </h:form>
+				</p:tab>
+					
+				<p:tab title="Exhibition Games" >scaha games</p:tab>
+			</p:accordionPanel>				
+		</p:layoutUnit>
+		
+		
+	</p:layout>
 </ui:define>
 </ui:composition>
+</h:body>
+</f:view>
+</html>

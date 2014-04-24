@@ -32,10 +32,10 @@
 	<h:form>
 			<p:panel id ="panel" header="2014 Delinquency List:">
 				<p:dataTable id="listofplayers" var="player" rowKey="#{player.IDplayer}" rowkey="" value="#{delinquencyBean.getPlayerdatamodel()}" selection="#{delinquencyBean.selectedplayer}" paginator="true" rows="10" autoupdate="false">
-                	<p:column headerText="First Name">  
+                	<p:column filterBy="firstname" filterMatchMode="contains" filterStyle="width:50px" headerText="First Name">  
 			            <h:outputText value="#{player.getFirstname()}" />  
 			        </p:column>  
-			        <p:column headerText="Last Name">  
+			        <p:column filterBy="lastname" filterMatchMode="contains" filterStyle="width:50px" headerText="Last Name">  
 			            <h:outputText value="#{player.getLastname()}" />  
 			        </p:column>  
 			        <p:column headerText="2014 Team">  

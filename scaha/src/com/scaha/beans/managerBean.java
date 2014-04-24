@@ -1,6 +1,7 @@
 package com.scaha.beans;
 
 import java.io.Serializable;
+import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,8 +17,14 @@ import javax.faces.context.FacesContext;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
+import com.scaha.objects.Player;
+import com.scaha.objects.PlayerDataModel;
+import com.scaha.objects.RosterEdit;
+import com.scaha.objects.RosterEditDataModel;
 import com.scaha.objects.TempGame;
 import com.scaha.objects.TempGameDataModel;
+import com.scaha.objects.TournamentGame;
+import com.scaha.objects.TournamentGameDataModel;
 
 //import com.gbli.common.SendMailSSL;
 
@@ -33,9 +40,19 @@ public class managerBean implements Serializable {
 	@ManagedProperty(value="#{profileBean}")
 	private ProfileBean pb;
 
+	transient private ResultSet rs = null;
+	private List<RosterEdit> players = null;
+	private Integer teamid = null;
+	private String teamname = null;
+	
+	private RosterEdit selectedplayer = null;
 	private List<TempGame> games = null;
+	private List<TournamentGame> tournamentgames = null;
     private TempGameDataModel TempGameDataModel = null;
+    private TournamentGameDataModel TournamentGameDataModel = null;
+    private RosterEditDataModel RosterEditDataModel = null;
 	private TempGame selectedgame = null;
+	private TournamentGame selectedtournamentgame = null;
 	private Integer idclub = null;
 	private Integer profileid = 0;
 	private Boolean ishighschool = null;
@@ -46,10 +63,15 @@ public class managerBean implements Serializable {
         TempGameDataModel = new TempGameDataModel(games);
         
         idclub = 1;  
-    	this.setProfid(pb.getProfile().ID);
+        
+        this.setProfid(pb.getProfile().ID);
         getClubID();
         isClubHighSchool();
     	
+        teamid = 131;
+        
+        //Load team roster
+        getRoster();
         
         //Load SCAHA Games
         loadScahaGames();
@@ -62,6 +84,32 @@ public class managerBean implements Serializable {
     public managerBean() {  
         
     }  
+    
+    public RosterEdit getSelectedplayer(){
+    	return selectedplayer;
+    }
+    
+    public void setSelectedplayer(RosterEdit name){
+    	selectedplayer=name;
+    }
+    
+    
+    public String getTeamname(){
+    	return teamname;
+    }
+    
+    public void setTeamname(String name){
+    	teamname=name;
+    }
+    
+    
+    public Integer getTeamid(){
+    	return teamid;
+    }
+    
+    public void setTeamid(Integer id){
+    	teamid=id;
+    }
     
     public Integer getIdclub(){
     	return idclub;
@@ -82,7 +130,7 @@ public class managerBean implements Serializable {
     
     public Integer getProfid(){
     	return profileid;
-    }
+    }	
     
     public void setProfid(Integer idprofile){
     	profileid = idprofile;
@@ -94,11 +142,19 @@ public class managerBean implements Serializable {
 		return selectedgame;
 	}
 	
-	public void setSelectedteam(TempGame selectedGame){
+	public void setSelectedgame(TempGame selectedGame){
 		selectedgame = selectedGame;
 	}
     
+	public TournamentGame getSelectedtournamentgame(){
+		return selectedtournamentgame;
+	}
+	
+	public void setSelectedtournamentgame(TournamentGame selectedGame){
+		selectedtournamentgame = selectedGame;
+	}
     
+	
 	public List<TempGame> getGames(){
 		return games;
 	}
@@ -157,6 +213,14 @@ public class managerBean implements Serializable {
     	TempGameDataModel = odatamodel;
     }
 
+    
+    public TournamentGameDataModel getTournamentgamedatamodel(){
+    	return TournamentGameDataModel;
+    }
+    
+    public void setTournamentgamedatamodel(TournamentGameDataModel odatamodel){
+    	TournamentGameDataModel = odatamodel;
+    }
     /**
      * This simply saves a new team to the system.
      * 
@@ -265,6 +329,94 @@ public class managerBean implements Serializable {
 		this.pb = pb;
 	}
 
-
+	
+	public RosterEditDataModel getRostereditdatamodel(){
+    	return RosterEditDataModel;
+    }
+    
+    public void setRostereditdatamodel(RosterEditDataModel odatamodel){
+    	RosterEditDataModel = odatamodel;
+    }
+    
+	public void getRoster(){
+		List<RosterEdit> templist = new ArrayList<RosterEdit>();
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	
+    	try{
+    		//first get team name
+    		CallableStatement cs = db.prepareCall("CALL scaha.getTeamByTeamId(?)");
+			cs.setInt("teamid", this.teamid);
+		    rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					this.teamname = rs.getString("teamname");
+				}
+				LOGGER.info("We have results for team name");
+			}
+			rs.close();
+			db.cleanup();
+    		
+    		//next get roster
+			cs = db.prepareCall("CALL scaha.getRosterByTeamId(?)");
+			cs.setInt("teamid", this.teamid);
+		    rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					String playerid = rs.getString("idroster");
+					String fname = rs.getString("fname");
+					String lname = rs.getString("lname");
+					String jerseynumber = rs.getString("jerseynumber");
+					
+					
+					RosterEdit player = new RosterEdit();
+					player.setIdplayer(playerid);
+					player.setFirstname(fname);
+					player.setLastname(lname);
+					player.setOldjerseynumber(jerseynumber);
+					player.setJerseynumber(jerseynumber);
+					
+					templist.add(player);
+				}
+				LOGGER.info("We have results for team roster");
+			}
+			rs.close();
+			db.cleanup();
+    		
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN loading teams");
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+		
+    	setPlayers(templist);
+    	RosterEditDataModel = new RosterEditDataModel(players);
+	}
+    
+    public List<RosterEdit> getPlayers(){
+		return players;
+	}
+	
+	public void setPlayers(List<RosterEdit> list){
+		players = list;
+	}
+	
+	 public void editGame(TempGame sgame) {  
+	        String oldValue = sgame.getHome();
+	        
+	        
+	        String newvalue = oldValue;
+	        getRoster();
+	    }
 }
 
