@@ -84,3 +84,9 @@ img { border-style: none; }
 	border-style:none;
 	border-width:0px;
 }
+
+$( "#accordion" ).accordion({
+            heightStyle: "content",
+            autoHeight: false,
+        clearStyle: true,   
+        }

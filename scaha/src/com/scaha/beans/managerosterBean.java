@@ -38,6 +38,16 @@ public class managerosterBean implements Serializable {
 	private List<Club> clubs = null;
 	private Team selectedteam = null;
 	
+	//properties for adding tournaments
+	private String tournamentname;
+	private String startdate;
+	private String enddate;
+	private String contact;
+	private String phone;
+	private String sanction;
+	private String location;
+	private String website;
+	
 	
 	@PostConstruct
     public void init() {
