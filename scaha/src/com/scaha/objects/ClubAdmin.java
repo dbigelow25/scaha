@@ -76,7 +76,7 @@ public class ClubAdmin extends Person implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return this.MyClub.getClubname() + " " + this.MyRole.getDesc() + " - " + this.getsFirstName() + " " + this.getsLastName();
+		return this.MyClub.getSname() + " " + this.MyRole.getDesc() + " - " + this.getsFirstName() + " " + this.getsLastName();
 	}
 
 	/**

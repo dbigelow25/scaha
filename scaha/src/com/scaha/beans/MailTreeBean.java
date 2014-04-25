@@ -1,6 +1,7 @@
 package com.scaha.beans;
 
 import java.io.Serializable;  
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,8 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;  
 import javax.faces.event.ActionEvent;
 import javax.faces.view.ViewScoped;
+import javax.mail.internet.InternetAddress;
+
 import org.primefaces.model.TreeNode;  
 import org.primefaces.model.CheckboxTreeNode;  
 
@@ -55,20 +58,20 @@ public class MailTreeBean implements Serializable, MailableObject {
     private String subject = null;
     private String body = null;
     
-    private List<String> myEmails = null;
-	private Object ccemail;
+    private List<InternetAddress> myEmails = null;
+	private String ccemail;
     
     /**
 	 * @return the myEmails
 	 */
-	public List<String> getMyEmails() {
+	public List<InternetAddress> getMyEmails() {
 		return myEmails;
 	}
 
 	/**
 	 * @param myEmails the myEmails to set
 	 */
-	public void setMyEmails(List<String> myEmails) {
+	public void setMyEmails(List<InternetAddress> myEmails) {
 		this.myEmails = myEmails;
 	}
 
@@ -196,23 +199,28 @@ public class MailTreeBean implements Serializable, MailableObject {
      */
     public void collectEmails() {
     	
-    	List<String> emails  = new ArrayList<>();
+    	List<InternetAddress> emails  = new ArrayList<InternetAddress>();
     	
     	//
     	// First.. lets go after the actual people objects.
     	//
     	if(selectedNodes != null && selectedNodes.length > 0) {  
-    		
-              for(TreeNode node : selectedNodes) {  
-            	  Object obj = node.getData();
-            	  if (obj instanceof Person) {
-                	  LOGGER.info("OBJ is A Person! its a:" + obj.getClass());
-            		  emails.add(((Person)node.getData()).getsEmail());
-            	  } else if (obj instanceof ClubAdmin) {
-                	  LOGGER.info("OBJ is A Club Admin! its a:" + obj.getClass());
-            		  emails.add(((Person)node.getData()).getsEmail());
-            	  }  
-              }  
+    		try {
+	
+				for(TreeNode node : selectedNodes) {  
+					  Object obj = node.getData();
+					  if (obj instanceof Person) {
+						  Person per = (Person)obj;
+							emails.add(new InternetAddress(per.getsEmail(),per.getsFirstName() + " " + per.getsLastName()));
+				} else if (obj instanceof ClubAdmin) {
+					  Person per = (Person)obj;
+					  emails.add(new InternetAddress(per.getsEmail(),per.getsFirstName() + " " + per.getsLastName()));
+					  }  
+				}  
+				} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
               
               //
               // now.. lets go after all the seasonal information.. 
@@ -223,10 +231,17 @@ public class MailTreeBean implements Serializable, MailableObject {
             	  Object obj = node.getData();
             	  if (obj instanceof String && node.getData().toString().contains("All Club Families")) {
             		  Club c = (Club)node.getParent().getData();
-            		  // emails.add("<All " + c.getClubname() + " Member Families>");
-            	  } else {
-                	  LOGGER.info("OBJ Not A String! its a:" + obj.getClass());
-            		  
+            		  ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+          			  try {
+          				emails.addAll(db.getClubFamilyEmails(c,scaha.getScahaSeasonList().getCurrentSeason()));
+               		  } catch (SQLException e) {
+          				// TODO Auto-generated catch block
+          				e.printStackTrace();
+          			} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+          			db.free();
             	  }
               }  
 
@@ -240,15 +255,17 @@ public class MailTreeBean implements Serializable, MailableObject {
     	
     	LOGGER.info("Email: going to send quickmail " + this.subject + ":" + this.body);
     	
-    	
-    	FacesContext context = FacesContext.getCurrentInstance();  
-		context.addMessage(null, new FacesMessage("Successful", "Your iSite Quick Message has been sent out to all target members."));  
 		SendMailSSL mail = new SendMailSSL(this);
 		mail.sendMail();
+		
+		for (InternetAddress s : this.myEmails) {
+	    	LOGGER.info("Email: going to send quickmail to the following:" + s);
+		}
+    	FacesContext context = FacesContext.getCurrentInstance();  
+		context.addMessage(null, new FacesMessage("Successful", "Your iSite Quick Message has been sent out to all target members."));  
 
-	
-   
     }
+    
 	/**
 	 * @return the scaha
 	 */
@@ -361,19 +378,7 @@ public class MailTreeBean implements Serializable, MailableObject {
 
 	@Override
 	public String getPreApprovedCC() {
-		StringBuilder builder = new StringBuilder();  
-		   
-    	for (String email : this.myEmails) {
-    		builder.append(email + ",");
-    	}	
-    	
-    	if (this.ccemail != null) {
-    		builder.append("online@iscaha.com,");
-    		builder.append(this.ccemail);
-    	} else {
-    		builder.append("online@iscaha.com");
-    	}
-    	return builder.toString();
+	  return null;
 	}
 
 	@Override
@@ -384,15 +389,38 @@ public class MailTreeBean implements Serializable, MailableObject {
 	/**
 	 * @return the ccemail
 	 */
-	public Object getCcemail() {
+	public String getCcemail() {
 		return ccemail;
 	}
 
 	/**
 	 * @param ccemail the ccemail to set
 	 */
-	public void setCcemail(Object ccemail) {
+	public void setCcemail(String ccemail) {
 		this.ccemail = ccemail;
+	}
+
+	@Override
+	public InternetAddress[] getToMailIAddress() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public InternetAddress[] getPreApprovedICC()  {
+		String [] emails = this.ccemail.split(",");
+		try {
+			myEmails.add(new InternetAddress("online@iscaha.com","iScaha Web Site"));
+			for (String s : emails) {
+				if (s.trim().length() > 0) {
+					myEmails.add(new InternetAddress(s,s));
+				}
+			}
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return myEmails.toArray(new InternetAddress[]{});
 	}
 
 

@@ -13,6 +13,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.mail.internet.InternetAddress;
 
 import org.primefaces.event.FlowEvent;
 import com.gbli.common.SendMailSSL;
@@ -680,6 +681,18 @@ public class MemberBean implements Serializable, MailableObject {
 	 */
 	public void setStealme(Boolean stealme) {
 		this.stealme = stealme;
+	}
+
+	@Override
+	public InternetAddress[] getToMailIAddress() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public InternetAddress[] getPreApprovedICC() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

@@ -11,6 +11,7 @@ import javax.annotation.PreDestroy;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.mail.internet.InternetAddress;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
@@ -196,5 +197,17 @@ public class ScahaBean implements Serializable,  MailableObject {
 	 */
 	public void setDefaultProfile(Profile defaultProfile) {
 		DefaultProfile = defaultProfile;
+	}
+
+	@Override
+	public InternetAddress[] getToMailIAddress() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public InternetAddress[] getPreApprovedICC() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

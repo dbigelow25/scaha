@@ -19,6 +19,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
 import javax.imageio.ImageIO;
+import javax.mail.internet.InternetAddress;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -432,6 +433,18 @@ public class ClubBean implements Serializable,  MailableObject {
 	 */
 	public void setCurrentRegistrar(Person currentRegistrar) {
 		this.currentRegistrar = currentRegistrar;
+	}
+
+	@Override
+	public InternetAddress[] getToMailIAddress() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public InternetAddress[] getPreApprovedICC() {
+		// TODO Auto-generated method stub
+		return null;
 	} 
 
 }

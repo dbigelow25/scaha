@@ -79,11 +79,30 @@ public class SendMailSSL {
  			
 			Message message = new MimeMessage(m_sess);
 			message.setFrom(new InternetAddress(SendMailSSL.getUsername()+"@iscaha.com","iScaha Online InfoHub"));
-			message.setRecipients(Message.RecipientType.TO,	InternetAddress.parse(m_mo.getToMailAddress()));
+			
 			//
-			// Add the Blind CC's
+			// We are moving from String based to InternetAddress Based
 			//
-			message.setRecipients(Message.RecipientType.BCC,InternetAddress.parse(m_mo.getPreApprovedCC()));
+			// Internet address based allows for aliases and checks for well formed E-MAILS.	
+			//
+			String strTo = m_mo.getToMailAddress();
+			InternetAddress[] iaTo = m_mo.getToMailIAddress();
+			if (strTo != null && strTo.trim().length() > 0) {
+				message.addRecipients(Message.RecipientType.TO,	InternetAddress.parse(strTo));
+			}
+			if (iaTo != null && iaTo.length > 0) {
+				message.addRecipients(Message.RecipientType.TO,	iaTo);
+			}
+			
+			String strBcc = m_mo.getPreApprovedCC();
+			InternetAddress[] iaBcc = m_mo.getPreApprovedICC();
+			
+			if (strBcc != null && strBcc.trim().length() > 0) {
+				message.addRecipients(Message.RecipientType.BCC,InternetAddress.parse(strBcc));  // All the string ones
+			}
+			if (iaBcc != null && iaBcc.length > 0) {
+				message.addRecipients(Message.RecipientType.BCC,iaBcc); // All the internet address ones
+			}
 			message.setSubject(m_mo.getSubject());
 			message.setContent(m_mo.getTextBody(),"text/html; charset=ISO-8859-1");
 

@@ -14,6 +14,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.mail.internet.InternetAddress;
 
 import com.gbli.common.SendMailSSL;
 import com.gbli.connectors.ScahaDatabase;
@@ -535,6 +536,18 @@ public class teamBean implements Serializable, MailableObject {
 		//
 		return "dux8fan@aol.com";
 	
+	}
+
+	@Override
+	public InternetAddress[] getToMailIAddress() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public InternetAddress[] getPreApprovedICC() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -47,9 +47,9 @@
                    </p:submenu>
                </p:submenu>
            </p:menubar>
-	  	    <p:growl id="messages" showDetail="true" escape="false"/>  
+	  	<p:growl id="messages" showDetail="true" escape="false"/>  
 	  	<div style="float:left;text-align:top;">
-		<p:accordionPanel id="ap" style="width:425px;">
+		<p:accordionPanel id="ap" style="width:425px;font-size:10pt;">
 	        	<p:tab id="t1" title="Application Options">
 	            	<p:commandButton id="basic" ajax="true" value="Refresh App" actionListener="#{scahaBean.refreshBean()}" update="@([id$=dlg])" oncomplete="dlg.show();"/>
         		</p:tab>

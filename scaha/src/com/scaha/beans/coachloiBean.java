@@ -19,6 +19,7 @@ import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import com.gbli.common.SendMailSSL;
@@ -1116,6 +1117,18 @@ public class coachloiBean implements Serializable, MailableObject {
     	}
 		
 		return teamname;
+	}
+
+	@Override
+	public InternetAddress[] getToMailIAddress() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public InternetAddress[] getPreApprovedICC() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 

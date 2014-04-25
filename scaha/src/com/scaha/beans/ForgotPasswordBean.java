@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.mail.internet.InternetAddress;
 
 import com.gbli.common.SendMailSSL;
 import com.gbli.connectors.ScahaDatabase;
@@ -129,6 +130,20 @@ public class ForgotPasswordBean implements Serializable, MailableObject {
 	public String getToMailAddress() {
 		// TODO Auto-generated method stub
 		return this.email + "," + ((this.altemail == null || this.altemail.isEmpty()) ? "" : this.altemail);
+	}
+
+
+	@Override
+	public InternetAddress[] getToMailIAddress() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public InternetAddress[] getPreApprovedICC() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 
