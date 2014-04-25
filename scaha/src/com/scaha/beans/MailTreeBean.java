@@ -2,35 +2,43 @@ package com.scaha.beans;
 
 import java.io.Serializable;  
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;  
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;  
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;  
+import javax.faces.event.ActionEvent;
 import javax.faces.view.ViewScoped;
 import org.primefaces.model.TreeNode;  
 import org.primefaces.model.CheckboxTreeNode;  
 
+import com.gbli.common.SendMailSSL;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Club;
 import com.scaha.objects.ClubAdmin;
 import com.scaha.objects.ClubList;
 import com.scaha.objects.GeneralSeason;
+import com.scaha.objects.MailableObject;
+import com.scaha.objects.Person;
 import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.TeamList;
 
 @ManagedBean
-@ViewScoped
-public class MailTreeBean implements Serializable {  
+@SessionScoped
+public class MailTreeBean implements Serializable, MailableObject {  
       
 	//
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());  
-
+	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	
 	
 	@ManagedProperty(value="#{scahaBean}")
     private ScahaBean scaha;
@@ -44,7 +52,27 @@ public class MailTreeBean implements Serializable {
     private TreeNode root;  
     private TreeNode[] selectedNodes;  
       
-    public MailTreeBean() {  
+    private String subject = null;
+    private String body = null;
+    
+    private List<String> myEmails = null;
+	private Object ccemail;
+    
+    /**
+	 * @return the myEmails
+	 */
+	public List<String> getMyEmails() {
+		return myEmails;
+	}
+
+	/**
+	 * @param myEmails the myEmails to set
+	 */
+	public void setMyEmails(List<String> myEmails) {
+		this.myEmails = myEmails;
+	}
+
+	public MailTreeBean() {  
 	
     }  
 
@@ -57,6 +85,9 @@ public class MailTreeBean implements Serializable {
 		root = new CheckboxTreeNode("iSCAHA Mailing Tree Widget", null);  
 		TreeNode clubTop = new CheckboxTreeNode("All Clubs", root); 
 		TreeNode adminTop = new CheckboxTreeNode("All Admin", root); 
+		TreeNode adminPres = new CheckboxTreeNode("All Presidents", adminTop); 
+		TreeNode adminIce = new CheckboxTreeNode("All Registrars", adminTop); 
+		TreeNode adminReg = new CheckboxTreeNode("All Ice Convenors", adminTop); 
 		ClubList cl = scaha.getScahaClubList();
 		
 		//
@@ -69,6 +100,18 @@ public class MailTreeBean implements Serializable {
 			this.addClubChild(c,clubTop);
 			
 		}
+		
+		for (Club c : cl) {
+
+			TreeNode node = new CheckboxTreeNode(c.getCal().getStaffer("C-PRES"),adminPres);
+			node = new CheckboxTreeNode(c.getCal().getStaffer("C-ICE"),adminIce);
+			node = new CheckboxTreeNode(c.getCal().getStaffer("C-REG"),adminReg);
+			
+		}
+		
+		//
+		// Now lets load all the presidents, registrars, and ice guys
+		//
 			
     }
 
@@ -82,6 +125,7 @@ public class MailTreeBean implements Serializable {
     	TreeNode club = new CheckboxTreeNode(_cl, _node); 
     	TreeNode staffTop = new CheckboxTreeNode("All Staff", club); 
     	TreeNode teamTop = new CheckboxTreeNode("All Teams", club); 
+    	TreeNode FamTop = new CheckboxTreeNode("All Club Families", club); 
     	
     	for (ClubAdmin ca : _cl.getCal()) {
     		TreeNode node = new CheckboxTreeNode(ca, staffTop); 
@@ -105,6 +149,11 @@ public class MailTreeBean implements Serializable {
 		}
     	for (ScahaTeam t : _cl.getScahaTeams()) {
     		TreeNode node = new CheckboxTreeNode(t, teamTop); 
+    		FamTop = new CheckboxTreeNode("All Team Families",node);
+    		staffTop = new CheckboxTreeNode("Coaching Staff",node);
+    		staffTop = new CheckboxTreeNode("Managers",node);
+    		staffTop = new CheckboxTreeNode("Locker Room Attendants",node);
+    		// need to get coaches here..
     	}
     }
 
@@ -125,6 +174,7 @@ public class MailTreeBean implements Serializable {
     }  
       
     public void displaySelectedMultiple() {  
+    	
         if(selectedNodes != null && selectedNodes.length > 0) {  
             StringBuilder builder = new StringBuilder();  
   
@@ -134,12 +184,71 @@ public class MailTreeBean implements Serializable {
             }  
   
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected", builder.toString());  
-  
             FacesContext.getCurrentInstance().addMessage(null, message);  
         }  
     }
 
+    
+    /**
+     *  Lets collect the e-mails from the objects that were selected.
+     *  
+     * @return
+     */
+    public void collectEmails() {
+    	
+    	List<String> emails  = new ArrayList<>();
+    	
+    	//
+    	// First.. lets go after the actual people objects.
+    	//
+    	if(selectedNodes != null && selectedNodes.length > 0) {  
+    		
+              for(TreeNode node : selectedNodes) {  
+            	  Object obj = node.getData();
+            	  if (obj instanceof Person) {
+                	  LOGGER.info("OBJ is A Person! its a:" + obj.getClass());
+            		  emails.add(((Person)node.getData()).getsEmail());
+            	  } else if (obj instanceof ClubAdmin) {
+                	  LOGGER.info("OBJ is A Club Admin! its a:" + obj.getClass());
+            		  emails.add(((Person)node.getData()).getsEmail());
+            	  }  
+              }  
+              
+              //
+              // now.. lets go after all the seasonal information.. 
+              // This is only used for Parents tied to a club for a particular season..
+              //
+              for(TreeNode node : selectedNodes) {  
+            	  LOGGER.info(node.getData().getClass().getName());
+            	  Object obj = node.getData();
+            	  if (obj instanceof String && node.getData().toString().contains("All Club Families")) {
+            		  Club c = (Club)node.getParent().getData();
+            		  // emails.add("<All " + c.getClubname() + " Member Families>");
+            	  } else {
+                	  LOGGER.info("OBJ Not A String! its a:" + obj.getClass());
+            		  
+            	  }
+              }  
 
+          }  
+    	
+    	this.myEmails = emails;
+    	
+    }
+
+    public void sendMail() {
+    	
+    	LOGGER.info("Email: going to send quickmail " + this.subject + ":" + this.body);
+    	
+    	
+    	FacesContext context = FacesContext.getCurrentInstance();  
+		context.addMessage(null, new FacesMessage("Successful", "Your iSite Quick Message has been sent out to all target members."));  
+		SendMailSSL mail = new SendMailSSL(this);
+		mail.sendMail();
+
+	
+   
+    }
 	/**
 	 * @return the scaha
 	 */
@@ -169,5 +278,122 @@ public class MailTreeBean implements Serializable {
 	 */
 	public void setPb(ProfileBean pb) {
 		this.pb = pb;
+	}
+
+	/**
+	 * @return the subject
+	 */
+	public String getSubject() {
+		return subject;
+	}
+
+	/**
+	 * @param subject the subject to set
+	 */
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	/**
+	 * @return the body
+	 */
+	public String getBody() {
+		return body;
+	}
+
+	/**
+	 * @param body the body to set
+	 */
+	public void setBody(String body) {
+		this.body = body;
 	}  
+	
+	public void resetTree()	{
+		
+    	LOGGER.info("resetTree..." );
+    	
+		this.body = null;
+		this.subject = null;
+		this.setCcemail(null);
+		if (this.selectedNodes == null) {
+			LOGGER.info("selectedNode are null.." );
+			return;
+		}
+		
+		for (TreeNode node : selectedNodes) {
+			node.setSelected(false);
+			node.setPartialSelected(false);
+			node.setExpanded(false);
+			resetParentTree(node);
+			this.resetChildrenTree(node);
+		}
+		
+		LOGGER.info("setting selected noded to null..." );
+		this.selectedNodes = null;
+	}
+	
+	private void resetChildrenTree(TreeNode _tn)	{
+		for (TreeNode node : _tn.getChildren()) {
+			LOGGER.info("Before NODE:" + node.toString() + "=" + node.isSelected());
+			node.setSelected(false);
+			node.setPartialSelected(false);
+			node.setExpanded(false);
+			LOGGER.info("After NODE:" + node.toString() + "=" + node.isSelected());
+			resetParentTree(node);
+			this.resetChildrenTree(node);
+		}
+	}
+
+	private void resetParentTree(TreeNode _tn)	{
+		if (_tn == null) return;
+		
+		TreeNode pnode = _tn.getParent();
+		pnode.setSelected(false);
+		pnode.setPartialSelected(false);
+		//if (pnode.getParent() != null && pnode.getParent().isSelected() || pnode.getParent().isPartialSelected()) resetParentTree(pnode.getParent());
+	}
+
+	
+	@Override
+	public String getTextBody() {
+		return this.body;
+	}
+
+	@Override
+	public String getPreApprovedCC() {
+		StringBuilder builder = new StringBuilder();  
+		   
+    	for (String email : this.myEmails) {
+    		builder.append(email + ",");
+    	}	
+    	
+    	if (this.ccemail != null) {
+    		builder.append("online@iscaha.com,");
+    		builder.append(this.ccemail);
+    	} else {
+    		builder.append("online@iscaha.com");
+    	}
+    	return builder.toString();
+	}
+
+	@Override
+	public String getToMailAddress() {
+		return pb.getProfile().getUserName();
+	}
+
+	/**
+	 * @return the ccemail
+	 */
+	public Object getCcemail() {
+		return ccemail;
+	}
+
+	/**
+	 * @param ccemail the ccemail to set
+	 */
+	public void setCcemail(Object ccemail) {
+		this.ccemail = ccemail;
+	}
+
+
 }  

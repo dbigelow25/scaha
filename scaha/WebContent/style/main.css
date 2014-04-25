@@ -18,19 +18,20 @@ img { border-style: none; }
 }
 
 #div-body {
-  		width: 900px;
+	width: 900px;
    	vertical-align: top;
-   	margin-left:10px;
+   	margin-left:0px;
+   	margin-right:0px;
 }
 #page-div {
-		width: 875px;
+	width: 875px;
    	vertical-align: top;
    	margin-top:25px;
    	margin-left:25px;
 }
 
 #news-div {
-		width: 725px;
+	width: 725px;
    	vertical-align: top;
    	margin-top:25px;
    	margin-left:25px;

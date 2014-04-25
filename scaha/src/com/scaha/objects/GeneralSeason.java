@@ -25,6 +25,7 @@ public class GeneralSeason extends ScahaObject implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 
+	private String DescriptiveContext = null;;
 	private String MembershipType = null;
 	private String FromDate = null;
 	private String ToDate = null;
@@ -202,6 +203,24 @@ public class GeneralSeason extends ScahaObject implements Serializable {
 	 */
 	public void setUSAYear(String uSAYear) {
 		USAYear = uSAYear;
+	}
+
+	/**
+	 * @return the descriptiveContext
+	 */
+	public String getDescriptiveContext() {
+		return DescriptiveContext;
+	}
+
+	/**
+	 * @param descriptiveContext the descriptiveContext to set
+	 */
+	public void setDescriptiveContext(String descriptiveContext) {
+		DescriptiveContext = descriptiveContext;
+	}
+	
+	public String toString() {
+		return (this.DescriptiveContext != null ? this.DescriptiveContext + " for the " : "") + this.getDescription();
 	}
 
 }

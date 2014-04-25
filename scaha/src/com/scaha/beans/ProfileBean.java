@@ -221,6 +221,23 @@ public class ProfileBean implements Serializable,  MailableObject  {
  		}
  	}
     
+    public void verifyHasRoles(String _str){
+ 		FacesContext context = FacesContext.getCurrentInstance();
+ 		try{
+ 			if(pro == null){
+ 				this.origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
+ 				context.getExternalContext().redirect("Welcome.xhtml");
+ 			} else if(!this.hasRoleList(_str)){
+ 				this.origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
+ 				context.getExternalContext().redirect("Welcome.xhtml");
+ 			}
+
+ 		}catch (Exception e){
+ 			e.printStackTrace();
+ 		}
+ 	}
+
+    
     /**
      * This will get expanded once rolls are set up
      * @return
@@ -229,6 +246,31 @@ public class ProfileBean implements Serializable,  MailableObject  {
     	return (pro != null && pro.isSuperUser());
     }
     
+    /**
+     * Do we have a hit on any role in the passed list..
+     * 
+     * @param _strRoles
+     * @return
+     */
+    public boolean hasRoleList(String _strRoles) {
+    	LOGGER.info("has Role List:" + _strRoles);
+    	
+    	if (pro == null) return false;
+
+    	String[] roles = _strRoles.split(";");
+    	
+    	for (String role : roles) {
+    		LOGGER.info("role" + roles);
+    		for (Role myrole : pro.getRoles()) {
+    			LOGGER.info("do roles match?" + myrole.getName() + ":" + role);
+    			if (myrole.getName().equals(role)) return true;
+    		}
+    		
+    	}
+    	
+    	return false;
+    }
+
     public String logout() {
     	this.pro = null;
     	this.live_password = null;
