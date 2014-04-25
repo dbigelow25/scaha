@@ -263,7 +263,8 @@ public class ProfileBean implements Serializable,  MailableObject  {
     		LOGGER.info("role" + roles);
     		for (Role myrole : pro.getRoles()) {
     			LOGGER.info("do roles match?" + myrole.getName() + ":" + role);
-    			if (myrole.getName().equals(role)) return true;
+    			
+    			if (myrole.getName() != null && myrole.getName().equals(role)) return true;
     		}
     		
     	}
