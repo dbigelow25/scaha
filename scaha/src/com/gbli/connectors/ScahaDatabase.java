@@ -204,6 +204,7 @@ public class ScahaDatabase extends Database {
 		ps.setString(2,"SCAHA-1314");
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
+			LOGGER.info("getCLubFamilyEmails:" + rs.getString(1) + ":" +  rs.getString(2));
 			tmp.add(new InternetAddress(rs.getString(2),rs.getString(1)));
 		}
 		rs.close();
