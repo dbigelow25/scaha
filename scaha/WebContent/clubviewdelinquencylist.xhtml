@@ -31,7 +31,8 @@
 		</h:form>
 	<h:form>
 			<p:panel id ="panel" header="2014 Delinquency List:">
-				<p:dataTable id="listofplayers" var="player" rowKey="#{player.IDplayer}" rowkey="" value="#{delinquencyBean.getPlayerdatamodel()}" selection="#{delinquencyBean.selectedplayer}" paginator="true" rows="10" autoupdate="false">
+				
+				<p:dataTable id="listofplayers" var="player" rowKey="#{player.IDplayer}" rowkey="" value="#{delinquencyBean.getPlayerdatamodel()}" selection="#{delinquencyBean.selectedplayer}" paginator="#{delinquencyBean.getDisplayshortlist()}" rows="#{delinquencyBean.displayrecordcount}" autoupdate="false">
                 	<p:column filterBy="firstname" filterMatchMode="contains" filterStyle="width:100px" headerText="First Name">  
 			            <h:outputText value="#{player.getFirstname()}" />  
 			        </p:column>  
@@ -44,6 +45,10 @@
 			        <p:column headerText="DOB">  
 			            <h:outputText value="#{player.getDob()}" />  
 			        </p:column>
+			        <f:facet name="footer">  
+						<div align="right"><p:commandButton id="displaylonglist" value="Display Entire List" ajax="true" update="listofplayers" actionListener="#{delinquencyBean.displayLongList()}" rendered="#{delinquencyBean.getDisplayshortlist()}"/></div>
+						<div align="right"><p:commandButton id="printlist" value="Print" onclick="window.print(); return false;" rendered="#{!delinquencyBean.getDisplayshortlist()}"/><p:commandButton id="displayshortlist" value="Display Short List" ajax="true" update="listofplayers" actionListener="#{delinquencyBean.displayShortList()}" rendered="#{!delinquencyBean.getDisplayshortlist()}"/></div>              
+			        </f:facet> 
 			    </p:dataTable>
 			</p:panel>
 			<p:separator id="customSeparator" style="width:800px;height:2px" />    

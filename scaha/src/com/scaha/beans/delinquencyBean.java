@@ -36,17 +36,42 @@ public class delinquencyBean implements Serializable {
 	private Boolean displayclublist = null;
 	private String selectedclub = null;
 	private String selectedplayerid = null;
+	private Boolean displayshortlist = null;
+	private Integer displayrecordcount = null;
+	private Integer totalrecordcount = null;
 	
-	
-	@PostConstruct
-    public void init() {
+	public void init() {
 	    players = new ArrayList<Player>();  
         PlayerDataModel = new PlayerDataModel(players);
         
         playersDisplay(); 
     }  
     
-   
+	public Integer getTotalrecordcount(){
+    	return totalrecordcount;
+    }
+    
+    public void setTotalrecordcount(Integer count){
+    	totalrecordcount=count;
+    }
+	
+	public Integer getDisplayrecordcount(){
+    	return displayrecordcount;
+    }
+    
+    public void setDisplayrecordcount(Integer count){
+    	displayrecordcount=count;
+    }
+    
+	
+	public Boolean getDisplayshortlist(){
+    	return displayshortlist;
+    }
+    
+    public void setDisplayshortlist(Boolean flag){
+    	displayshortlist=flag;
+    }
+    
     
     public String getSelectedplayerid(){
     	return selectedplayerid;
@@ -101,6 +126,14 @@ public class delinquencyBean implements Serializable {
     public void playersDisplay(){
     	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	List<Player> tempresult = new ArrayList<Player>();
+    	Integer recordcount = 0;
+    	
+    	//need to set default record count and list format boolean for displaying the list either in pagination format
+        //or long list printable format
+        this.displayshortlist = true;
+        this.displayrecordcount = 10;
+        this.totalrecordcount = 0;
+        
     	
     	try{
 
@@ -109,7 +142,7 @@ public class delinquencyBean implements Serializable {
     			
 				CallableStatement cs = db.prepareCall("CALL scaha.getDelinquencyList()");
     			rs = cs.executeQuery();
-    		
+    			
     			if (rs != null){
     				
     				while (rs.next()) {
@@ -127,11 +160,15 @@ public class delinquencyBean implements Serializable {
         				oplayer.setDob(sdob);
         				
         				tempresult.add(oplayer);
+        				
+        				recordcount++;
     				}
     				
     				LOGGER.info("We have results for delinquency list");
     				
     			}
+    			
+    			this.totalrecordcount=recordcount;
     			rs.close();	
     			db.cleanup();
     		} else {
@@ -217,5 +254,15 @@ public class delinquencyBean implements Serializable {
 		
 		playersDisplay();
 	}
+    
+    public void displayLongList(){
+    	this.displayshortlist=false;
+    	this.displayrecordcount=this.totalrecordcount;
+    }
+    
+    public void displayShortList(){
+    	this.displayshortlist=true;
+    	this.displayrecordcount=10;
+    }
 }
 
