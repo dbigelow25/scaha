@@ -3,20 +3,27 @@
  */
 package com.gbli.connectors;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Club;
+import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.Person;
 import com.scaha.objects.Profile;
+import com.scaha.objects.ScahaCoach;
 
 import java.sql.PreparedStatement;
+
+import javax.mail.internet.InternetAddress;
+
 import org.w3c.dom.ls.LSException;
 
 /**
@@ -186,6 +193,26 @@ public class ScahaDatabase extends Database {
 		cs.execute();
 		cs.close();
 	}
+
+	public List<InternetAddress> getClubFamilyEmails(Club c,	GeneralSeason _cs)  throws SQLException, UnsupportedEncodingException {
+
+		List<InternetAddress> tmp = new ArrayList<InternetAddress>();
+		
+		PreparedStatement ps = this.prepareStatement("call scaha.getAllMemberEmailsByClubAndSeason(?,?)");
+		ps.setInt(1, c.ID);
+//		ps.setString(2,_cs.getTag()); TMP until new teams are formed
+		ps.setString(2,"SCAHA-1314");
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			LOGGER.info("getCLubFamilyEmails:" + rs.getString(1) + ":" +  rs.getString(2));
+			tmp.add(new InternetAddress(rs.getString(2),rs.getString(1)));
+		}
+		rs.close();
+		ps.close();
+
+		return tmp;
+	}
+	
 }
 
 

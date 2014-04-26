@@ -21,13 +21,13 @@
  	<p:growl id="messages" showDetail="true"/> 
   	<pe:masterDetail id="masterDetail" > 
   	
-    <pe:masterDetailLevel level="1" levelLabel="SCAHA Clubs">  
+    <pe:masterDetailLevel level="1" levelLabel="SCAHA Clubs" showAllBreadcrumbItems="true">  
 
   		<p:dataTable id="listofclubs" var="club" value="#{scahaBean.getScahaClubList()}" >
 			<p:subTable var="peep" value="#{club.getCal()}" tableStyle="width:auto">
 	            <f:facet name="header">
 	            	<div style="float:left;vertical-align:middle;width:75px;font-size: 12px;">
-	            	<p:graphicImage id="logoimage1" value="#{clubBean.getClubLogoByParmId()}"  >
+	            	<p:graphicImage id="logoimage1" value="#{clubBean.getClubLogoByParmId()}"  width="45" >
 	            		<f:param id = "target" name="target" value="#{club.getClubID()}" />
 			 		</p:graphicImage> 
 					</div>
@@ -80,7 +80,7 @@
         </div>
         </td>
     	<td valign="middle" >
-		<p:graphicImage id="logoimage" value="#{clubBean.getClubLogo()}" cache="false" width="60px">
+		<p:graphicImage id="logoimage" value="#{clubBean.getClubLogo()}" cache="false" width="60">
  			<f:param name="aaa" value="#{scahaBean.getDate()}"/>
  		</p:graphicImage> 
 		</td> 
@@ -157,7 +157,7 @@
 		</p:dataTable>
         <p:separator />
         
-        <p:fieldset rendered = "false">
+        <p:fieldset rendered = "#{profileBean.isSuperUser()}">
         <div style="width:100%">
          	<div class="NewsTitle">Edit Club Profile: (you need Admin access to view this section)</div> 
 			<div style="vertical-align:middle;width:650px;height:100px;">

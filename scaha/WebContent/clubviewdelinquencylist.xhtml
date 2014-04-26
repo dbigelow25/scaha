@@ -9,7 +9,7 @@
       xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <f:metadata>
-<f:event type="preRenderView" listener="#{profileBean.verifyUserLogin()}" />
+<f:event type="preRenderView" listener="#{profileBean.verifyHasRoles('C-PRES;C-REG')}" />
 </f:metadata>
 
 <ui:composition template="/WEB-INF/templates/layout.xhtml"
@@ -32,10 +32,10 @@
 	<h:form>
 			<p:panel id ="panel" header="2014 Delinquency List:">
 				<p:dataTable id="listofplayers" var="player" rowKey="#{player.IDplayer}" rowkey="" value="#{delinquencyBean.getPlayerdatamodel()}" selection="#{delinquencyBean.selectedplayer}" paginator="true" rows="10" autoupdate="false">
-                	<p:column filterBy="firstname" filterMatchMode="contains" filterStyle="width:50px" headerText="First Name">  
+                	<p:column filterBy="firstname" filterMatchMode="contains" filterStyle="width:100px" headerText="First Name">  
 			            <h:outputText value="#{player.getFirstname()}" />  
 			        </p:column>  
-			        <p:column filterBy="lastname" filterMatchMode="contains" filterStyle="width:50px" headerText="Last Name">  
+			        <p:column filterBy="lastname" filterMatchMode="contains" filterStyle="width:100px" headerText="Last Name">  
 			            <h:outputText value="#{player.getLastname()}" />  
 			        </p:column>  
 			        <p:column headerText="2014 Team">  

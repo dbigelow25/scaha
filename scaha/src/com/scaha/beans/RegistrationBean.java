@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.mail.internet.InternetAddress;
 
 import com.gbli.common.SendMailSSL;
 import com.gbli.common.Utils;
@@ -407,5 +408,15 @@ public class RegistrationBean implements Serializable, MailableObject  {
 	 */
 	public void setGender(String gender) {
 		this.gender = gender;
+	}
+	@Override
+	public InternetAddress[] getToMailIAddress() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public InternetAddress[] getPreApprovedICC() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

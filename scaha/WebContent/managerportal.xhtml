@@ -18,7 +18,7 @@
 		<f:event type="preRenderView" listener="#{profileBean.verifySU()}" />
 	</f:metadata>
 </h:head>
-<h:body>	
+<h:body style="width:700px">	
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
 <ui:define name="content">
 
@@ -33,7 +33,7 @@
 		</tr>
 	</table>
 	
-	<p:layout id="layout" style="min-width:800px;min-height:700px;">
+	<p:layout id="layout" style="min-width:700px;min-height:1000px;">
  		<p:layoutUnit id="left" position="west" size="200" resizable="false" closable="false" collapsible="false" header="Team Roster" >
 			<h:form id="rosterform">		
 			<p:dataTable id="playersearchresult" var="rosteredit" value="#{managerBean.getRostereditdatamodel()}" selection="#{managerBean.selectedplayer}"  editable="true" editMode="cell">
@@ -68,10 +68,10 @@
 			 </h:form>
 		</p:layoutUnit>
 		
-		<p:layoutUnit id="center" position="center" header="Games">
-			<p:accordionPanel activeIndex="1" >
-				<p:tab title="SCAHA Games" >
-					<h:form id="scahagameform">
+		<p:layoutUnit id="center" position="center" >
+			<ui:fragment id="edit-transfers" >
+				<h:form id="scahagameform">
+					<p:panel id ="panel" header="SCAHA GAMES">
 					<div align="center">Your games needing action are listed below.  You will be responsible to provide the details and upload the scoresheet for your home games.</div>
 					<p:dataTable id="scahagames" var="TempGame" value="#{managerBean.getTempGamedatamodel()}" selection="#{managerBean.selectedgame}" selectionMode="single" paginator="true" rows="10" autoupdate="false">
 			            <f:facet name="header">  
@@ -112,46 +112,87 @@
 						    </p:splitButton>
 				        </p:column>  
 				    </p:dataTable>
-					</h:form>
-				</p:tab>
-				
-				<p:tab title="Tournament Games" >
-					<h:form id="tourngameform">
-					<div align="left">Your tournament is coming up soon, have you received your schedule?  Input games here</div><br></br>
-					<p:dataTable id="tournamentgames" var="TournamentGame" value="#{managerBean.getTournamentgamedatamodel()}" selection="#{managerBean.selectedtournamentgame}" paginator="true" rows="10" autoupdate="false">
+					</p:panel>
+					<p:panel id ="tourneypanel" header="TOURNAMENTS">
+					<div align="left">Are you attending a tournament soon?  Add your tournament 
+					<h:outputLink id="addtournamentlink" value="#">
+						<h:outputText style = "font-size: 9pt;font-family: Verdana;" value="Here" />
+					</h:outputLink>
+					</div>
+					<p:overlayPanel id="tournamentPanel" widgetVar="tpoverlay" for="addtournamentlink" hideEffect="fade" dynamic="false">  
+				    	<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" width="100%">
+							<h:column width="10%">Tournament Name:</h:column>
+							<h:column >
+								<p:inputText id="tourneyname" style="width:200px;" value="#{managerBean.tournamentname}" />
+							</h:column>
+							<h:column width="10%">Start Date:</h:column>
+							<h:column >
+								<p:inputText id="startdate" style="width:80px;" value="#{managerBean.startdate}" /> (MM/DD/YYYY)
+							</h:column>
+							<h:column width="10%">End Date:</h:column>
+							<h:column >
+								<p:inputText id="enddate" style="width:80px;" value="#{managerBean.enddate}" /> (MM/DD/YYYY)
+							</h:column>
+							<h:column width="10%">Contact:</h:column>
+							<h:column >
+								<p:inputText id="contact" style="width:200px;" value="#{managerBean.contact}" />
+							</h:column>
+							<h:column width="10%">Phone:</h:column>
+							<h:column >
+								<p:inputText id="contactphone" style="width:200px;" value="#{managerBean.phone}" />
+							</h:column>
+							<h:column width="10%">Sanction Number:</h:column>
+							<h:column >
+								<p:inputText id="sanctionnumber" style="width:200px;" value="#{managerBean.sanction}" />
+							</h:column>
+							<h:column width="10%">Location:</h:column>
+							<h:column >
+								<p:inputText id="location" style="width:200px;" value="#{managerBean.location}" />
+							</h:column>
+							<h:column width="10%">Website:</h:column>
+							<h:column >
+								<p:inputText id="Website" style="width:200px;" value="#{managerBean.website}" />
+							</h:column>
+						</h:panelGrid>
+						<p:commandButton id="submittournament" update="tournaments" value="Add Tournament" ajax="true" actionListener="#{managerBean.addTournament()}" oncomplete="tpoverlay.hide();"/>
+			    	</p:overlayPanel> 
+					<br></br>
+					<p:dataTable id="tournaments" var="tournament" value="#{managerBean.getTournamentdatamodel()}" selection="#{managerBean.selectedtournament}" rows="10" autoupdate="false">
 			            <f:facet name="header">  
-				        	2014-2015 TOURNAMENT GAMES
+				        	2014-2015 TOURNAMENTS PLAYING IN
 				        </f:facet> 
-				         <p:column headerText="Date">  
-				            <h:outputText value="#{TournamentGame.getDate()}" />  
+				         <p:column headerText="Tournament Name">  
+				            <h:outputText value="#{tournament.getTournamentname()}" />  
 				        </p:column>  
-				        <p:column headerText="Time">  
-				            <h:outputText value="#{TournamentGame.getTime()}" />  
+				        <p:column headerText="Dates">  
+				            <h:outputText value="#{tournament.getDates()}" />  
 				        </p:column>
-				        <p:column headerText="Opponent">  
-				        	<h:outputText value="#{TournamentGame.getOpponent()}" />  
+				        <p:column headerText="Contact">  
+				        	<h:outputText value="#{tournament.getContact()}" />  
 				        </p:column>
 				        <p:column headerText="Location">  
-				        	<h:outputText value="#{TournamentGame.getLocation()}" />  
-				        </p:column>
-				        <p:column headerText="Tournament Name">  
-				        	<h:outputText value="#{TournamentGame.getTournamentname()}" />  
+				        	<h:outputText value="#{tournament.getLocation()}" />  
 				        </p:column>
 				        <p:column headerText="Status">  
-				        	<h:outputText value="#{TournamentGame.getStatus()}" />  
+				        	<h:outputText value="#{tournament.getStatus()}" />  
 				        </p:column>
 				        <p:column headerText="">
-				        	<p:splitButton id="tourngame" icon="ui-icon-folder-open"  >
-						        <p:menuitem value="Add Details" action="#{playerreleaseBean.startPermanentRelease(testgame)}" />
-						        <p:menuitem value="Add Scoresheet" action="#{playerreleaseBean.startTemporaryRelease(testgame)}" />
+				        	<p:splitButton id="tournyopitons" icon="ui-icon-folder-open"  >
+						        <p:menuitem value="Edit Tournament Detail" action="#{managerBean.editTournamentDetail(tournament)}" />
+						        <p:menuitem value="View Tournament Detail" action="#{managerBean.viewTournamentDetail(tournament)}" />
+						        <p:menuitem value="Delete Tournament" action="#{managerBean.deleteTournament(tournament)}" update="tournaments"/>
 						    </p:splitButton>
 				        </p:column>  
 				    </p:dataTable>
-				    </h:form>
-				</p:tab>
+				    </p:panel>
+				</h:form>
+			</ui:fragment>	
+			<ui:fragment id="edit-tournaments" >
+			
+				<h:form id="tourngameform">
 					
-				<p:tab title="Exhibition Games" >scaha games</p:tab>
-			</p:accordionPanel>				
+					</h:form>
+			</ui:fragment>
 		</p:layoutUnit>
 		
 		

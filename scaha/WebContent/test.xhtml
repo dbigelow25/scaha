@@ -23,37 +23,106 @@
 <ui:define name="content">
 
 			<h:form id="rosterform">	
-			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="false" /> 	
-			<p:dataTable id="playersearchresult" var="rosteredit" value="#{managerBean.getRostereditdatamodel()}" selection="#{managerBean.selectedplayer}"  editable="true" editMode="cell">
-                
-            	<p:ajax event="cellEdit" actionListener="#{managerBean.onCellEdit(event)}" />
-                
-                <p:column headerText="#">  
-	               <p:cellEditor>  
-	                   	<f:facet name="output"><h:outputText value="#{rosteredit.jerseynumber}" /></f:facet>  
-	                   	<f:facet name="input"><p:inputText id="jerseyInput" value="#{rosteredit.jerseynumber}" style="width:25px"/></f:facet>  
-	               </p:cellEditor>
+			<div align="left">Are you attending a tournament soon?  Add your tournament 
+			<h:outputLink id="addtournamentlink" value="#">
+				<h:outputText style = "font-size: 9pt;font-family: Verdana;" value="Here" />
+			</h:outputLink>
+			
+			<p:overlayPanel id="tournamentPanel" widgetVar="tpoverlay" for="addtournamentlink" hideEffect="fade" dynamic="false">  
+		    	<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" width="100%">
+						<h:column width="10%">Tournament Name:</h:column>
+						<h:column >
+							<p:inputText id="tourneyname" style="width:200px;" value="#{managerBean.tournamentname}" />
+						</h:column>
+						<h:column width="10%">Start Date:</h:column>
+						<h:column >
+							<p:inputText id="startdate" style="width:80px;" value="#{managerBean.startdate}" /> (MM/DD/YYYY)
+						</h:column>
+						<h:column width="10%">End Date:</h:column>
+						<h:column >
+							<p:inputText id="enddate" style="width:80px;" value="#{managerBean.enddate}" /> (MM/DD/YYYY)
+						</h:column>
+						<h:column width="10%">Contact:</h:column>
+						<h:column >
+							<p:inputText id="contact" style="width:200px;" value="#{managerBean.contact}" />
+						</h:column>
+						<h:column width="10%">Phone:</h:column>
+						<h:column >
+							<p:inputText id="contactphone" style="width:200px;" value="#{managerBean.phone}" />
+						</h:column>
+						<h:column width="10%">Sanction Number:</h:column>
+						<h:column >
+							<p:inputText id="sanctionnumber" style="width:200px;" value="#{managerBean.sanction}" />
+						</h:column>
+						<h:column width="10%">Location:</h:column>
+						<h:column >
+							<p:inputText id="location" style="width:200px;" value="#{managerBean.location}" />
+						</h:column>
+						<h:column width="10%">Website:</h:column>
+						<h:column >
+							<p:inputText id="Website" style="width:200px;" value="#{managerBean.website}" />
+						</h:column>
+					</h:panelGrid>
+					<p:commandButton id="submittournament" update="tournaments" value="Add Tournament" ajax="true" actionListener="#{managerBean.addTournament()}" oncomplete="tpoverlay.hide();"/>
+		    </p:overlayPanel> 
+			</div><br></br>
+			
+			<p:dataTable id="tournaments" var="tournament" value="#{managerBean.getTournamentdatamodel()}" selection="#{managerBean.selectedtournament}" paginator="true" rows="10" autoupdate="false">
+	            <f:facet name="header">  
+		        	2014-2015 TOURNAMENTS PLAYING IN
+		        </f:facet> 
+		         <p:column headerText="Tournament Name">  
+		            <h:outputText value="#{tournament.getTournamentname()}" />  
 		        </p:column>  
-		        <p:column headerText="Last Name">  
-		        	<h:outputText value="#{rosteredit.getLastname()}" />  
+		        <p:column headerText="Dates">  
+		            <h:outputText value="#{tournament.getDates()}" />  
 		        </p:column>
-		        <p:column headerText="First Name">  
-		        	<h:outputText value="#{rosteredit.getFirstname()}" />  
+		        <p:column headerText="Contact">  
+		        	<h:outputText value="#{tournament.getContact()}" />  
 		        </p:column>
-			          
-			 </p:dataTable>
-			 <p:dataTable id="coachesresult" var="rosteredit" value="#{managerBean.getRostercoachdatamodel()}" >
-                <p:column>  
-	                   	<h:outputText value="#{rosteredit.jerseynumber}" />  
-	            </p:column>  
-		        <p:column>  
-		        	<h:outputText value="#{rosteredit.getLastname()}" />  
+		        <p:column headerText="Location">  
+		        	<h:outputText value="#{tournament.getLocation()}" />  
 		        </p:column>
-		        <p:column>  
-		        	<h:outputText value="#{rosteredit.getFirstname()}" />  
-		        </p:column>
-			 </p:dataTable>   
-			    
+		        <p:column headerText="">
+		        	<p:splitButton id="tournyopitons" icon="ui-icon-folder-open"  >
+				        <p:menuitem value="Edit Tournament Detail" action="#{managerBean.editTournamentDetail(tournament)}" />
+				        <p:menuitem value="View Tournament Detail" action="#{managerBean.viewTournamentDetail(tournament)}" />
+				        <p:menuitem value="Delete Tournament" action="#{managerBean.deleteTournament(tournament)}" update="tournaments" />
+				    </p:splitButton>
+		        </p:column>  
+		    </p:dataTable>
+			
+			<div align="left">Your tournament is coming up soon, have you received your schedule?  Input games here</div><br></br>
+					<p:dataTable id="tournamentgames" var="TournamentGame" value="#{managerBean.getTournamentgamedatamodel()}" selection="#{managerBean.selectedtournamentgame}" paginator="true" rows="10" autoupdate="false">
+			            <f:facet name="header">  
+				        	2014-2015 TOURNAMENT GAMES
+				        </f:facet> 
+				         <p:column headerText="Date">  
+				            <h:outputText value="#{TournamentGame.getDate()}" />  
+				        </p:column>  
+				        <p:column headerText="Time">  
+				            <h:outputText value="#{TournamentGame.getTime()}" />  
+				        </p:column>
+				        <p:column headerText="Opponent">  
+				        	<h:outputText value="#{TournamentGame.getOpponent()}" />  
+				        </p:column>
+				        <p:column headerText="Location">  
+				        	<h:outputText value="#{TournamentGame.getLocation()}" />  
+				        </p:column>
+				        <p:column headerText="Tournament Name">  
+				        	<h:outputText value="#{TournamentGame.getTournamentname()}" />  
+				        </p:column>
+				        <p:column headerText="Status">  
+				        	<h:outputText value="#{TournamentGame.getStatus()}" />  
+				        </p:column>
+				        <p:column headerText="">
+				        	<p:splitButton id="tourngame" icon="ui-icon-folder-open"  >
+						        <p:menuitem value="Add Details" action="#{playerreleaseBean.startPermanentRelease(testgame)}" />
+						        <p:menuitem value="Add Scoresheet" action="#{playerreleaseBean.startTemporaryRelease(testgame)}" />
+						    </p:splitButton>
+				        </p:column>  
+				    </p:dataTable>
+				        
 				</h:form>
 			
 </ui:define>

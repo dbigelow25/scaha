@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.mail.internet.InternetAddress;
 
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -81,6 +82,16 @@ public class FamilyMemberBean  implements Serializable,  MailableObject  {
 
 	public void onFamilyMemberRowUnSelect(UnselectEvent   event) {  
 		FamilyMember fm = (FamilyMember)event.getObject();
+	}
+	@Override
+	public InternetAddress[] getToMailIAddress() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public InternetAddress[] getPreApprovedICC() {
+		// TODO Auto-generated method stub
+		return null;
 	}  
 
 }

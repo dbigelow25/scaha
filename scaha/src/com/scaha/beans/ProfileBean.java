@@ -4,16 +4,11 @@ import com.gbli.common.SendMailSSL;
 import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
-import com.scaha.objects.Family;
-import com.scaha.objects.FamilyMember;
 import com.scaha.objects.FamilyMemberDataModel;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Person;
 import com.scaha.objects.Profile;
 import com.scaha.objects.Role;
-import com.scaha.objects.ScahaMember;
-import com.scaha.objects.UsaHockeyRegistration;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -26,11 +21,9 @@ import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
-import org.primefaces.event.RowEditEvent;
-import org.primefaces.event.SelectEvent;
-import org.primefaces.event.UnselectEvent;
 import org.primefaces.model.StreamedContent;
 
 
@@ -221,6 +214,23 @@ public class ProfileBean implements Serializable,  MailableObject  {
  		}
  	}
     
+    public void verifyHasRoles(String _str){
+ 		FacesContext context = FacesContext.getCurrentInstance();
+ 		try{
+ 			if(pro == null){
+ 				this.origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
+ 				context.getExternalContext().redirect("Welcome.xhtml");
+ 			} else if(!this.hasRoleList(_str)){
+ 				this.origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
+ 				context.getExternalContext().redirect("Welcome.xhtml");
+ 			}
+
+ 		}catch (Exception e){
+ 			e.printStackTrace();
+ 		}
+ 	}
+
+    
     /**
      * This will get expanded once rolls are set up
      * @return
@@ -229,6 +239,32 @@ public class ProfileBean implements Serializable,  MailableObject  {
     	return (pro != null && pro.isSuperUser());
     }
     
+    /**
+     * Do we have a hit on any role in the passed list..
+     * 
+     * @param _strRoles
+     * @return
+     */
+    public boolean hasRoleList(String _strRoles) {
+    	LOGGER.info("has Role List:" + _strRoles);
+    	
+    	if (pro == null) return false;
+
+    	String[] roles = _strRoles.split(";");
+    	
+    	for (String role : roles) {
+    		LOGGER.info("role" + roles);
+    		for (Role myrole : pro.getRoles()) {
+    			LOGGER.info("do roles match?" + myrole.getName() + ":" + role);
+    			
+    			if (myrole.getName() != null && myrole.getName().equals(role)) return true;
+    		}
+    		
+    	}
+    	
+    	return false;
+    }
+
     public String logout() {
     	this.pro = null;
     	this.live_password = null;
@@ -1038,5 +1074,15 @@ private void buildMailBody(String _strMailBody, Person per) {
 		
 	this.MergedBody =  Utils.mergeTokens(_strMailBody,myTokens);
 	
+}
+@Override
+public InternetAddress[] getToMailIAddress() {
+	// TODO Auto-generated method stub
+	return null;
+}
+@Override
+public InternetAddress[] getPreApprovedICC() {
+	// TODO Auto-generated method stub
+	return null;
 }
 }

@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import com.gbli.common.SendMailSSL;
@@ -965,6 +966,18 @@ public class releaseBean_old implements Serializable, MailableObject {
 			this.displaypermanent = false;
 			this.displaytemporary = true;
 		}
+	}
+
+	@Override
+	public InternetAddress[] getToMailIAddress() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public InternetAddress[] getPreApprovedICC() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 

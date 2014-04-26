@@ -19,6 +19,7 @@ import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import com.gbli.common.SendMailSSL;
@@ -839,7 +840,7 @@ public class loiBean implements Serializable, MailableObject {
 					
 	    		    
 	    		    //hard my email address for testing purposes
-	    		    to = "lahockeyfan2@yahoo.com";
+	    		    //to = "lahockeyfan2@yahoo.com";
 	    		    this.setToMailAddress(to);
 	    		    this.setPreApprovedCC("");
 	    		    this.setSubject(this.firstname + " " + this.lastname + " LOI with " + this.getClubName());
@@ -1239,6 +1240,20 @@ public void getClubID(){
     		//
     		db.free();
     	}
+	}
+
+
+	@Override
+	public InternetAddress[] getToMailIAddress() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public InternetAddress[] getPreApprovedICC() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

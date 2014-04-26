@@ -76,24 +76,7 @@ public class ClubAdmin extends Person implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "ClubAdmin [MyRole=" + MyRole + ", MyClub=" + MyClub
-				+ ", getFam()=" + getFam() + ", getsPhone()=" + getsPhone()
-				+ ", getsFirstName()=" + getsFirstName() + ", getsLastName()="
-				+ getsLastName() + ", getsEmail()=" + getsEmail()
-				+ ", getsAddress1()=" + getsAddress1() + ", getsCity()="
-				+ getsCity() + ", getsState()=" + getsState()
-				+ ", getiZipCode()=" + getiZipCode() + ", getFamily()="
-				+ getFamily() + ", getGender()=" + getGender() + ", getDob()="
-				+ getDob() + ", getCitizenship()=" + getCitizenship()
-				+ ", getUsaHockeyRegistration()=" + getUsaHockeyRegistration()
-				+ ", getPersonID()=" + getPersonID() + ", getXFamilyName()="
-				+ getXFamilyName() + ", getXRelType()=" + getXRelType()
-				+ ", getXNotes()=" + getXNotes() + ", isInFamily()="
-				+ isInFamily() + ", getSMember()=" + getSMember()
-				+ ", getSize()=" + getSize() + ", getList()=" + getList()
-				+ ", getProfile()=" + getProfile() + ", getGenatt()="
-				+ getGenatt() + ", getClass()=" + getClass() + ", hashCode()="
-				+ hashCode() + ", toString()=" + super.toString() + "]";
+		return this.MyClub.getSname() + " " + this.MyRole.getDesc() + " - " + this.getsFirstName() + " " + this.getsLastName();
 	}
 
 	/**
