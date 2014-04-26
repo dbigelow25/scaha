@@ -1,5 +1,6 @@
 package com.scaha.beans;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
@@ -716,6 +717,30 @@ public class managerBean implements Serializable {
 		
 		//now we need to reload the data object for the loi list
 		getTournament();
+	}
+	
+	public void editTournamentDetail(Tournament tournament){
+		String tourneyid = tournament.getIdtournament().toString();
+		FacesContext context = FacesContext.getCurrentInstance();
+		
+		try{
+			context.getExternalContext().redirect("edittournamentform.xhtml?teamid=" + this.teamid + "&tournamentid=" + tourneyid);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void viewTournamentDetail(Tournament tournament){
+		String tourneyid = tournament.getIdtournament().toString();
+		FacesContext context = FacesContext.getCurrentInstance();
+		
+		try{
+			context.getExternalContext().redirect("viewtournamentform.xhtml?teamid=" + this.teamid + "&tournamentid=" + tourneyid);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
 

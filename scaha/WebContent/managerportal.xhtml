@@ -113,6 +113,7 @@
 				        </p:column>  
 				    </p:dataTable>
 					</p:panel>
+					<br></br>
 					<p:panel id ="tourneypanel" header="TOURNAMENTS">
 					<div align="left">Are you attending a tournament soon?  Add your tournament 
 					<h:outputLink id="addtournamentlink" value="javascript:void(0)" >
@@ -177,134 +178,13 @@
 				        	<h:outputText value="#{tournament.getStatus()}" />  
 				        </p:column>
 				        <p:column headerText="">
-				        	<p:commandButton id="viewtournament" icon="ui-icon-search"  ajax="true"/>
-				        	<p:commandButton id="edittournament" icon="ui-icon-folder-open"  ajax="true"/>
-				        	<p:commandButton id="deletetournament" icon="ui-icon-trash"  ajax="true" action="#{managerBean.deleteTournament(tournament)}" update="tournaments"/>
-				        	<!-- <p:splitButton id="tournyoptions#{tournament.idtournament}" icon="ui-icon-folder-open"  >
+				        	<p:splitButton id="tournyoptions#{tournament.idtournament}" icon="ui-icon-folder-open"  >
 						        <p:menuitem value="Edit Tournament Detail" action="#{managerBean.editTournamentDetail(tournament)}" />
-						        <p:menuitem id="viewtournament#{tournament.idtournament}" value="View Tournament Detail"/>
+						        <p:menuitem value="View Tournament Detail" action="#{managerBean.viewTournamentDetail(tournament)}"/>
 						        <p:menuitem value="Delete Tournament" action="#{managerBean.deleteTournament(tournament)}" update="tournaments"/>
-						    </p:splitButton> -->
-						    <p:overlayPanel id="#{tournament.idtournament}viewtournamentPanel" widgetVar="#{tournament.idtournament}viewtpoverlay" for="viewtournament" hideEffect="fade" dynamic="false">  
-						    	<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" width="100%">
-									<h:column width="10%">Tournament Name:</h:column>
-									<h:column >
-										<h:outputText id="tourneyname" value="#{tournament.getTournamentname()}" />
-									</h:column>
-									<h:column width="10%">Start Date:</h:column>
-									<h:column >
-										<p:inputText id="startdate" style="width:80px;" value="#{managerBean.startdate}" /> (MM/DD/YYYY)
-									</h:column>
-									<h:column width="10%">End Date:</h:column>
-									<h:column >
-										<p:inputText id="enddate" style="width:80px;" value="#{managerBean.enddate}" /> (MM/DD/YYYY)
-									</h:column>
-									<h:column width="10%">Contact:</h:column>
-									<h:column >
-										<p:inputText id="contact" style="width:200px;" value="#{managerBean.contact}" />
-									</h:column>
-									<h:column width="10%">Phone:</h:column>
-									<h:column >
-										<p:inputText id="contactphone" style="width:200px;" value="#{managerBean.phone}" />
-									</h:column>
-									<h:column width="10%">Sanction Number:</h:column>
-									<h:column >
-										<p:inputText id="sanctionnumber" style="width:200px;" value="#{managerBean.sanction}" />
-									</h:column>
-									<h:column width="10%">Location:</h:column>
-									<h:column >
-										<p:inputText id="location" style="width:200px;" value="#{managerBean.location}" />
-									</h:column>
-									<h:column width="10%">Website:</h:column>
-									<h:column >
-										<p:inputText id="Website" style="width:200px;" value="#{managerBean.website}" />
-									</h:column>
-								</h:panelGrid>
-								<p:commandButton id="submittournament" update="tournaments" value="Add Tournament" ajax="true" actionListener="#{managerBean.addTournament()}" oncomplete="tpoverlay.hide();"/>
-					    	</p:overlayPanel>
-		        			<p:overlayPanel id="#{tournament.idtournament}viewtournamentPanel" widgetVar="#{tournament.idtournament}viewtpoverlay" for="edittournament" hideEffect="fade" dynamic="false">  
-						    	<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" width="100%">
-									<h:column width="10%">Tournament Name:</h:column>
-									<h:column >
-										<p:inputText id="tourneyname" style="width:200px;" value="#{managerBean.tournamentname}" />
-									</h:column>
-									<h:column width="10%">Start Date:</h:column>
-									<h:column >
-										<p:inputText id="startdate" style="width:80px;" value="#{managerBean.startdate}" /> (MM/DD/YYYY)
-									</h:column>
-									<h:column width="10%">End Date:</h:column>
-									<h:column >
-										<p:inputText id="enddate" style="width:80px;" value="#{managerBean.enddate}" /> (MM/DD/YYYY)
-									</h:column>
-									<h:column width="10%">Contact:</h:column>
-									<h:column >
-										<p:inputText id="contact" style="width:200px;" value="#{managerBean.contact}" />
-									</h:column>
-									<h:column width="10%">Phone:</h:column>
-									<h:column >
-										<p:inputText id="contactphone" style="width:200px;" value="#{managerBean.phone}" />
-									</h:column>
-									<h:column width="10%">Sanction Number:</h:column>
-									<h:column >
-										<p:inputText id="sanctionnumber" style="width:200px;" value="#{managerBean.sanction}" />
-									</h:column>
-									<h:column width="10%">Location:</h:column>
-									<h:column >
-										<p:inputText id="location" style="width:200px;" value="#{managerBean.location}" />
-									</h:column>
-									<h:column width="10%">Website:</h:column>
-									<h:column >
-										<p:inputText id="Website" style="width:200px;" value="#{managerBean.website}" />
-									</h:column>
-								</h:panelGrid>
-								<p:commandButton id="submittournament" update="tournaments" value="Add Tournament" ajax="true" actionListener="#{managerBean.addTournament()}" oncomplete="tpoverlay.hide();"/>
-					    	</p:overlayPanel>
-		        
-				        	
-				        </p:column>  
-				    
-				    	<p:overlayPanel id="#{tournament.idtournament}viewtournamentPanel" widgetVar="#{tournament.idtournament}viewtpoverlay" for="#{tournament.idtournament}view" hideEffect="fade" dynamic="false">  
-					    	<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" width="100%">
-								<h:column width="10%">Tournament Name:</h:column>
-								<h:column >
-									<p:inputText id="tourneyname" style="width:200px;" value="#{managerBean.tournamentname}" />
-								</h:column>
-								<h:column width="10%">Start Date:</h:column>
-								<h:column >
-									<p:inputText id="startdate" style="width:80px;" value="#{managerBean.startdate}" /> (MM/DD/YYYY)
-								</h:column>
-								<h:column width="10%">End Date:</h:column>
-								<h:column >
-									<p:inputText id="enddate" style="width:80px;" value="#{managerBean.enddate}" /> (MM/DD/YYYY)
-								</h:column>
-								<h:column width="10%">Contact:</h:column>
-								<h:column >
-									<p:inputText id="contact" style="width:200px;" value="#{managerBean.contact}" />
-								</h:column>
-								<h:column width="10%">Phone:</h:column>
-								<h:column >
-									<p:inputText id="contactphone" style="width:200px;" value="#{managerBean.phone}" />
-								</h:column>
-								<h:column width="10%">Sanction Number:</h:column>
-								<h:column >
-									<p:inputText id="sanctionnumber" style="width:200px;" value="#{managerBean.sanction}" />
-								</h:column>
-								<h:column width="10%">Location:</h:column>
-								<h:column >
-									<p:inputText id="location" style="width:200px;" value="#{managerBean.location}" />
-								</h:column>
-								<h:column width="10%">Website:</h:column>
-								<h:column >
-									<p:inputText id="Website" style="width:200px;" value="#{managerBean.website}" />
-								</h:column>
-							</h:panelGrid>
-							<p:commandButton id="submittournament" update="tournaments" value="Add Tournament" ajax="true" actionListener="#{managerBean.addTournament()}" oncomplete="tpoverlay.hide();"/>
-				    	</p:overlayPanel> 
-			
-				    
+						    </p:splitButton>
+						</p:column>  
 				    </p:dataTable>
-				    
-				        	
 				    </p:panel>
 				</h:form>
 			</ui:fragment>	
