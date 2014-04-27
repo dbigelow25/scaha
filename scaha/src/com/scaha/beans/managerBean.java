@@ -678,6 +678,7 @@ public class managerBean implements Serializable {
     				String contact = rs.getString("contact");
     				String location = rs.getString("location");
     				String status = rs.getString("status");
+    				Boolean rendered = rs.getBoolean("rendered");
     				
     				Tournament tournament = new Tournament();
     				tournament.setIdtournament(Integer.parseInt(idteam));
@@ -686,6 +687,7 @@ public class managerBean implements Serializable {
     				tournament.setContact(contact);
     				tournament.setLocation(location);
     				tournament.setStatus(status);
+    				tournament.setRendered(rendered);
     				templist.add(tournament);
 				}
 				LOGGER.info("We have results for tourney list by team:" + this.teamid);
@@ -822,6 +824,7 @@ public class managerBean implements Serializable {
     				String opponent = rs.getString("opponent");
     				String location = rs.getString("location");
     				String status = rs.getString("status");
+    				Boolean rendered = rs.getBoolean("rendered");
     				
     				TournamentGame tournament = new TournamentGame();
     				tournament.setIdgame(Integer.parseInt(idnonscahagame));
@@ -831,6 +834,7 @@ public class managerBean implements Serializable {
     				tournament.setOpponent(opponent);
     				tournament.setLocation(location);
     				tournament.setStatus(status);
+    				tournament.setRendered(rendered);
     				templist.add(tournament);
 				}
 				LOGGER.info("We have results for tourney list by team:" + this.teamid);
@@ -1019,6 +1023,7 @@ public class managerBean implements Serializable {
     				String opponent = rs.getString("opponent");
     				String location = rs.getString("location");
     				String status = rs.getString("status");
+    				Boolean rendered = rs.getBoolean("rendered");
     				
     				ExhibitionGame tournament = new ExhibitionGame();
     				tournament.setIdgame(Integer.parseInt(idnonscahagame));
@@ -1027,6 +1032,7 @@ public class managerBean implements Serializable {
     				tournament.setOpponent(opponent);
     				tournament.setLocation(location);
     				tournament.setStatus(status);
+    				tournament.setRendered(rendered);
     				templist.add(tournament);
 				}
 				LOGGER.info("We have results for exhibition list by team:" + this.teamid);

@@ -21,10 +21,19 @@ public class TournamentGame extends ScahaObject implements Serializable {
 	private String time = null;
 	private String tournamentname = null;
 	private String status = null;
+	private Boolean rendered = null;
 	
 	public TournamentGame (){ 
 		
 	}
+	
+	public Boolean getRendered(){
+    	return rendered;
+    }
+    
+    public void setRendered(Boolean fname){
+    	rendered=fname;
+    }
 	
 	public String getDate(){
     	return date;
