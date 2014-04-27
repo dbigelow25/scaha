@@ -37,14 +37,13 @@
 
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
 <ui:define name="content">
-
+<div id="page-div">
  <p:tabMenu activeIndex="1">  
     <p:menuitem value="My Profile" url="manageprofile.xhtml"  />  
     <p:menuitem value="Scaha Membership" url="membermanagement.xhtml" icon="ui-icon-star" />  
     <p:menuitem value="Change Password" url="changepassword.xhtml"/>  
 
 </p:tabMenu>  
-<div id="page-div">
 <h:form id="form">
 <p/>
 <div class="NewsTitle">#{profileBean.getProfile().getPerson().getFam().getFamilyName()} </div>

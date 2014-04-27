@@ -246,22 +246,13 @@ public class ProfileBean implements Serializable,  MailableObject  {
      * @return
      */
     public boolean hasRoleList(String _strRoles) {
-    	LOGGER.info("has Role List:" + _strRoles);
-    	
     	if (pro == null) return false;
-
     	String[] roles = _strRoles.split(";");
-    	
     	for (String role : roles) {
-    		LOGGER.info("role" + roles);
     		for (Role myrole : pro.getRoles()) {
-    			LOGGER.info("do roles match?" + myrole.getName() + ":" + role);
-    			
     			if (myrole.getName() != null && myrole.getName().equals(role)) return true;
     		}
-    		
     	}
-    	
     	return false;
     }
 
@@ -269,13 +260,14 @@ public class ProfileBean implements Serializable,  MailableObject  {
     	this.pro = null;
     	this.live_password = null;
     	this.origin = null;
-    	
     	//
     	// Lets reset the bean here..
     	// maybe we distroy the bean when done?
     	//
     	this.setNotEditPassword();
     	this.setNotEditPerson();
+    	
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
     	
     	//
     	// Redirect to the Login Screen
@@ -286,8 +278,6 @@ public class ProfileBean implements Serializable,  MailableObject  {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
-        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         return "login";
      }
     

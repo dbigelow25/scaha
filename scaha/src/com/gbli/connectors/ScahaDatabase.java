@@ -64,7 +64,7 @@ public class ScahaDatabase extends Database {
 		Vector<String> v = new Vector<String>();
 		v.add(_sUser);
 		v.add(_sPass);
-		LOGGER.info("here are the password credentials:" + _sUser + ":" + _sPass);
+		LOGGER.info("db.verify: Parms are:" + _sUser + ":" + _sPass);
 		return super.getData(c_sp_profile, v);
 
 	}

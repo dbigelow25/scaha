@@ -18,7 +18,7 @@
 		<f:event type="preRenderView" listener="#{profileBean.verifySU()}" />
 	</f:metadata>
 </h:head>
-<h:body style="width:700px">	
+<h:body>	
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
 <ui:define name="content">
 
@@ -33,7 +33,7 @@
 		</tr>
 	</table>
 	
-	<p:layout id="layout" style="min-width:700px;min-height:1000px;">
+	<p:layout id="layout" >
  		<p:layoutUnit id="left" position="west" size="200" resizable="false" closable="false" collapsible="false" header="Team Roster" >
 			<h:form id="rosterform">		
 			<p:dataTable id="playersearchresult" var="rosteredit" value="#{managerBean.getRostereditdatamodel()}" selection="#{managerBean.selectedplayer}"  editable="true" editMode="cell">

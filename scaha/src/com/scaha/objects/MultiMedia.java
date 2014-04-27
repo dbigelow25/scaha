@@ -164,7 +164,6 @@ public class MultiMedia extends ScahaObject implements Serializable {
 			this.setExtension(rs.getString(1));
 			Blob bl = rs.getBlob(2);
 			this.setMmObject(bl.getBytes(1, (int) bl.length()));
-			LOGGER.info("blob ext is(" + this.Extension + "), " + this.getMmObject().length);
 		}
 		rs.close();
 		

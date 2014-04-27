@@ -10,14 +10,12 @@ import com.gbli.context.ContextManager;
 public class DatabasePool implements Runnable {
 	
 	private final static Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
-	
-	private Object c_olock = 0;
-	
-	// The number of database connections in the pool
-	private int m_iCount = 2;
 
-	// not available when starting up, flag for shutting down.
-	private boolean m_bavail = false;
+	private int m_iCount = 2;	// The dnumber of database connections in the pool
+
+	private Object c_olock = new Object();
+	private Object dbGetLock = new Object();
+
 	private boolean m_bshutdown = false;
 	private String m_sName = null;
 	private Vector<Database> m_vConnections = new Vector<Database>();
@@ -132,16 +130,18 @@ public class DatabasePool implements Runnable {
 	 * @return
 	 */
 	public Database getDatabase() {
+		
 		int icount = 0;
 		Database db = null;
 		while (db == null && icount < 10) {
 			for (int i=0; i < this.m_iCount;i++) {
 				db = this.m_vConnections.get(i);
-				if (!db.isInUse()) {
-					db.checkHeath();
-					db.setInUse();
-					LOGGER.info(db + ": Handing out connection to request...");
-					return db;
+				synchronized (dbGetLock) {
+					if (!db.isInUse()) {
+						db.checkHeath();
+						db.setInUse();
+						return db;
+					}
 				}
 			}
 			icount++;

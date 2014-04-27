@@ -148,7 +148,6 @@ public class Club extends ScahaObject implements Serializable {
 	 * @return the cal
 	 */
 	public ClubAdminList getCal() {
-		LOGGER.fine("Requesting Club Admin List from Club:" + this.ID + ":" + this.getClubname());
 		return cal;
 	}
 

@@ -130,7 +130,6 @@ public class Profile extends ScahaObject {
 					id = rs.getInt(1);
 					sNickName = rs.getString(2);
 					bgood = true;
-					LOGGER.info("SUCCESS ON LOGIN");
 				}
 			}
 		
@@ -144,8 +143,8 @@ public class Profile extends ScahaObject {
 		//
 		
 		if (bgood) {
-			LOGGER.info("Creating the profile...");
 			prof =  new Profile (id, db, sNickName, _sUser, _sPass, true);
+			LOGGER.info("Login was successful for " + prof.getPerson().getsFirstName() + " " + prof.getPerson().getsLastName() + ", " + prof.getNickName());
 		} 
 		
 		db.free();
@@ -206,7 +205,7 @@ public class Profile extends ScahaObject {
 	}
 	
 	public String toString() {
-		return this.ID + ":" + this.getNickName() + ":" + this.m_sUser;
+		return this.getNickName() + " (" + this.m_sUser + ")";
 	}
 	
 	

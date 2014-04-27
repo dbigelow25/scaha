@@ -30,21 +30,10 @@ public class Family extends ScahaObject implements Serializable  {
 	}
 
 	public Family (ScahaDatabase _db, Person _per) {
-
-		//
-		// since we are using a passed database.. we do not want to free it..
-		// we just want to clean up after ourselves..
-		//
-		
-		LOGGER.info("Attempting to create the Family...");
-		// who owns the family?
+		LOGGER.info("Creating Family Structure for:" + _per);
 		this.per = _per;
-		
 		FamilyMembers = new ArrayList<FamilyMember>();
 		
-		//
-		// ok.. lets pull the family info here..
-		//
 		Vector<Integer> v = new Vector<Integer>();
 		v.add(_per.ID);
 		ResultSet rs = null;
@@ -62,10 +51,6 @@ public class Family extends ScahaObject implements Serializable  {
 					// ok.. now lets make a family member .. by sticking a person and a responsibility together..
 					//
 					FamilyMember mem = new FamilyMember(this.getProfile(), this, rs.getInt(5), rs.getInt(3));
-					
-					//
-					// Need gender information.. along with Date Of Birth.. it all goes here as well..
-					// 
 					mem.setRelationship(rs.getString(4));
 					mem.setsFirstName(rs.getString(6));
 					mem.setsLastName(rs.getString(7));
@@ -81,8 +66,8 @@ public class Family extends ScahaObject implements Serializable  {
 					mem.setMembertypes(rs.getString(17));
 					mem.setUsaHockeyNumber(rs.getString(18));
 					mem.setScahaHockeyNumber(rs.getString(19));
-					
 					FamilyMembers.add(mem);
+					LOGGER.info("FamilyMember: adding " + mem + " to " + _per +"'s family tree.");
 				}	
 					
 			}
@@ -91,8 +76,6 @@ public class Family extends ScahaObject implements Serializable  {
 		} finally {
 			_db.cleanup();
 		}
-		
-		LOGGER.info("Fam Members are:" + FamilyMembers);
 	}
 	
 	public List<FamilyMember> getFamilyMembers() {
@@ -142,7 +125,7 @@ public class Family extends ScahaObject implements Serializable  {
 		
 		//
 		// lets check to make sure we have a valid person.. (>0)
-		
+		//
 		if (this.per != null && this.per.ID > 0) {
 			//
 			// ok.. we are good here..

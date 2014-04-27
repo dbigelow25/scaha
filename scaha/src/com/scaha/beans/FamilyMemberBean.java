@@ -66,10 +66,7 @@ public class FamilyMemberBean  implements Serializable,  MailableObject  {
 	public void setCurrentFM(FamilyMember selectedFamilyMember) {
 		this.currentFM = selectedFamilyMember;
 		if (this.currentFM == null) {
-			LOGGER.info("We have a null family member coming across ...");
-			
-		} else {
-			LOGGER.info("I am selected Family Member: " + this.currentFM.ID);
+			LOGGER.info("FamilyMemberBean: We have a null family member selected");
 		}
 	}
 

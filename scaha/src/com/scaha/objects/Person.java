@@ -53,7 +53,6 @@ public class Person extends ScahaObject implements Serializable {
 	
 	public Person (ScahaDatabase _db, Profile _pro) {
 		
-		LOGGER.info("Attempting to Create the Person...");
 		//
 		//  Lets pull from the database now..
 		// 
@@ -80,7 +79,7 @@ public class Person extends ScahaObject implements Serializable {
 					this.setGender(rs.getString(i++));
 					this.setDob(rs.getString(i++));
 					this.setCitizenship(rs.getString(i++));
-					LOGGER.info("Successfully Created the Person Object...");
+					LOGGER.info("Successfully Created the person: " + this);
 
 				}
 			}
@@ -443,5 +442,9 @@ public class Person extends ScahaObject implements Serializable {
 	 */
 	public void setSMember(ScahaMember sMember) {
 		SMember = sMember;
+	}
+	
+	public String toString() {
+		return this.getsFirstName() + " " + this.getsLastName();
 	}
 }

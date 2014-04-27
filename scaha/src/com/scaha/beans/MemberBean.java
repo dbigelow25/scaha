@@ -441,13 +441,13 @@ public class MemberBean implements Serializable, MailableObject {
 				FamilyMember fm = new FamilyMember(pro, tfam, per);
 				fm.setRelationship(this.getRelationship());
 				fm.updateFamilyMemberStructure(db);
-				//
-				// ok.. since we are good.. lets get a new family structure for the pic.
-				//
-				tper.setFam(null);
-				tper.setFam(new Family(db, tper));
-
 			}
+			
+			//
+			// Now lets update the family structure now
+			//
+			tper.setFam(new Family(db, tper));
+
 			
 			this.buildMailBody(db, tper, per, usar, mem);
 			SendMailSSL mail = new SendMailSSL(this);
