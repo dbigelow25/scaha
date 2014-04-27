@@ -420,7 +420,57 @@ public class nonscahagameBean implements Serializable {
 		
     }
 	
-	
+	public void updateExhibitionGame() {  
+	    
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	
+    	try{
+    		//first get team name
+    		CallableStatement cs = db.prepareCall("CALL scaha.updateExhibitionGameForTeam(?,?,?,?,?,?)");
+    		cs.setInt("gameid", this.gameid);
+    		cs.setInt("teamid", this.teamid);
+			cs.setString("newgamedate", this.gamedate);
+			cs.setString("newgametime", this.gametime);
+			cs.setString("newopponent", this.opponent);
+			cs.setString("newlocation", this.location);
+			cs.executeQuery();
+			db.commit();
+			db.cleanup();
+    		
+			LOGGER.info("manager has updated game:" + this.gameid);
+    		
+			getTournamentGame();
+			
+			
+			//need to add email to manager and scaha statistician
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN adding tournament");
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+		
+    	FacesContext context = FacesContext.getCurrentInstance();
+    	Application app = context.getApplication();
+
+		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{managerBean}", Object.class );
+
+		managerBean mb = (managerBean) expression.getValue( context.getELContext() );
+    	mb.getExhibitionGames();
+
+    	try{
+    		context.getExternalContext().redirect("managerportal.xhtml");
+    	} catch (IOException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}
+	}
 	
 }
 
