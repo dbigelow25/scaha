@@ -26,6 +26,11 @@
 		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
+		<managed-bean-name>nonscahagameBean</managed-bean-name>
+		<managed-bean-class>com.scaha.beans.nonscahagameBean</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
 		<managed-bean-name>picklistRoleBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.PicklistRoleBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>

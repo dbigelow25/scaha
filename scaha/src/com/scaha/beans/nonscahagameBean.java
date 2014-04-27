@@ -33,7 +33,7 @@ import com.scaha.objects.TournamentGameDataModel;
 
 //import com.gbli.common.SendMailSSL;
 
-public class tournamentBean implements Serializable {
+public class nonscahagameBean implements Serializable {
 
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
@@ -47,22 +47,20 @@ public class tournamentBean implements Serializable {
 	
 	//bean level properties used by multiple methods
 	private Integer teamid = null;
+	private Integer gameid = null;
 	private String teamname = null;
 	private Integer idclub = null;
 	private Integer profileid = 0;
 	private Boolean ishighschool = null;
 	
 	//properties for adding tournaments
-	private String tournamentname;
-	private String startdate;
-	private String enddate;
-	private String contact;
-	private String phone;
-	private String sanction;
+	private String gamedate;
+	private String gametime;
+	private String opponent;
 	private String location;
-	private String website;
 	private Integer idteamtournament;	
 	private String status;
+	private String selectedtournamentforgame;
 	
 	@PostConstruct
     public void init() {
@@ -94,21 +92,29 @@ public class tournamentBean implements Serializable {
         }
     	
     	
-    	if(hsr.getParameter("tournamentid") != null)
+    	if(hsr.getParameter("gameid") != null)
         {
-    		this.idteamtournament = Integer.parseInt(hsr.getParameter("tournamentid").toString());
+    		this.gameid = Integer.parseInt(hsr.getParameter("gameid").toString());
         }
         
         teamid = 131;
         
-        getTournament();
+        getTournamentGame();
         
         
 	}
 	
-    public tournamentBean() {  
+    public nonscahagameBean() {  
         
     }  
+    
+    public String getSelectedtournamentforgame(){
+    	return selectedtournamentforgame;
+    }
+    
+    public void setSelectedtournamentforgame(String svalue){
+    	selectedtournamentforgame=svalue;
+    }
     
     public Integer getIdteamtournament(){
     	return idteamtournament;
@@ -127,12 +133,12 @@ public class tournamentBean implements Serializable {
     }
     
     
-    public String getWebsite(){
-    	return website;
+    public Integer getGameid(){
+    	return gameid;
     }
     
-    public void setWebsite(String name){
-    	website=name;
+    public void setGameid(Integer name){
+    	gameid=name;
     }
     
     
@@ -144,57 +150,30 @@ public class tournamentBean implements Serializable {
     	location=name;
     }
     
-    public String getSanction(){
-    	return sanction;
+    public String getGamedate(){
+    	return gamedate;
     }
     
-    public void setSanction(String name){
-    	sanction=name;
-    }
-    
-    
-    public String getPhone(){
-    	return phone;
-    }
-    
-    public void setPhone(String name){
-    	phone=name;
+    public void setGamedate(String name){
+    	gamedate=name;
     }
     
     
-    public String getContact(){
-    	return contact;
+    public String getGametime(){
+    	return gametime;
     }
     
-    public void setContact(String name){
-    	contact=name;
-    }
-    
-    
-    public String getEnddate(){
-    	return enddate;
-    }
-    
-    public void setEnddate(String name){
-    	enddate=name;
+    public void setGametime(String name){
+    	gametime=name;
     }
     
     
-    public String getStartdate(){
-    	return startdate;
+    public String getOpponent(){
+    	return opponent;
     }
     
-    public void setStartdate(String name){
-    	startdate=name;
-    }
-    
-    
-    public String getTournamentname(){
-    	return tournamentname;
-    }
-    
-    public void setTournamentname(String name){
-    	tournamentname=name;
+    public void setOpponent(String name){
+    	opponent=name;
     }
     
     public String getTeamname(){
@@ -343,30 +322,27 @@ public class tournamentBean implements Serializable {
 	}
 
 	
-	public void updateTournament() {  
+	public void updateTournamentGame() {  
     
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	
     	try{
     		//first get team name
-    		CallableStatement cs = db.prepareCall("CALL scaha.updateTournamentForTeam(?,?,?,?,?,?,?,?,?,?)");
-    		cs.setInt("teamtournamentid", this.idteamtournament);
+    		CallableStatement cs = db.prepareCall("CALL scaha.updateTournamentGameForTeam(?,?,?,?,?,?,?)");
+    		cs.setInt("gameid", this.gameid);
+    		cs.setInt("teamtournamentid", Integer.parseInt(this.selectedtournamentforgame));
     		cs.setInt("teamid", this.teamid);
-			cs.setString("newtournamentname", this.tournamentname);
-			cs.setString("newstartdate", this.startdate);
-			cs.setString("newenddate", this.enddate);
-			cs.setString("newcontact", this.contact);
-			cs.setString("newphone", this.phone);
-			cs.setString("newsanction", this.sanction);
+			cs.setString("newgamedate", this.gamedate);
+			cs.setString("newgametime", this.gametime);
+			cs.setString("newopponent", this.opponent);
 			cs.setString("newlocation", this.location);
-			cs.setString("newwebsite", this.website);
-		    cs.executeQuery();
+			cs.executeQuery();
 			db.commit();
 			db.cleanup();
     		
-			LOGGER.info("manager has added tournament:" + this.tournamentname);
+			LOGGER.info("manager has updated game:" + this.gameid);
     		
-			getTournament();
+			getTournamentGame();
 			
 			
 			//need to add email to manager and scaha statistician
@@ -389,7 +365,7 @@ public class tournamentBean implements Serializable {
 				"#{managerBean}", Object.class );
 
 		managerBean mb = (managerBean) expression.getValue( context.getELContext() );
-    	mb.getTournament();
+    	mb.getTournamentGames();
 
     	try{
     		context.getExternalContext().redirect("managerportal.xhtml");
@@ -399,44 +375,40 @@ public class tournamentBean implements Serializable {
     	}
 	}
 	
-	public void getTournament() {  
+	public void getTournamentGame() {  
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	
     	try{
     		//first get team name
-    		CallableStatement cs = db.prepareCall("CALL scaha.getTournamentForTeam(?,?)");
+    		CallableStatement cs = db.prepareCall("CALL scaha.getTournamentGameForTeam(?,?)");
 			cs.setInt("teamid", this.teamid);
-			cs.setInt("teamtournamentid", this.idteamtournament);
+			cs.setInt("gameid", this.gameid);
 			rs = cs.executeQuery();
 			
 			if (rs != null){
 				
 				while (rs.next()) {
 					this.idteamtournament = rs.getInt("idteamtournament");
-    				this.tournamentname = rs.getString("tournamentname");
-    				this.startdate = rs.getString("startdate");
-    				this.enddate = rs.getString("enddate");
-    				this.contact = rs.getString("contact");
+					this.setSelectedtournamentforgame(this.idteamtournament.toString());
+					this.gamedate = rs.getString("gamedate");
+    				this.gametime = rs.getString("gametime");
+    				this.opponent = rs.getString("opponent");
     				this.location = rs.getString("location");
     				this.status = rs.getString("status");
-    				this.sanction = rs.getString("sanction");
-    				this.website = rs.getString("website");
-    				this.phone = rs.getString("phone");
+    				
     			}
-				LOGGER.info("We have results for tourney list by team:" + this.teamid);
+				LOGGER.info("We have results for tourney game by team:" + this.gameid);
 			}
 			
 			
 			rs.close();
 			db.cleanup();
     		
-			LOGGER.info("manager has added tournament:" + this.tournamentname);
-    		//need to add email sent to scaha statistician and manager
-			
-			
+			LOGGER.info("loaded detail for tournament game:" + this.gameid);
+    		
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
-    		LOGGER.info("ERROR IN getting tournament list for team" + this.teamid);
+    		LOGGER.info("ERROR IN getting tournament game for team" + this.gameid);
     		e.printStackTrace();
     		db.rollback();
     	} finally {

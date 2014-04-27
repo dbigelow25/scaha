@@ -69,6 +69,7 @@ public class managerBean implements Serializable {
     private TempGame selectedgame = null;
 	private TournamentGame selectedtournamentgame = null;
 	private Tournament selectedtournament = null;
+	private String selectedtournamentforgame = null;
 	
 	//properties for adding tournaments
 	private String tournamentname;
@@ -79,6 +80,12 @@ public class managerBean implements Serializable {
 	private String sanction;
 	private String location;
 	private String website;
+	
+	//properties for adding tournament/exhibition games
+	private String gamedate=null;
+	private String gametime=null;
+	private String opponent=null;
+	
 		
 	
 	@PostConstruct
@@ -102,6 +109,7 @@ public class managerBean implements Serializable {
         
         //Load Tournament and Games
         getTournament();
+        getTournamentGames();
         
         //Load Exhibition Games
 
@@ -110,6 +118,31 @@ public class managerBean implements Serializable {
     public managerBean() {  
         
     }  
+    
+    public String getGamedate(){
+    	return gamedate;
+    }
+    
+    public void setGamedate(String gdate){
+    	gamedate=gdate;
+    }
+    
+    public String getGametime(){
+    	return gametime;
+    }
+    
+    public void setGametime(String gdate){
+    	gametime=gdate;
+    }
+    
+    public String getOpponent(){
+    	return opponent;
+    }
+    
+    public void setOpponent(String gdate){
+    	opponent=gdate;
+    }
+    
     
     public String getWebsite(){
     	return website;
@@ -258,6 +291,13 @@ public class managerBean implements Serializable {
 		selectedtournament = selectedGame;
 	}
 	
+	public String getSelectedtournamentforgame(){
+		return selectedtournamentforgame;
+	}
+	
+	public void setSelectedtournamentforgame(String selected){
+		selectedtournamentforgame = selected;
+	}
 	
 	public List<TempGame> getGames(){
 		return games;
@@ -325,11 +365,7 @@ public class managerBean implements Serializable {
     public void setTournamentgamedatamodel(TournamentGameDataModel odatamodel){
     	TournamentGameDataModel = odatamodel;
     }
-    /**
-     * This simply saves a new team to the system.
-     * 
-     */
-   
+    
     public void closePage(){
     	FacesContext context = FacesContext.getCurrentInstance();
     	try{
@@ -586,6 +622,8 @@ public class managerBean implements Serializable {
     		
 			getTournament();
 			
+			//need to add email to manager and scaha statistician
+			
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN adding tournament");
@@ -737,6 +775,159 @@ public class managerBean implements Serializable {
 		
 		try{
 			context.getExternalContext().redirect("viewtournamentform.xhtml?teamid=" + this.teamid + "&tournamentid=" + tourneyid);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void getTournamentGames() {  
+		List<TournamentGame> templist = new ArrayList<TournamentGame>();
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	
+    	try{
+    		//first get team name
+    		CallableStatement cs = db.prepareCall("CALL scaha.getTournamentGamesForTeam(?)");
+			cs.setInt("teamid", this.teamid);
+			rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					String idnonscahagame = rs.getString("idnonscahagames");
+    				String tournamentname = rs.getString("tournamentname");
+    				String gamedate = rs.getString("gamedate");
+    				String gametime = rs.getString("gametime");
+    				String opponent = rs.getString("opponent");
+    				String location = rs.getString("location");
+    				String status = rs.getString("status");
+    				
+    				TournamentGame tournament = new TournamentGame();
+    				tournament.setIdgame(Integer.parseInt(idnonscahagame));
+    				tournament.setTournamentname(tournamentname);
+    				tournament.setDate(gamedate);
+    				tournament.setTime(gametime);
+    				tournament.setOpponent(opponent);
+    				tournament.setLocation(location);
+    				tournament.setStatus(status);
+    				templist.add(tournament);
+				}
+				LOGGER.info("We have results for tourney list by team:" + this.teamid);
+			}
+			
+			
+			rs.close();
+			db.cleanup();
+    		
+			LOGGER.info("manager has added tournament:" + this.tournamentname);
+    		//need to add email sent to scaha statistician and manager
+			
+			
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN getting tournament list for team" + this.teamid);
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+		
+    	setTournamentgames(templist);
+    	TournamentGameDataModel = new TournamentGameDataModel(tournamentgames);
+	}
+	
+	public List<TournamentGame> getTournamentgames(){
+		return tournamentgames;
+	}
+	
+	public void setTournamentgames(List<TournamentGame> tgames){
+		tournamentgames = tgames;
+	}
+	
+	public void addTournamentGame(){
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	
+    	try{
+    		//first get team name
+    		CallableStatement cs = db.prepareCall("CALL scaha.addTournamentGameForTeam(?,?,?,?,?,?)");
+			cs.setInt("teamid", this.teamid);
+			cs.setString("newteamtournamentid", selectedtournamentforgame);
+			cs.setString("newgamedate", this.gamedate);
+			cs.setString("newgametime", this.gametime);
+			cs.setString("newopponent", this.opponent);
+			cs.setString("newlocation", this.location);
+			cs.executeQuery();
+			db.commit();
+			db.cleanup();
+    		
+			LOGGER.info("manager has added tournament game:" + this.gamedate);
+    		
+			getTournamentGames();
+			
+			//need to add email to manager and scaha statistician
+			
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN adding tournament");
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+	}
+	
+	public void deleteTournamentGame(TournamentGame tourn){
+		//need to set to void
+    	Integer gameid = tourn.getIdgame();
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
+
+			if (db.setAutoCommit(false)) {
+			
+				//Need to provide info to the stored procedure to save or update
+ 				LOGGER.info("remove tournament game from list");
+ 				CallableStatement cs = db.prepareCall("CALL scaha.deleteTeamTournamentGame(?)");
+    		    cs.setInt("gameid", gameid);
+    		    cs.executeQuery();
+    		    db.commit();
+    			db.cleanup();
+ 				
+    		    FacesContext context = FacesContext.getCurrentInstance();  
+                context.addMessage(null, new FacesMessage("Successful", "You have deleted the tournament game"));
+			} else {
+		
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("ERROR IN Deleting the Tournament");
+			e.printStackTrace();
+			db.rollback();
+		} finally {
+			//
+			// always clean up after yourself..
+			//
+			db.free();
+		}
+		
+		//now we need to reload the data object for the loi list
+		getTournamentGames();
+	}
+
+	public void editGameDetail(TournamentGame tournament){
+		String gameid = tournament.getIdgame().toString();
+		FacesContext context = FacesContext.getCurrentInstance();
+		
+		try{
+			context.getExternalContext().redirect("edittournamentgameform.xhtml?teamid=" + this.teamid + "&gameid=" + gameid);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
