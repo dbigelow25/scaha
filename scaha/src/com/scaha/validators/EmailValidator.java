@@ -44,16 +44,15 @@ public class EmailValidator implements Validator {
         	InternetAddress emailAddr = new InternetAddress(username);
         	emailAddr.validate();
        	} catch (AddressException ex) {
-        	LOGGER.info("This is not an e-mail address");
+        	LOGGER.info("E-mail Validation: " + username + "is not an e-mail address");
             FacesMessage message = new FacesMessage();
-            message.setDetail("Email not valid");
-            message.setSummary("Email not valid");
+            message.setDetail("E-mail Validation: " + username + "is not an e-mail address");
+            message.setSummary("Email Error");
             message.setSeverity(FacesMessage.SEVERITY_ERROR);
             throw new ValidatorException(message);
        	}
 
-        LOGGER.info("It looks like an e-mail address..");
-
+        LOGGER.info("E-mail Validation: " + username + "appears to look copesetic..");
         
 		//
 		// ok.. lets check the database to make sure its unique..
@@ -64,25 +63,21 @@ public class EmailValidator implements Validator {
         Vector<String> v = new Vector<String>();
 		v.add(username);
 
-		db.getData("CALL scaha.checkforuser(?)", v);
-        
+		db.getData("call scaha.checkforuser(?)", v);
+
 		//
 		// iF a row comes back.. We ALREADY Have THAT USERNAME 
 		// and in this case, thats great.. because we are going to send 
 		// 
 		try {
 			if (db.getResultSet() != null && db.getResultSet().next()){
-				LOGGER.info("One FREE");
 			} else {
-				LOGGER.info("TWO FREE");
 				throw new ValidatorException(new FacesMessage(
 						FacesMessage.SEVERITY_ERROR, "This UserName Cannot be found in the system.", null));
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}  finally {
-			LOGGER.info("THREE FREE");
 			db.free();
 		}
 

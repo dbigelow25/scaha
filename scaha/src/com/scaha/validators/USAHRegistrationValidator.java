@@ -65,7 +65,7 @@ public class USAHRegistrationValidator implements Validator {
 					FacesMessage message = new FacesMessage();
 		        	message.setSeverity(FacesMessage.SEVERITY_ERROR);
 		        	message.setSummary("USA Hockey Registration.");
-		        	message.setDetail("The reg number has already been claimed.");
+		        	message.setDetail("The reg number has already been claimed by ");
 		            throw new ValidatorException(message);
 				}
 			}
