@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
-public class TournamentGame extends ScahaObject implements Serializable {
+public class ExhibitionGame extends ScahaObject implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
@@ -23,7 +23,7 @@ public class TournamentGame extends ScahaObject implements Serializable {
 	private String status = null;
 	private Boolean rendered = null;
 	
-	public TournamentGame (){ 
+	public ExhibitionGame (){ 
 		
 	}
 	

@@ -26,10 +26,19 @@ public class Tournament extends ScahaObject implements Serializable {
 	private String location = null;
 	private String website = null;
 	private String status = null;
+	private Boolean rendered = null;
 	
 	public Tournament (){ 
 		
 	}
+	
+	public Boolean getRendered(){
+    	return rendered;
+    }
+    
+    public void setRendered(Boolean fname){
+    	rendered=fname;
+    } 
 	
 	public Integer getIdtournament(){
     	return idtournament;
