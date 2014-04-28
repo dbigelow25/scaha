@@ -20,18 +20,17 @@ import com.gbli.common.SendMailSSL;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Division;
+import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.MailableObject;
-import com.scaha.objects.Person;
-import com.scaha.objects.Profile;
+import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.SkillLevel;
-import com.scaha.objects.Team;
-import com.scaha.objects.TeamDataModel;
+import com.scaha.objects.TeamList;
 
 //import com.gbli.common.SendMailSSL;
 
 @ManagedBean
 @SessionScoped
-public class teamBean implements Serializable, MailableObject {
+public class TeamBean implements Serializable, MailableObject {
 
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
@@ -41,35 +40,32 @@ public class teamBean implements Serializable, MailableObject {
 	@ManagedProperty(value="#{profileBean}")
 	private ProfileBean pb;
 
-	private List<Team> teams = null;
     private List<Division> divisions= null;
     private List<SkillLevel> skilllevels= null;
-    private TeamDataModel TeamDataModel = null;
 	private String selectedskilllevel = null;
 	private String selecteddivision = null;
 	private String teamname = null;
 	private Integer idclub = null;
-	private Team selectedteam = null;
+	private ScahaTeam selectedteam = null;
 	private String teamstabletitle = null;
 	private Integer profileid = 0;
 	private Boolean ishighschool = null;
+	private String TargetTeamID = null;
+	private TeamList MyTeamList = null;
 	
 	@PostConstruct
     public void init() {
-		teams = new ArrayList<Team>();  
-        TeamDataModel = new TeamDataModel(teams);
-        
         idclub = 1;  
     	this.setProfid(pb.getProfile().ID);
         getClubID();
         isClubHighSchool();
-    	
         populateTableTitle(idclub);
-        teamsForClub(idclub); 
-
+        getTeamsForClub(idclub); 
+        getListofDivisions();
+        this.getListofSkillLevels();
 	}
 	
-    public teamBean() {  
+    public TeamBean() {  
         
     }  
     
@@ -99,11 +95,11 @@ public class teamBean implements Serializable, MailableObject {
 		teamstabletitle = stitle;
 	}
     
-    public Team getSelectedteam(){
+    public ScahaTeam getSelectedteam(){
 		return selectedteam;
 	}
 	
-	public void setSelectedteam(Team selectedTeam){
+	public void setSelectedteam(ScahaTeam selectedTeam){
 		selectedteam = selectedTeam;
 	}
     
@@ -150,7 +146,6 @@ public class teamBean implements Serializable, MailableObject {
 			while (rs.next()) {
 				Integer iddivision = rs.getInt("iddivisions");
     			String divisionname = rs.getString("division_name");
-    			
     			Division division = new Division();
     			division.setDivisionname(divisionname);
     			division.setIddivision(iddivision);
@@ -241,77 +236,64 @@ public class teamBean implements Serializable, MailableObject {
 	public void setSkilllevels(List<SkillLevel> list){
 		skilllevels = list;
 	}
-	
-	
-	
-	public List<Team> getTeams(){
-		return teams;
-	}
-	
-	public void setTeams(List<Team> list){
-		teams = list;
-	}
-	
 	    
     //retrieves list of existing teams for the club
-    public void teamsForClub(Integer idclub){
+    public void getTeamsForClub(Integer idclub){
+    	
+		GeneralSeason scahags = scaha.getScahaSeasonList().getCurrentSeason();
     	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-    	List<Team> tempresult = new ArrayList<Team>();
-    	
-    	try{
-    			
-			CallableStatement cs = db.prepareCall("CALL scaha.getTeamsForRegistrarList(?,?)");
-		    cs.setInt("clubid", idclub);
-		    cs.setInt("inputyear", 2014);
-		    ResultSet rs = cs.executeQuery();
-    			
-			if (rs != null){
-				
-				while (rs.next()) {
-					String idteam = rs.getString("idteams");
-    				String steamname = rs.getString("teamname");
-    				String skillname= rs.getString("levelsname");
-    				String division_name = rs.getString("division_name");
-    				
-    				Team oteam = new Team(steamname,idteam);
-    				oteam.setDivisionname(division_name);
-    				oteam.setSkillname(skillname);
-    				tempresult.add(oteam);
-				}
-				
-				LOGGER.info("We have results for teams by club" + idclub);
-				
-			}
-   			rs.close();	
-    		cs.close();
-   			db.cleanup();
-
-   			LOGGER.info("We have tried to retrieve teams for club" + idclub);
-    			
-    	} catch (SQLException e) {
-    		// TODO Auto-generated catch block
-    		LOGGER.info("ERROR IN Searching FOR Teams for club:" + idclub);
-    		e.printStackTrace();
-    		db.rollback();
-    	} finally {
-    		//
-    		// always clean up after yourself..
-    		//
-    		db.free();
-    	}
-    	
-    	//setResults(tempresult);
-    	setTeams(tempresult);
-    	TeamDataModel = new TeamDataModel(teams);
+  			
+		try {
+			setMyTeamList(TeamList.NewTeamListFactory(pb.getProfile(), db, scaha.getScahaClubList().getRowData(idclub+"") , scahags, true, false));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.free();
+//    	
+//    	try{
+//    			
+//			CallableStatement cs = db.prepareCall("CALL scaha.getTeamsForRegistrarList(?,?)");
+//		    cs.setInt("clubid", idclub);
+//		    cs.setInt("inputyear", 2014);
+//		    ResultSet rs = cs.executeQuery();
+//    			
+//			if (rs != null){
+//				
+//				while (rs.next()) {
+//					String idteam = rs.getString("idteams");
+//    				String steamname = rs.getString("teamname");
+//    				String skillname= rs.getString("levelsname");
+//    				String division_name = rs.getString("division_name");
+//    				
+//    				Team oteam = new Team(steamname,idteam);
+//    				oteam.setDivisionname(division_name);
+//    				oteam.setSkillname(skillname);
+//    				tempresult.add(oteam);
+//				}
+//				
+//				LOGGER.info("We have results for teams by club" + idclub);
+//				
+//			}
+//   			rs.close();	
+//    		cs.close();
+//   			db.cleanup();
+//
+//   			LOGGER.info("We have tried to retrieve teams for club" + idclub);
+//    			
+//    	} catch (SQLException e) {
+//    		// TODO Auto-generated catch block
+//    		LOGGER.info("ERROR IN Searching FOR Teams for club:" + idclub);
+//    		e.printStackTrace();
+//    		db.rollback();
+//    	} finally {
+//    		//
+//    		// always clean up after yourself..
+//    		//
+//    		db.free();
+//    	}
     }
 
-    public TeamDataModel getTeamdatamodel(){
-    	return TeamDataModel;
-    }
-    
-    public void setTeamdatamodel(TeamDataModel odatamodel){
-    	TeamDataModel = odatamodel;
-    }
 
     /**
      * This simply saves a new team to the system.
@@ -357,7 +339,7 @@ public class teamBean implements Serializable, MailableObject {
     	SendMailSSL mail = new SendMailSSL(this);
 		mail.sendMail();
 		
-    	teamsForClub(idclub);
+    	getTeamsForClub(idclub);
     	this.setSelecteddivision(null);
     	this.setSelectedskilllevel(null);
     	this.setTeamname(null);
@@ -386,7 +368,7 @@ public class teamBean implements Serializable, MailableObject {
    			
 			while (rs.next()) {
 				String sclubname = rs.getString("clubname");
-   				this.setTeamstabletitle("2014 " + sclubname + " Teams");
+   				this.setTeamstabletitle(sclubname + " Teams for the " + scaha.getScahaSeasonList().getCurrentSeason());
    			}
 				
 			LOGGER.info("We have results for teams by club" + idclub);
@@ -548,6 +530,51 @@ public class teamBean implements Serializable, MailableObject {
 	public InternetAddress[] getPreApprovedICC() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/**
+	 * @return the targetTeamID
+	 */
+	public String getTargetTeamID() {
+		return TargetTeamID;
+	}
+
+	/**
+	 * @param targetTeamID the targetTeamID to set
+	 */
+	public void setTargetTeamID(String targetTeamID) {
+		TargetTeamID = targetTeamID;
+	}
+	
+	/**
+	 *  This edits the team that has the ID set in the TargetTeamID property
+	 */
+	public void editTeam() {
+		
+		this.selectedteam = null;
+		for (ScahaTeam t : this.MyTeamList) {
+			if (t.ID == Integer.parseInt(this.TargetTeamID)) {
+				this.selectedteam = t;
+				break;
+			}
+		}
+		
+		LOGGER.info("Here is what I found:" + this.selectedteam.getTeamname() + ". This was the temp id" + TargetTeamID);
+		
+	}
+
+	/**
+	 * @return the myTeamList
+	 */
+	public TeamList getMyTeamList() {
+		return MyTeamList;
+	}
+
+	/**
+	 * @param myTeamList the myTeamList to set
+	 */
+	public void setMyTeamList(TeamList myTeamList) {
+		MyTeamList = myTeamList;
 	}
 
 }

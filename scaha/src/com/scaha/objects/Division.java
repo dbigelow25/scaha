@@ -1,13 +1,8 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
-import java.sql.CallableStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Vector;
 import java.util.logging.Logger;
 
-import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
 public class Division extends ScahaObject implements Serializable {
@@ -16,9 +11,9 @@ public class Division extends ScahaObject implements Serializable {
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	
 	
-	private String DivisionName = null;
-	private Integer IDdivision = null;
-	private String Tag = null;
+	private String divisionname = null;
+	private Integer iddivision = null;
+	private String tag = null;
 	
 	public Division (){ 
 	}
@@ -26,22 +21,49 @@ public class Division extends ScahaObject implements Serializable {
 	public Division (Profile _pro, int _id) {
 		setProfile(_pro);
 		ID = _id;
-		IDdivision = new Integer(_id);
-	}
-	public String getDivisionname(){
-		return DivisionName;
+		setIddivision(new Integer(_id));
 	}
 	
-	public void setDivisionname(String sName){
-		DivisionName = sName;
+	/**
+	 * @return the tag
+	 */
+	public String getTag() {
+		return tag;
 	}
-	
-	public Integer getIddivision(){
-		return IDdivision;
+
+	/**
+	 * @param tag the tag to set
+	 */
+	public void setTag(String tag) {
+		this.tag = tag;
 	}
-	
-	public void setIddivision(Integer id){
-		IDdivision = id;
+
+	/**
+	 * @return the divisionname
+	 */
+	public String getDivisionname() {
+		return divisionname;
+	}
+
+	/**
+	 * @param divisionname the divisionname to set
+	 */
+	public void setDivisionname(String divisionname) {
+		this.divisionname = divisionname;
+	}
+
+	/**
+	 * @return the iddivision
+	 */
+	public Integer getIddivision() {
+		return iddivision;
+	}
+
+	/**
+	 * @param iddivision the iddivision to set
+	 */
+	public void setIddivision(Integer iddivision) {
+		this.iddivision = iddivision;
 	}
 	
 	

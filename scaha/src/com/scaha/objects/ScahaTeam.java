@@ -6,7 +6,7 @@ import com.gbli.context.ContextManager;
 
 public class ScahaTeam extends ScahaObject implements Serializable {
 	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 45L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	
 	//
@@ -16,18 +16,18 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 	private CoachList Coachs = null;
 	private ManagerList Managers = null;
 	
-	private Division TeamDivision = null;
-	private SkillLevel TeamSkillLevel = null;
+	private Division teamdivision = null;
+	private SkillLevel teamskilllevel = null;
 	
-	private String TeamName = null;
-	private String TeamGender = null;    
-	private String SeasonTag = null;
-	private String SkillLevelTag = null;
-	private String DivisionTag = null;
-	private String ScheduleTags = null;
-	private int IsExhibition = 0;
-	
-	
+	private String teamname = null;
+	private String teamgender = null;    
+	private String seasontag = null;
+	private String scheduletags = null;
+	private int isexhibition = 0;
+	private String skillleveltag = null;
+	private String divisiontag = null;
+
+
 	public ScahaTeam (Profile _pro, int _id) {
 		setProfile(_pro);
 		this.ID = _id;
@@ -62,136 +62,7 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 		}
 		return  null;
 	}
-	/**
-	 * @return the teamDivision
-	 */
-	public Division getTeamDivision() {
-		return TeamDivision;
-	}
-
-	/**
-	 * @param teamDivision the teamDivision to set
-	 */
-	public void setTeamDivision(Division teamDivision) {
-		TeamDivision = teamDivision;
-	}
-
-	/**
-	 * @return the teamSkillLevel
-	 */
-	public SkillLevel getTeamSkillLevel() {
-		return TeamSkillLevel;
-	}
-
-	/**
-	 * @param teamSkillLevel the teamSkillLevel to set
-	 */
-	public void setTeamSkillLevel(SkillLevel teamSkillLevel) {
-		TeamSkillLevel = teamSkillLevel;
-	}
-
-	/**
-	 * @return the teamName
-	 */
-	public String getTeamName() {
-		return TeamName;
-	}
-
-	/**
-	 * @param teamName the teamName to set
-	 */
-	public void setTeamName(String teamName) {
-		TeamName = teamName;
-	}
-
-	/**
-	 * @return the teamGender
-	 */
-	public String getTeamGender() {
-		return TeamGender;
-	}
-
-	/**
-	 * @param teamGender the teamGender to set
-	 */
-	public void setTeamGender(String teamGender) {
-		TeamGender = teamGender;
-	}
-
-	/**
-	 * @return the seasonTag
-	 */
-	public String getSeasonTag() {
-		return SeasonTag;
-	}
-
-	/**
-	 * @param seasonTag the seasonTag to set
-	 */
-	public void setSeasonTag(String seasonTag) {
-		SeasonTag = seasonTag;
-	}
-
-	/**
-	 * @return the skillLevelTag
-	 */
-	public String getSkillLevelTag() {
-		return SkillLevelTag;
-	}
-
-	/**
-	 * @param skillLevelTag the skillLevelTag to set
-	 */
-	public void setSkillLevelTag(String skillLevelTag) {
-		SkillLevelTag = skillLevelTag;
-	}
-
-	/**
-	 * @return the divisionTag
-	 */
-	public String getDivisionTag() {
-		return DivisionTag;
-	}
-
-	/**
-	 * @param divisionTag the divisionTag to set
-	 */
-	public void setDivisionTag(String divisionTag) {
-		DivisionTag = divisionTag;
-	}
-
-	/**
-	 * @return the isExhibition
-	 */
-	public int getIsExhibition() {
-		return IsExhibition;
-	}
-
-	public String isExhibitionTeam() {
-		return (IsExhibition == 1 ? "Yes" : "No");
-	}
-	/**
-	 * @param isExhibition the isExhibition to set
-	 */
-	public void setIsExhibition(int isExhibition) {
-		IsExhibition = isExhibition;
-	}
-
-	/**
-	 * @return the scheduleTags
-	 */
-	public String getScheduleTags() {
-		return ScheduleTags;
-	}
-
-	/**
-	 * @param scheduleTags the scheduleTags to set
-	 */
-	public void setScheduleTags(String scheduleTags) {
-		ScheduleTags = scheduleTags;
-	}
-
-
+	
 	/**
 	 * @return the coachs
 	 */
@@ -225,7 +96,133 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return this.getTeamName() + " " + this.getDivisionTag() + " " + this.getSkillLevelTag();
+		return this.getTeamname() + " " + this.getDivisiontag() + this.getSkillleveltag();
+	}
+
+	/**
+	 * @return the isexhibition
+	 */
+	public int getIsexhibition() {
+		return isexhibition;
+	}
+
+	/**
+	 * @param isexhibition the isexhibition to set
+	 */
+	public void setIsexhibition(int isexhibition) {
+		this.isexhibition = isexhibition;
+	}
+
+	/**
+	 * @return the scheduletags
+	 */
+	public String getScheduletags() {
+		return scheduletags;
+	}
+
+	/**
+	 * @param scheduletags the scheduletags to set
+	 */
+	public void setScheduletags(String scheduletags) {
+		this.scheduletags = scheduletags;
+	}
+
+	/**
+	 * @return the seasontag
+	 */
+	public String getSeasontag() {
+		return seasontag;
+	}
+
+	/**
+	 * @param seasontag the seasontag to set
+	 */
+	public void setSeasontag(String seasontag) {
+		this.seasontag = seasontag;
+	}
+
+	/**
+	 * @return the teamgender
+	 */
+	public String getTeamgender() {
+		return teamgender;
+	}
+
+	/**
+	 * @param teamgender the teamgender to set
+	 */
+	public void setTeamgender(String teamgender) {
+		this.teamgender = teamgender;
+	}
+
+	/**
+	 * @return the teamdivision
+	 */
+	public Division getTeamdivision() {
+		return teamdivision;
+	}
+
+	/**
+	 * @param teamdivision the teamdivision to set
+	 */
+	public void setTeamdivision(Division teamdivision) {
+		this.teamdivision = teamdivision;
+	}
+
+	/**
+	 * @return the teamskilllevel
+	 */
+	public SkillLevel getTeamskilllevel() {
+		return teamskilllevel;
+	}
+
+	/**
+	 * @param teamskilllevel the teamskilllevel to set
+	 */
+	public void setTeamskilllevel(SkillLevel teamskilllevel) {
+		this.teamskilllevel = teamskilllevel;
+	}
+
+	/**
+	 * @return the teamname
+	 */
+	public String getTeamname() {
+		return teamname;
+	}
+
+	/**
+	 * @param teamname the teamname to set
+	 */
+	public void setTeamname(String teamname) {
+		this.teamname = teamname;
+	}
+
+	/**
+	 * @return the skillleveltag
+	 */
+	public String getSkillleveltag() {
+		return skillleveltag;
+	}
+
+	/**
+	 * @param skillleveltag the skillleveltag to set
+	 */
+	public void setSkillleveltag(String skillleveltag) {
+		this.skillleveltag = skillleveltag;
+	}
+
+	/**
+	 * @return the divisiontag
+	 */
+	public String getDivisiontag() {
+		return divisiontag;
+	}
+
+	/**
+	 * @param divisiontag the divisiontag to set
+	 */
+	public void setDivisiontag(String divisiontag) {
+		this.divisiontag = divisiontag;
 	}
 	
 		

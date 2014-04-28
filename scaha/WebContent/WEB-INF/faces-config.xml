@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<faces-config
-    xmlns="http://java.sun.com/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd"
-    version="2.1">
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd"
+	version="2.1">
 	<managed-bean>
 		<managed-bean-name>profileBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.ProfileBean</managed-bean-class>
@@ -50,7 +49,7 @@
 		<managed-bean-class>com.scaha.beans.DraftCoachesBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-	
+
 	<managed-bean>
 		<managed-bean-name>loiBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.loiBean</managed-bean-class>
@@ -172,8 +171,8 @@
 		<validator-class>com.scaha.validators.USAHRegistrationValidator</validator-class>
 	</validator>
 	<managed-bean>
-    <managed-bean-name>now</managed-bean-name>
-    	<managed-bean-class>java.util.Date</managed-bean-class>
-    	<managed-bean-scope>request</managed-bean-scope>
+		<managed-bean-name>now</managed-bean-name>
+		<managed-bean-class>java.util.Date</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
 	</managed-bean>
 </faces-config>

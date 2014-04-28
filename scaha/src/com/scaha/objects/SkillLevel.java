@@ -11,9 +11,9 @@ public class SkillLevel extends ScahaObject implements Serializable {
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	
 	
-	private String SkillLevelName = null;
-	private Integer IDskilllevel = null;
-	private String Tag = null;
+	private String skilllevelname = null;
+	private Integer idskilllevel = null;
+	private String tag = null;
 	
 	public SkillLevel (){ 
 		
@@ -25,33 +25,33 @@ public class SkillLevel extends ScahaObject implements Serializable {
 	}
 	
 	public String getSkilllevelname(){
-		return SkillLevelName;
+		return skilllevelname;
 	}
 	
 	public void setSkilllevelname(String sName){
-		SkillLevelName = sName;
+		skilllevelname = sName;
 	}
 	
 	public Integer getIdskilllevel(){
-		return IDskilllevel;
+		return idskilllevel;
 	}
 	
 	public void setIdskilllevel(Integer sid){
-		IDskilllevel = sid;
+		idskilllevel = sid;
 	}
 
 	/**
 	 * @return the tag
 	 */
 	public String getTag() {
-		return Tag;
+		return tag;
 	}
 
 	/**
 	 * @param tag the tag to set
 	 */
-	public void setTag(String tag) {
-		Tag = tag;
+	public void setTag(String _tag) {
+		tag = _tag;
 	}
 	
 	

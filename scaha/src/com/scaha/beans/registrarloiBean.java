@@ -285,7 +285,7 @@ public class registrarloiBean implements Serializable {
         				
         				Team team = new Team(teamname,idteam);
         				team.setIdteam(idteam);
-        				team.setTeamname(teamname);
+        				team.setTeamName(teamname);
         				
         				
         				templist.add(team);

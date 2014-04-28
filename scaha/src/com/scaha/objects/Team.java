@@ -12,11 +12,11 @@ import com.gbli.context.ContextManager;
 
 public class Team extends ScahaObject implements Serializable {
 	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	
 	
-	private String TeamName = null;
+	public String TeamName = null;
 	private String IDteam = null;
 	private String skillname = null;
 	private String division_name = null;
@@ -74,11 +74,11 @@ public class Team extends ScahaObject implements Serializable {
 	}
 	
 	
-	public String getTeamname(){
+	public String getTeamName(){
 		return TeamName;
 	}
 	
-	public void setTeamname(String sName){
+	public void setTeamName(String sName){
 		TeamName = sName;
 	}
 	

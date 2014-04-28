@@ -59,23 +59,31 @@ public class TeamList extends ListDataModel<ScahaTeam> implements Serializable, 
 			while (rs.next()) {
 				int i = 1;
 				ScahaTeam tm = new ScahaTeam(_pro,rs.getInt(i++));
-				tm.setTeamName(rs.getString(i++));
-				tm.setTeamGender(rs.getString(i++));
+				tm.setTeamname(rs.getString(i++));
+				tm.setTeamgender(rs.getString(i++));
 				int idSkill = rs.getInt(i++);
-				tm.setSkillLevelTag(rs.getString(i++));
+				tm.setSkillleveltag(rs.getString(i++));
 				int idDivs = rs.getInt(i++);
-				tm.setDivisionTag(rs.getString(i++));
-				tm.setIsExhibition(rs.getInt(i++));
-				tm.setSeasonTag(rs.getString(i++));
-				tm.setScheduleTags(rs.getString(i++));
-				
+				tm.setDivisiontag(rs.getString(i++));
+				tm.setIsexhibition(rs.getInt(i++));
+				tm.setSeasontag(rs.getString(i++));
+				tm.setScheduletags(rs.getString(i++));
+				int idSkill2 = rs.getInt(i++);
+				SkillLevel sl = new SkillLevel(_pro, idSkill);
+				sl.setSkilllevelname(rs.getString(i++));
+				sl.setTag(rs.getString(i++));
+				Division div = new Division(_pro,idDivs);
+				int idiv2 = rs.getInt(i++);
+				div.setDivisionname(rs.getString(i++));
+				div.setTag(rs.getString(i++));
 				//
 				// We will worry about creating the other objects later.. they are reference objects
 				// and we need to be carefull not to create a ton of copies floating around
 				//
 				// they are the skilllevel, divisions, and seasons.
+				tm.setTeamdivision(div);
+				tm.setTeamskilllevel(sl);
 				data.add(tm);
-				LOGGER.info(tm.toString());
 			}
 			rs.close();
 			
@@ -84,13 +92,13 @@ public class TeamList extends ListDataModel<ScahaTeam> implements Serializable, 
 			//
 			// For any team.. the admin staff is coaches.. assistant Coaches.. and Managers
 			// for any team..
-
-			for (ScahaTeam tm : data) {
-				tm.setCoachs(CoachList.NewCoachListFactory(_pro, ps, tm));
-				tm.setManagers(ManagerList.NewManagerListFactory(_pro, ps2, tm));
+			if (_badmin) {
+				for (ScahaTeam tm : data) {
+					tm.setCoachs(CoachList.NewCoachListFactory(_pro, ps, tm));
+					tm.setManagers(ManagerList.NewManagerListFactory(_pro, ps2, tm));
+				}
 			}
-
-			
+				
 		}
 
 		ps.close();
