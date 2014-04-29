@@ -10,11 +10,14 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.mail.internet.InternetAddress;
+
+import org.primefaces.event.RowEditEvent;
 
 import com.gbli.common.SendMailSSL;
 import com.gbli.connectors.ScahaDatabase;
@@ -576,6 +579,17 @@ public class TeamBean implements Serializable, MailableObject {
 	public void setMyTeamList(TeamList myTeamList) {
 		MyTeamList = myTeamList;
 	}
+	
+	public void onEdit(RowEditEvent event) { 
+		FacesMessage msg = new FacesMessage("Item Edited",((ScahaTeam) event.getObject()).toString()); 
+		FacesContext.getCurrentInstance().addMessage(null, msg); 
+	} 
+	       
+	public void onCancel(RowEditEvent event) { 
+		FacesMessage msg = new FacesMessage("Item Cancelled");  
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+	     //   orderList.remove((ScahaTeam) event.getObject());
+	}  
 
 }
 

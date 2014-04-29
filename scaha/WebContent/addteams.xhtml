@@ -20,8 +20,8 @@
 	xmlns:p="http://primefaces.org/ui">
 <ui:define name="content">
 <div id="page-div">
-<p:growl id="messages" showDetail="true"/>
 <h:form id="form1">
+<p:growl id="messages" showDetail="true"/>
 <p:panel id ="panel" header="Manage Teams:">
 	<h:panelGrid columns="2" cellpadding="5">
 		<h:column><b>Division:</b></h:column>
@@ -49,19 +49,47 @@
 		</h:column>
 	</h:panelGrid>
 	<p:separator id="bp1" style="width:800px;height:2px" />    
-	<p:dataTable id="teamlist" var="t" value="#{teamBean.getMyTeamList()}" editable="true">
+	
+	 <p:contextMenu for="teamlist" widgetVar="cMenu">     
+        <p:menuitem value="Edit Cell" icon="ui-icon-search" onclick="PF('teamsTable').showCellEditor();return false;"/>    
+        <p:menuitem value="Hide Menu" icon="ui-icon-close" onclick="PF('cMenu').hide()"/>    
+    </p:contextMenu>   
+    
+    
+	<p:dataTable id="teamlist" var="t" value="#{teamBean.getMyTeamList()}" editable="true"  widgetVar="teamsTable" cellSeparator=" \/ ">
    		<f:facet name="header">  
 	        <h:outputText value="#{teamBean.getTeamstabletitle()}" />
 	    </f:facet> 
-        <p:column headerText="Team Name">  
-  			<h:outputText value="#{t.teamname}" />  
-		</p:column>  
-		<p:column headerText="USA Hockey Division">  
-			<h:outputText value="#{t.divisiontag}#{t.skillleveltag}" />  
+	   	<p:ajax event="rowEdit" listener="#{teamBean.onEdit()}" update=":form1:messages" /> 
+		<p:column headerText="Team Name" style="width:40%"> 
+            <p:cellEditor> 
+				<f:facet name="output"> 
+				    <h:outputText value="#{t.teamname}" /> 
+				</f:facet> 
+				<f:facet name="input"> 
+				    <p:inputText value="#{t.teamname}" style="width:100%"/> 
+				</f:facet> 
+            </p:cellEditor>
+        </p:column>
+		<p:column headerText="Scaha Division / Skill Level" style="width:45%">  
+			 <p:cellEditor> 
+				<f:facet name="output"> 
+					<h:outputText value="#{t.getTeamdivision().divisionname} / #{t.getTeamskilllevel().skilllevelname}" />  
+				</f:facet> 
+				<f:facet name="input"> 
+					<p:selectOneMenu style="font-size:10pt;width:175px;" value="#{t.teamdivision}" required="true" requiredMessage="Division team will play in required.">
+						<f:selectItem itemLabel="#{t.teamdivision.divisionname}" itemValue="#{t.teamdivision.iddivision}"/>
+						<f:selectItems value="#{teamBean.getDivisions()}" var="division" itemLabel="#{division.divisionname}" itemValue="#{division.iddivision}"/>
+					</p:selectOneMenu>
+					<p:selectOneMenu  style="font-size:10pt;width:175px;"  value="#{t.teamskilllevel}" required="true" requiredMessage="Skill level team will play is required.">
+			    		<f:selectItems value="#{teamBean.getSkilllevels()}" var="skilllevel" itemLabel="#{skilllevel.skilllevelname}" itemValue="#{skilllevel.idskilllevel}"/>
+		    		</p:selectOneMenu>
+		    	</f:facet>
+			</p:cellEditor>
 		</p:column>
-		<p:column headerText="Scaha Division / Skill Level">  
-			<h:outputText value="#{t.getTeamdivision().divisionname} / #{t.getTeamskilllevel().skilllevelname}" />  
-		</p:column>
+        <p:column headerText="Options" style="width:15%">
+	        <p:rowEditor /> 
+        </p:column> 
 	</p:dataTable>
 </p:panel>
 </h:form>

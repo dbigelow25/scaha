@@ -39,8 +39,7 @@ public class Database {
 	private boolean m_binuse = false;
 	private String m_sName = "Database";
 	private int m_iId = 0; // This is an identifier that help identifies it when
-							// used
-							// in a pool setting
+	private int m_iTxCount = 0;
 
 	private String m_sDriver = null; // The Driver for the connection
 	private String m_sURL = null; // The Connection URL..
@@ -464,6 +463,15 @@ public class Database {
 	public void setInUse() {
 		LOGGER.info(this + " is being placed in use");
 		m_binuse = true;
+		this.incTx();
+	}
+	
+	public void incTx() {
+		this.m_iTxCount++;
+	}
+	
+	public int getTxCount() {
+		return this.m_iTxCount;
 	}
 
 	/**
@@ -500,8 +508,7 @@ public class Database {
 
 	@Override
 	public String toString() {
-		return "DB(" + m_sName + ")[" + m_iId + "]:"
-				+ (m_binuse ? "busy" : "free") + ":";
+		return "DB(" + m_sName + ")[" + m_iId + "]:" + (m_binuse ? "busy" : "free") + ":txcnt:" + this.getTxCount();
 	}
 
 	/**
