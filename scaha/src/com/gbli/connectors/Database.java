@@ -151,8 +151,6 @@ public class Database {
 
 	public void cleanup() {
 
-		LOGGER.finest(this + "Clean Up Connection:" + this.m_iId);
-
 		try {
 			m_rsmd = null;
 			if (m_rs != null) {
@@ -181,7 +179,8 @@ public class Database {
 	 */
 	public void close() {
 
-		LOGGER.finest(this + "Close Out Connection:" + this.m_iId);
+		LOGGER.info(this + "Close Out Connection:" + this.m_iId);
+		
 		try {
 			this.cleanup();
 			m_con.close();

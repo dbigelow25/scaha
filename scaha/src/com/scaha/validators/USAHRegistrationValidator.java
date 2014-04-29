@@ -46,14 +46,34 @@ public class USAHRegistrationValidator implements Validator {
 
         ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 
+    	//
+		// Now.. lets check to make sure its for the active year and not some prior year...
+		//
+        
         try {
 
+        	Vector<String> v = new Vector<String>();
+    		
+    		v.clear();
+    		v.add(sUSAHReg.substring(3,4));
+    		db.getData("CALL scaha.validateUSAHockeyYear(?)", v);
+    		//
+    		// iF we get any result back.. then we are in the proper year
+    		// 
+    		if (!db.getResultSet().next()){
+
+    			FacesMessage message = new FacesMessage();
+    			message.setSeverity(FacesMessage.SEVERITY_ERROR);
+    			message.setSummary("USA Hockey Registration.");
+    			message.setDetail("This Number is NOT for the upcomming registration year.  Please check your number and try again.");
+    			throw new ValidatorException(message);
+    		}
 
 	        
-	        Vector<String> v = new Vector<String>();
-			
-	        //
+	         //
 	        // ok.. lets make sure the USA Hockey number is not currently in play...
+    		//
+    		v.clear();
 	        v.add(sUSAHReg);
 			db.getData("CALL scaha.checkForExistingUSAHNum(?)", v);
 			
@@ -70,23 +90,7 @@ public class USAHRegistrationValidator implements Validator {
 				}
 			}
 			
-			//
-			// Now.. lets check to make sure its for the active year and not some prior year...
-			//
-			v.clear();
-			v.add(sUSAHReg.substring(3,4));
-			db.getData("CALL scaha.validateUSAHockeyYear(?)", v);
-    		//
-			// iF we get any result back.. then we are in the proper year
-			// 
-			if (!db.getResultSet().next()){
-
-				FacesMessage message = new FacesMessage();
-				message.setSeverity(FacesMessage.SEVERITY_ERROR);
-				message.setSummary("USA Hockey Registration.");
-				message.setDetail("This Number is NOT for the current registration year.  Please check your number and try again.");
-				throw new ValidatorException(message);
-			}
+		
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -16,7 +16,7 @@ public class Team extends ScahaObject implements Serializable {
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	
 	
-	public String TeamName = null;
+	public String teamname = null;
 	private String IDteam = null;
 	private String skillname = null;
 	private String division_name = null;
@@ -25,7 +25,7 @@ public class Team extends ScahaObject implements Serializable {
 	private String totalcoachescount = null;
 	
 	public Team (String sName, String teamid){ 
-		TeamName = sName;
+		teamname = sName;
 		IDteam = teamid;
 	}
 	
@@ -74,12 +74,12 @@ public class Team extends ScahaObject implements Serializable {
 	}
 	
 	
-	public String getTeamName(){
-		return TeamName;
+	public String getTeamname(){
+		return teamname;
 	}
 	
-	public void setTeamName(String sName){
-		TeamName = sName;
+	public void setTeamname(String sName){
+		teamname = sName;
 	}
 	
 	public String getIdteam(){

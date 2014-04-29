@@ -71,7 +71,6 @@ public class UserNameValidator implements Validator {
 		// 
 		try {
 			if (db.getResultSet() != null && db.getResultSet().next()){
-				LOGGER.info("TWO FREE");
 				throw new ValidatorException(new FacesMessage(
 						FacesMessage.SEVERITY_ERROR, "This UserName is already in use.", null));
 			}
@@ -79,7 +78,6 @@ public class UserNameValidator implements Validator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}  finally {
-			LOGGER.info("THREE FREE");
 			db.free();
 		}
 

@@ -113,7 +113,7 @@ public class managerosterBean implements Serializable {
 	        				
 	        				Team team = new Team(teamname,idteam);
 	        				team.setIdteam(idteam);
-	        				team.setTeamName(teamname);
+	        				team.setTeamname(teamname);
 	        				team.setActiveplayercount(activeplayercount);
 	        				team.setTotalplayercount(totalplayercount);
 	        				team.setTotalcoachescount(totalcoachcount);
