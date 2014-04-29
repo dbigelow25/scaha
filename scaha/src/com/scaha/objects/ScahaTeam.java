@@ -1,7 +1,11 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
+import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.util.logging.Logger;
+
+import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
 public class ScahaTeam extends ScahaObject implements Serializable {
@@ -20,6 +24,7 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 	private String sdivision = null;
 	private SkillLevel teamskilllevel = null;
 	private String sskilllevel = null;
+	private String sname = null;
 	private String teamname = null;
 	private String teamgender = null;    
 	private String seasontag = null;
@@ -27,6 +32,7 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 	private int isexhibition = 0;
 	private String skillleveltag = null;
 	private String divisiontag = null;
+	private int year = 0;
 
 
 	public ScahaTeam (Profile _pro, int _id) {
@@ -254,5 +260,72 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 		this.sskilllevel = sskilllevel;
 	}
 	
+
+	/**
+	 * Here is where we update the object back to the database...
+	 * @param _db
+	 * @throws SQLException
+	 */
+	public void update(ScahaDatabase _db) throws SQLException {
 		
+		CallableStatement cs = _db.prepareCall("call scaha.updateScahaTeam(?,?,?,?,?,?,?,?,?,?,?,?)");
+		
+		Club cl = this.getTeamClub();
+		
+		if (cl == null) {
+			LOGGER.info("SCAHATEAM update.. have no reference to the Club this belongs to.. aborting the update");
+			return;
+		}
+		
+		int i = 1;
+		cs.registerOutParameter(1, java.sql.Types.INTEGER);
+		cs.setInt(i++, this.ID);
+		cs.setInt(i++, cl.ID);
+		cs.setString(i++, this.getSname());
+		cs.setString(i++, this.getTeamname());
+		cs.setString(i++, this.getTeamgender());
+		cs.setInt(i++, this.getTeamskilllevel().ID);
+		cs.setInt(i++, this.getTeamdivision().ID);
+		cs.setInt(i++, this.getIsexhibition());
+		cs.setInt(i++, this.getYear());
+		cs.setString(i++, this.getSeasontag());
+		cs.setInt(i++,(this.isRetire() ? 0 : 1));
+		cs.setString(i++,null);
+		cs.execute();
+				
+		//
+		// Update the new ID from the database...
+		//
+		this.ID = cs.getInt(1);
+		cs.close();
+		
+	}
+
+	/**
+	 * @return the sname
+	 */
+	public String getSname() {
+		return sname;
+	}
+
+	/**
+	 * @param sname the sname to set
+	 */
+	public void setSname(String sname) {
+		this.sname = sname;
+	}
+
+	/**
+	 * @return the year
+	 */
+	public int getYear() {
+		return year;
+	}
+
+	/**
+	 * @param year the year to set
+	 */
+	public void setYear(int year) {
+		this.year = year;
+	}
 }

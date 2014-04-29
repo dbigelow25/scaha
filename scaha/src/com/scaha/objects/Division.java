@@ -62,8 +62,9 @@ public class Division extends ScahaObject implements Serializable {
 	/**
 	 * @param iddivision the iddivision to set
 	 */
-	public void setIddivision(Integer iddivision) {
-		this.iddivision = iddivision;
+	public void setIddivision(Integer div) {
+		this.iddivision = div;
+		this.ID =div.intValue();
 	}
 	
 	

@@ -22,6 +22,7 @@ import org.primefaces.event.RowEditEvent;
 import com.gbli.common.SendMailSSL;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
+import com.scaha.objects.Club;
 import com.scaha.objects.Division;
 import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.MailableObject;
@@ -162,11 +163,9 @@ public class TeamBean implements Serializable, MailableObject {
     			templist.add(div);
     			sdivs.add(divisionname);
 			}
-   			LOGGER.info("We have results for division list");
    			rs.close();
    			cs.close();
     	} catch (SQLException e) {
-    		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN loading teams");
     		e.printStackTrace();
     	} finally {
@@ -222,7 +221,6 @@ public class TeamBean implements Serializable, MailableObject {
     				sdivs.add(levelsname);
     				templist.add(level);
 				}
-				LOGGER.info("We have results for division list");
 			}
 			rs.close();
 			db.cleanup();
@@ -263,48 +261,7 @@ public class TeamBean implements Serializable, MailableObject {
 			e.printStackTrace();
 		}
 		db.free();
-//    	
-//    	try{
-//    			
-//			CallableStatement cs = db.prepareCall("CALL scaha.getTeamsForRegistrarList(?,?)");
-//		    cs.setInt("clubid", idclub);
-//		    cs.setInt("inputyear", 2014);
-//		    ResultSet rs = cs.executeQuery();
-//    			
-//			if (rs != null){
-//				
-//				while (rs.next()) {
-//					String idteam = rs.getString("idteams");
-//    				String steamname = rs.getString("teamname");
-//    				String skillname= rs.getString("levelsname");
-//    				String division_name = rs.getString("division_name");
-//    				
-//    				Team oteam = new Team(steamname,idteam);
-//    				oteam.setDivisionname(division_name);
-//    				oteam.setSkillname(skillname);
-//    				tempresult.add(oteam);
-//				}
-//				
-//				LOGGER.info("We have results for teams by club" + idclub);
-//				
-//			}
-//   			rs.close();	
-//    		cs.close();
-//   			db.cleanup();
-//
-//   			LOGGER.info("We have tried to retrieve teams for club" + idclub);
-//    			
-//    	} catch (SQLException e) {
-//    		// TODO Auto-generated catch block
-//    		LOGGER.info("ERROR IN Searching FOR Teams for club:" + idclub);
-//    		e.printStackTrace();
-//    		db.rollback();
-//    	} finally {
-//    		//
-//    		// always clean up after yourself..
-//    		//
-//    		db.free();
-//    	}
+
     }
 
 
@@ -313,19 +270,8 @@ public class TeamBean implements Serializable, MailableObject {
      * 
      */
     public void saveTeam(){
-   		// Log it for test
-		LOGGER.info("Here are team Add Parms:" + this.idclub + ":" + this.teamname + ":" + 
-				getteamgender() + ":" + this.selectedskilllevel + ":"+ this.selecteddivision + ":2014:");
-		if (scaha == null) {
-			LOGGER.info("SCAHA IS NULL!!");
-		} else if (scaha.getScahaSeasonList() == null) {
-			LOGGER.info("SCAHA SEASON LIST IS NULL!!");
-		} else if (scaha.getScahaSeasonList().getCurrentSeason() == null) {
-			LOGGER.info("SCAHA DEFAULT SEASON IS NULL!!");
-		} else {
-			LOGGER.info(scaha.getScahaSeasonList().getCurrentSeason().toString());
-		}
-		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+   
+    	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	
     	try{
  			CallableStatement cs = db.prepareCall("CALL scaha.addTeam(?,?,?,?,?,?,?)");
@@ -351,6 +297,9 @@ public class TeamBean implements Serializable, MailableObject {
 
     	SendMailSSL mail = new SendMailSSL(this);
 		mail.sendMail();
+		
+		FacesMessage msg = new FacesMessage("Team Added", this.teamname);  
+		FacesContext.getCurrentInstance().addMessage(null, msg); 
 		
     	getTeamsForClub(idclub);
     	this.setSelecteddivision(null);
@@ -434,7 +383,6 @@ public class TeamBean implements Serializable, MailableObject {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN loading club by profile");
     		e.printStackTrace();
-    		db.rollback();
     	} finally {
     		//
     		// always clean up after yourself..
@@ -510,18 +458,50 @@ public class TeamBean implements Serializable, MailableObject {
 
 	@Override
 	public String getSubject() {
-		return "A New Team was Added for ClubID: " + this.idclub;
+		
+		String strSkillLevel = "UNK";
+		String strDivision = "UNK";
+		Club cl = scaha.getScahaClubList().getRowData(this.idclub+"");
+		
+		for (SkillLevel sk : this.skilllevels) {
+			if (sk.getIdskilllevel().toString().equals(this.selectedskilllevel)) {
+				strSkillLevel = sk.getSkilllevelname();
+				break;
+			}
+		}
+		for (Division d : this.divisions) {
+			if (d.getIddivision().toString().equals(this.selecteddivision)) {
+				strDivision = d.getDivisionname();
+				break;
+			}
+		}
+		return "Team " + this.teamname + " (" + strDivision + " " +  strSkillLevel + ") was Added to club " + cl;
 	}
 	@Override
 	public String getTextBody() {
-		return "A New team was added to the Club:" + this.teamname + ":"  + getteamgender() + ":" + this.selectedskilllevel + ":" + this.selecteddivision + "<\\p>" +
-	            "This team was added by:" + pb.getFirstName() + " " + pb.getLastName();
+		String strSkillLevel = "UNK";
+		String strDivision = "UNK";
+		Club cl = scaha.getScahaClubList().getRowData(this.idclub+"");
+		
+		for (SkillLevel sk : this.skilllevels) {
+			if (sk.getIdskilllevel().toString().equals(this.selectedskilllevel)) {
+				strSkillLevel = sk.getSkilllevelname();
+				break;
+			}
+		}
+		for (Division d : this.divisions) {
+			if (d.getIddivision().toString().equals(this.selecteddivision)) {
+				strDivision = d.getDivisionname();
+				break;
+			}
+		}
+		return "A team was added to the club: " + cl + ".  <br/>"  + "The team name is " + this.teamname + "(" + strDivision + " " +  strSkillLevel + ")<p/>Thanks,<p/>The iScaha Web Site";
 	}
 
 	@Override
 	public String getPreApprovedCC() {
 		// TODO Auto-generated method stub
-		return "online@iscaha.com,scheduler@iscaha.com";
+		return "online@iscaha.com";
 	}
 	
 	@Override
@@ -590,12 +570,113 @@ public class TeamBean implements Serializable, MailableObject {
 	public void onEdit(RowEditEvent event) { 
 		FacesMessage msg = new FacesMessage("Item Edited",((ScahaTeam) event.getObject()).toString()); 
 		FacesContext.getCurrentInstance().addMessage(null, msg); 
+		
+		//
+		// lets assemble the object .. we can only change three things right now..
+		// 1) Team Name
+		//
+		// These changs below can only happen when there are NO Players assigned to the team
+		
+		// 2) Team Division
+		// 3) Team Skill Level
+		
+		ScahaTeam myteam = (ScahaTeam) event.getObject();
+		LOGGER.info("HERE IS MY TEAM:" + myteam + ":retire:" + myteam.isRetire() + myteam.getSskilllevel() + ":" + myteam.getSdivision());
+		for (ScahaTeam t : MyTeamList) {
+			if (t.ID  ==  myteam.ID) {
+				LOGGER.info("HERE IS MY TEAM:" + t);
+				t.setTeamname(myteam.getTeamname());
+				
+				//
+				// Lets assume that we have no players yet.. will need a check from the DB here..
+				//
+				for (SkillLevel sk : this.skilllevels) {
+					if (sk.getSkilllevelname().equals(myteam.getSskilllevel())) {
+						t.setTeamskilllevel(sk);
+						break;
+					}
+				}
+				
+				for (Division d : this.divisions) {
+					if (d.getDivisionname().equals(myteam.getSdivision())) {
+						t.setTeamdivision(d);
+						break;
+					}
+				}
+
+				ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		    	try {
+					t.update(db);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    	db.free();
+				break;
+			}
+			
+
+		}
+
+		//
+		// refresh the list..
+		//
+
+		LOGGER.info("HERE IS MY TEAM:" + myteam);
+		
+		
 	} 
 	       
 	public void onCancel(RowEditEvent event) { 
-		FacesMessage msg = new FacesMessage("Item Cancelled", ((ScahaTeam) event.getObject()).toString());  
+		FacesMessage msg = new FacesMessage("Team Edit Has Been Cancelled", ((ScahaTeam) event.getObject()).toString());  
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
+	
+	/**
+	 * This will delete a team as long as it has no roster info on it and it is marked as perminent.
+	 * 
+	 */
+    public void deleteTeam() {  
+		
+
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+
+		try {
+			if (!db.isTeamEmpty(selectedteam.ID)) {
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+			            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+			            "THIS TEAM CANNOT BE REMOVED",
+			            "There currently exists players and or staff assigned to this team.. you cannot remove this team from your club."));
+				db.free();
+				return;
+			}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		for (ScahaTeam t : MyTeamList) {
+			if (t.ID  ==  this.selectedteam.ID) {
+				LOGGER.info("HERE IS MY Deleted TEAM:" + t);
+				t.setRetire(true);
+		    	try {
+					t.update(db);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+			}
+		}
+    	db.free();
+		@SuppressWarnings("unchecked")
+		List<ScahaTeam> ml = (List<ScahaTeam>) MyTeamList.getWrappedData();
+		ml.remove(this.selectedteam);
+		FacesMessage msg = new FacesMessage("Team Deleted", selectedteam.toString());  
+		FacesContext.getCurrentInstance().addMessage(null, msg); 
+		
+    } 
 
 	/**
 	 * @return the sskilllevels

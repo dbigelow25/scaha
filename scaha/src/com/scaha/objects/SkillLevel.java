@@ -38,6 +38,7 @@ public class SkillLevel extends ScahaObject implements Serializable {
 	
 	public void setIdskilllevel(Integer sid){
 		idskilllevel = sid;
+		this.ID =sid.intValue();
 	}
 
 	/**

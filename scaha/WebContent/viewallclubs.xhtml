@@ -139,7 +139,7 @@
    	             <h:outputText style="font-size: 11px;" value="#{team.getDivisiontag()} #{team.getSkillleveltag()}" />
             </p:column >
             <p:column headerText="Team Name " style="font-size: 12px;">
-   	             <h:outputText style="font-size: 12px;" value="#{team.getTeamdivision().divisionname}#{team.getTeamskilllevel().skilllevelname} - #{team.getTeamname()} " />
+   	             <h:outputText style="font-size: 12px;" value="#{team.getTeamdivision().divisionname} #{team.getTeamskilllevel().skilllevelname} - #{team.getTeamname()} " />
             </p:column >
             <p:column headerText="Head Coach" style="font-size: 12px;">
    	             <h:outputText style="font-size: 12px;" value="#{empty team.getHeadCoach()  ? 'No Head Coach Set' : team.getHeadCoach().getsFirstName()} #{empty team.getHeadCoach() ? '' : team.getHeadCoach().getsLastName()}" />

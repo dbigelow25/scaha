@@ -159,6 +159,29 @@ public class ScahaDatabase extends Database {
 		return strAnswer.equals("Y");
 		
 	}
+	
+	/**
+	 *  General utility to check to see if  this person has yet to verify his bc
+	 *  
+	 * @param _sfname
+	 * @param _slname
+	 * @param _sDOB
+	 * @return
+	 * @throws SQLException 
+	 */
+	public boolean isTeamEmpty(int _idTeam) throws SQLException {
+
+		String strAnswer = "N";
+		CallableStatement cs = this.prepareCall("call scaha.isTeamEmpty(?,?)");
+		cs.setInt(1, _idTeam);
+		cs.registerOutParameter(2, java.sql.Types.VARCHAR);
+		cs.setString(2, strAnswer);
+		cs.execute();
+		strAnswer = cs.getString(2);
+		cs.close();
+		return strAnswer.equals("Y");
+		
+	}
 
 	public void updateClubPresident(Profile profile, Club _c, Person _oldPrez, Person _newPrez) throws SQLException {
 		

@@ -43,7 +43,6 @@ public class TeamList extends ListDataModel<ScahaTeam> implements Serializable, 
 	public static TeamList NewTeamListFactory(Profile _pro, ScahaDatabase _db, Club _cl, GeneralSeason _gs,boolean _badmin, boolean _roster) throws SQLException {
 		
 		List<ScahaTeam> data = new ArrayList<ScahaTeam>();
-		//https://www.google.com/maps/@34.160681,-118.3113211,17z
 		
 		PreparedStatement ps = _db.prepareStatement("call scaha.getAllCoachByTeam(?)");
 		PreparedStatement ps2 = _db.prepareStatement("call scaha.getAllManagerByTeam(?)");
@@ -59,6 +58,7 @@ public class TeamList extends ListDataModel<ScahaTeam> implements Serializable, 
 			while (rs.next()) {
 				int i = 1;
 				ScahaTeam tm = new ScahaTeam(_pro,rs.getInt(i++));
+				tm.setSname(rs.getString(i++));
 				tm.setTeamname(rs.getString(i++));
 				tm.setTeamgender(rs.getString(i++));
 				int idSkill = rs.getInt(i++);
@@ -67,6 +67,7 @@ public class TeamList extends ListDataModel<ScahaTeam> implements Serializable, 
 				tm.setDivisiontag(rs.getString(i++));
 				tm.setIsexhibition(rs.getInt(i++));
 				tm.setSeasontag(rs.getString(i++));
+				tm.setYear(rs.getInt(i++));
 				tm.setScheduletags(rs.getString(i++));
 				int idSkill2 = rs.getInt(i++);
 				SkillLevel sl = new SkillLevel(_pro, idSkill);
@@ -85,6 +86,7 @@ public class TeamList extends ListDataModel<ScahaTeam> implements Serializable, 
 				// they are the skilllevel, divisions, and seasons.
 				tm.setTeamdivision(div);
 				tm.setTeamskilllevel(sl);
+				tm.setTeamClub(_cl);
 				data.add(tm);
 			}
 			rs.close();
