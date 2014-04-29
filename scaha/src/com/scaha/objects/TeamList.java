@@ -76,6 +76,8 @@ public class TeamList extends ListDataModel<ScahaTeam> implements Serializable, 
 				int idiv2 = rs.getInt(i++);
 				div.setDivisionname(rs.getString(i++));
 				div.setTag(rs.getString(i++));
+				tm.setSdivision(div.getDivisionname());
+				tm.setSskilllevel(sl.getSkilllevelname());
 				//
 				// We will worry about creating the other objects later.. they are reference objects
 				// and we need to be carefull not to create a ton of copies floating around

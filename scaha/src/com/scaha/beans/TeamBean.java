@@ -44,7 +44,9 @@ public class TeamBean implements Serializable, MailableObject {
 	private ProfileBean pb;
 
     private List<Division> divisions= null;
+    private String[] sdivisions = null;
     private List<SkillLevel> skilllevels= null;
+    private String[] sskilllevels = null;
 	private String selectedskilllevel = null;
 	private String selecteddivision = null;
 	private String teamname = null;
@@ -130,8 +132,13 @@ public class TeamBean implements Serializable, MailableObject {
 		teamname = steamname;
 	}
 	
+	public String[] getSListOfDivisions() {
+		return this.divisions.toArray(new String[this.divisions.size()]);
+	}
+	
 	public List<Division> getListofDivisions(){
 		List<Division> templist = new ArrayList<Division>();
+		List<String> sdivs = new ArrayList<String>();
 		
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	
@@ -149,11 +156,11 @@ public class TeamBean implements Serializable, MailableObject {
 			while (rs.next()) {
 				Integer iddivision = rs.getInt("iddivisions");
     			String divisionname = rs.getString("division_name");
-    			Division division = new Division();
-    			division.setDivisionname(divisionname);
-    			division.setIddivision(iddivision);
-    						
-    			templist.add(division);
+    			Division div = new Division();
+    			div.setDivisionname(divisionname);
+    			div.setIddivision(iddivision);
+    			templist.add(div);
+    			sdivs.add(divisionname);
 			}
    			LOGGER.info("We have results for division list");
    			rs.close();
@@ -170,6 +177,7 @@ public class TeamBean implements Serializable, MailableObject {
     	}
 		
     	setDivisions(templist);
+    	this.setSdivisions(sdivs.toArray(new String[sdivs.size()]));
 		return getDivisions();
 	}
 	
@@ -183,7 +191,8 @@ public class TeamBean implements Serializable, MailableObject {
 	
 	public List<SkillLevel> getListofSkillLevels(){
 		List<SkillLevel> templist = new ArrayList<SkillLevel>();
-		
+		List<String> sdivs = new ArrayList<String>();
+	
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	
     	try{
@@ -210,7 +219,7 @@ public class TeamBean implements Serializable, MailableObject {
     				SkillLevel level = new SkillLevel();
     				level.setSkilllevelname(levelsname);
     				level.setIdskilllevel(idskilllevel);
-    						
+    				sdivs.add(levelsname);
     				templist.add(level);
 				}
 				LOGGER.info("We have results for division list");
@@ -229,6 +238,7 @@ public class TeamBean implements Serializable, MailableObject {
     	}
 		
     	setSkilllevels(templist);
+    	this.setSskilllevels(sdivs.toArray(new String[sdivs.size()]));
 		return getSkilllevels();
 	}
 	
@@ -550,22 +560,19 @@ public class TeamBean implements Serializable, MailableObject {
 	}
 	
 	/**
-	 *  This edits the team that has the ID set in the TargetTeamID property
+	 * @return the sdivisions
 	 */
-	public void editTeam() {
-		
-		this.selectedteam = null;
-		for (ScahaTeam t : this.MyTeamList) {
-			if (t.ID == Integer.parseInt(this.TargetTeamID)) {
-				this.selectedteam = t;
-				break;
-			}
-		}
-		
-		LOGGER.info("Here is what I found:" + this.selectedteam.getTeamname() + ". This was the temp id" + TargetTeamID);
-		
+	public String[] getSdivisions() {
+		return sdivisions;
 	}
 
+	/**
+	 * @param sdivisions the sdivisions to set
+	 */
+	public void setSdivisions(String[] sdivisions) {
+		this.sdivisions = sdivisions;
+	}
+	
 	/**
 	 * @return the myTeamList
 	 */
@@ -586,9 +593,22 @@ public class TeamBean implements Serializable, MailableObject {
 	} 
 	       
 	public void onCancel(RowEditEvent event) { 
-		FacesMessage msg = new FacesMessage("Item Cancelled");  
+		FacesMessage msg = new FacesMessage("Item Cancelled", ((ScahaTeam) event.getObject()).toString());  
 		FacesContext.getCurrentInstance().addMessage(null, msg);
-	     //   orderList.remove((ScahaTeam) event.getObject());
+	}
+
+	/**
+	 * @return the sskilllevels
+	 */
+	public String[] getSskilllevels() {
+		return sskilllevels;
+	}
+
+	/**
+	 * @param sskilllevels the sskilllevels to set
+	 */
+	public void setSskilllevels(String[] sskilllevels) {
+		this.sskilllevels = sskilllevels;
 	}  
 
 }

@@ -17,8 +17,8 @@ public abstract class ScahaObject implements Serializable {
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	private static int newID = 0;
 	private Profile m_pro = null;
-	
-	
+	private List<String> options = null;
+	private boolean retire = false;
 	//
 	//  This represents the Key for the object
 	//
@@ -121,6 +121,34 @@ public abstract class ScahaObject implements Serializable {
 	
 	protected static synchronized int getNewID() {
 		return ScahaObject.newID++;
+	}
+
+	/**
+	 * @return the options
+	 */
+	public List<String> getOptions() {
+		return options;
+	}
+
+	/**
+	 * @param options the options to set
+	 */
+	public void setOptions(List<String> options) {
+		this.options = options;
+	}
+
+	/**
+	 * @return the retire
+	 */
+	public boolean isRetire() {
+		return retire;
+	}
+
+	/**
+	 * @param retire the retire to set
+	 */
+	public void setRetire(boolean retire) {
+		this.retire = retire;
 	}
 	
 }

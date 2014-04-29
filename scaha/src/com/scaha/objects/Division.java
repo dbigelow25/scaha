@@ -67,5 +67,7 @@ public class Division extends ScahaObject implements Serializable {
 	}
 	
 	
-		
+	public String toString() {
+		return this.divisionname;
+	}
 }

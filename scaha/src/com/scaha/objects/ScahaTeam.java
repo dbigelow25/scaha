@@ -17,8 +17,9 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 	private ManagerList Managers = null;
 	
 	private Division teamdivision = null;
+	private String sdivision = null;
 	private SkillLevel teamskilllevel = null;
-	
+	private String sskilllevel = null;
 	private String teamname = null;
 	private String teamgender = null;    
 	private String seasontag = null;
@@ -223,6 +224,34 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 	 */
 	public void setDivisiontag(String divisiontag) {
 		this.divisiontag = divisiontag;
+	}
+
+	/**
+	 * @return the sdivision
+	 */
+	public String getSdivision() {
+		return sdivision;
+	}
+
+	/**
+	 * @param sdivision the sdivision to set
+	 */
+	public void setSdivision(String sdivision) {
+		this.sdivision = sdivision;
+	}
+
+	/**
+	 * @return the sskilllevel
+	 */
+	public String getSskilllevel() {
+		return sskilllevel;
+	}
+
+	/**
+	 * @param sskilllevel the sskilllevel to set
+	 */
+	public void setSskilllevel(String sskilllevel) {
+		this.sskilllevel = sskilllevel;
 	}
 	
 		

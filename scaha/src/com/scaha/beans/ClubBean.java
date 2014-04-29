@@ -201,17 +201,14 @@ public class ClubBean implements Serializable,  MailableObject {
 	}
 	
 	public StreamedContent getClubLogoByParmId() {
-		
 		FacesContext context = FacesContext.getCurrentInstance();
 		String get = context.getExternalContext().getRequestParameterMap().get("target");
-	    LOGGER.info("gclbyparm: get =" + get);
 	    if (get == null) {
     		return new DefaultStreamedContent();
 	    }
     	int id = Integer.parseInt(get);
 	    Club myclub  = scaha.findClubByID(id);
 		return getClubLogo(myclub);
-		
 	}
 
 	/**

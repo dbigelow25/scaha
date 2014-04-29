@@ -50,46 +50,61 @@
 	</h:panelGrid>
 	<p:separator id="bp1" style="width:800px;height:2px" />    
 	
-	 <p:contextMenu for="teamlist" widgetVar="cMenu">     
-        <p:menuitem value="Edit Cell" icon="ui-icon-search" onclick="PF('teamsTable').showCellEditor();return false;"/>    
-        <p:menuitem value="Hide Menu" icon="ui-icon-close" onclick="PF('cMenu').hide()"/>    
-    </p:contextMenu>   
-    
-    
-	<p:dataTable id="teamlist" var="t" value="#{teamBean.getMyTeamList()}" editable="true"  widgetVar="teamsTable" cellSeparator=" \/ ">
+	<p:dataTable id="teamlist" var="t" value="#{teamBean.getMyTeamList()}" editable="true"  cellSeparator=" / ">
    		<f:facet name="header">  
 	        <h:outputText value="#{teamBean.getTeamstabletitle()}" />
 	    </f:facet> 
-	   	<p:ajax event="rowEdit" listener="#{teamBean.onEdit()}" update=":form1:messages" /> 
-		<p:column headerText="Team Name" style="width:40%"> 
+	   	<p:ajax event="rowEdit" listener="#{teamBean.onEdit}" update=":form1:messages" /> 
+	   	<p:ajax event="rowEditCancel" listener="#{teamBean.onCancel}" update=":form1:messages" /> 
+	   	 <p:column headerText="Action" style="width:8%">
+            <p:rowEditor /> 
+         </p:column> 
+	   	 <p:column headerText="Retire?" style="width:5%">
+            <p:cellEditor> 
+            <f:facet name="output">
+            <h:outputText value="" /> 
+			 </f:facet>
+			<f:facet name="input"> 
+				<p:spacer width="10px" />
+				<p:selectBooleanCheckbox id = "rv" value="#{t.retire}" /> 
+			   	<p:tooltip for="rv" showEffect="slide" hideEffect="slide"  value="Check this Box to Delete this Team when you update..." />  	
+			 </f:facet>
+			 </p:cellEditor>
+        </p:column> 
+		<p:column headerText="Team Name" style="font-size:10pt;width:50%"> 
             <p:cellEditor> 
 				<f:facet name="output"> 
-				    <h:outputText value="#{t.teamname}" /> 
+				    <h:outputText style="font-size:10pt;width:175px;" value="#{t.teamname}" /> 
 				</f:facet> 
 				<f:facet name="input"> 
-				    <p:inputText value="#{t.teamname}" style="width:100%"/> 
+				    <p:inputText style="font-size:10pt;width:100%;" value="#{t.teamname}" /> 
 				</f:facet> 
             </p:cellEditor>
         </p:column>
-		<p:column headerText="Scaha Division / Skill Level" style="width:45%">  
+		<p:column headerText="Division" style="font-size:10pt;width:25%">  
 			 <p:cellEditor> 
 				<f:facet name="output"> 
-					<h:outputText value="#{t.getTeamdivision().divisionname} / #{t.getTeamskilllevel().skilllevelname}" />  
+					<h:outputText value="#{t.getTeamdivision().divisionname}" />  
 				</f:facet> 
 				<f:facet name="input"> 
-					<p:selectOneMenu style="font-size:10pt;width:175px;" value="#{t.teamdivision}" required="true" requiredMessage="Division team will play in required.">
-						<f:selectItem itemLabel="#{t.teamdivision.divisionname}" itemValue="#{t.teamdivision.iddivision}"/>
-						<f:selectItems value="#{teamBean.getDivisions()}" var="division" itemLabel="#{division.divisionname}" itemValue="#{division.iddivision}"/>
+					<p:selectOneMenu  value="#{t.sdivision}"  style="font-size:10pt;width:100%">
+						<f:selectItems style="font-size:10pt;width:100%;" value="#{teamBean.sdivisions}" var="division" itemLabel="#{division}" itemValue="#{division}"/>
 					</p:selectOneMenu>
-					<p:selectOneMenu  style="font-size:10pt;width:175px;"  value="#{t.teamskilllevel}" required="true" requiredMessage="Skill level team will play is required.">
-			    		<f:selectItems value="#{teamBean.getSkilllevels()}" var="skilllevel" itemLabel="#{skilllevel.skilllevelname}" itemValue="#{skilllevel.idskilllevel}"/>
+		    	</f:facet>
+			</p:cellEditor>
+		</p:column>
+		<p:column headerText="Skill Level" style="font-size:10pt;width:25%">  
+			 <p:cellEditor> 
+				<f:facet name="output"> 
+					<h:outputText value="#{t.getTeamskilllevel().skilllevelname}" />  
+				</f:facet> 
+				<f:facet name="input"> 
+					 <p:selectOneMenu  value="#{t.sskilllevel}"  style="font-size:10pt;width:100%">
+			    		<f:selectItems style="font-size:10pt;width:100%;" value="#{teamBean.sskilllevels}" var="skilllevel" itemLabel="#{skilllevel}" itemValue="#{skilllevel}"/>
 		    		</p:selectOneMenu>
 		    	</f:facet>
 			</p:cellEditor>
 		</p:column>
-        <p:column headerText="Options" style="width:15%">
-	        <p:rowEditor /> 
-        </p:column> 
 	</p:dataTable>
 </p:panel>
 </h:form>
