@@ -85,7 +85,7 @@ public class USAHRegistrationValidator implements Validator {
 					FacesMessage message = new FacesMessage();
 		        	message.setSeverity(FacesMessage.SEVERITY_ERROR);
 		        	message.setSummary("USA Hockey Registration.");
-		        	message.setDetail("The reg number has already been claimed by ");
+		        	message.setDetail("The reg number has already been claimed by a SCAHA Member.");
 		            throw new ValidatorException(message);
 				}
 			}
@@ -101,7 +101,6 @@ public class USAHRegistrationValidator implements Validator {
         	message.setDetail("The Database is not available at this moment.  Please try back again in a few minutes");
             throw new ValidatorException(message);
 		}  finally {
-			LOGGER.info("THREE FREE");
 			db.free();
 		}
 	}
