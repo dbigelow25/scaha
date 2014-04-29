@@ -12,6 +12,7 @@ public class DatabasePool implements Runnable {
 	private final static Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 
 	private int m_iCount = 2;	// The dnumber of database connections in the pool
+	private int m_itxSum = 0;
 
 	private Object c_olock = new Object();
 	private Object dbGetLock = new Object();
@@ -32,7 +33,7 @@ public class DatabasePool implements Runnable {
 	
 		synchronized (c_olock) {
 			
-			m_sName = _str;
+			setName(_str);
 			
 			// This needs to be moved  to the web.xml file...
 			//
@@ -64,10 +65,13 @@ public class DatabasePool implements Runnable {
 		
 		while (!m_bshutdown) {
 			
+			LOGGER.info("======================================================================================");
+			LOGGER.info("DB Pool ("  + getName() + ") dbcount is (" + m_iCount + ") Connections.  txCnt:" + this.m_itxSum);
+			LOGGER.info("======================================================================================");
 			for (int i=0; i < m_iCount;i++) {
 				LOGGER.info(this.m_vConnections.get(i).toString());
 			}
-			
+			LOGGER.info("======================================================================================");
 			try {
 				Thread.sleep(60000);
 			} catch (InterruptedException  ex) {
@@ -140,6 +144,7 @@ public class DatabasePool implements Runnable {
 					if (!db.isInUse()) {
 						db.checkHeath();
 						db.setInUse();
+						this.incTxCount();
 						return db;
 					}
 				}
@@ -156,5 +161,23 @@ public class DatabasePool implements Runnable {
 		return null;
 	}
 
+	public void incTxCount() {
+		this.m_itxSum++;
+	}
 	
+	public int getIxCount() {
+		return this.m_itxSum;
+	}
+	/**
+	 * @return the m_sName
+	 */
+	public String getName() {
+		return m_sName;
+	}
+	/**
+	 * @param m_sName the m_sName to set
+	 */
+	public void setName(String m_sName) {
+		this.m_sName = m_sName;
+	}
 }
