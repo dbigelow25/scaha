@@ -235,6 +235,23 @@ public class ScahaDatabase extends Database {
 
 		return tmp;
 	}
+
+	public List<InternetAddress> getRenegadeFamilyEmails(GeneralSeason currentSeason) throws SQLException, UnsupportedEncodingException {
+		
+		List<InternetAddress> tmp = new ArrayList<InternetAddress>();
+		
+		PreparedStatement ps = this.prepareStatement("call scaha.getAllMemberEmailsByNoTeamAndSeason(?)");
+		ps.setString(1,"SCAHA-1314");
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			LOGGER.info("getRenegadeFamilyEmails:" + rs.getString(1) + ":" +  rs.getString(2));
+			//tmp.add(new InternetAddress(rs.getString(2),rs.getString(1)));
+		}
+		rs.close();
+		ps.close();
+
+		return tmp;
+	}
 	
 }
 

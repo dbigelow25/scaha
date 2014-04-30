@@ -136,64 +136,56 @@ public class registrarcoachloiBean implements Serializable {
     	
     	try{
 
-    		if (db.setAutoCommit(false)) {
+			CallableStatement cs = db.prepareCall("CALL scaha.getCoachLoiByClub(?)");
+   			cs.setInt("clubid", this.clubid);
+			rs = cs.executeQuery();
     			
-				CallableStatement cs = db.prepareCall("CALL scaha.getCoachLoiByClub(?)");
-    			cs.setInt("clubid", this.clubid);
-				rs = cs.executeQuery();
-    			
-    			if (rs != null){
+   			if (rs != null){
+				
+				while (rs.next()) {
+					String idcoach = rs.getString("idroster");
+    				String sfirstname = rs.getString("fname");
+    				String slastname = rs.getString("lname");
+    				String steam = rs.getString("teamname");
+    				String sloidate = rs.getString("loidate");
+    				String screeningexpires = rs.getString("screeningexpires");
+    				String cepnumber = rs.getString("cepnumber");
+    				String ceplevel = rs.getString("ceplevel");
+    				String cepexpires = rs.getString("cepexpires");
+    				String u8 = rs.getString("eightu");
+    				String u10 = rs.getString("tenu");
+    				String u12 = rs.getString("twelveu");
+    				String u14 = rs.getString("fourteenu");
+    				String u18 = rs.getString("eighteenu");
+    				String girls = rs.getString("girls");
     				
-    				while (rs.next()) {
-    					String idcoach = rs.getString("idroster");
-        				String sfirstname = rs.getString("fname");
-        				String slastname = rs.getString("lname");
-        				String steam = rs.getString("teamname");
-        				String sloidate = rs.getString("loidate");
-        				String screeningexpires = rs.getString("screeningexpires");
-        				String cepnumber = rs.getString("cepnumber");
-        				String ceplevel = rs.getString("ceplevel");
-        				String cepexpires = rs.getString("cepexpires");
-        				String u8 = rs.getString("eightu");
-        				String u10 = rs.getString("tenu");
-        				String u12 = rs.getString("twelveu");
-        				String u14 = rs.getString("fourteenu");
-        				String u18 = rs.getString("eighteenu");
-        				String girls = rs.getString("girls");
-        				
-        				Coach ocoach = new Coach();
-        				ocoach.setIdcoach(idcoach);
-        				ocoach.setFirstname(sfirstname);
-        				ocoach.setLastname(slastname);
-        				ocoach.setLoidate(sloidate);
-        				ocoach.setTeamname(steam);
-        				ocoach.setScreeningexpires(screeningexpires);
-        				ocoach.setCepnumber(cepnumber);
-        				ocoach.setCeplevel(ceplevel);
-        				ocoach.setCepexpires(cepexpires);
-        				ocoach.setU8(u8);
-        				ocoach.setU10(u10);
-        				ocoach.setU12(u12);
-        				ocoach.setU14(u14);
-        				ocoach.setU18(u18);
-        				ocoach.setGirls(girls);
-        				tempresult.add(ocoach);
-    				}
-    				rs.close();
-    				LOGGER.info("We have results for lois for the lookup date" + date.toString());
+    				Coach ocoach = new Coach();
+    				ocoach.setIdcoach(idcoach);
+    				ocoach.setFirstname(sfirstname);
+    				ocoach.setLastname(slastname);
+    				ocoach.setLoidate(sloidate);
+    				ocoach.setTeamname(steam);
+    				ocoach.setScreeningexpires(screeningexpires);
+    				ocoach.setCepnumber(cepnumber);
+    				ocoach.setCeplevel(ceplevel);
+    				ocoach.setCepexpires(cepexpires);
+    				ocoach.setU8(u8);
+    				ocoach.setU10(u10);
+    				ocoach.setU12(u12);
+    				ocoach.setU14(u14);
+    				ocoach.setU18(u18);
+    				ocoach.setGirls(girls);
+    				tempresult.add(ocoach);
+				}
+   				rs.close();
+   				LOGGER.info("We have results for lois for the lookup date" + date.toString());
     				
-    			}
-    				
-    			db.cleanup();
-    		} else {
-
-    		}
-    		
+   			}
+  				
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN Searching FOR Lois for lookup date:" + date.toString());
     		e.printStackTrace();
-    		db.rollback();
     	} finally {
     		//
     		// always clean up after yourself..

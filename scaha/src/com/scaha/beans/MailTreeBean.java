@@ -87,6 +87,8 @@ public class MailTreeBean implements Serializable, MailableObject {
 		TreeNode adminPres = new CheckboxTreeNode("All Presidents", adminTop); 
 		TreeNode adminIce = new CheckboxTreeNode("All Registrars", adminTop); 
 		TreeNode adminReg = new CheckboxTreeNode("All Ice Convenors", adminTop); 
+		TreeNode adminNon = new CheckboxTreeNode("All Members With No Home Team", root);
+		
 		ClubList cl = scaha.getScahaClubList();
 		
 		//
@@ -172,22 +174,7 @@ public class MailTreeBean implements Serializable, MailableObject {
         this.selectedNodes = selectedNodes;  
     }  
       
-    public void displaySelectedMultiple() {  
-    	
-        if(selectedNodes != null && selectedNodes.length > 0) {  
-            StringBuilder builder = new StringBuilder();  
-  
-            for(TreeNode node : selectedNodes) {  
-                builder.append(node.getData().toString());  
-                builder.append("<br />");  
-            }  
-  
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected", builder.toString());  
-            FacesContext.getCurrentInstance().addMessage(null, message);  
-        }  
-    }
-
-    
+      
     /**
      *  Lets collect the e-mails from the objects that were selected.
      *  
@@ -203,46 +190,54 @@ public class MailTreeBean implements Serializable, MailableObject {
     	if(selectedNodes != null && selectedNodes.length > 0) {  
     		try {
 	
-				for(TreeNode node : selectedNodes) {  
-					  Object obj = node.getData();
-					  if (obj instanceof Person) {
-						  Person per = (Person)obj;
-							emails.add(new InternetAddress(per.getsEmail(),per.getsFirstName() + " " + per.getsLastName()));
-				} else if (obj instanceof ClubAdmin) {
-					  Person per = (Person)obj;
-					  emails.add(new InternetAddress(per.getsEmail(),per.getsFirstName() + " " + per.getsLastName()));
-					  }  
-				}  
-				} catch (UnsupportedEncodingException e) {
+    			for(TreeNode node : selectedNodes) {  
+    				Object obj = node.getData();
+					if (obj instanceof Person) {
+						Person per = (Person)obj;
+						emails.add(new InternetAddress(per.getsEmail(),per.getsFirstName() + " " + per.getsLastName()));
+					} else if (obj instanceof ClubAdmin) {
+						Person per = (Person)obj;
+						emails.add(new InternetAddress(per.getsEmail(),per.getsFirstName() + " " + per.getsLastName()));
+					}  
+    			}  
+			
+    		} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
               
-              //
-              // now.. lets go after all the seasonal information.. 
-              // This is only used for Parents tied to a club for a particular season..
-              //
-              for(TreeNode node : selectedNodes) {  
-            	  LOGGER.info(node.getData().getClass().getName());
-            	  Object obj = node.getData();
-            	  if (obj instanceof String && node.getData().toString().contains("All Club Families")) {
-            		  Club c = (Club)node.getParent().getData();
-            		  ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-          			  try {
-          				emails.addAll(db.getClubFamilyEmails(c,scaha.getScahaSeasonList().getCurrentSeason()));
-               		  } catch (SQLException e) {
-          				// TODO Auto-generated catch block
-          				e.printStackTrace();
-          			} catch (UnsupportedEncodingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-          			db.free();
-            	  }
-              }  
+    		//
+    		// now.. lets go after all the seasonal information.. 
+    		// This is only used for Parents tied to a club for a particular season..
+    		//
+    		for(TreeNode node : selectedNodes) {  
+    			LOGGER.info(node.getData().getClass().getName());
+    			Object obj = node.getData();
+    			if (obj instanceof String && node.getData().toString().contains("All Club Families")) {
+    				Club c = (Club)node.getParent().getData();
+    				ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    				try {
+					  emails.addAll(db.getClubFamilyEmails(c,scaha.getScahaSeasonList().getCurrentSeason()));
+    				} catch (SQLException e) {
+    					e.printStackTrace();
+    				} catch (UnsupportedEncodingException e) {
+    					e.printStackTrace();
+    				}
+    				db.free();
+    			} else if (obj instanceof String && node.getData().toString().contains("All Members With No Home Team")) {
+    				ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    				try {
+    					emails.addAll(db.getRenegadeFamilyEmails(scaha.getScahaSeasonList().getCurrentSeason()));
+    				} catch (SQLException e) {
+    					e.printStackTrace();
+    				} catch (UnsupportedEncodingException e) {
+    					e.printStackTrace();
+    				}
+    				db.free();
+    			}  
+    		}  
+    	}
 
-          }  
-    	
     	this.myEmails = emails;
     	
     }
