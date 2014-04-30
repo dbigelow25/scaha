@@ -15,20 +15,19 @@ class MyTxtFormatter extends SimpleFormatter  {
   @Override
 public String format(LogRecord rec) {
     StringBuffer buf = new StringBuffer(1000);
-    buf.append(calcDate(rec.getMillis()));
+    buf.append(calcDate());
     buf.append(":");
     buf.append(rec.getLevel());
     buf.append(": ");
-  //  buf.append(rec.getSourceName() + ":>");
     buf.append(rec.getMessage());
     buf.append(NEW_LINE);
     return buf.toString(); 
   }
 
-  private String calcDate(long millisecs)
+  private String calcDate()
   {
-    SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss.SSSSSS");
-    Date resultdate = new Date(millisecs);
+    SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss.SSS");
+    Date resultdate = new Date();
     return date_format.format(resultdate);
   }
 
@@ -36,7 +35,7 @@ public String format(LogRecord rec) {
   // formatter is created
   @Override
 public String getHead(Handler h) {
-    return calcDate((new Date()).getTime()) + ": Open For Business..." + NEW_LINE;
+    return calcDate() + ":Open For Business..." + NEW_LINE;
     
   }
     
@@ -45,6 +44,6 @@ public String getHead(Handler h) {
   @Override
 public String getTail(Handler h)
   {
-    return calcDate((new Date()).getTime()) + ":Closed For Business...\n";
+    return calcDate() + ":Closed For Business..." + NEW_LINE;
   }
 } 

@@ -32,13 +32,10 @@ public String format(LogRecord rec)
     }
     buf.append("</td>");
     buf.append("<td>");
-    buf.append(calcDate(rec.getMillis()));
+    buf.append(calcDate());
     buf.append(' ');
     buf.append("</td>");
     buf.append("<td>");
-//    buf.append(formatMessage(rec));
-//    buf.append(rec.getSourceClassName() + ":");
-//    buf.append(rec.getSourceMethodName() + ":");
     buf.append(rec.getMessage());
     buf.append(NEW_LINE);
     buf.append("</td>");
@@ -46,10 +43,10 @@ public String format(LogRecord rec)
     return buf.toString();
   }
 
-  private String calcDate(long millisecs)
+  private String calcDate()
   {
-    SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
-    Date resultdate = new Date(millisecs);
+    SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss.SSS");
+    Date resultdate = new Date();
     return date_format.format(resultdate);
   }
 
@@ -57,7 +54,7 @@ public String format(LogRecord rec)
   // formatter is created
   @Override
 public String getHead(Handler h) {
-    return "<HTML>\n<HEAD>\n" + (calcDate((new Date()).getTime()) + ":Open For Business..." + NEW_LINE) 
+    return "<HTML>\n<HEAD>\n" + (calcDate() + ":Open For Business..." + NEW_LINE) 
           + "</HEAD>\n<BODY>\n<PRE>" + NEW_LINE
           + "<table width=\"100%\" border>" + NEW_LINE
           + "<tr><th>Level</th>" +
@@ -71,6 +68,6 @@ public String getHead(Handler h) {
   @Override
 public String getTail(Handler h)
   {
-    return "</table>" + calcDate((new Date()).getTime()) + ":Closed For Business..." + NEW_LINE + "</PRE></BODY>" + NEW_LINE + "</HTML>" + NEW_LINE;
+    return "</table>" + calcDate() + ":Closed For Business..." + NEW_LINE + "</PRE></BODY>" + NEW_LINE + "</HTML>" + NEW_LINE;
   }
 } 
