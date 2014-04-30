@@ -328,7 +328,6 @@ public class MemberBean implements Serializable, MailableObject {
 		
 		FacesContext context = FacesContext.getCurrentInstance();
 		
-		LOGGER.info("HERERERRERR");
 		Profile pro = pb.getProfile();   // This is the profile of the user
 		Person tper = pro.getPerson();   //  This is their person record who controlls the account
 		Family tfam = tper.getFamily();  //  This is their Family Structure

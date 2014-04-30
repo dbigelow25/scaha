@@ -40,6 +40,7 @@ public class ProfileBean implements Serializable,  MailableObject  {
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 
 	private static String mail_body_chng_profile = Utils.getMailTemplateFromFile("mail/changeprofile.html");
+	private static String mail_body_chng_pwd = Utils.getMailTemplateFromFile("mail/changepassword.html");
 	private String MergedBody = null;
 	private String name = null;
     private String live_password = null;  // This is the live password they used to login..
@@ -673,6 +674,7 @@ public void cancelAddMember() {
 
 			LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM the manage Profile Page..");
 			LOGGER.info("Sending Test mail here...");
+			this.buildMailBody(ProfileBean.mail_body_chng_pwd, pro.getPerson());
 			SendMailSSL mail = new SendMailSSL(this);
 			LOGGER.info("Finished creating mail object for " + pro.getUserName());
 			mail.sendMail();
@@ -1061,6 +1063,7 @@ private void buildMailBody(String _strMailBody, Person per) {
 	List<String> myTokens = new ArrayList<String>();
 	myTokens.add("PFIRST:" + per.getsFirstName());
 	myTokens.add("PLAST:" + per.getsLastName());
+	myTokens.add("NEWPASS:" + this.getLive_password());
 		
 	this.MergedBody =  Utils.mergeTokens(_strMailBody,myTokens);
 	
