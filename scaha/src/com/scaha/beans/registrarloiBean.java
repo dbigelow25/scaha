@@ -379,6 +379,28 @@ public void loadClubName(){
 		
 		
 	}
+
+	public void viewLoi(Player selectedPlayer){
 	
+		String sidplayer = selectedPlayer.getIdplayer();
+				
+		FacesContext context = FacesContext.getCurrentInstance();
+		try{
+			context.getExternalContext().redirect("viewloi.xhtml?playerid=" + sidplayer);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void CloseLoi(){
+		FacesContext context = FacesContext.getCurrentInstance();
+		try{
+			context.getExternalContext().redirect("registrarviewlois.xhtml");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
 

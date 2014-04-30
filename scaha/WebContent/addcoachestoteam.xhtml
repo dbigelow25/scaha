@@ -27,6 +27,8 @@
 	</p:notificationBar>  
   
 		<h:form>		
+			<p:messages id="loimessage" showDetail="true" autoUpdate="true" closable="false" />
+			<p:fieldset>
 			<p:panel id ="panel" header="Search for Coach:">
 				<h:panelGrid columns="2" cellpadding="5">
 					<p:inputText id="searchforcoach" style="width:150px;" value="#{draftcoachesBean.searchcriteria}" required="false" requiredMessage="Enter a minimum of 5 characters to execute search."/>
@@ -51,17 +53,17 @@
 			        </p:column>
 			          
 			    </p:dataTable>
-				<h:panelGrid columns="1" cellpadding="5">
-				    <p:commandButton id="generateLoi" value="Generate LOI" actionListener="#{draftcoachesBean.generateLOI()}" ajax="true"/>
-					<p:messages id="loimessage" showDetail="true" autoUpdate="true" closable="false" /> 
-				</h:panelGrid>
-			
-			
-				<p:commandButton value="Close" id="close" ajax="false" action="Welcome.xhtml"/> 
-			<p:separator id="customSeparator" style="width:800px;height:2px" />    
-			
-			
-		</p:panel>
+				
+			</p:panel>	
+			</p:fieldset>
+			<br></br>
+			<p:fieldset>
+				<div align="center"><p:commandButton id="generateLoi" value="Generate LOI" actionListener="#{draftcoachesBean.generateLOI()}" ajax="true"/></div>
+			</p:fieldset>
+			<br></br>
+			<p:fieldset>
+			<div align="center"><p:commandButton value="Close" id="close" ajax="false" action="Welcome.xhtml"/></div>
+			</p:fieldset>
 	</h:form>
 	
 	</ui:define>

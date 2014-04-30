@@ -75,6 +75,11 @@
 			        <p:column headerText="Birth Cert.">  
 			            <h:outputText value="#{player.birthcertificate}" />  
 			        </p:column>
+			        <p:column headerText="Option" >  
+			             <p:splitButton id="wwtransfer" icon="ui-icon-folder-open"  >
+					        <p:menuitem value="View LOI" action="#{registrarloiBean.viewLoi(player)}" />
+					    </p:splitButton>
+					</p:column>
 			    </p:dataTable>
 			</p:panel>
 			
