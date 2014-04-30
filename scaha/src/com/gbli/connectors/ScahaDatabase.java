@@ -245,7 +245,7 @@ public class ScahaDatabase extends Database {
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 			LOGGER.info("getRenegadeFamilyEmails:" + rs.getString(1) + ":" +  rs.getString(2));
-			//tmp.add(new InternetAddress(rs.getString(2),rs.getString(1)));
+			tmp.add(new InternetAddress(rs.getString(2),rs.getString(1)));
 		}
 		rs.close();
 		ps.close();
