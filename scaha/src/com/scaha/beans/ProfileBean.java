@@ -179,7 +179,6 @@ public class ProfileBean implements Serializable,  MailableObject  {
 	    					
     		}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
  
@@ -276,7 +275,6 @@ public class ProfileBean implements Serializable,  MailableObject  {
         try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("Welcome.xhtml");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         return "login";
@@ -672,11 +670,9 @@ public void cancelAddMember() {
 			this.setLive_password(this.new_password);
 			db.free();
 
-			LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM the manage Profile Page..");
-			LOGGER.info("Sending Test mail here...");
+			LOGGER.info("Sending New Password e-mail for pro.getUserName()");
 			this.buildMailBody(ProfileBean.mail_body_chng_pwd, pro.getPerson());
 			SendMailSSL mail = new SendMailSSL(this);
-			LOGGER.info("Finished creating mail object for " + pro.getUserName());
 			mail.sendMail();
 			
 			//
@@ -695,7 +691,6 @@ public void cancelAddMember() {
 			return "Welcome.xhtml?faces-redirect=true";
 			
 		} catch (SQLException e) {
-		// TODO Auto-generated catch block
 			LOGGER.info("ERROR IN Profile Change User Attributes PROCESS FOR " + this.getCompleteName());
             FacesContext context = FacesContext.getCurrentInstance();  
             context.addMessage("password", new FacesMessage(FacesMessage.SEVERITY_ERROR,"SQL Error", "There was an SQL Error please try again"));  
@@ -1059,7 +1054,6 @@ public void setChgUserName(String chgUserName) {
 
 private void buildMailBody(String _strMailBody, Person per) {
 	
-	// TODO Auto-generated method stub
 	List<String> myTokens = new ArrayList<String>();
 	myTokens.add("PFIRST:" + per.getsFirstName());
 	myTokens.add("PLAST:" + per.getsLastName());
@@ -1070,12 +1064,10 @@ private void buildMailBody(String _strMailBody, Person per) {
 }
 @Override
 public InternetAddress[] getToMailIAddress() {
-	// TODO Auto-generated method stub
 	return null;
 }
 @Override
 public InternetAddress[] getPreApprovedICC() {
-	// TODO Auto-generated method stub
 	return null;
 }
 }
