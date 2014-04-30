@@ -7,9 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -18,13 +16,9 @@ import com.scaha.objects.Club;
 import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.Person;
 import com.scaha.objects.Profile;
-import com.scaha.objects.ScahaCoach;
-
 import java.sql.PreparedStatement;
 
 import javax.mail.internet.InternetAddress;
-
-import org.w3c.dom.ls.LSException;
 
 /**
  * @author dbigelow
@@ -184,7 +178,6 @@ public class ScahaDatabase extends Database {
 	}
 
 	public void updateClubPresident(Profile profile, Club _c, Person _oldPrez, Person _newPrez) throws SQLException {
-		
 		CallableStatement cs = this.prepareCall(ScahaDatabase.cs_UPDATE_CLUB_STAFFER);
 		cs.setInt(1, _c.ID);
 		cs.setInt(2, (_oldPrez == null ? 0 :_oldPrez.ID));
@@ -192,11 +185,9 @@ public class ScahaDatabase extends Database {
 		cs.setString(4,"C-PRES");
 		cs.execute();
 		cs.close();
-		// TODO Auto-generated method stub
 	}
 
 	public void updateClubRegistrar(Profile profile, Club _c, Person _oldPrez, Person _newPrez) throws SQLException {
-		
 		CallableStatement cs = this.prepareCall(ScahaDatabase.cs_UPDATE_CLUB_STAFFER);
 		cs.setInt(1, _c.ID);
 		cs.setInt(2, (_oldPrez == null ? 0 :_oldPrez.ID));
@@ -204,7 +195,6 @@ public class ScahaDatabase extends Database {
 		cs.setString(4,"C-REG");
 		cs.execute();
 		cs.close();
-		// TODO Auto-generated method stub
 	}
 
 	public void updateClubIceConvenor(Profile profile, Club _c, Person _oldPrez, Person _newPrez) throws SQLException {
@@ -218,11 +208,10 @@ public class ScahaDatabase extends Database {
 	}
 
 	public List<InternetAddress> getClubFamilyEmails(Club c,	GeneralSeason _cs)  throws SQLException, UnsupportedEncodingException {
-
 		List<InternetAddress> tmp = new ArrayList<InternetAddress>();
-		
 		PreparedStatement ps = this.prepareStatement("call scaha.getAllMemberEmailsByClubAndSeason(?,?)");
 		ps.setInt(1, c.ID);
+		// TODO
 //		ps.setString(2,_cs.getTag()); TMP until new teams are formed
 		ps.setString(2,"SCAHA-1314");
 		ResultSet rs = ps.executeQuery();
@@ -241,6 +230,8 @@ public class ScahaDatabase extends Database {
 		List<InternetAddress> tmp = new ArrayList<InternetAddress>();
 		
 		PreparedStatement ps = this.prepareStatement("call scaha.getAllMemberEmailsByNoTeamAndSeason(?)");
+		// TODO
+//		ps.setString(1,_cs.getTag()); TMP until new teams are formed
 		ps.setString(1,"SCAHA-1314");
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
