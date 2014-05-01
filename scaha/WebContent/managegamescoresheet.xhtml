@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="content">
+		<div id="page-div">
+		<h:form>
+		<ui:fragment id="edit-exhibition">
+			<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">
+				<p:panel id ="panel" header="Manage Game Scoresheet(s)">
+					<p:fileUpload fileUploadListener="#{fileUploadController.handleFileUpload}" mode="advanced"  
+            			update="scoresheets" auto="true" sizeLimit="100000" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"/>
+            		<br></br>
+            		<p:dataTable id="scoresheets" var="scoresheet" value="#{scoresheetBean.getScoresheetgamedatamodel()}" selection="#{scoresheetBean.selectedscoresheet}" rows="10" autoupdate="false">
+			            <f:facet name="header">  
+				        	Existing Scoresheets
+				        </f:facet> 
+				         <p:column headerText="Filename">  
+				            <h:outputText value="#{scoresheet.getFilename()}" />  
+				        </p:column>
+				        <p:column headerText="Upload Date">  
+				            <h:outputText value="#{scoresheet.getUploaddate()}" />  
+				        </p:column>  
+				        <p:column headerText="Options">  
+				            <h:outputLink id="viewlink" value="javascript:void(0)" >
+								<h:outputText style = "font-size: 9pt;font-family: Verdana;" value="View/Download" />
+							</h:outputLink>
+							<h:outputLink id="deletelink" value="javascript:void(0)" >
+								<h:outputText style="font-size: 9pt;font-family: Verdana;" value="Delete" />
+							</h:outputLink>
+					    </p:column>
+				    </p:dataTable> 		
+				</p:panel>
+			</p:fieldset>
+			<p:spacer width="10" height="10" />
+			<p:fieldset id="fs6" toggleable="false" toggleSpeed="500">		
+			
+		</p:fieldset>
+		</ui:fragment>
+		</h:form>
+		<p:spacer width="10" height="10" />
+		<p:fieldset id="fs7" toggleable="false" toggleSpeed="500">
+			<h:form>
+				<div align="center"><p:commandButton value="Close" id="close" ajax="false" action="managerportal.xhtml"/></div>
+			</h:form>
+		</p:fieldset>
+				
+		</div>
+	</ui:define>
+</ui:composition>

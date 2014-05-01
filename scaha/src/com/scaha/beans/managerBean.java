@@ -1110,5 +1110,17 @@ public class managerBean implements Serializable {
 			e.printStackTrace();
 		}
 	}
+	
+	public void uploadScoresheet(TournamentGame game){
+		String gameid = game.getIdgame().toString();
+		FacesContext context = FacesContext.getCurrentInstance();
+		
+		try{
+			context.getExternalContext().redirect("managegamescoresheet.xhtml?&gameid=" + gameid + "&gametype=Tournament");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
 

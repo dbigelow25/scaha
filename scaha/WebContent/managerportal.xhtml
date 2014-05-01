@@ -240,7 +240,9 @@
 				        	<p:splitButton id="tournygameoptions#{tournamentgame.idgame}" icon="ui-icon-folder-open" rendered="#{tournamentgame.rendered}" >
 						        <p:menuitem value="Edit Game Detail" action="#{managerBean.editGameDetail(tournamentgame)}" />
 						        <p:menuitem value="Delete Game" action="#{managerBean.deleteTournamentGame(tournamentgame)}" ajax="true" update="@form"/>
+						        <p:menuitem value="Upload Scoresheet" action="#{managerBean.uploadScoresheet(tournamentgame)}" ajax="true" update="@form"/>
 						    </p:splitButton>
+								    
 						</p:column>  
 				    </p:dataTable>
 			
