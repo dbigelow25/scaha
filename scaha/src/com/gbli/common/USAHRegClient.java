@@ -27,7 +27,7 @@ public class USAHRegClient {
 		Simple3Des crypt = new Simple3Des();
  
 		System.out.println("START:" + crypt.encryptText(_strUSAH));
-		
+		LOGGER.info("http://scahalookup.azurewebsites.net/ReqUSAH.aspx?usah='" + crypt.encryptText(_strUSAH).replace("+", ":PLUS:") + "'");
 		URL url = new URL("http://scahalookup.azurewebsites.net/ReqUSAH.aspx?usah='" + crypt.encryptText(_strUSAH).replace("+", ":PLUS:") + "'");
 		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 		String inputLine = null;
