@@ -336,7 +336,7 @@ public class MemberBean implements Serializable, MailableObject {
 		ScahaManager sm = null;
 		ScahaPlayer sp = null;
 		ScahaCoach sc = null;		
-		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase", pro);
 		boolean newpeep = false;
 		if (per.ID < 1) {
 			newpeep = true;
@@ -505,7 +505,7 @@ public class MemberBean implements Serializable, MailableObject {
 	private PersonList genPersonsList() {
 		
   	    LOGGER.entering(MemberBean.class.getName(),"genPersonsList:");  
-		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase", pb.getProfile());
 
 		LOGGER.info("Is PB.getProfile().. null?:" + pb.getProfile()); 
 

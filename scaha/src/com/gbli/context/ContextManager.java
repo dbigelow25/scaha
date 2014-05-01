@@ -20,6 +20,7 @@ import com.gbli.connectors.Database;
 import com.gbli.connectors.DatabasePool;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.logging.MyLogger;
+import com.scaha.objects.Profile;
 
 /**
  * This is an interem object that manages the context of this application.  It gets / sets app parms 
@@ -180,6 +181,12 @@ public class ContextManager implements ServletContextListener {
 		return c_sLoggerContext;
 	}
 	
+	//
+	// This hands out a good database connection
+	//
+	public static Database getDatabase(String _sClassName, Profile _pro) {
+		return c_hDBPools.get(_sClassName).getDatabase(_pro);
+	}
 	//
 	// This hands out a good database connection
 	//

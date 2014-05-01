@@ -53,7 +53,7 @@ public class ActionList extends ScahaObject{
 		//
 		// get an iSiteDatabase Connection..
 		//
-		ScahaDatabase db = (ScahaDatabase)ContextManager.getDatabase("ScahaDatabase");
+		ScahaDatabase db = (ScahaDatabase)ContextManager.getDatabase("ScahaDatabase", this.getProfile());
 		ResultSet rs = null;
 		
 		//

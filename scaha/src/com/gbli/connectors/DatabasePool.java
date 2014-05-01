@@ -2,6 +2,7 @@ package com.gbli.connectors;
 import java.util.Vector;
 import java.util.logging.Logger;
 import com.gbli.context.ContextManager;
+import com.scaha.objects.Profile;
 
 /**
  * @author dbigelow
@@ -87,7 +88,6 @@ public class DatabasePool implements Runnable {
 		//
 		for (int i=0; i < m_iCount;i++) {
 			Database db = m_vConnections.get(i);
-			db.setInUse();
 			db.close();
 			LOGGER.info(this.m_vConnections.get(i).toString() + ":" + "Closing out connection..");
 		}
@@ -133,7 +133,7 @@ public class DatabasePool implements Runnable {
 	 * 
 	 * @return
 	 */
-	public Database getDatabase() {
+	public Database getDatabase(Profile _pro) {
 		
 		int icount = 0;
 		Database db = null;
@@ -143,7 +143,7 @@ public class DatabasePool implements Runnable {
 				synchronized (dbGetLock) {
 					if (!db.isInUse()) {
 						db.checkHeath();
-						db.setInUse();
+						db.setInUse(_pro);
 						this.incTxCount();
 						return db;
 					}
@@ -161,6 +161,15 @@ public class DatabasePool implements Runnable {
 		return null;
 	}
 
+	
+	public Database getDatabase() {
+		Profile tmp = new Profile();
+		tmp.setUserName("private");
+		tmp.setNickName("transient");
+		return this.getDatabase(tmp);
+		
+		
+	}
 	public void incTxCount() {
 		this.m_itxSum++;
 	}

@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialException;
 import com.gbli.context.ContextManager;
+import com.scaha.objects.Profile;
 
 import java.sql.CallableStatement;
 import java.sql.DriverManager;
@@ -46,6 +47,7 @@ public class Database {
 									// "jdbc:sqlserver://airsk-sql-01:1433;databaseName=MEdat2011;"
 	private String m_sUser = null; // The User Name to use in the connect
 	private String m_sPwd = null; // The Password for the connection
+	private Profile m_prof = null; // hold the profile of the caller.. gets set when we are in use.. gets cleared on the free
 
 	// Declare the JDBC objects.
 	private Connection m_con = null;
@@ -146,6 +148,7 @@ public class Database {
 		} finally {
 			LOGGER.info(this + " Freeing Up Connection.");
 			m_binuse = false;
+			setProfile(null);
 		}
 	}
 
@@ -182,6 +185,7 @@ public class Database {
 		LOGGER.info(this + "Close Out Connection:" + this.m_iId);
 		
 		try {
+			this.m_binuse = true;
 			this.cleanup();
 			m_con.close();
 		} catch (SQLException ex) {
@@ -459,7 +463,8 @@ public class Database {
 		return this.m_binuse;
 	}
 
-	public void setInUse() {
+	public void setInUse(Profile _prof) {
+		setProfile(_prof);
 		LOGGER.info(this + " is being placed in use");
 		m_binuse = true;
 		this.incTx();
@@ -507,7 +512,7 @@ public class Database {
 
 	@Override
 	public String toString() {
-		return "DB(" + m_sName + ")[" + m_iId + "]:" + (m_binuse ? "busy" : "free") + ":txcnt:" + this.getTxCount();
+		return "DB[" + m_iId + "]:" + (m_binuse ? "busy" : "free") + "(" + (getProfile() == null ? "NPF" : getProfile()) + ")" + ":txcnt:" + this.getTxCount();
 	}
 
 	/**
@@ -525,6 +530,14 @@ public class Database {
 		oos.writeObject(bs);
 		_cs.setBlob(1, new SerialBlob(baos.toByteArray()));
 		
+	}
+	
+	protected void setProfile(Profile _pro) {
+		this.m_prof = _pro;
+	}
+	
+	protected Profile getProfile() {
+		return this.m_prof;
 	}
 	
 }

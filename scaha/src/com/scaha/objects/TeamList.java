@@ -107,7 +107,6 @@ public class TeamList extends ListDataModel<ScahaTeam> implements Serializable, 
 
 		ps.close();
 		ps2.close();
-		LOGGER.info("Finished all Team List Loading!!");
 		return new TeamList(data);
 	}
 

@@ -101,11 +101,10 @@ public class ClubBean implements Serializable,  MailableObject {
 	            new FacesMessage(FacesMessage.SEVERITY_INFO, "Club " + this.selectedclub.getClubname() + " has been saved", null);  
 	        FacesContext.getCurrentInstance().addMessage(null, message);  
 	        
-			ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+			ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase",pb.getProfile());
 	        try {
 				this.selectedclub.getLogo().update(db);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	        db.free();
@@ -123,7 +122,6 @@ public class ClubBean implements Serializable,  MailableObject {
 
 	@Override
 	public String getSubject() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -267,7 +265,7 @@ public class ClubBean implements Serializable,  MailableObject {
 
 		// lets refresh the team base
 		GeneralSeason scahags = scaha.getScahaSeasonList().getCurrentSeason();
-		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase",pb.getProfile());
 		
 		try {
 			selectedTeamList = TeamList.NewTeamListFactory(pb.getProfile(), db, this.selectedclub, scahags, true, false);
@@ -295,7 +293,7 @@ public class ClubBean implements Serializable,  MailableObject {
 	 @SuppressWarnings("unchecked")
 	 public List<Person> completePerson(String query) {  
     	if (query.length() > 2) {
-    		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase", pb.getProfile());
     		PersonList pl = null;
 			try {
 				pl = PersonList.NewPersonListFactory(db, query);
@@ -316,7 +314,7 @@ public class ClubBean implements Serializable,  MailableObject {
 	 */
 	public String saveStaff() {  
 		
-	        ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+	        ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase", pb.getProfile());
 	        
 	        //
 	        // ok.. we track three Club Staff Positions right now!

@@ -139,7 +139,7 @@ public class MailTreeBean implements Serializable, MailableObject {
 			LOGGER.info("The Selected Club Has no Teams Set!:" + _cl);
 
 			GeneralSeason scahags = scaha.getScahaSeasonList().getCurrentSeason();
-			ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+			ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase", pb.getProfile());
 			try {
 				_cl.setScahaTeams(TeamList.NewTeamListFactory(pb.getProfile(), db, _cl, scahags, true, false));
 			} catch (SQLException e) {
@@ -215,7 +215,7 @@ public class MailTreeBean implements Serializable, MailableObject {
     			Object obj = node.getData();
     			if (obj instanceof String && node.getData().toString().contains("All Club Families")) {
     				Club c = (Club)node.getParent().getData();
-    				ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    				ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase", pb.getProfile());
     				try {
 					  emails.addAll(db.getClubFamilyEmails(c,scaha.getScahaSeasonList().getCurrentSeason()));
     				} catch (SQLException e) {
@@ -225,7 +225,7 @@ public class MailTreeBean implements Serializable, MailableObject {
     				}
     				db.free();
     			} else if (obj instanceof String && node.getData().toString().contains("All Members With No Home Team")) {
-    				ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    				ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase", pb.getProfile());
     				try {
     					emails.addAll(db.getRenegadeFamilyEmails(scaha.getScahaSeasonList().getCurrentSeason()));
     				} catch (SQLException e) {

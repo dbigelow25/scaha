@@ -139,7 +139,7 @@ public class ProfileBean implements Serializable,  MailableObject  {
 	    		// Here we want to default some session stuff right here.
 	    		// What is the current USAHockey Season..
 	    		//
-	    		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+	    		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase",pro);
 	    		try{
 	    		
 	    			if (db.getData("call scaha.getActiveMemberShipByType('USAH')")) {
@@ -571,7 +571,7 @@ public void cancelAddMember() {
 		//
 		// in the end.. we simply turn off the edit so that edit screen will dissappear
 
-		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase", this.pro);
 	
 		try{
 			
@@ -662,7 +662,7 @@ public void cancelAddMember() {
 			return "fail";
 		}
 
-		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase",pro);
 		
 		try{
 			pro.setLivePassword(this.new_password);
