@@ -26,8 +26,7 @@ public class RoleCollection extends ScahaObject  {
 	
 	static String sGetAllRoles = "call scaha.getAllRoles()";  // The returns all possible roles in the system
 	static String sGetAllRolesByProfile = "call scaha.getAllRolesByProfile(?)";  // This just returns all direct roles
-	static String sGetAllImpRolesByProfile = "call scaha.getAllImpliedRolesByProfile(?)";   // This one returns the role Hierarchy
-
+	static String sGetAllImpRolesByProfile = "call scaha.getAllImpliedRolesByProfile(?)";
 	/**
 	 * This creates a tree type object of all roles and their interrelations
 	 * in the system

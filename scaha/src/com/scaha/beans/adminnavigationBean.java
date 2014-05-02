@@ -42,14 +42,15 @@ public class adminnavigationBean implements Serializable {
 	@PostConstruct
     public void init() {
 		//need to get the roles and setup the navigation permissions
-    	FacesContext context = FacesContext.getCurrentInstance();
+		
+		FacesContext context = FacesContext.getCurrentInstance();
     	Application app = context.getApplication();
 
 		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
 				"#{profileBean}", Object.class );
 
 		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
-    	setRoleflags(pb);
+    	//setRoleflags(pb);
 	}
 	
     public adminnavigationBean() {  
@@ -199,6 +200,7 @@ public class adminnavigationBean implements Serializable {
     	FacesContext context = FacesContext.getCurrentInstance();
     	Application app = context.getApplication();
 
+    	
 		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
 				"#{reviewloiBean}", Object.class );
 
