@@ -40,10 +40,8 @@
 					</p:menuButton>
 					<p:spacer width="2px" />
 				</p:toolbarGroup>
-				<p:toolbarGroup align="left"
-					rendered="#{not empty profileBean.getProfile()}">
-					<p:menuButton id="customer" style="width:125px;" value="My Actions"
-						type="button">
+				<p:toolbarGroup align="left" rendered="#{not empty profileBean.getProfile()}">
+					<p:menuButton id="customer" style="width:125px;" value="My Actions" type="button">
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Manage Profile" url="manageprofile.xhtml"
 							icon="ui-icon-extlink"
@@ -54,57 +52,64 @@
 							rendered="#{not empty profileBean.getProfile()}" />
 						<p:separator />
 						<p:menuitem style="font-size: 10pt;width:225px;"
-							value="Admin Portal" url="adminportal.xhtml"
+							value="Admin Portal" 
+							url="adminportal.xhtml"
 							rendered="#{profileBean.isSuperUser()}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
-							value="Add Player To D-List" url="addplayerdelinquent.xhtml"
-							rendered="#{profileBean.hasRoleList('S-REG')}" />
-						<p:menuitem style="font-size: 10pt;width:225px;" value="Manage Your Teams"
+							value="Manager Portal(Not PR)" 
+							url="managerportal.xhtml"
+							rendered="#{profileBean.isSuperUser()}" />
+						<p:menuitem style="font-size: 10pt;width:225px;" 
+							value="Manage Your Teams"
 							url="addteams.xhtml"
 							rendered="#{profileBean.hasRoleList('C-REG')}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Create Player LOI"
-							url="loinavigation.xhtml?pagecode=addplayerstoteam"
+							url="addplayerstoteam.xhtml"
 							rendered="#{profileBean.hasRoleList('C-REG')}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Create Coach LOI"
-							url="loinavigation.xhtml?pagecode=addcoachestoteam"
+							url="addcoachestoteam.xhtml"
 							rendered="#{profileBean.hasRoleList('C-REG')}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
-							value="Review LOI's" url="registrarviewlois.xhtml"
+							value="Review LOI's" 
+							url="registrarviewlois.xhtml"
 							rendered="#{profileBean.hasRoleList('C-REG')}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
-							value="Review Coach LOI's" url="registrarcoachlois.xhtml"
+							value="Review Coach LOI's" 
+							url="registrarcoachlois.xhtml"
 							rendered="#{profileBean.hasRoleList('C-REG')}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Release Player"
-							url="releasenavigation.xhtml?pagecode=startplayerrelease"
+							url="startplayerrelease.xhtml"
 							rendered="#{profileBean.hasRoleList('C-REG')}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="View Club D-List"
-							url="sessionnavigation.xhtml?pagecode=clubviewdelinquencylist"
+							url="clubviewdelinquencylist.xhtml"
 							rendered="#{profileBean.hasRoleList('C-PRES;C-REG')}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
-							value="Confirm Player LOI's"
-							url="loinavigation.xhtml?pagecode=confirmlois"
+							value="Add Player To D-List" 
+							url="addplayerdelinquent.xhtml"
 							rendered="#{profileBean.hasRoleList('S-REG')}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
-							value="Confirm Coach LOI's" url="confirmcoachlois.xhtml"
+							value="Confirm Player LOI's"
+							url="confirmlois.xhtml"
+							rendered="#{profileBean.hasRoleList('S-REG')}" />
+						<p:menuitem style="font-size: 10pt;width:225px;"
+							value="Confirm Coach LOI's" 
+							url="confirmcoachlois.xhtml"
 							rendered="#{profileBean.hasRoleList('S-REG')}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Manage Rosters" url="managerosters.xhtml"
 							rendered="#{profileBean.hasRoleList('S-REG')}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="View D-List"
-							url="sessionnavigation.xhtml?pagecode=viewdelinquencylist"
+							url="viewdelinquencylist.xhtml"
 							rendered="#{profileBean.hasRoleList('S-REG')}" />
-						<!-- <p:menuitem style="font-size: 10pt;width:225px;"
-							value="View Releases"
-							url="reviewreleasenavigation.xhtml?pagecode=confirmrelease"
-							rendered="#{profileBean.hasRoleList('S-REG')}" /> -->
 						<p:menuitem style="font-size: 10pt;width:225px;"
-							value="Manager Portal(Not PR)" url="managerportal.xhtml"
-							rendered="#{profileBean.isSuperUser()}" />
+							value="View Releases"
+							url="confirmrelease.xhtml"
+							rendered="#{profileBean.hasRoleList('S-REG')}" /> 
 					</p:menuButton>
 				</p:toolbarGroup>
 				<p:toolbarGroup align="right"
@@ -112,10 +117,16 @@
 					<h:outputText value="Welcome #{profileBean.getNickName()}"></h:outputText>
 					<p:separator />
 					<p:menuButton value="Options" iconPos="right">
-						<p:menuitem style="font-size: 11px;" value="Change Password"
+						<p:menuitem style="font-size: 10pt;"
+							value="Manage Profile" url="manageprofile.xhtml"
+							icon="ui-icon-extlink"  />
+						<p:menuitem style="font-size: 10pt;"
+							value="Register For Scaha" icon="ui-icon-extlink"
+							url="manageUSAHockey.xhtml" />
+						<p:menuitem style="font-size: 10pt;" value="Change Password"
 							url="changepassword.xhtml" icon="ui-icon-extlink" />
 						<p:separator />
-						<p:menuitem style="font-size: 11px;" value="Logout"
+						<p:menuitem style="font-size: 10pt;" value="Logout"
 							actionListener="#{profileBean.logout}" ajax="false" />
 					</p:menuButton>
 				</p:toolbarGroup>

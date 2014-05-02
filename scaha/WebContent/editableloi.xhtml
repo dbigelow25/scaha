@@ -9,8 +9,9 @@
       xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <f:metadata>
-<f:event type="preRenderView" listener="#{profileBean.verifyUserLogin()}" />
+	<f:event type="preRenderView" listener="#{profileBean.verifyHasRoles('C-REG;C-PRES')}" />
 </f:metadata>
+
 
 <ui:composition template="/WEB-INF/templates/layout.xhtml"
 	xmlns="http://www.w3.org/1999/xhtml"
@@ -164,7 +165,7 @@
 		<p:spacer width="10" height="10" />
 		<p:fieldset id="fs7" toggleable="false" toggleSpeed="500">
 			<h:form>
-				<div align="center"><p:commandButton value="Close" id="close" ajax="false" action="Welcome.xhtml"/></div>
+				<div align="center"><p:commandButton value="Close" id="close" ajax="false" action="addplayerstoteam.xhtml?faces-redirect=true"/></div>
 			</h:form>
 		</p:fieldset>
 				

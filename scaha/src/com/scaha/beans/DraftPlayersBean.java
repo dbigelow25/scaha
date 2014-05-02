@@ -11,11 +11,10 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.el.ValueExpression;
-import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,55 +23,44 @@ import com.gbli.context.ContextManager;
 import com.scaha.objects.Result;
 import com.scaha.objects.ResultDataModel;
 import com.scaha.objects.Team;
-import com.scaha.objects.TeamDataModel;
 
-//import com.gbli.common.SendMailSSL;
-
+@ManagedBean(name="draftplayersBean")
+@ViewScoped
 public class DraftPlayersBean implements Serializable {
 
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
-	transient private ResultSet rs = null;
-	private String searchcriteria = null;
+
+	private String searchcriteria = "";			// Start out with no search criteria
 	private String selectedteam = null;
 	private String selectedgirlsteam = null;
 	private Result selectedplayer = null;
 	private List<Team> teams = null;
-    private List<Result> results = null;
-    private ResultDataModel resultDataModel = null;
+    private ResultDataModel listofplayers = null;
 	private String origin = null;
 	private Boolean ishighschool = null;
 	private Integer profileid = 0;
 	private Integer clubid = null;
+	
+	@ManagedProperty(value = "#{profileBean}")
+	private ProfileBean pb = null;
+	@ManagedProperty(value = "#{scahaBean}")
+	private ScahaBean scaha = null;
+	
     
 	@PostConstruct
     public void init() {
-		results = new ArrayList<Result>();  
-        
+		
         //will need to load player profile information
-  
         clubid = 1;  
-        FacesContext context = FacesContext.getCurrentInstance();
-    	Application app = context.getApplication();
-
-		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
-				"#{profileBean}", Object.class );
-
-		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
-    	this.setProfid(pb.getProfile().ID);
+     	this.setProfid(pb.getProfile().ID);
         getClubID();
         isClubHighSchool();
-    	
         playerSearch(); 
-        
-        resultDataModel = new ResultDataModel(results);
   
 	}
 	
-    public DraftPlayersBean() {  
-          }  
-    
     public Integer getClubid(){
     	return clubid;
     }
@@ -129,48 +117,30 @@ public class DraftPlayersBean implements Serializable {
     	
     	try{
 
-    		if (db.setAutoCommit(false)) {
-    		
-    			//Vector<Integer> v = new Vector<Integer>();
-    			//v.add(1);
-    			//db.getData("CALL scaha.getTeamsByClub(?)", v);
-    		    CallableStatement cs = db.prepareCall("CALL scaha.getTeamsByClub(?,?)");
-    		    cs.setInt("pclubid", 1);
-    		    cs.setString("gender", gender);
-    			rs = cs.executeQuery();
-    			
-    			if (rs != null){
-    				//need to add to an array
-    				//rs = db.getResultSet();
-    				
-    				while (rs.next()) {
-    					String idteam = rs.getString("idteams");
-        				String teamname = rs.getString("teamname");
-        				
-        				Team team = new Team(teamname,idteam);
-        				templist.add(team);
-    				}
-    				LOGGER.info("We have results for team list by club");
-    			}
-    			rs.close();
-    			db.cleanup();
-    		} else {
-    		
-    		}
+   		    CallableStatement cs = db.prepareCall("CALL scaha.getTeamsByClub(?,?)");
+   		    cs.setInt("pclubid", 1);
+   		    cs.setString("gender", gender);
+   			ResultSet rs = cs.executeQuery();
+   			
+			while (rs.next()) {
+				String idteam = rs.getString("idteams");
+   				String teamname = rs.getString("teamname");
+   				Team team = new Team(teamname,idteam);
+   				templist.add(team);
+			}
+			LOGGER.info("We have results for team list by club");
+			rs.close();
+			db.cleanup();
+	
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN loading teams");
     		e.printStackTrace();
-    		db.rollback();
     	} finally {
-    		//
-    		// always clean up after yourself..
-    		//
     		db.free();
     	}
 		
     	setTeams(templist);
-		
 		return getTeams();
 	}
 	
@@ -182,13 +152,6 @@ public class DraftPlayersBean implements Serializable {
 		teams = list;
 	}
 	
-	public List<Result> getResults(){
-		return results;
-	}
-	
-	public void setResults(List<Result> list){
-		results = list;
-	}
 	
 	public String getSearchcriteria ()
     {
@@ -201,7 +164,7 @@ public class DraftPlayersBean implements Serializable {
     }
 
     
-    //retrieves list of players for registrar to select from based on criteria provided
+   
     public void playerSearch(){
     
     	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
@@ -209,58 +172,41 @@ public class DraftPlayersBean implements Serializable {
     	
     	try{
 
-    		if (db.setAutoCommit(false)) {
-    		
-    			Vector<String> v = new Vector<String>();
-    			v.add(this.searchcriteria);
-    			db.getData("CALL scaha.playersearch(?)", v);
-    		    
-    			if (db.getResultSet() != null){
-    				//need to add to an array
-    				rs = db.getResultSet();
-    				
-    						
-    				
-    				while (rs.next()) {
-    					String idperson = rs.getString("idperson");
-        				String playername = rs.getString("fname") + " " + db.getResultSet().getString("lname");
-        				String address = rs.getString("address");
-        				String city = db.getResultSet().getString("city");
-        				String state = db.getResultSet().getString("state");
-        				String zip = db.getResultSet().getString("zipcode");
+   			Vector<String> v = new Vector<String>();
+   			v.add(this.searchcriteria);
+   			db.getData("CALL scaha.playersearch(?)", v);
+   			ResultSet rs = db.getResultSet();
+   
+   			while (rs.next()) {
+   				String idperson = rs.getString("idperson");
+        		String playername = rs.getString("fname") + " " + db.getResultSet().getString("lname");
+        		String address = rs.getString("address");
+        		String city = db.getResultSet().getString("city");
+        		String state = db.getResultSet().getString("state");
+        		String zip = db.getResultSet().getString("zipcode");
         				
-        				if (address == null){
-        					address = "";
-        				}
-        				if (city != null){
-        					address = address + ", " + city;
-        				}
-        				if (state != null){
-        					address = address + ", " + state;
-        				}
-        				if (zip != null){
-        					address = address + " " + zip;
-        				}
+        		if (address == null){
+        			address = "";
+        		}
+        		if (city != null){
+        			address = address + ", " + city;
+        		}
+        		if (state != null){
+        			address = address + ", " + state;
+        		}
+        		if (zip != null){
+        			address = address + " " + zip;
+        		}
         				
-        				
-        				
-        				String dob = rs.getString("dob");
+        		String dob = rs.getString("dob");
         		
-        				Result result = new Result(playername,idperson,address,dob);
-        				tempresult.add(result);
-    				}
-    				
-    				LOGGER.info("We have results for search criteria " + this.searchcriteria);
-    				
-    			}
-    			rs.close();
-    			db.cleanup();
-
-    			LOGGER.info("We have searched players for " + this.searchcriteria);
-    			//return "true";
-    		} else {
-    			//return "False";
+        		Result result = new Result(playername,idperson,address,dob);
+        		tempresult.add(result);
     		}
+    				
+    		LOGGER.info("We have results for search criteria " + this.searchcriteria);
+    		rs.close();
+    		db.cleanup();
     		
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
@@ -268,19 +214,13 @@ public class DraftPlayersBean implements Serializable {
     		e.printStackTrace();
     		db.rollback();
     	} finally {
-    		//
-    		// always clean up after yourself..
-    		//
     		db.free();
     	}
     	
-    	//setResults(tempresult);
-    	resultDataModel = new ResultDataModel(tempresult);
+    	listofplayers = new ResultDataModel(tempresult);
     }
 
-    public ResultDataModel getResultdatamodel(){
-    	return resultDataModel;
-    }
+   
     
     //Generates the loi for family to confirm info and add registration code.  
     //If player is on delinquency or has previously loi'd message will be displayed.
@@ -318,7 +258,21 @@ public class DraftPlayersBean implements Serializable {
     	}
     }
     
-    private Boolean verifyDelinquency(String playerid){
+    /**
+	 * @return the listofplayers
+	 */
+	public ResultDataModel getListofplayers() {
+		return listofplayers;
+	}
+
+	/**
+	 * @param listofplayers the listofplayers to set
+	 */
+	public void setListofplayers(ResultDataModel listofplayers) {
+		this.listofplayers = listofplayers;
+	}
+
+	private Boolean verifyDelinquency(String playerid){
     	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	String isdelinquent = "";
     	
@@ -328,27 +282,17 @@ public class DraftPlayersBean implements Serializable {
 			Vector<Integer> v = new Vector<Integer>();
 			v.add(Integer.parseInt(playerid));
 			db.getData("CALL scaha.getDelinquencyByPlayerId(?)", v);
-		    
-			if (db.getResultSet() != null){
-				//need to add to an array
-				rs = db.getResultSet();
-				if (rs.next()){
-					isdelinquent = rs.getString("delinquencycleared");
-	    			
-					LOGGER.info("We have matching delinquency for:" + playerid);
-				}
+		    ResultSet rs = db.getResultSet();
+			if (rs.next()){
+				isdelinquent = rs.getString("delinquencycleared");
+	    		LOGGER.info("We have matching delinquency for:" + playerid);
 			}
-    		rs.close();
-    		db.cleanup();
+			rs.close();
 
     	} catch (SQLException e) {
-    		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN Searching FOR " + this.searchcriteria);
     		e.printStackTrace();
     	} finally {
-    		//
-    		// always clean up after yourself..
-    		//
     		db.free();
     	}
     
@@ -368,30 +312,22 @@ public class DraftPlayersBean implements Serializable {
     		CallableStatement cs = null;
     		if (this.ishighschool){
     			cs = db.prepareCall("CALL scaha.isPlayerRosteredHS(?)");
-    		}else {
+    		} else {
     			cs = db.prepareCall("CALL scaha.isPlayerRostered(?)");
     		}
     		cs.setInt("in_idPerson", Integer.parseInt(playerid));
-		    rs = cs.executeQuery();
-			
-			if (rs != null){
-				if (rs.next()){
-					previousTeamID = rs.getInt("idteam");
-	    			
-					LOGGER.info("We have matching delinquency for:" + playerid);
-				}
+    		ResultSet rs = cs.executeQuery();
+			if (rs.next()){
+				previousTeamID = rs.getInt("idteam");
+				LOGGER.info("We have matching delinquency for:" + playerid);
 			}
     		rs.close();		
-    		db.cleanup();
+    		cs.close();
 
     	} catch (SQLException e) {
-    		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN Searching FOR " + this.searchcriteria);
     		e.printStackTrace();
     	} finally {
-    		//
-    		// always clean up after yourself..
-    		//
     		db.free();
     	}
     
@@ -405,7 +341,6 @@ public class DraftPlayersBean implements Serializable {
     
     public void searchClose(){
     	searchcriteria = "";
-    	results = null;
 
     	FacesContext context = FacesContext.getCurrentInstance();
 		origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
@@ -457,33 +392,23 @@ public class DraftPlayersBean implements Serializable {
 			Vector<Integer> v = new Vector<Integer>();
 			v.add(this.clubid);
 			db.getData("CALL scaha.IsClubHighSchool(?)", v);
-		    
-			if (db.getResultSet() != null){
-				//need to add to an array
-				rs = db.getResultSet();
-				
-				while (rs.next()) {
-						isschool = rs.getInt("result");
-					}
-				LOGGER.info("We have results for club is a high school");
+			ResultSet rs = db.getResultSet();
+			while (rs.next()) {
+				isschool = rs.getInt("result");
 			}
+			LOGGER.info("We have results for club is a high school");
 			rs.close();
-			db.cleanup();
 			
 			if (isschool.equals(0)){
 				this.ishighschool=false;
-			}else{
+			} else {
 				this.ishighschool=true;
 			}
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN loading club by profile");
     		e.printStackTrace();
-    		db.rollback();
     	} finally {
-    		//
-    		// always clean up after yourself..
-    		//
     		db.free();
     	}
     }
@@ -498,29 +423,48 @@ public class DraftPlayersBean implements Serializable {
 			v.add(this.getProfid());
 			db.getData("CALL scaha.getClubforPerson(?)", v);
 		    
-			if (db.getResultSet() != null){
-				//need to add to an array
-				rs = db.getResultSet();
-				
-				while (rs.next()) {
-					this.clubid = rs.getInt("idclub");
-					}
-				LOGGER.info("We have results for club for a profile");
+			ResultSet rs = db.getResultSet();
+			while (rs.next()) {
+				this.clubid = rs.getInt("idclub");
 			}
+			LOGGER.info("We have results for club for a profile");
 			rs.close();
-			db.cleanup();
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN loading club by profile");
     		e.printStackTrace();
-    		db.rollback();
     	} finally {
-    		//
-    		// always clean up after yourself..
-    		//
     		db.free();
     	}
 
     }
+
+	/**
+	 * @return the pb
+	 */
+	public ProfileBean getPb() {
+		return pb;
+	}
+
+	/**
+	 * @param pb the pb to set
+	 */
+	public void setPb(ProfileBean pb) {
+		this.pb = pb;
+	}
+
+	/**
+	 * @return the scaha
+	 */
+	public ScahaBean getScaha() {
+		return scaha;
+	}
+
+	/**
+	 * @param scaha the scaha to set
+	 */
+	public void setScaha(ScahaBean scaha) {
+		this.scaha = scaha;
+	}
 }
 

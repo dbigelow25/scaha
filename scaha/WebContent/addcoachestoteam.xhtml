@@ -10,7 +10,7 @@
 
 
 <f:metadata>
-<f:event type="preRenderView" listener="#{profileBean.verifyUserLogin()}" />
+	<f:event type="preRenderView" listener="#{profileBean.verifyHasRoles('C-REG;C-PRES')}" />
 </f:metadata>
 
 <ui:composition template="/WEB-INF/templates/layout.xhtml"
@@ -21,30 +21,23 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	<ui:define name="content">
-	
-	<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top">  
-    	<h:outputText value="SCAHA" style="color:#FFCC00;font-size:36px;" />  
-	</p:notificationBar>  
-  
-		<h:form>		
-			<p:messages id="loimessage" showDetail="true" autoUpdate="true" closable="false" />
+	<h:form>		
+		<p:messages id="loimessage" showDetail="true" autoUpdate="true" closable="false" />
 			<p:fieldset>
 			<p:panel id ="panel" header="Search for Coach:">
 				<h:panelGrid columns="2" cellpadding="5">
-					<p:inputText id="searchforcoach" style="width:150px;" value="#{draftcoachesBean.searchcriteria}" required="false" requiredMessage="Enter a minimum of 5 characters to execute search."/>
-					<p:commandButton id="executesearch" value="Search" actionListener="#{draftcoachesBean.coachSearch()}" ajax="true" update="coachsearchresult"/>
-					<p:tooltip for="searchforcoach" value="Enter at least 5 characters to generate a list of matching players" showEffect="fade" hideEffect="fade" />  
+					<h:inputText id="searchforcoach" style="width:150px;" value="#{draftcoachesBean.searchcriteria}" required="false" requiredMessage="Enter a minimum of 5 characters to execute search."/>
+					<p:commandButton id="executesearch" value="Search" ajax="true" update="coachsearchresult" actionListener="#{draftcoachesBean.coachSearch()}"/>
+					<p:tooltip for="searchforcoach" value="Enter at least 5 characters to generate a list of matching coaches" showEffect="fade" hideEffect="fade" />  
 					<p:message id="m_searchforcoach" for="searchforcoach" />
 				</h:panelGrid>
 				<br></br>	
-				<p:dataTable id="coachsearchresult" var="result" value="#{draftcoachesBean.getResultdatamodel()}" selection="#{draftcoachesBean.selectedcoach}"  paginator="true" rows="10" >
-                		<f:facet name="header">  
+				<p:dataTable id="coachsearchresult" var="result" value="#{draftcoachesBean.listofcoaches}" selection="#{draftcoachesBean.selectedcoach}"  paginator="true" rows="12" >>
+                	<f:facet name="header">  
 			            Select a Coach from the List  
 			        </f:facet> 
-			         <p:column selectionMode="single" style="width:2%" />
-			         <!-- <p:column headerText="Player ID">  
-			            <h:outputText value="#{result.getIdplayer()}" />  
-			        </p:column> -->  
+			        <p:column id="selectedcoach" selectionMode="single" style="width:2%" />
+			   
 			        <p:column headerText="Coach Name">  
 			            <h:outputText value="#{result.getCoachname()}" />  
 			        </p:column>  

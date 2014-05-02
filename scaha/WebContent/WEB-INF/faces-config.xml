@@ -45,17 +45,6 @@
 		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
-		<managed-bean-name>draftplayersBean</managed-bean-name>
-		<managed-bean-class>com.scaha.beans.DraftPlayersBean</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
-	</managed-bean>
-	<managed-bean>
-		<managed-bean-name>draftcoachesBean</managed-bean-name>
-		<managed-bean-class>com.scaha.beans.DraftCoachesBean</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
-	</managed-bean>
-
-	<managed-bean>
 		<managed-bean-name>loiBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.loiBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
@@ -98,11 +87,6 @@
 	<managed-bean>
 		<managed-bean-name>reviewcoachloiBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.reviewcoachloiBean</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
-	</managed-bean>
-	<managed-bean>
-		<managed-bean-name>delinquencyBean</managed-bean-name>
-		<managed-bean-class>com.scaha.beans.delinquencyBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>

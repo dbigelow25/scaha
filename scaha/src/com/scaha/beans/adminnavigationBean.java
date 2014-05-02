@@ -17,6 +17,7 @@ import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,18 +40,14 @@ public class adminnavigationBean implements Serializable {
 	private Boolean scaharegistrar = null;
 	private String pagecode = null;
 	
+	@ManagedProperty(value = "#{profileBean}")
+	private ProfileBean pb = null;
+	@ManagedProperty(value="#{scahaBean}")
+    private ScahaBean scaha = null;
+	
 	@PostConstruct
     public void init() {
-		//need to get the roles and setup the navigation permissions
-		
-		FacesContext context = FacesContext.getCurrentInstance();
-    	Application app = context.getApplication();
 
-		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
-				"#{profileBean}", Object.class );
-
-		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
-    	//setRoleflags(pb);
 	}
 	
     public adminnavigationBean() {  
@@ -63,42 +60,6 @@ public class adminnavigationBean implements Serializable {
     
     public String getPagecode(){
     	return pagecode;
-    }
-    
-    public void setRoleflags(ProfileBean pb){
-    	
-    	//set initial values to false
-    	setClubregistrar(false);
-    	
-    	//iterate thru the roles
-    	for (int i = 0; i < pb.getRoles().size()-1; i++) {
-	    	
-    		if (!(pb.getRoles().get(i).getName()==null)){
-    			if (pb.getRoles().get(i).getName().equals("C-REG")){
-    	    		setClubregistrar(true);
-    	    	}
-    			if (pb.getRoles().get(i).getName().equals("S-REG")){
-    	    		setScaharegistrar(true);
-    	    	}
-    		}
-    		
-		}
-    }
-    
-    public void setClubregistrar(Boolean flag){
-    	clubregistrar = flag;
-    }
-    
-    public Boolean getClubregistrar(){
-    	return clubregistrar;
-    }
-    
-    public void setScaharegistrar(Boolean flag){
-    	scaharegistrar = flag;
-    }
-    
-    public Boolean getScaharegistrar(){
-    	return scaharegistrar;
     }
     
     public void addTeam(){
@@ -182,7 +143,7 @@ public class adminnavigationBean implements Serializable {
 		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
 				"#{delinquencyBean}", Object.class );
 
-		delinquencyBean db = (delinquencyBean) expression.getValue( context.getELContext() );
+		DelinquencyBean db = (DelinquencyBean) expression.getValue( context.getELContext() );
     	db.playersDisplay();
 
     	try{
@@ -297,5 +258,33 @@ public class adminnavigationBean implements Serializable {
     	}
     	    	
     }
+
+	/**
+	 * @return the pb
+	 */
+	public ProfileBean getPb() {
+		return pb;
+	}
+
+	/**
+	 * @param pb the pb to set
+	 */
+	public void setPb(ProfileBean pb) {
+		this.pb = pb;
+	}
+
+	/**
+	 * @return the scaha
+	 */
+	public ScahaBean getScaha() {
+		return scaha;
+	}
+
+	/**
+	 * @param scaha the scaha to set
+	 */
+	public void setScaha(ScahaBean scaha) {
+		this.scaha = scaha;
+	}
     
 }

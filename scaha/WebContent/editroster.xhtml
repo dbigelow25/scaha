@@ -20,10 +20,7 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	<ui:define name="content">
-	
-	<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top">  
-    	<h:outputText value="SCAHA" style="color:#FFCC00;font-size:36px;" />  
-	</p:notificationBar>  
+<div id="page-div">			
   	<h:form id="mess">
     	<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />    
 	</h:form>
@@ -66,7 +63,7 @@
 			<div align="center"><p:commandButton value="Close" id="close" ajax="false" action="managerosters.xhtml"/></div>
 		</h:form>
 	</p:fieldset>
-		 
-	</ui:define>
+ </div>
+</ui:define>
 </ui:composition>
 </html>

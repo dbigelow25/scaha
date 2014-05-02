@@ -205,7 +205,6 @@ public class ProfileBean implements Serializable,  MailableObject  {
  				this.origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
  				context.getExternalContext().redirect("Welcome.xhtml");
  			} else if(!pro.isSuperUser()){
- 				this.origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
  				context.getExternalContext().redirect("Welcome.xhtml");
  			}
 
@@ -221,7 +220,6 @@ public class ProfileBean implements Serializable,  MailableObject  {
  				this.origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
  				context.getExternalContext().redirect("Welcome.xhtml");
  			} else if(!this.hasRoleList(_str)){
- 				this.origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
  				context.getExternalContext().redirect("Welcome.xhtml");
  			}
 

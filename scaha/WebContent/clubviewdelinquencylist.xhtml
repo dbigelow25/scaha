@@ -19,24 +19,20 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 	
-	<ui:define name="content">
-	
-	<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top">  
-    	<h:outputText value="SCAHA" style="color:#FFCC00;font-size:36px;" />  
-	</p:notificationBar>  
+<ui:define name="content">
+<div id="page-div">		
   	<h:form id="mess">
-    
-			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />    
+		<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />    
+	</h:form>
+	<h:form  id="form">
 	
-		</h:form>
-	<h:form>
 			<p:panel id ="panel" header="2014 Delinquency List:">
-				
-				<p:dataTable id="listofplayers" var="player" rowKey="#{player.IDplayer}" rowkey="" value="#{delinquencyBean.getPlayerdatamodel()}" selection="#{delinquencyBean.selectedplayer}" paginator="#{delinquencyBean.getDisplayshortlist()}" rows="#{delinquencyBean.displayrecordcount}" autoupdate="false">
-                	<p:column filterBy="firstname" filterMatchMode="contains" filterStyle="width:100px" headerText="First Name">  
+
+				<p:dataTable id="listofplayers" var="player" value="#{delinquencyBean.playerlist}" selection="#{delinquencyBean.selectedplayer}" paginator="#{delinquencyBean.getDisplayshortlist()}" rows="#{delinquencyBean.displayrecordcount}">
+                	<p:column filterBy="firstname" filterMatchMode="contains" filterStyle="width:150px" headerText="First Name">  
 			            <h:outputText value="#{player.getFirstname()}" />  
 			        </p:column>  
-			        <p:column filterBy="lastname" filterMatchMode="contains" filterStyle="width:100px" headerText="Last Name">  
+			        <p:column filterBy="lastname" filterMatchMode="contains" filterStyle="width:150px" headerText="Last Name">  
 			            <h:outputText value="#{player.getLastname()}" />  
 			        </p:column>  
 			        <p:column headerText="2014 Team">  
@@ -46,8 +42,8 @@
 			            <h:outputText value="#{player.getDob()}" />  
 			        </p:column>
 			        <f:facet name="footer">  
-						<div align="right"><p:commandButton id="displaylonglist" value="Display Entire List" ajax="true" update="listofplayers" actionListener="#{delinquencyBean.displayLongList()}" rendered="#{delinquencyBean.getDisplayshortlist()}"/></div>
-						<div align="right"><p:commandButton id="printlist" value="Print" onclick="window.print(); return false;" rendered="#{!delinquencyBean.getDisplayshortlist()}"/><p:commandButton id="displayshortlist" value="Display Short List" ajax="true" update="listofplayers" actionListener="#{delinquencyBean.displayShortList()}" rendered="#{!delinquencyBean.getDisplayshortlist()}"/></div>              
+						<div align="right"><p:commandButton id="displaylonglist" value="Display Entire List" ajax="false" update="@this" action="#{delinquencyBean.displayLongList()}" rendered="#{delinquencyBean.getDisplayshortlist()}"/></div>
+						<div align="right"><p:commandButton id="printlist" value="Print" onclick="window.print(); return false;" rendered="#{!delinquencyBean.getDisplayshortlist()}"/><p:commandButton id="displayshortlist" value="Display Short List" ajax="false" update="@this" action="#{delinquencyBean.displayShortList()}" rendered="#{!delinquencyBean.getDisplayshortlist()}"/></div>              
 			        </f:facet> 
 			    </p:dataTable>
 			</p:panel>
@@ -56,6 +52,7 @@
 	<h:form>
 			<div align="center"><p:commandButton id="closeaddteams" value="Close" ajax="false" actionListener="#{delinquencyBean.closePage()}"/></div>
 	</h:form>
-	</ui:define>
+</div>
+</ui:define>
 </ui:composition>
 </html>

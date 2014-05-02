@@ -85,8 +85,8 @@ public class MailTreeBean implements Serializable, MailableObject {
 		TreeNode clubTop = new CheckboxTreeNode("All Clubs", root); 
 		TreeNode adminTop = new CheckboxTreeNode("All Admin", root); 
 		TreeNode adminPres = new CheckboxTreeNode("All Presidents", adminTop); 
-		TreeNode adminIce = new CheckboxTreeNode("All Registrars", adminTop); 
-		TreeNode adminReg = new CheckboxTreeNode("All Ice Convenors", adminTop); 
+		TreeNode adminReg = new CheckboxTreeNode("All Registrars", adminTop); 
+		TreeNode adminIce = new CheckboxTreeNode("All Ice Convenors", adminTop); 
 		TreeNode adminNon = new CheckboxTreeNode("All Members With No Home Team", root);
 		
 		ClubList cl = scaha.getScahaClubList();

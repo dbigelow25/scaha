@@ -1,6 +1,5 @@
 package com.scaha.beans;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
@@ -11,28 +10,30 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
-import com.scaha.objects.Club;
 import com.scaha.objects.Player;
 import com.scaha.objects.PlayerDataModel;
 
 //import com.gbli.common.SendMailSSL;
 
-
-public class delinquencyBean implements Serializable {
+@ManagedBean(name="delinquencyBean")
+@ViewScoped
+public class DelinquencyBean implements Serializable {
 
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
-	transient private ResultSet rs = null;
-	private List<Player> players = null;
-    private PlayerDataModel PlayerDataModel = null;
+
+    private PlayerDataModel playerlist = null;
     private Player selectedplayer = null;
 	private String selectedtabledisplay = null;
-	private List<Club> clubs = null;
 	private Boolean displayclublist = null;
 	private String selectedclub = null;
 	private String selectedplayerid = null;
@@ -40,11 +41,44 @@ public class delinquencyBean implements Serializable {
 	private Integer displayrecordcount = null;
 	private Integer totalrecordcount = null;
 	
+	@ManagedProperty(value = "#{profileBean}")
+	private ProfileBean pb = null;
+	@ManagedProperty(value = "#{scahaBean}")
+	private ScahaBean scaha = null;
+	
+	
+	/**
+	 * @return the pb
+	 */
+	public ProfileBean getPb() {
+		return pb;
+	}
+
+	/**
+	 * @param pb the pb to set
+	 */
+	public void setPb(ProfileBean pb) {
+		this.pb = pb;
+	}
+
+	/**
+	 * @return the scaha
+	 */
+	public ScahaBean getScaha() {
+		return scaha;
+	}
+
+	/**
+	 * @param scaha the scaha to set
+	 */
+	public void setScaha(ScahaBean scaha) {
+		this.scaha = scaha;
+	}
+
+	@PostConstruct
 	public void init() {
-	    players = new ArrayList<Player>();  
-        PlayerDataModel = new PlayerDataModel(players);
-        
-        playersDisplay(); 
+		LOGGER.info("**************** DelinquencyBean Has Been Init-ed ********************");
+		playersDisplay(); 
     }  
     
 	public Integer getTotalrecordcount(){
@@ -113,14 +147,6 @@ public class delinquencyBean implements Serializable {
 		selectedplayer = selectedPlayer;
 	}
     
-	public List<Player> getPlayers(){
-		return players;
-	}
-	
-	public void setPlayers(List<Player> list){
-		players = list;
-	}
-	
 	    
     //retrieves list of players
     public void playersDisplay(){
@@ -137,69 +163,41 @@ public class delinquencyBean implements Serializable {
     	
     	try{
 
-    		if (db.setAutoCommit(false)) {
+			CallableStatement cs = db.prepareCall("CALL scaha.getDelinquencyList()");
+			ResultSet rs = cs.executeQuery();
     			
-    			
-				CallableStatement cs = db.prepareCall("CALL scaha.getDelinquencyList()");
-    			rs = cs.executeQuery();
-    			
-    			if (rs != null){
+			while (rs.next()) {
+				String idplayer = rs.getString("idplayer");
+				String sfirstname = rs.getString("fname");
+				String slastname = rs.getString("lname");
+				String scurrentteam = rs.getString("currentteam");
+				String sdob = rs.getString("dob");
+				
+				Player oplayer = new Player();
+				oplayer.setIdplayer(idplayer);
+				oplayer.setFirstname(sfirstname);
+				oplayer.setLastname(slastname);
+				oplayer.setCurrentteam(scurrentteam);
+				oplayer.setDob(sdob);
+				
+				tempresult.add(oplayer);
+				
+				recordcount++;
+			}
     				
-    				while (rs.next()) {
-    					String idplayer = rs.getString("idplayer");
-        				String sfirstname = rs.getString("fname");
-        				String slastname = rs.getString("lname");
-        				String scurrentteam = rs.getString("currentteam");
-        				String sdob = rs.getString("dob");
-        				
-        				Player oplayer = new Player();
-        				oplayer.setIdplayer(idplayer);
-        				oplayer.setFirstname(sfirstname);
-        				oplayer.setLastname(slastname);
-        				oplayer.setCurrentteam(scurrentteam);
-        				oplayer.setDob(sdob);
-        				
-        				tempresult.add(oplayer);
-        				
-        				recordcount++;
-    				}
-    				
-    				LOGGER.info("We have results for delinquency list");
-    				
-    			}
-    			
-    			this.totalrecordcount=recordcount;
-    			rs.close();	
-    			db.cleanup();
-    		} else {
-
-    		}
-    		
+   			this.totalrecordcount=recordcount;
+   			rs.close();	
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN Searching FOR delinquency list");
     		e.printStackTrace();
-    		db.rollback();
     	} finally {
-    		//
-    		// always clean up after yourself..
-    		//
     		db.free();
     	}
     	
-    	//setResults(tempresult);
-    	setPlayers(tempresult);
-    	PlayerDataModel = new PlayerDataModel(players);
+    	setPlayerlist(new PlayerDataModel(tempresult));
     }
 
-    public PlayerDataModel getPlayerdatamodel(){
-    	return PlayerDataModel;
-    }
-    
-    public void setPlayerdatamodel(PlayerDataModel odatamodel){
-    	PlayerDataModel = odatamodel;
-    }
-    
     public void closePage(){
     	FacesContext context = FacesContext.getCurrentInstance();
     	try{
@@ -212,39 +210,33 @@ public class delinquencyBean implements Serializable {
     
     public void removePlayer(Player selectedPlayer){
 		
-		String sidplayer = selectedPlayer.getIdplayer();
-		String playname = selectedPlayer.getPlayername();
+		for (Player p : playerlist) {
+			if (p.getIdplayer().equals(selectedPlayer.getIdplayer())) {
+				selectedPlayer = p;
+				break;
+			}
+		}
 		
-		//need to set to void
+		String sidplayer = selectedPlayer.getIdplayer();
+		String playname = selectedPlayer.getFirstname() + " " + selectedPlayer.getLastname();
+		
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		
 		try{
 
-			if (db.setAutoCommit(false)) {
-			
-				//Need to provide info to the stored procedure to save or update
- 				LOGGER.info("update player in delinquency list");
- 				CallableStatement cs = db.prepareCall("CALL scaha.removeDelinquency(?)");
-    		    cs.setInt("iplayerid", Integer.parseInt(sidplayer));
-    		    rs=cs.executeQuery();
-    		    db.commit();
-    		    rs.close();
-    			db.cleanup();
- 				
-    		    //logging 
-    			LOGGER.info("We are remove the delinquency for player id:" + sidplayer);
-    		    
-    			FacesContext context = FacesContext.getCurrentInstance();  
-                context.addMessage(null, new FacesMessage("Successful", "You have removed the delinquency for :" + playname));
-			} else {
-		
-			}
+			LOGGER.info("update player in delinquency list");
+			CallableStatement cs = db.prepareCall("CALL scaha.removeDelinquency(?)");
+		    cs.setInt("iplayerid", Integer.parseInt(sidplayer));
+		    cs.executeUpdate();
+			LOGGER.info("We are remove the delinquency for player id:" + sidplayer);
+		    cs.close();
+			FacesContext context = FacesContext.getCurrentInstance();  
+            context.addMessage(null, new FacesMessage("Successful", "You have removed the delinquency for :" + playname));
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			LOGGER.info("ERROR IN removing the delinquency for " + this.selectedplayer);
 			e.printStackTrace();
-			db.rollback();
 		} finally {
 			//
 			// always clean up after yourself..
@@ -252,17 +244,32 @@ public class delinquencyBean implements Serializable {
 			db.free();
 		}
 		
-		playersDisplay();
+		List<Player> pl = (List<Player>) playerlist.getWrappedData();
+		pl.remove(selectedPlayer);
 	}
     
     public void displayLongList(){
     	this.displayshortlist=false;
-    	this.displayrecordcount=this.totalrecordcount;
+    	this.displayrecordcount=0;
     }
     
     public void displayShortList(){
     	this.displayshortlist=true;
     	this.displayrecordcount=10;
     }
+
+	/**
+	 * @return the playerlist
+	 */
+	public PlayerDataModel getPlayerlist() {
+		return playerlist;
+	}
+
+	/**
+	 * @param playerlist the playerlist to set
+	 */
+	public void setPlayerlist(PlayerDataModel playerlist) {
+		this.playerlist = playerlist;
+	}
 }
 
