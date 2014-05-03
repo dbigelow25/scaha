@@ -12,9 +12,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
@@ -24,7 +23,7 @@ import com.scaha.objects.PlayerDataModel;
 //import com.gbli.common.SendMailSSL;
 
 @ManagedBean(name="delinquencyBean")
-@ViewScoped
+@RequestScoped
 public class DelinquencyBean implements Serializable {
 
 	// Class Level Variables
