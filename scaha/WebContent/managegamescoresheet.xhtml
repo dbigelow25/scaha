@@ -14,15 +14,15 @@
 		<ui:fragment id="edit-exhibition">
 			<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">
 				<p:panel id ="panel" header="Manage Game Scoresheet(s)">
-					<p:fileUpload fileUploadListener="#{fileUploadController.handleFileUpload}" mode="advanced"  
-            			update="scoresheets" auto="true" sizeLimit="100000" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"/>
+					<p:fileUpload fileUploadListener="#{scoresheetBean.handleFileUpload}" mode="advanced"  
+            			update="scoresheets" dragDropSupport="false" multiple="true" auto="false" sizeLimit="100000" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf)$/"/>
             		<br></br>
             		<p:dataTable id="scoresheets" var="scoresheet" value="#{scoresheetBean.getScoresheetgamedatamodel()}" selection="#{scoresheetBean.selectedscoresheet}" rows="10" autoupdate="false">
 			            <f:facet name="header">  
 				        	Existing Scoresheets
 				        </f:facet> 
 				         <p:column headerText="Filename">  
-				            <h:outputText value="#{scoresheet.getFilename()}" />  
+				            <h:outputText value="#{scoresheet.getFiledisplayname()}" />  
 				        </p:column>
 				        <p:column headerText="Upload Date">  
 				            <h:outputText value="#{scoresheet.getUploaddate()}" />  
@@ -31,6 +31,7 @@
 				            <h:outputLink id="viewlink" value="javascript:void(0)" >
 								<h:outputText style = "font-size: 9pt;font-family: Verdana;" value="View/Download" />
 							</h:outputLink>
+							<br></br>
 							<h:outputLink id="deletelink" value="javascript:void(0)" >
 								<h:outputText style="font-size: 9pt;font-family: Verdana;" value="Delete" />
 							</h:outputLink>
