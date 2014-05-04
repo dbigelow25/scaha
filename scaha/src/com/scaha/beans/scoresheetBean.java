@@ -21,8 +21,6 @@ import org.primefaces.event.FileUploadEvent;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
-import com.scaha.objects.ExhibitionGame;
-import com.scaha.objects.ExhibitionGameDataModel;
 import com.scaha.objects.FileUploadController;
 import com.scaha.objects.Scoresheet;
 import com.scaha.objects.ScoresheetDataModel;
@@ -52,6 +50,9 @@ public class scoresheetBean implements Serializable {
 	private String gametype = null;
 	private Integer idgame = null;
 	private Scoresheet selectedscoresheet = null;
+	private String gamedate = null;
+	private String opponent = null;
+	private String gametime = null;
 	
 	//datamodels for all of the lists on the page
 	private ScoresheetDataModel ScoresheetDataModel = null;
@@ -86,6 +87,33 @@ public class scoresheetBean implements Serializable {
     public scoresheetBean() {  
         
     }  
+    
+    public String getOpponent(){
+    	return opponent;
+    }
+    
+    public void setOpponent(String gdate){
+    	opponent=gdate;
+    }
+    
+    
+    public String getGametime(){
+    	return gametime;
+    }
+    
+    public void setGametime(String gdate){
+    	gametime=gdate;
+    }
+    
+    
+    public String getGamedate(){
+    	return gamedate;
+    }
+    
+    public void setGamedate(String gdate){
+    	gamedate=gdate;
+    }
+    
     
     public Scoresheet getSelectedscoresheet(){
     	return selectedscoresheet;
@@ -259,6 +287,7 @@ public class scoresheetBean implements Serializable {
 	    			getGameScoresheets();
 				} else {
 					//add error message here...
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "Unable to upload file " + scoresheet.getFiledisplayname()));
 				}
 				
 			} catch (SQLException e) {
@@ -277,55 +306,101 @@ public class scoresheetBean implements Serializable {
 		
 	}
 	
-    
+	public void deleteScoresheet(Scoresheet scoresheet){
+		
+		String gametype =scoresheet.getGametype();
+		Integer idscoresheet= scoresheet.getIdscoresheet();
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
+
+			if (db.setAutoCommit(false)) {
+			
+				//Need to provide info to the stored procedure to delete the scoresheet
+ 				LOGGER.info("remove scoresheet from list for the game");
+ 				CallableStatement cs = db.prepareCall("CALL scaha.deleteScoresheet(?)");
+    		    cs.setInt("scoresheetid", idscoresheet);
+    		    cs.executeQuery();
+    		    db.commit();
+    			db.cleanup();
+ 				
+    			LOGGER.info("You have deleted the scoresheet :" + idscoresheet);
+    		    //now to reload the scoresheet collection for datatable update to display without hte scoresheet
+    			getGameScoresheets();
+			} else {
+				//add error message here...
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "Unable to delete the scoresheet " + idscoresheet));
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("ERROR IN adding scoresheet for game id:" + this.idgame);
+			e.printStackTrace();
+			db.rollback();
+		} finally {
+			//
+			// always clean up after yourself..
+			//
+			db.free();
+		}
+	
+		
+	}
+
 	public void getGameScoresheets() {  
 		List<Scoresheet> templist = new ArrayList<Scoresheet>();
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	
-    	try{
-    		//first get team name
-    		CallableStatement cs = db.prepareCall("CALL scaha.getScoresheetsForGame(?)");
-			cs.setInt("gameid", this.idgame);
-			rs = cs.executeQuery();
-			
-			if (rs != null){
+		if (this.idgame!=null){
+			try{
+	    		//first get team name
+	    		CallableStatement cs = db.prepareCall("CALL scaha.getScoresheetsForGame(?)");
+				cs.setInt("gameid", this.idgame);
+				rs = cs.executeQuery();
 				
-				while (rs.next()) {
-					Integer idscoresheets = rs.getInt("idscoresheets");
-    				String filename = rs.getString("filename");
-    				String gametype = rs.getString("gametype");
-    				String displayname = rs.getString("displayname");
-    				String uploaddate = rs.getString("uploaddate");
-    				
-    				Scoresheet scoresheet = new Scoresheet();
-    				scoresheet.setFilename(filename);
-    				scoresheet.setGametype(gametype);
-    				scoresheet.setIdscoresheet(idscoresheets);
-    				scoresheet.setUploaddate(uploaddate);
-    				scoresheet.setFiledisplayname(displayname);
-    				templist.add(scoresheet);
+				if (rs != null){
+					
+					while (rs.next()) {
+						Integer idscoresheets = rs.getInt("idscoresheets");
+	    				String filename = rs.getString("filename");
+	    				String gametype = rs.getString("gametype");
+	    				String displayname = rs.getString("displayname");
+	    				String uploaddate = rs.getString("uploaddate");
+	    				
+	    				Scoresheet scoresheet = new Scoresheet();
+	    				scoresheet.setFilename(filename);
+	    				scoresheet.setGametype(gametype);
+	    				scoresheet.setIdscoresheet(idscoresheets);
+	    				scoresheet.setUploaddate(uploaddate);
+	    				scoresheet.setFiledisplayname(displayname);
+	    				templist.add(scoresheet);
+					}
+					LOGGER.info("We have results for scoresheets for game:" + this.idgame);
 				}
-				LOGGER.info("We have results for scoresheets for game:" + this.idgame);
-			}
-			
-			
-			rs.close();
-			db.cleanup();
-    		
-		} catch (SQLException e) {
-    		// TODO Auto-generated catch block
-    		LOGGER.info("ERROR IN getting scoresheet list for game:" + this.idgame);
-    		e.printStackTrace();
-    		db.rollback();
-    	} finally {
-    		//
-    		// always clean up after yourself..
-    		//
-    		db.free();
-    	}
+				
+				
+				rs.close();
+				db.cleanup();
+	    		
+			} catch (SQLException e) {
+	    		// TODO Auto-generated catch block
+	    		LOGGER.info("ERROR IN getting scoresheet list for game:" + this.idgame);
+	    		e.printStackTrace();
+	    		db.rollback();
+	    	} finally {
+	    		//
+	    		// always clean up after yourself..
+	    		//
+	    		db.free();
+	    	}
+		}
+    	
 		
     	setScoresheets(templist);
     	ScoresheetDataModel = new ScoresheetDataModel(scoresheets);
 	}
+	
+	
 }
 

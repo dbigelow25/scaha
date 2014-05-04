@@ -34,7 +34,9 @@ public class FileUploadController extends ScahaObject implements Serializable {
         scoresheet.setFiledisplayname(prefix + "." + suffix);
         
         try {
-        	String destPath = "C:\\apache eclipse\\workspace\\Scoresheet\\" + scoresheet.getGametype() + "\\" + scoresheet.getIdgame() + prefix + "." + suffix;
+        	String sAbsolutePath = ContextManager.getRealPath();
+        	String destPath = sAbsolutePath + "\\Scoresheet\\" + scoresheet.getGametype() + "\\" + scoresheet.getIdgame() + prefix + "." + suffix;
+        	
             File destFile = new File(destPath);
         	stream = event.getFile().getInputstream();
         	output = new FileOutputStream(destFile);

@@ -237,10 +237,10 @@
 				        	<h:outputText value="#{tournamentgame.getLocation()}" />  
 				        </p:column>
 				        <p:column headerText="">
-				        	<p:splitButton id="tournygameoptions#{tournamentgame.idgame}" icon="ui-icon-folder-open" rendered="#{tournamentgame.rendered}" >
-						        <p:menuitem value="Edit Game Detail" action="#{managerBean.editGameDetail(tournamentgame)}" />
-						        <p:menuitem value="Delete Game" action="#{managerBean.deleteTournamentGame(tournamentgame)}" ajax="true" update="@form"/>
-						        <p:menuitem value="Upload Scoresheet" action="#{managerBean.uploadScoresheet(tournamentgame)}" ajax="true" update="@form"/>
+				        	<p:splitButton id="tournygameoptions#{tournamentgame.idgame}" icon="ui-icon-folder-open"  >
+						        <p:menuitem value="Edit Game Detail" action="#{managerBean.editGameDetail(tournamentgame)}" rendered="#{tournamentgame.rendered}"/>
+						        <p:menuitem value="Delete Game" action="#{managerBean.deleteTournamentGame(tournamentgame)}" ajax="true" update="@form" rendered="#{tournamentgame.rendered}"/>
+						        <p:menuitem value="Manage Scoresheet(s)" action="#{managerBean.uploadTournamentScoresheet(tournamentgame)}" ajax="false" />
 						    </p:splitButton>
 								    
 						</p:column>  
@@ -301,9 +301,10 @@
 				        	<h:outputText value="#{exhibitiongame.getStatus()}" />  
 				        </p:column>
 				        <p:column headerText="">
-				        	<p:splitButton id="exhibitiongameoptions#{exhibitiongame.idgame}" icon="ui-icon-folder-open" rendered="#{exhibitiongame.rendered}" >
-						        <p:menuitem value="Edit Game Detail" action="#{managerBean.editExhibitionGameDetail(exhibitiongame)}" />
-						        <p:menuitem value="Delete Game" action="#{managerBean.deleteExhibitionTournamentGame(exhibitiongame)}" ajax="true" update="@form"/>
+				        	<p:splitButton id="exhibitiongameoptions#{exhibitiongame.idgame}" icon="ui-icon-folder-open"  >
+						        <p:menuitem value="Edit Game Detail" action="#{managerBean.editExhibitionGameDetail(exhibitiongame)}" rendered="#{exhibitiongame.rendered}"/>
+						        <p:menuitem value="Delete Game" action="#{managerBean.deleteExhibitionTournamentGame(exhibitiongame)}" ajax="true" update="@form" rendered="#{exhibitiongame.rendered}"/>
+						        <p:menuitem value="Manage Scoresheet(s)" action="#{managerBean.uploadExhibitionScoresheet(exhibitiongame)}" ajax="false" />
 						    </p:splitButton>
 						</p:column>  
 				    </p:dataTable>
