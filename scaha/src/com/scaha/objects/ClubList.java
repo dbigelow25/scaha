@@ -42,6 +42,7 @@ public class ClubList extends ListDataModel<Club> implements Serializable, Selec
 		PreparedStatement ps = _db.prepareStatement("call scaha.getMultiMedia(?,?,?)");
 		PreparedStatement psCa = _db.prepareStatement("call scaha.getClubAdminInfo(?)");
 		PreparedStatement psVen = _db.prepareStatement("call scaha.getClubVenueInfo(?)");
+		PreparedStatement psTry = _db.prepareStatement("call scaha.getClubTryoutInfo(?)");
 
 		ResultSet rs = null;
 		if (_db.getData("call scaha.getAllClubs()")) {
@@ -73,6 +74,7 @@ public class ClubList extends ListDataModel<Club> implements Serializable, Selec
 			c.setLogo(mm);
 			c.setCal(ClubAdminList.NewClubAdminListFactory(_pro, psCa, c));
 			c.setVenues(VenueList.NewVenueListFactory(_pro, psVen, c));
+			c.setTryoutlist(TryoutList.NewTryoutListFactory(psTry, c));
 		}
 		LOGGER.info("Finished all the Club List Loading!!");
 		return new ClubList(data);
