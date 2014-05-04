@@ -61,7 +61,7 @@
   </context-param>
   <context-param>
     <param-name>org.apache.myfaces.DETECT_JAVASCRIPT</param-name>
-    <param-value>false</param-value>
+    <param-value>true</param-value>
   </context-param>
   <context-param>
     <description>
@@ -88,7 +88,7 @@
 </context-param>
 <context-param>
     <param-name>javax.faces.PARTIAL_STATE_SAVING</param-name>
-    <param-value>true</param-value>
+    <param-value>false</param-value>
 </context-param>
 <!-- To enable encryption -->
 <context-param>

@@ -15,6 +15,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,7 +26,7 @@ import com.scaha.objects.ResultDataModel;
 import com.scaha.objects.Team;
 
 @ManagedBean(name="draftplayersBean")
-@RequestScoped
+@ViewScoped
 public class DraftPlayersBean implements Serializable {
 
 	// Class Level Variables

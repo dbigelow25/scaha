@@ -13,6 +13,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import com.gbli.connectors.ScahaDatabase;
@@ -23,7 +25,7 @@ import com.scaha.objects.PlayerDataModel;
 //import com.gbli.common.SendMailSSL;
 
 @ManagedBean(name="delinquencyBean")
-@RequestScoped
+@ViewScoped
 public class DelinquencyBean implements Serializable {
 
 	// Class Level Variables
@@ -39,7 +41,8 @@ public class DelinquencyBean implements Serializable {
 	private Boolean displayshortlist = null;
 	private Integer displayrecordcount = null;
 	private Integer totalrecordcount = null;
-	
+	private List<Player> filteredplayers = null;
+
 	@ManagedProperty(value = "#{profileBean}")
 	private ProfileBean pb = null;
 	@ManagedProperty(value = "#{scahaBean}")
@@ -149,6 +152,7 @@ public class DelinquencyBean implements Serializable {
 	    
     //retrieves list of players
     public void playersDisplay(){
+    	LOGGER.info("Refreshing the list of delinquent players..");
     	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	List<Player> tempresult = new ArrayList<Player>();
     	Integer recordcount = 0;
@@ -207,17 +211,17 @@ public class DelinquencyBean implements Serializable {
     	
     }
     
-    public void removePlayer(Player selectedPlayer){
+    public void removePlayer(){
 		
 		for (Player p : playerlist) {
-			if (p.getIdplayer().equals(selectedPlayer.getIdplayer())) {
-				selectedPlayer = p;
+			if (p.getIdplayer().equals(this.selectedplayer.getIdplayer())) {
+				selectedplayer = p;
 				break;
 			}
 		}
 		
-		String sidplayer = selectedPlayer.getIdplayer();
-		String playname = selectedPlayer.getFirstname() + " " + selectedPlayer.getLastname();
+		String sidplayer = selectedplayer.getIdplayer();
+		String playname = selectedplayer.getFirstname() + " " + selectedplayer.getLastname();
 		
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		
@@ -229,8 +233,6 @@ public class DelinquencyBean implements Serializable {
 		    cs.executeUpdate();
 			LOGGER.info("We are remove the delinquency for player id:" + sidplayer);
 		    cs.close();
-			FacesContext context = FacesContext.getCurrentInstance();  
-            context.addMessage(null, new FacesMessage("Successful", "You have removed the delinquency for :" + playname));
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -242,9 +244,13 @@ public class DelinquencyBean implements Serializable {
 			//
 			db.free();
 		}
-		
+
+		this.filteredplayers = null;
 		List<Player> pl = (List<Player>) playerlist.getWrappedData();
-		pl.remove(selectedPlayer);
+		pl.remove(selectedplayer);
+		FacesContext context = FacesContext.getCurrentInstance();  
+        context.addMessage(null, new FacesMessage("Successful", "You have removed the delinquency for: " + playname));
+		//playersDisplay();
 	}
     
     public void displayLongList(){
@@ -269,6 +275,22 @@ public class DelinquencyBean implements Serializable {
 	 */
 	public void setPlayerlist(PlayerDataModel playerlist) {
 		this.playerlist = playerlist;
+	}
+
+
+
+	/**
+	 * @return the filteredplayers
+	 */
+	public List<Player> getFilteredplayers() {
+		return filteredplayers;
+	}
+
+	/**
+	 * @param filteredplayers the filteredplayers to set
+	 */
+	public void setFilteredplayers(List<Player> filteredplayers) {
+		this.filteredplayers = filteredplayers;
 	}
 }
 

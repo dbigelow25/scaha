@@ -1,7 +1,5 @@
 package com.scaha.beans;
 
-
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.CallableStatement;
@@ -17,6 +15,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import com.gbli.connectors.ScahaDatabase;
@@ -27,7 +26,7 @@ import com.scaha.objects.Team;
 
 //import com.gbli.common.SendMailSSL;
 @ManagedBean(name="draftcoachesBean")
-@RequestScoped
+@ViewScoped
 public class DraftCoachesBean implements Serializable {
 
 	// Class Level Variables

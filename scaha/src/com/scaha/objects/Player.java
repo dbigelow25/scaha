@@ -21,7 +21,7 @@ public class Player extends ScahaObject implements Serializable {
 	private String PlayerName = null;
 	private String firstname = null;
 	private String lastname = null;
-	private String IDplayer = null;
+	private String idplayer = null;
 	private String currentteam = null;
 	private String previousteam = null;
 	private String citizenship = null;
@@ -226,11 +226,11 @@ public class Player extends ScahaObject implements Serializable {
 	
 	
 	public String getIdplayer(){
-		return IDplayer;
+		return idplayer;
 	}
 	
 	public void setIdplayer(String sName){
-		IDplayer = sName;
+		idplayer = sName;
 	}
 	
 	public String getPlayername(){

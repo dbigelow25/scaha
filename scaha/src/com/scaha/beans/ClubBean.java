@@ -41,9 +41,9 @@ import com.scaha.objects.TeamList;
 @SessionScoped
 public class ClubBean implements Serializable,  MailableObject {
 
-	private Person currentPresident;  
-    private Person currentRegistrar;  
-	private Person currentIceConvenor;
+	private Person currentpresident;  
+    private Person currentregistrar;  
+	private Person currenticeconvenor;
  
 	@ManagedProperty(value="#{scahaBean}")
     private ScahaBean scaha;
@@ -83,6 +83,8 @@ public class ClubBean implements Serializable,  MailableObject {
 
 	 @PostConstruct
 	 public void init() {
+		 
+		 LOGGER.info(" *************** POST INIT FOR CLUB BEAN *****************");
 
 	 }
 	 
@@ -285,9 +287,11 @@ public class ClubBean implements Serializable,  MailableObject {
 
 	
 	 public void setUpStaffEditing() {
-		this.setCurrentPresident(getSelectedclub().getCal().getStaffer("C-PRES"));
-		this.setCurrentRegistrar(getSelectedclub().getCal().getStaffer("C-REG"));
-		this.setCurrentIceConvenor(getSelectedclub().getCal().getStaffer("C-ICE"));
+		LOGGER.info("SetUpStaffEditing for " + getSelectedclub());
+		
+		this.setCurrentpresident(getSelectedclub().getCal().getStaffer("C-PRES"));
+		this.setCurrentregistrar(getSelectedclub().getCal().getStaffer("C-REG"));
+		this.setCurrenticeconvenor(getSelectedclub().getCal().getStaffer("C-ICE"));
 	 }
 	 
 	 @SuppressWarnings("unchecked")
@@ -332,32 +336,32 @@ public class ClubBean implements Serializable,  MailableObject {
 		        // There is a much more general way to do this.. but we do not have time.. and we need to be non abstract
 		        // to make support easier.
 		        //
-		        if (curPres == null && this.currentPresident != null) { 
+		        if (curPres == null && this.currentpresident != null) { 
 		        	LOGGER.info("Curr President is null.. selected president is NOT");
-		        	db.updateClubPresident(pb.getProfile(),this.selectedclub, curPres, this.currentPresident);
-		        } else if (curPres != null && curPres.ID != this.currentPresident.ID) {
+		        	db.updateClubPresident(pb.getProfile(),this.selectedclub, curPres, this.currentpresident);
+		        } else if (curPres != null && curPres.ID != this.currentpresident.ID) {
 		        	LOGGER.info("Curr President is NOT null.. selected president and cur president are different");
-		        	db.updateClubPresident(pb.getProfile(),this.selectedclub, curPres, this.currentPresident);
+		        	db.updateClubPresident(pb.getProfile(),this.selectedclub, curPres, this.currentpresident);
 		        } else {
 		        	LOGGER.info("Could Not tell if the president changed");
 		        }
 	
-		        if (curReg == null && this.currentRegistrar != null) { 
+		        if (curReg == null && this.currentregistrar != null) { 
 		        	LOGGER.info("Curr Registrar is null.. selected Registrar is NOT");
-		        	db.updateClubRegistrar(pb.getProfile(),this.selectedclub, curReg, this.currentRegistrar);
-		        } else if (curReg != null && curReg.ID != this.currentRegistrar.ID) {
+		        	db.updateClubRegistrar(pb.getProfile(),this.selectedclub, curReg, this.currentregistrar);
+		        } else if (curReg != null && curReg.ID != this.currentregistrar.ID) {
 		        	LOGGER.info("Curr Registrar is NOT null.. selected Registrar and cur Registrar are different");
-		        	db.updateClubRegistrar(pb.getProfile(),this.selectedclub, curReg, this.currentRegistrar);
+		        	db.updateClubRegistrar(pb.getProfile(),this.selectedclub, curReg, this.currentregistrar);
 		        } else {
 		        	LOGGER.info("Could Not tell if the Registrar changed");
 		        }
 	
-		        if (curIce == null && this.currentIceConvenor != null) { 
+		        if (curIce == null && this.currenticeconvenor != null) { 
 		        	LOGGER.info("Curr IceMan is null.. selected IceMan is NOT");
-	        	db.updateClubIceConvenor(pb.getProfile(),this.selectedclub, curIce, this.currentIceConvenor);
-		        } else if (curIce != null && curIce.ID != this.currentIceConvenor.ID) {
+	        	db.updateClubIceConvenor(pb.getProfile(),this.selectedclub, curIce, this.currenticeconvenor);
+		        } else if (curIce != null && curIce.ID != this.currenticeconvenor.ID) {
 		        	LOGGER.info("Curr IceMan is NOT null.. selected IceMan and cur IceMan are different");
-		        	db.updateClubIceConvenor(pb.getProfile(),this.selectedclub, curIce, this.currentIceConvenor);
+		        	db.updateClubIceConvenor(pb.getProfile(),this.selectedclub, curIce, this.currenticeconvenor);
 		        } else {
 		        	LOGGER.info("Could Not tell if the Ice Man changed");
 		        }
@@ -388,47 +392,6 @@ public class ClubBean implements Serializable,  MailableObject {
 	        return "true";
     }
 
-	/**
-	 * @return the currentIceConvenor
-	 */
-	public Person getCurrentIceConvenor() {
-		return currentIceConvenor;
-	}
-
-	/**
-	 * @param currentIceConvenor the currentIceConvenor to set
-	 */
-	public void setCurrentIceConvenor(Person currentIceConvenor) {
-		this.currentIceConvenor = currentIceConvenor;
-	}
-
-	/**
-	 * @return the currentPresident
-	 */
-	public Person getCurrentPresident() {
-		return currentPresident;
-	}
-
-	/**
-	 * @param currentPresident the currentPresident to set
-	 */
-	public void setCurrentPresident(Person currentPresident) {
-		this.currentPresident = currentPresident;
-	}
-
-	/**
-	 * @return the currentRegistrar
-	 */
-	public Person getCurrentRegistrar() {
-		return currentRegistrar;
-	}
-
-	/**
-	 * @param currentRegistrar the currentRegistrar to set
-	 */
-	public void setCurrentRegistrar(Person currentRegistrar) {
-		this.currentRegistrar = currentRegistrar;
-	}
 
 	@Override
 	public InternetAddress[] getToMailIAddress() {
@@ -440,6 +403,48 @@ public class ClubBean implements Serializable,  MailableObject {
 	public InternetAddress[] getPreApprovedICC() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/**
+	 * @return the currentpresident
+	 */
+	public Person getCurrentpresident() {
+		return currentpresident;
+	}
+
+	/**
+	 * @param currentpresident the currentpresident to set
+	 */
+	public void setCurrentpresident(Person currentpresident) {
+		this.currentpresident = currentpresident;
+	}
+
+	/**
+	 * @return the currentregistrar
+	 */
+	public Person getCurrentregistrar() {
+		return currentregistrar;
+	}
+
+	/**
+	 * @param currentregistrar the currentregistrar to set
+	 */
+	public void setCurrentregistrar(Person currentregistrar) {
+		this.currentregistrar = currentregistrar;
+	}
+
+	/**
+	 * @return the currenticeconvenor
+	 */
+	public Person getCurrenticeconvenor() {
+		return currenticeconvenor;
+	}
+
+	/**
+	 * @param currenticeconvenor the currenticeconvenor to set
+	 */
+	public void setCurrenticeconvenor(Person currenticeconvenor) {
+		this.currenticeconvenor = currenticeconvenor;
 	} 
 
 }
