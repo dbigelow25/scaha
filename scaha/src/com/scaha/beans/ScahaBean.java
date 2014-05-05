@@ -18,6 +18,7 @@ import com.scaha.objects.Club;
 import com.scaha.objects.ClubAdmin;
 import com.scaha.objects.ClubAdminList;
 import com.scaha.objects.ClubList;
+import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.GeneralSeasonList;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Profile;
@@ -75,8 +76,9 @@ public class ScahaBean implements Serializable,  MailableObject {
 		
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		try {
-			setScahaClubList(ClubList.NewClubListFactory(this.DefaultProfile, db));
 			setScahaSeasonList(GeneralSeasonList.NewClubListFactory(this.DefaultProfile, db, "SCAHA"));
+			setScahaClubList(ClubList.NewClubListFactory(this.DefaultProfile, db));
+			loadTeamLists(db);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -92,6 +94,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		try {
 			setScahaClubList(ClubList.NewClubListFactory(this.DefaultProfile, db));
+			loadTeamLists(db);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -136,6 +139,25 @@ public class ScahaBean implements Serializable,  MailableObject {
 		}
 			
 	}
+	
+	/**
+	 * Load all the team lists
+	 * @throws SQLException 
+	 * 
+	 */
+	private void loadTeamLists(ScahaDatabase _db) throws SQLException {
+		GeneralSeason scahags = this.getScahaSeasonList().getCurrentSeason();
+		for (Club c : ScahaClubList) {
+			TeamList tl = c.getScahaTeams();
+			if (tl != null) {
+				List<ScahaTeam> lst = (List<ScahaTeam>) tl.getWrappedData();
+				lst.clear();
+			}
+			c.setScahaTeams(TeamList.NewTeamListFactory(this.DefaultProfile, _db, c, scahags, true, false));
+		}
+			
+	}
+
 	@Override
 	public String getSubject() {
 		// TODO Auto-generated method stub

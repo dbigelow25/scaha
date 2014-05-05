@@ -228,4 +228,45 @@ public class Club extends ScahaObject implements Serializable {
 		return this.getClubname();
 	}
 	
+	/**
+	 * OK.  we are going to count the number of teams this club has given the skill set 
+	 * 
+	 * @param _strDivision
+	 * @param _strSkill
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public int getTeamICounts(String _strDivision, String _strSkill) {
+		
+		int icount = 0;
+		LOGGER.info("Here is teams:" + ((List<ScahaTeam>)this.Teams.getWrappedData()).size());
+		
+		for (ScahaTeam t : this.Teams) {
+			if (t.getTeamdivision().getTag().equals(_strDivision) && 
+					t.getTeamskilllevel().getTag().equals(_strSkill)) {
+				icount++;
+			}
+		}
+		
+		return icount;
+	}
+
+	public String getTeamCounts(String _strDivision, String _strSkill) {
+		int icount = getTeamICounts(_strDivision, _strSkill);
+		return (icount == 0 ? "" : icount+"");
+	}
+	
+	/**
+	 * Returns the total count of teams.. 
+	 * @return
+	 */
+	public int getTotalITeamCount() {
+		if (this.Teams == null) return 0;
+		return ((List<ScahaTeam>)this.Teams.getWrappedData()).size();
+	}
+	
+	public String getTotalTeamCount() {
+		int icount = getTotalITeamCount();
+		return (icount == 0 ? "" : icount+"");
+	}
 }

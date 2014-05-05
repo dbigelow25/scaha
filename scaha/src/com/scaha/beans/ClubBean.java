@@ -447,4 +447,38 @@ public class ClubBean implements Serializable,  MailableObject {
 		this.currenticeconvenor = currenticeconvenor;
 	} 
 
+	/**
+	 * Simply return the team counts for a given Division and Skill Set;
+	 * @param _strDivision
+	 * @param _strSkill
+	 * @return
+	 */
+	public String getTeamTotals(String _strDivision, String _strSkill) {
+		
+		int icount = 0;
+		for (Club c : scaha.getScahaClubList()) {
+			icount = icount + c.getTeamICounts(_strDivision, _strSkill);
+		}
+		
+		return Integer.toString(icount);
+		
+	}
+	
+	/**
+	 * Simply return the team counts for a given Division and Skill Set;
+	 * @param _strDivision
+	 * @param _strSkill
+	 * @return
+	 */
+	public String getTotalTeamCount() {
+		
+		int icount = 0;
+		for (Club c : scaha.getScahaClubList()) {
+			icount = icount + c.getTotalITeamCount();
+		}
+		
+		return Integer.toString(icount);
+		
+	}
+
 }

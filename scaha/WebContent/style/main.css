@@ -17,6 +17,25 @@ img { border-style: none; }
     background: none repeat scroll 0 0 #F2F5F9;
 }
 
+.mtrxtotColumn {
+    background-color:Khaki;
+    padding-top:25px;
+    font-weight:bold;
+    text-align:center;
+    padding-bottom:25px;
+    padding-right:50px;
+    padding-left:50px;
+}
+
+.mtrxRowHeader {
+	width:200px;
+    background-color:Lavender;
+}
+	
+.mtrxColumn {
+    text-align:center;
+}
+
 #div-body {
 	width: 1025px;
    	vertical-align: top;
