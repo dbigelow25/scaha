@@ -99,6 +99,23 @@ public class ScahaBean implements Serializable,  MailableObject {
 		db.free();
 	}
 
+	/**
+	 * Wait some seconds before freeing up the connection
+	 * @param _isec
+	 */
+	public void testDB(int _isec) {
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try {
+		    Thread.sleep(1000*_isec);
+		} catch(InterruptedException ex) {
+		    Thread.currentThread().interrupt();
+		}
+		
+		db.free();
+		
+		
+	}
 	@SuppressWarnings("unchecked")
 	private void resetClubLists() {
 		if (this.ScahaClubList != null) {
