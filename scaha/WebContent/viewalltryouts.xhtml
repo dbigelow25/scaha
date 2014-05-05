@@ -73,22 +73,23 @@
     	            <p:spacer width="10px" />
     	        </p:column >
  	            <p:column style="font-size: 12px;" headerText="Date">
-    	            #{peep.getMyRole().getDesc()}
+    	            #{peep.getTryoutdate()}
    	            </p:column >
 	            <p:column style="font-size: 12px;" headerText="Start">
-    	            #{peep.getsFirstName()} #{peep.getsLastName()}
+    	            #{peep.getTryouttime()}
         	    </p:column>
 	            <p:column style="font-size: 12px;" headerText="Division">
-    	            #{peep.getsPhone()}
+    	            #{peep.getDivision()}
         	    </p:column>
 	            <p:column headerText="Level">
-					
+					#{peep.getLevel()}
         	    </p:column>
         	    <p:column headerText="Location">
-					
+					#{peep.getLocation()}
+					<h:outputText value="See our website for tryout times." rendered="#{peep.getUsewebsite()}" />
         	    </p:column>
         	    <p:column headerText="Coach">
-					
+					#{peep.getCoach()}
         	    </p:column>
         	    
         	    <f:facet name="footer">
