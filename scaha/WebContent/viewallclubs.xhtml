@@ -87,7 +87,7 @@
 		<td valign="top" rowspan="2" >
 			<div style="float:right;width=450px;">
 			<div class="NewsTitle">Club Personnel:
-			  <p:commandButton rendered="#{profileBean.isSuperUser()}" id="editButton" icon="ui-icon-search"  action="#{clubBean.setUpStaffEditing()}" update="clubsmenu:dialog" oncomplete="peepdlg.show()"/>     
+			  <p:commandButton rendered="#{profileBean.isSuperUser()}" id="editButton" icon="ui-icon-search"  actionListener="#{clubBean.setUpStaffEditing()}" update="dialog" oncomplete="PF('peepdlg').show()"/>     
    			</div> 
   		 	<div style="float:right;width:100%;">
 			<p:dataTable  id="peeps" var="peep" value="#{clubBean.selectedclub.getCal()}" >
@@ -157,7 +157,7 @@
 		</p:dataTable>
         <p:separator />
         
-        <p:fieldset rendered = "#{profileBean.isSuperUser()}">
+        <p:fieldset rendered = "false">
         <div style="width:100%">
          	<div class="NewsTitle">Edit Club Profile: (you need Admin access to view this section)</div> 
 			<div style="vertical-align:middle;width:650px;height:100px;">
@@ -172,12 +172,12 @@
 	  </pe:masterDetailLevel>	
 	</pe:masterDetail>
 
-	<p:dialog id="dialog" header="Staff Management Panel for the #{scahaBean.getScahaSeasonList().getCurrentSeason().getDescription()} " widgetVar="peepdlg" resizable="false"  
+	<p:dialog id="dialog" header="Staff Management Panel for the #{scahaBean.getScahaSeasonList().getCurrentSeason().getDescription()}" widgetVar="peepdlg" resizable="false"  
               width="700" height = "500" showEffect="clip" hideEffect="fold">  
     <style>.ui-autocomplete-input {width:300px;}</style>
-	<p:panelGrid id ="view-pers-grid" columns="2" cellpadding="5">  
+	<p:panelGrid id ="grid" columns="2" cellpadding="5">  
          	<p:outputLabel style="width:175px;font-size:10pt;" value="President:" />
-         	<p:autoComplete minQueryLength="3" value="#{clubBean.currentPresident}" id="basicPojoPres" completeMethod="#{clubBean.completePerson}"  
+         	<p:autoComplete minQueryLength="3" value="#{clubBean.currentpresident}" id="basicPojoPres" completeMethod="#{clubBean.completePerson}"  
              var="p" itemLabel="#{p.sFirstName} #{p.sLastName}" itemValue="#{p}" converter="personConverter" forceSelection="true">
                <p:column style="width:150px;">  
                    #{p.sLastName}, #{p.sFirstName} 
@@ -187,7 +187,7 @@
                 </p:column>    
 		  	</p:autoComplete>
            	<p:outputLabel style="font-size: 10pt;" value="Registrar:" />
-			<p:autoComplete value="#{clubBean.currentRegistrar}" id="basicPojoReg" completeMethod="#{clubBean.completePerson}"  
+			<p:autoComplete value="#{clubBean.currentregistrar}" id="basicPojoReg" completeMethod="#{clubBean.completePerson}"  
              var="p" itemLabel="#{p.sFirstName} #{p.sLastName}" itemValue="#{p}" converter="personConverter" forceSelection="true">
                <p:column style="width:150px;">  
                    #{p.sLastName}, #{p.sFirstName} 
@@ -197,7 +197,7 @@
                 </p:column>    
 		  	</p:autoComplete>          	
 		  	<p:outputLabel style="font-size: 10pt;" value="Ice Convener:" />
-			<p:autoComplete value="#{clubBean.currentIceConvenor}" id="basicPojoIce" completeMethod="#{clubBean.completePerson}"  
+			<p:autoComplete value="#{clubBean.currenticeconvenor}" id="basicPojoIce" completeMethod="#{clubBean.completePerson}"  
              var="p" itemLabel="#{p.sFirstName} #{p.sLastName}" itemValue="#{p}" converter="personConverter" forceSelection="true">
                <p:column style="width:200px;">  
                    #{p.sLastName}, #{p.sFirstName} 
@@ -211,8 +211,8 @@
            	<p:outputLabel style="font-size: 10pt;" value="Director of Managers:" />
            	<p:inputText style="font-size: 10pt;" value=""/>
     </p:panelGrid>  
-    <p:commandButton value="Save with success" update="peeps" actionListener="#{clubBean.saveStaff()}"  style="margin-top:10px;" icon="ui-icon-disk" oncomplete="peepdlg.hide()" />  
-    <p:commandButton value="Cancel" reset="true" style="margin-top:10px;" icon="ui-icon-disk" oncomplete="peepdlg.hide()" />  
+    <p:commandButton value="Save with success" update="peeps" action="#{clubBean.saveStaff()}"  style="margin-top:10px;" icon="ui-icon-disk" onclick="PF('peepdlg').hide()" />  
+    <p:commandButton value="Cancel" reset="true" style="margin-top:10px;" icon="ui-icon-disk" onclick="PF('peepdlg').hide()" />  
 
 	</p:dialog>
 

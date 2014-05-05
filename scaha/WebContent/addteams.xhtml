@@ -58,7 +58,16 @@
 <!--    <p:menuitem value="View" update="display" icon="ui-icon-search" oncomplete="PF('carDialog').show()"/>   -->
         <p:menuitem value="Delete" update=":form1:messages1,teamlist" icon="ui-icon-close" actionListener="#{teamBean.deleteTeam}"/>  
     </p:contextMenu>  
-	<p:dataTable id="teamlist" var="t" value="#{teamBean.getMyTeamList()}" editable="true" selection="#{teamBean.selectedteam}" selectionMode="single" paginator="true" rows="10">
+	<p:dataTable 
+		id="teamlist" 
+		var="t" 
+		value="#{teamBean.getMyTeamList()}" 
+		editable="true" 
+		selection="#{teamBean.selectedteam}" 
+		selectionMode="single" 
+		paginator="true" 
+		rows="10"
+		>
    		<f:facet name="header">  
 	        <h:outputText value="#{teamBean.getTeamstabletitle()}" />
 	    </f:facet> 

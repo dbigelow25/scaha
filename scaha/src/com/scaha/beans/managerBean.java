@@ -11,10 +11,12 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.el.ValueExpression;
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
 import com.gbli.connectors.ScahaDatabase;
@@ -33,7 +35,7 @@ import com.scaha.objects.TournamentGameDataModel;
 //import com.gbli.common.SendMailSSL;
 
 @ManagedBean
-@SessionScoped
+@RequestScoped
 public class managerBean implements Serializable {
 
 	private static final long serialVersionUID = 2L;
@@ -1111,12 +1113,56 @@ public class managerBean implements Serializable {
 		}
 	}
 	
-	public void uploadScoresheet(TournamentGame game){
+	public void uploadTournamentScoresheet(TournamentGame game){
 		String gameid = game.getIdgame().toString();
+		String opponent = game.getOpponent();
+		String gametime = game.getTime();
+		String gamedate = game.getDate();
+		
 		FacesContext context = FacesContext.getCurrentInstance();
+		Application app = context.getApplication();
+
+		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{scoresheetBean}", Object.class );
+
+		try{
+			scoresheetBean sb = (scoresheetBean) expression.getValue( context.getELContext() );
+	    	sb.setIdgame(Integer.parseInt(gameid));
+	    	sb.setGametype("Tournament");
+	    	sb.setGamedate(gamedate);
+	    	sb.setGametime(gametime);
+	    	sb.setOpponent(opponent);
+	    	sb.getGameScoresheets();
+			
+			context.getExternalContext().redirect("managegamescoresheet.xhtml");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void uploadExhibitionScoresheet(ExhibitionGame game){
+		String gameid = game.getIdgame().toString();
+		String opponent = game.getOpponent();
+		String gametime = game.getTime();
+		String gamedate = game.getDate();
+		FacesContext context = FacesContext.getCurrentInstance();
+		Application app = context.getApplication();
+
+		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{scoresheetBean}", Object.class );
+
 		
 		try{
-			context.getExternalContext().redirect("managegamescoresheet.xhtml?&gameid=" + gameid + "&gametype=Tournament");
+			scoresheetBean sb = (scoresheetBean) expression.getValue( context.getELContext() );
+	    	sb.setIdgame(Integer.parseInt(gameid));
+	    	sb.setGametype("Exhibition");
+	    	sb.setGamedate(gamedate);
+	    	sb.setGametime(gametime);
+	    	sb.setOpponent(opponent);
+	    	sb.getGameScoresheets();
+
+			context.getExternalContext().redirect("managegamescoresheet.xhtml");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -7,35 +7,38 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
-	
 	<ui:define name="content">
 		<div id="page-div">
 		<h:form>
 		<ui:fragment id="edit-exhibition">
 			<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">
-				<p:panel id ="panel" header="Manage Game Scoresheet(s)">
-					<p:fileUpload fileUploadListener="#{fileUploadController.handleFileUpload}" mode="advanced"  
-            			update="scoresheets" auto="true" sizeLimit="100000" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"/>
+				<p:panel id ="panel" header="#{scoresheetBean.getGamedate()} #{scoresheetBean.getGametime()} vs. #{scoresheetBean.getOpponent()} Scoresheet(s)">
+					<p:fileUpload fileUploadListener="#{scoresheetBean.handleFileUpload}" mode="advanced"  
+            			update="scoresheets" label="Select File" dragDropSupport="false" multiple="false" auto="false" sizeLimit="100000" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf)$/"/>
             		<br></br>
+            		<p:messages id="uploadmessage" showDetail="true" autoUpdate="true" closable="false" />
             		<p:dataTable id="scoresheets" var="scoresheet" value="#{scoresheetBean.getScoresheetgamedatamodel()}" selection="#{scoresheetBean.selectedscoresheet}" rows="10" autoupdate="false">
 			            <f:facet name="header">  
 				        	Existing Scoresheets
 				        </f:facet> 
 				         <p:column headerText="Filename">  
-				            <h:outputText value="#{scoresheet.getFilename()}" />  
+				            <h:outputText value="#{scoresheet.getFiledisplayname()}" />  
 				        </p:column>
 				        <p:column headerText="Upload Date">  
 				            <h:outputText value="#{scoresheet.getUploaddate()}" />  
 				        </p:column>  
 				        <p:column headerText="Options">  
-				            <h:outputLink id="viewlink" value="javascript:void(0)" >
-								<h:outputText style = "font-size: 9pt;font-family: Verdana;" value="View/Download" />
-							</h:outputLink>
-							<h:outputLink id="deletelink" value="javascript:void(0)" >
-								<h:outputText style="font-size: 9pt;font-family: Verdana;" value="Delete" />
-							</h:outputLink>
-					    </p:column>
-				    </p:dataTable> 		
+				            <p:commandButton id="openscoresheet" icon="ui-icon-extlink" onclick="openscoresheet('#{scoresheet.getGametype()}/#{scoresheet.getFilename()}')" ajax="false"/>
+							<p:spacer width="2" height="1" />
+							<p:commandButton id="deletescoresheet" icon="ui-icon-trash" actionListener="#{scoresheetBean.deleteScoresheet(scoresheet)}" ajax="true" update="scoresheets"/>
+						</p:column>
+				    </p:dataTable>
+				    <script>
+						function openscoresheet(filename){
+							window.open('Scoresheet/' + filename,'mywindow');
+						}
+					</script>
+	 		
 				</p:panel>
 			</p:fieldset>
 			<p:spacer width="10" height="10" />

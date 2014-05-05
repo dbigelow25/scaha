@@ -14,6 +14,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.mail.internet.InternetAddress;
 
@@ -33,7 +34,7 @@ import com.scaha.objects.TeamList;
 //import com.gbli.common.SendMailSSL;
 
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class TeamBean implements Serializable, MailableObject {
 
 	private static final long serialVersionUID = 2L;

@@ -31,6 +31,7 @@ public class Club extends ScahaObject implements Serializable {
 	private MultiMedia Logo = null;
 	private ClubAdminList cal = null;
 	private List<Team> teams = null; // This is from LOI side
+	private TryoutList tryoutlist = null;
 	private TeamList Teams = null;
 	private VenueList Venues = null;
 	
@@ -158,6 +159,20 @@ public class Club extends ScahaObject implements Serializable {
 		this.cal = cal;
 	}
 
+	/**
+	 * @return the tryoutlist
+	 */
+	public TryoutList getTryoutlist() {
+		return tryoutlist;
+	}
+
+	/**
+	 * @param tryoutlist the tryoutlist to set
+	 */
+	public void setTryoutlist(TryoutList tl) {
+		this.tryoutlist = tl;
+	}
+	
 	/**
 	 * @return the logo
 	 */

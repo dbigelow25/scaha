@@ -9,7 +9,7 @@
 <f:view contentType="text/html">
 	<h:form>
 		<div
-			style="text-align: right; width: 900px; font-weight: normal; font-size: 9pt; font-family: Verdana;">
+			style="text-align: right; width: 1025px; font-weight: normal; font-size: 9pt; font-family: Verdana;">
 			<p:toolbar>
 				<p:toolbarGroup align="left">
 					<p:button id="gohome" style="width:30px;" icon="ui-icon-home"
@@ -27,6 +27,8 @@
 					<p:menuButton id="clubs" style="width:125px;" value="Club info">
 						<p:menuitem style="font-size: 12px;" value="Active Clubs"
 							url="/viewallclubs.xhtml" />
+						<p:menuitem style="font-size: 12px;" value="Tryouts"
+							url="/viewalltryouts.xhtml" />	
 					</p:menuButton>
 					<p:spacer width="2px" />
 					<p:menuButton id="menu2" style="width:125px;" value="Season Info"
@@ -117,17 +119,24 @@
 					<h:outputText value="Welcome #{profileBean.getNickName()}"></h:outputText>
 					<p:separator />
 					<p:menuButton value="Options" iconPos="right">
-						<p:menuitem style="font-size: 10pt;"
+						<p:menuitem 
+							style="font-size:9pt;width:225px;"
 							value="Manage Profile" url="manageprofile.xhtml"
 							icon="ui-icon-extlink"  />
-						<p:menuitem style="font-size: 10pt;"
+						<p:menuitem 
+							style="font-size:9pt;width:225px;"
 							value="Register For Scaha" icon="ui-icon-extlink"
 							url="manageUSAHockey.xhtml" />
-						<p:menuitem style="font-size: 10pt;" value="Change Password"
+						<p:menuitem 
+						 	style="font-size:9pt;width:225px;" 
+							value="Change Password"
 							url="changepassword.xhtml" icon="ui-icon-extlink" />
 						<p:separator />
-						<p:menuitem style="font-size: 10pt;" value="Logout"
-							actionListener="#{profileBean.logout}" ajax="false" />
+						<p:menuitem 
+							style="font-size:9pt;width:225px;"
+							value="Logout"
+							actionListener="#{profileBean.logout}" 
+							ajax="false" />
 					</p:menuButton>
 				</p:toolbarGroup>
 				<p:toolbarGroup align="right"

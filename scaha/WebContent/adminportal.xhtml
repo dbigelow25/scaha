@@ -52,6 +52,8 @@
 		<p:accordionPanel id="ap" style="width:425px;font-size:10pt;">
 	        	<p:tab id="t1" title="Application Options">
 	            	<p:commandButton id="basic" ajax="true" value="Refresh App" actionListener="#{scahaBean.refreshBean()}" update="@([id$=dlg])" oncomplete="dlg.show();"/>
+	            	<br/>
+  	            	<p:commandButton id="dbtest" ajax="true" value="Test DB" actionListener="#{scahaBean.testDB(10)}" />
         		</p:tab>
 	            <p:tab id="t2" title="Messaging Center">
 					 <p:tree  id ="mailtree" value="#{mailTreeBean.root}" var="node" style="width:375px;" selectionMode="checkbox" selection="#{mailTreeBean.selectedNodes}">  

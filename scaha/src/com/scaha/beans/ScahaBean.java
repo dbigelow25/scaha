@@ -10,7 +10,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.mail.internet.InternetAddress;
 
 import com.gbli.connectors.ScahaDatabase;
@@ -24,6 +23,7 @@ import com.scaha.objects.MailableObject;
 import com.scaha.objects.Profile;
 import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.TeamList;
+import com.scaha.objects.TryoutList;
 
 @ManagedBean
 @ApplicationScoped
@@ -39,7 +39,10 @@ public class ScahaBean implements Serializable,  MailableObject {
 	//
 	private ClubList ScahaClubList  = null;
 	private GeneralSeasonList ScahaSeasonList = null;
+	
 	private Profile DefaultProfile = null;
+	
+	
 	
 	 @PostConstruct
 	 public void init() {
@@ -96,6 +99,23 @@ public class ScahaBean implements Serializable,  MailableObject {
 		db.free();
 	}
 
+	/**
+	 * Wait some seconds before freeing up the connection
+	 * @param _isec
+	 */
+	public void testDB(int _isec) {
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try {
+		    Thread.sleep(1000*_isec);
+		} catch(InterruptedException ex) {
+		    Thread.currentThread().interrupt();
+		}
+		
+		db.free();
+		
+		
+	}
 	@SuppressWarnings("unchecked")
 	private void resetClubLists() {
 		if (this.ScahaClubList != null) {

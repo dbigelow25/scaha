@@ -12,23 +12,31 @@
 <f:event type="preRenderView" listener="#{profileBean.verifyHasRoles('C-PRES;C-REG')}" />
 </f:metadata>
 
-<ui:composition template="/WEB-INF/templates/layout.xhtml"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
-	
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
 <ui:define name="content">
-<div id="page-div">		
-  	<h:form id="mess">
-		<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />    
-	</h:form>
+<div id="page-div">	
 	<h:form  id="form">
-	
-			<p:panel id ="panel" header="2014 Delinquency List:">
 
-				<p:dataTable id="listofplayers" var="player" value="#{delinquencyBean.playerlist}" selection="#{delinquencyBean.selectedplayer}" paginator="#{delinquencyBean.getDisplayshortlist()}" rows="#{delinquencyBean.displayrecordcount}">
+		<div align="right">
+		<p:commandButton id="executesearch" value="Refresh" actionListener="#{delinquencyBean.playersDisplay()}" update="listofplayers"/>
+		<p:commandButton id="printlist" value="Print" >
+	  		<p:printer target=":form:listofplayers" />  
+  		</p:commandButton>
+		<p:commandButton id="closeaddteams" value="Close" ajax="false" actionListener="#{delinquencyBean.closePage()}"/>
+		</div>
+		<p:spacer width="10" height="10" />
+		<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />    
+		<p:panel id ="panel" header="2014 Delinquency List:">
+		<p:dataTable 
+ 			id="listofplayers" 
+ 			var="player" 
+ 			value="#{delinquencyBean.playerlist}" 
+ 			selection="#{delinquencyBean.selectedplayer}" 
+ 			selectionMode="single" 
+ 			rowKey="#{player.idplayer}" 
+ 			filteredValue="#{delinquencyBean.filteredplayers}"
+			>
+    
                 	<p:column filterBy="firstname" filterMatchMode="contains" filterStyle="width:150px" headerText="First Name">  
 			            <h:outputText value="#{player.getFirstname()}" />  
 			        </p:column>  
@@ -41,16 +49,8 @@
 			        <p:column headerText="DOB">  
 			            <h:outputText value="#{player.getDob()}" />  
 			        </p:column>
-			        <f:facet name="footer">  
-						<div align="right"><p:commandButton id="displaylonglist" value="Display Entire List" ajax="false" update="@this" action="#{delinquencyBean.displayLongList()}" rendered="#{delinquencyBean.getDisplayshortlist()}"/></div>
-						<div align="right"><p:commandButton id="printlist" value="Print" onclick="window.print(); return false;" rendered="#{!delinquencyBean.getDisplayshortlist()}"/><p:commandButton id="displayshortlist" value="Display Short List" ajax="false" update="@this" action="#{delinquencyBean.displayShortList()}" rendered="#{!delinquencyBean.getDisplayshortlist()}"/></div>              
-			        </f:facet> 
 			    </p:dataTable>
 			</p:panel>
-			<p:separator id="customSeparator" style="width:800px;height:2px" />    
-	</h:form>
-	<h:form>
-			<div align="center"><p:commandButton id="closeaddteams" value="Close" ajax="false" actionListener="#{delinquencyBean.closePage()}"/></div>
 	</h:form>
 </div>
 </ui:define>
