@@ -286,6 +286,9 @@ public class TeamBean implements Serializable, MailableObject {
 			cs.executeUpdate();
 			cs.close();
 			LOGGER.info("Saved a new team");
+			
+			refreshTeamsForClub(db,idclub );
+			
     	} catch (SQLException e) {
     		LOGGER.info("ERROR IN loading teams");
     		e.printStackTrace();
@@ -306,6 +309,7 @@ public class TeamBean implements Serializable, MailableObject {
     	this.setSelecteddivision(null);
     	this.setSelectedskilllevel(null);
     	this.setTeamname(null);
+    	
     	
     }
     
@@ -338,7 +342,6 @@ public class TeamBean implements Serializable, MailableObject {
 				
 			rs.close();	
 			cs.close();
-			db.cleanup();
 
 			LOGGER.info("We have tried to retrieve teams for club" + idclub);
     		
@@ -407,7 +410,6 @@ public class TeamBean implements Serializable, MailableObject {
 					isschool = rs.getInt("result");
 				}
 				LOGGER.info("We have results for club is a high school");
-				db.cleanup();
 				
 				if (isschool.equals(0)){
 					this.ishighschool=false;
@@ -418,7 +420,6 @@ public class TeamBean implements Serializable, MailableObject {
 	    		// TODO Auto-generated catch block
 	    		LOGGER.info("ERROR IN loading club by profile");
 	    		e.printStackTrace();
-	    		db.rollback();
 	    	} finally {
 	    		//
 	    		// always clean up after yourself..
@@ -608,6 +609,7 @@ public class TeamBean implements Serializable, MailableObject {
 				ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		    	try {
 					t.update(db);
+					refreshTeamsForClub(db, idclub );
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -663,6 +665,7 @@ public class TeamBean implements Serializable, MailableObject {
 				t.setRetire(true);
 		    	try {
 					t.update(db);
+					refreshTeamsForClub(db, idclub );
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -693,5 +696,12 @@ public class TeamBean implements Serializable, MailableObject {
 		this.sskilllevels = sskilllevels;
 	}  
 
+	private void refreshTeamsForClub(ScahaDatabase _db, int _idclub) throws SQLException {
+		//
+		// Make this available to the app.
+		//
+    	Club c = scaha.findClubByID(_idclub);
+		c.setScahaTeams(TeamList.NewTeamListFactory(pb.getProfile(), _db, c, scaha.getScahaSeasonList().getCurrentSeason(), true, false));
+	}
 }
 

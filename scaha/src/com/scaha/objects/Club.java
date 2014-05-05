@@ -235,12 +235,9 @@ public class Club extends ScahaObject implements Serializable {
 	 * @param _strSkill
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public int getTeamICounts(String _strDivision, String _strSkill) {
 		
 		int icount = 0;
-		LOGGER.info("Here is teams:" + ((List<ScahaTeam>)this.Teams.getWrappedData()).size());
-		
 		for (ScahaTeam t : this.Teams) {
 			if (t.getTeamdivision().getTag().equals(_strDivision) && 
 					t.getTeamskilllevel().getTag().equals(_strSkill)) {
@@ -260,6 +257,7 @@ public class Club extends ScahaObject implements Serializable {
 	 * Returns the total count of teams.. 
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public int getTotalITeamCount() {
 		if (this.Teams == null) return 0;
 		return ((List<ScahaTeam>)this.Teams.getWrappedData()).size();
