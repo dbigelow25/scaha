@@ -2,6 +2,7 @@ package com.scaha.beans;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -209,6 +210,24 @@ public class ScahaBean implements Serializable,  MailableObject {
 		return null;
 	}
 
+	
+	/**
+	 * We return all Exhibition teams in a list
+	 * @return
+	 */
+	public TeamList getXTeamList() {
+
+		List<ScahaTeam> tl = new ArrayList<ScahaTeam>();
+		
+		for (Club c : ScahaClubList) {
+			for (ScahaTeam t : c.getScahaTeams()) {
+				if (t.getIsexhibition() == 1) tl.add(t);
+			}
+		}
+		
+		return new TeamList(tl);
+		
+	}
 
 	/**
 	 * @return the scahaSeasonList

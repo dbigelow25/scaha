@@ -470,15 +470,52 @@ public class ClubBean implements Serializable,  MailableObject {
 	 * @param _strSkill
 	 * @return
 	 */
-	public String getTotalTeamCount() {
+	public String getTotalTeamCount(boolean _exh) {
 		
 		int icount = 0;
 		for (Club c : scaha.getScahaClubList()) {
-			icount = icount + c.getTotalITeamCount();
+			icount = icount + c.getTotalITeamCount(_exh);
 		}
 		
 		return Integer.toString(icount);
 		
 	}
 
+	public String geteXTeamTotals (String _strDivision, String _strSkill) {
+		
+		int icount = 0;
+		for (Club c : scaha.getScahaClubList()) {
+			icount = icount + c.geteXTeamICounts(_strDivision, _strSkill);
+		}
+		return Integer.toString(icount);
+	}
+	
+	public String getGTotalTeams (String _strDivision, String _strSkill) {
+		
+		int icount = 0;
+		for (Club c : scaha.getScahaClubList()) {
+			icount = icount + c.geteXTeamICounts(_strDivision, _strSkill) + c.getTeamICounts(_strDivision, _strSkill);
+		}
+		return Integer.toString(icount);
+
+	}
+	
+	/**
+	 * Simply return the team counts for a given Division and Skill Set;
+	 * @param _strDivision
+	 * @param _strSkill
+	 * @return
+	 */
+	public String getTotalXTeamCount() {
+		
+		int icount = 0;
+		for (Club c : scaha.getScahaClubList()) {
+			icount = icount + c.getTotalXITeamCount();
+		}
+		
+		return Integer.toString(icount);
+		
+	}
+
+	
 }

@@ -25,10 +25,10 @@ img { border-style: none; }
     padding-bottom:25px;
     padding-right:50px;
     padding-left:50px;
-}
+   }
 
 .mtrxRowHeader {
-	width:200px;
+	width:200px!important;
     background-color:Lavender;
 }
 	

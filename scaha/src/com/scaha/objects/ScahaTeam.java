@@ -32,6 +32,9 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 	private int isexhibition = 0;
 	private String skillleveltag = null;
 	private String divisiontag = null;
+	private String xdivisiontag = null;
+	private String xskillleveltag = null;
+	
 	private int year = 0;
 
 
@@ -327,5 +330,70 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 	 */
 	public void setYear(int year) {
 		this.year = year;
+	}
+	
+	/**
+	 * Return a "1" if I match the passed tag.. otherwise a blank will be returned
+	 * 
+	 * Not sure if this belongs here .. since it is for UX logic.
+	 * 
+	 * Should go in xBean
+	 * 
+	 * @param _strDivTag
+	 * @param _strSkillTag
+	 * @return
+	 */
+	public String doIMatch(String _strDivTag, String _strSkillTag) {
+		
+		if (this.getTeamdivision().getTag().equals(_strDivTag) && 
+				this.getTeamskilllevel().getTag().equals(_strSkillTag)) return "1";
+		return "";
+	}
+	
+	/**
+	 * Return a "1" if I match the passed tag.. otherwise a blank will be returned
+	 * 
+	 * Not sure if this belongs here .. since it is for UX logic.
+	 * 
+	 * Should go in xBean
+	 * 
+	 * @param _strDivTag
+	 * @param _strSkillTag
+	 * @return
+	 */
+	public String doIeXMatch(String _strxDivTag, String _strxSkillTag) {
+		
+		if (getXdivisiontag() == null || getXskillleveltag() == null) return "";
+		if (this.getXdivisiontag().equals(_strxDivTag) && 
+				this.getXskillleveltag().equals(_strxSkillTag)) return "1";
+		return "";
+	}
+	
+	/**
+	 * @return the xdivisiontag
+	 */
+	public String getXdivisiontag() {
+		return xdivisiontag;
+	}
+
+	/**
+	 * @param xdivisiontag the xdivisiontag to set
+	 */
+	public void setXdivisiontag(String xdivisiontag) {
+		this.xdivisiontag = xdivisiontag;
+	}
+
+	/**
+	 * @return the xskillleveltag
+	 */
+	public String getXskillleveltag() {
+		return xskillleveltag;
+	}
+
+	/**
+	 * @param xskillleveltag the xskillleveltag to set
+	 */
+	public void setXskillleveltag(String xskillleveltag) {
+		this.xskillleveltag = xskillleveltag;
 	}
 }
