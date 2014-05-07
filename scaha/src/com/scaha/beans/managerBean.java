@@ -106,7 +106,9 @@ public class managerBean implements Serializable {
         getClubID();
         isClubHighSchool();
     	
-        teamid = 131;
+        //teamid = 131;
+        this.setTeamid(pb.getProfile().getManagerteamid());
+        
         
         //Load team roster
         getRoster();

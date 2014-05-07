@@ -4,7 +4,9 @@
 package com.scaha.objects;
 
 import java.sql.CallableStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import com.gbli.connectors.ScahaDatabase;
@@ -52,7 +54,6 @@ public class ScahaManager extends Person {
 
 	}
 	
-
 	public int getID() {
 		return ID;
 	}
@@ -94,4 +95,32 @@ public class ScahaManager extends Person {
 		
 	}
 
+	public Integer getManagerteamid(Integer _profileid){
+		
+		ScahaDatabase db = (ScahaDatabase)ContextManager.getDatabase("ScahaDatabase");
+		
+		Integer teamid = 0;
+		//
+		// If this comes back true.. we have a good result set to play with and fill out the profile
+		//
+		try {
+			CallableStatement cs = db.prepareCall("CALL scaha.getTeamIdForManager(?)");
+			cs.setInt("profileid", _profileid);
+
+			ResultSet rs = cs.executeQuery();
+			if (rs != null){
+				while (rs.next()) {
+					teamid = rs.getInt("idteam");
+					LOGGER.info("We have results for teamid:" + teamid);
+				}
+				rs.close();
+			}
+		} catch (SQLException ex) {
+				ex.printStackTrace();
+		} finally {
+			db.cleanup();
+		}
+		
+		return teamid;
+	}
 }

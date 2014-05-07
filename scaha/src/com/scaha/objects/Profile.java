@@ -36,7 +36,9 @@ public class Profile extends ScahaObject {
 	private String m_sNickName = null;
 	private ActionList m_al = null;
 	private Person m_per = null;
+	private ScahaManager m_sman = null;
 	private boolean SuperUser = false;
+	private Integer managerteamid = null;
 	
 	public Profile (int _id, ScahaDatabase _db, String _sNN, String _sUser, String _sPass, boolean _getActionRoles) {
 		
@@ -57,6 +59,10 @@ public class Profile extends ScahaObject {
 				// What roles do they have ?  Non hierarchical
 				m_rc = new RoleCollection(_db, this);
 			}
+			
+			//need to instantiate the scahamanager class to be used by when the manager is working on the managerportal
+			this.setScahamanager(new ScahaManager(this));
+			this.setManagerteamid(this.getScahamanager().getManagerteamid(this.ID));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -187,6 +193,14 @@ public class Profile extends ScahaObject {
 		return this.m_al;
 	}
 	
+	public ScahaManager getScahamanager() {
+		return this.m_sman;
+	}
+
+	public void setScahamanager(ScahaManager _man) {
+		this.m_sman = _man;
+	}
+	
 	/**
 	 * This returns the person object from the profile
 	 * 
@@ -279,6 +293,14 @@ public class Profile extends ScahaObject {
 		this.m_rc.clear();
 		this.m_rc = null;
 		this.m_per = null;
+	}
+	
+	public Integer getManagerteamid(){
+		return this.managerteamid;
+	}
+	
+	public void setManagerteamid(Integer _teamid){
+		this.managerteamid=_teamid;
 	}
 }
 
