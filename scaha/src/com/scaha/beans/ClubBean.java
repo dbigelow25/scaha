@@ -456,6 +456,7 @@ public class ClubBean implements Serializable,  MailableObject {
 	public String getTeamTotals(String _strDivision, String _strSkill) {
 		
 		int icount = 0;
+		if (scaha.getScahaClubList() == null) return "";
 		for (Club c : scaha.getScahaClubList()) {
 			icount = icount + c.getTeamICounts(_strDivision, _strSkill);
 		}
@@ -484,6 +485,7 @@ public class ClubBean implements Serializable,  MailableObject {
 	public String geteXTeamTotals (String _strDivision, String _strSkill) {
 		
 		int icount = 0;
+		if (scaha.getScahaClubList() == null) return "";
 		for (Club c : scaha.getScahaClubList()) {
 			icount = icount + c.geteXTeamICounts(_strDivision, _strSkill);
 		}
@@ -493,6 +495,7 @@ public class ClubBean implements Serializable,  MailableObject {
 	public String getGTotalTeams (String _strDivision, String _strSkill) {
 		
 		int icount = 0;
+		if (scaha.getScahaClubList() == null) return "";
 		for (Club c : scaha.getScahaClubList()) {
 			icount = icount + c.geteXTeamICounts(_strDivision, _strSkill) + c.getTeamICounts(_strDivision, _strSkill);
 		}
@@ -509,6 +512,7 @@ public class ClubBean implements Serializable,  MailableObject {
 	public String getTotalXTeamCount() {
 		
 		int icount = 0;
+		if (scaha.getScahaClubList() == null) return "";
 		for (Club c : scaha.getScahaClubList()) {
 			icount = icount + c.getTotalXITeamCount();
 		}
