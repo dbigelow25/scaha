@@ -88,6 +88,8 @@ public class MailTreeBean implements Serializable, MailableObject {
 		TreeNode adminReg = new CheckboxTreeNode("All Registrars", adminTop); 
 		TreeNode adminIce = new CheckboxTreeNode("All Ice Convenors", adminTop); 
 		TreeNode adminNon = new CheckboxTreeNode("All Members With No Home Team", root);
+		TreeNode adminNotMem= new CheckboxTreeNode("All Accounts still needing membership(s)", root);
+		
 		
 		ClubList cl = scaha.getScahaClubList();
 		
@@ -234,8 +236,18 @@ public class MailTreeBean implements Serializable, MailableObject {
     					e.printStackTrace();
     				}
     				db.free();
+    			} else if (obj instanceof String && node.getData().toString().contains("All Accounts still needing membership(s)")) {
+    				ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase", pb.getProfile());
+    				try {
+    					emails.addAll(db.getOutstandingMemberSignupEmails());
+    				} catch (SQLException e) {
+    					e.printStackTrace();
+    				} catch (UnsupportedEncodingException e) {
+    					e.printStackTrace();
+    				}
+    				db.free();
     			}  
-    		}  
+   			}  
     	}
 
     	this.myEmails = emails;
