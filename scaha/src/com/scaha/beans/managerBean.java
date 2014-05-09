@@ -122,6 +122,9 @@ public class managerBean implements Serializable {
         
         //Load Exhibition Games
         getExhibitionGames();
+        
+        //now lets highlight the areas needing action.
+        setAlerts();
 	}
 	
     public managerBean() {  
@@ -1117,26 +1120,11 @@ public class managerBean implements Serializable {
 	
 	public void uploadTournamentScoresheet(TournamentGame game){
 		String gameid = game.getIdgame().toString();
-		String opponent = game.getOpponent();
-		String gametime = game.getTime();
-		String gamedate = game.getDate();
 		
 		FacesContext context = FacesContext.getCurrentInstance();
-		Application app = context.getApplication();
-
-		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
-				"#{scoresheetBean}", Object.class );
-
+		
 		try{
-			scoresheetBean sb = (scoresheetBean) expression.getValue( context.getELContext() );
-	    	sb.setIdgame(Integer.parseInt(gameid));
-	    	sb.setGametype("Tournament");
-	    	sb.setGamedate(gamedate);
-	    	sb.setGametime(gametime);
-	    	sb.setOpponent(opponent);
-	    	sb.getGameScoresheets();
-			
-			context.getExternalContext().redirect("managegamescoresheet.xhtml");
+			context.getExternalContext().redirect("managegamescoresheet.xhtml?id=" + gameid + "&teamid=" + this.teamid);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1145,30 +1133,80 @@ public class managerBean implements Serializable {
 	
 	public void uploadExhibitionScoresheet(ExhibitionGame game){
 		String gameid = game.getIdgame().toString();
-		String opponent = game.getOpponent();
-		String gametime = game.getTime();
-		String gamedate = game.getDate();
 		FacesContext context = FacesContext.getCurrentInstance();
-		Application app = context.getApplication();
-
-		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
-				"#{scoresheetBean}", Object.class );
-
-		
+				
 		try{
-			scoresheetBean sb = (scoresheetBean) expression.getValue( context.getELContext() );
-	    	sb.setIdgame(Integer.parseInt(gameid));
-	    	sb.setGametype("Exhibition");
-	    	sb.setGamedate(gamedate);
-	    	sb.setGametime(gametime);
-	    	sb.setOpponent(opponent);
-	    	sb.getGameScoresheets();
-
-			context.getExternalContext().redirect("managegamescoresheet.xhtml");
+			context.getExternalContext().redirect("managegamescoresheet.xhtml?id=" + gameid + "&teamid=" + this.teamid);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void setAlerts(){
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		Boolean ScahaGames = false;
+		Boolean Tournaments = false;
+		Boolean TournamentGames = false;
+		Boolean ExhibitionGames = false;
+		
+		try{
+
+			
+				//Need to provide info to the stored procedure to save or update
+ 				LOGGER.info("get flags for alerts");
+ 				CallableStatement cs = db.prepareCall("CALL scaha.getManagerFlags(?)");
+ 				cs.setInt("teamid",this.teamid);
+    		    rs = cs.executeQuery();
+    		    
+    		    if (rs != null){
+    				
+    				while (rs.next()) {
+    					ScahaGames = rs.getBoolean("scahagamesflag");
+    					Tournaments = rs.getBoolean("tournamentsflag");
+    					TournamentGames = rs.getBoolean("tournamentgamesflag");
+    					ExhibitionGames = rs.getBoolean("exhibitiongamesflag");
+        			}
+    				LOGGER.info("We have results for exhibition list by team:" + this.teamid);
+    			}
+    			
+    			rs.close();
+    		    db.commit();
+    			db.cleanup();
+ 				
+    		    
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("ERROR IN Deleting the Tournament");
+			e.printStackTrace();
+			db.rollback();
+		} finally {
+			//
+			// always clean up after yourself..
+			//
+			db.free();
+		}
+		
+		FacesContext context = FacesContext.getCurrentInstance();  
+        
+		
+		if (ScahaGames){
+			context.addMessage("scahagamesmessages", new FacesMessage(FacesMessage.SEVERITY_WARN,"Action Needed!", "You have SCAHA Games needing scoresheet entry and/or scoresheet upload"));
+		}
+		
+		if (Tournaments){
+			context.addMessage("scahagamesmessages", new FacesMessage(FacesMessage.SEVERITY_WARN,"Action Needed!", "A holiday weekend is less than two weeks away, have you submitted your tournmanet notification?"));
+		}
+		
+		if (TournamentGames){
+			context.addMessage("scahagamesmessages", new FacesMessage(FacesMessage.SEVERITY_WARN,"Action Needed!", "You have Tournament Games needing the scoresheet uploaded."));
+		}
+		
+		if (ExhibitionGames){
+			context.addMessage("scahagamesmessages", new FacesMessage(FacesMessage.SEVERITY_WARN,"Action Needed!", "You have Exhibition Games needing the scoresheet uploaded."));
+		}
+		
 	}
 }
 

@@ -69,7 +69,14 @@
 			<ui:fragment id="edit-transfers" >
 				<h:form id="scahagameform">
 					<p:panel id ="panel" header="SCAHA GAMES">
-					<div align="center">Your games needing action are listed below.  You will be responsible to provide the details and upload the scoresheet for your home games.</div>
+					<script>
+						.ui-messages-{severity}-detail{
+							font-size: 20pt;
+							font-family: Verdana;
+							
+						}
+					</script>
+					<p:messages id="scahagamesmessages" escape="true" showDetail="true" autoUpdate="true" closable="false" />
 					<p:dataTable id="scahagames" var="TempGame" value="#{managerBean.getTempGamedatamodel()}" selection="#{managerBean.selectedgame}" selectionMode="single" paginator="true" rows="10" autoupdate="false">
 			            <f:facet name="header">  
 				        	2014-2015 SCAHA GAMES
@@ -112,11 +119,9 @@
 					</p:panel>
 					<br></br>
 					<p:panel id ="tourneypanel" header="TOURNAMENTS">
-					<div align="left">Are you attending a tournament soon?  Add your tournament 
 					<h:outputLink id="addtournamentlink" value="javascript:void(0)" >
-						<h:outputText style = "font-size: 9pt;font-family: Verdana;" value="Here" />
+						<h:outputText style = "font-size: 9pt;font-family: Verdana;" value="Add a Tournament" />
 					</h:outputLink>
-					</div>
 					<p:overlayPanel id="tournamentPanel" widgetVar="tpoverlay" for="addtournamentlink" hideEffect="fade" dynamic="false">  
 				    	<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" width="100%">
 							<h:column width="10%">Tournament Name:</h:column>
@@ -182,12 +187,10 @@
 						    </p:splitButton>
 						</p:column>  
 				    </p:dataTable>
-				    
-				    <div align="left">Have you entered your games for your tournament?  Add your tournament games 
-					<h:outputLink id="addtournamentgameslink" value="javascript:void(0)" >
-						<h:outputText style = "font-size: 9pt;font-family: Verdana;" value="Here" />
+				    <br></br>
+				    <h:outputLink id="addtournamentgameslink" value="javascript:void(0)" >
+						<h:outputText style = "font-size: 9pt;font-family: Verdana;" value="Add Tournament Game" />
 					</h:outputLink>
-					</div>
 					<p:overlayPanel id="tournamentgamesPanel" widgetVar="tpgoverlay" for="addtournamentgameslink" hideEffect="fade" dynamic="false">  
 				    	<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" width="100%">
 							<h:column width="10%">Tournament Name:</h:column>
@@ -253,12 +256,10 @@
 			<ui:fragment id="edit-exhibition" >
 				<p:panel id ="exhibitionpanel" header="EXHIBITION GAMES">
 				<h:form id="exhibitionform">
-			
-					<div align="left">Are you playing in an exhibition game soon?  Add your exhibition games 
+				
 					<h:outputLink id="addexhibitiongameslink" value="javascript:void(0)" >
-						<h:outputText style = "font-size: 9pt;font-family: Verdana;" value="Here" />
+						<h:outputText style = "font-size: 9pt;font-family: Verdana;" value="Add Exhibition Game" />
 					</h:outputLink>
-					</div>
 					<p:overlayPanel id="exhibitiongamesPanel" widgetVar="exgoverlay" for="addexhibitiongameslink" hideEffect="fade" dynamic="false">  
 				    	<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" width="100%">
 							<h:column width="10%">Game Date:</h:column>

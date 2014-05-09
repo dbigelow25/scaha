@@ -13,7 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,7 +28,7 @@ import com.scaha.objects.ScoresheetDataModel;
 //import com.gbli.common.SendMailSSL;
 
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class scoresheetBean implements Serializable {
 
 	private static final long serialVersionUID = 2L;
@@ -70,17 +70,18 @@ public class scoresheetBean implements Serializable {
       //will need to load player profile information for displaying loi
 		HttpServletRequest hsr = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 	  	
-	  	if(hsr.getParameter("gameid") != null)
+	  	if(hsr.getParameter("id") != null)
 	    {
-	  		this.idgame = Integer.parseInt(hsr.getParameter("gameid").toString());
+	  		this.idgame = Integer.parseInt(hsr.getParameter("id").toString());
 	    }
-	  	if(hsr.getParameter("gametype") != null)
+	  	if(hsr.getParameter("teamid") != null)
 	    {
-	  		this.gametype = hsr.getParameter("gametype").toString();
+	  		this.teamid = Integer.parseInt(hsr.getParameter("teamid").toString());
 	    }
         
 	  	
 	  	this.fileuploadcontroller = new FileUploadController();
+	  	getNonScahaGame();
 	  	getGameScoresheets();
 	}
 	
@@ -308,7 +309,6 @@ public class scoresheetBean implements Serializable {
 	
 	public void deleteScoresheet(Scoresheet scoresheet){
 		
-		String gametype =scoresheet.getGametype();
 		Integer idscoresheet= scoresheet.getIdscoresheet();
 		
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
@@ -402,5 +402,46 @@ public class scoresheetBean implements Serializable {
 	}
 	
 	
+	
+	public void getNonScahaGame() {  
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	
+    	try{
+    		//first get team name
+    		CallableStatement cs = db.prepareCall("CALL scaha.getTournamentGameForTeam(?,?)");
+			cs.setInt("teamid", this.teamid);
+			cs.setInt("gameid", this.idgame);
+			rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					this.gamedate = rs.getString("gamedate");
+    				this.gametime = rs.getString("gametime");
+    				this.opponent = rs.getString("opponent");
+    				this.gametype = rs.getString("gametype");
+    				
+    			}
+				LOGGER.info("We have results for tourney game by team:" + this.idgame);
+			}
+			
+			rs.close();
+			db.cleanup();
+    		
+			LOGGER.info("loaded detail for non scaha game:" + this.idgame);
+    		
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN getting non scaha game for team" + this.idgame);
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+		
+    }
 }
 
