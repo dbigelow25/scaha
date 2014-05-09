@@ -115,10 +115,11 @@ public class ScahaManager extends Person {
 				}
 				rs.close();
 			}
+			cs.close();
 		} catch (SQLException ex) {
 				ex.printStackTrace();
 		} finally {
-			db.cleanup();
+			db.free();
 		}
 		
 		return teamid;

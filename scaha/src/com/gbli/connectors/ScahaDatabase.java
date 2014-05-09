@@ -8,6 +8,7 @@ import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -236,6 +237,22 @@ public class ScahaDatabase extends Database {
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 			LOGGER.info("getRenegadeFamilyEmails:" + rs.getString(1) + ":" +  rs.getString(2));
+			tmp.add(new InternetAddress(rs.getString(2),rs.getString(1)));
+		}
+		rs.close();
+		ps.close();
+
+		return tmp;
+	}
+
+	public List<InternetAddress> getOutstandingMemberSignupEmails() throws SQLException, UnsupportedEncodingException {
+
+		List<InternetAddress> tmp = new ArrayList<InternetAddress>();
+		
+		PreparedStatement ps = this.prepareStatement("call scaha.getOutstandingMemberSignupEmails()");
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			LOGGER.info("getOutstandingMemberSignupEmails:" + rs.getString(1) + ":" +  rs.getString(2));
 			tmp.add(new InternetAddress(rs.getString(2),rs.getString(1)));
 		}
 		rs.close();

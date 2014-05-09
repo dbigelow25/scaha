@@ -257,14 +257,76 @@ public class Club extends ScahaObject implements Serializable {
 	 * Returns the total count of teams.. 
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public int getTotalITeamCount() {
+	public int getTotalITeamCount(boolean _exh) {
 		if (this.Teams == null) return 0;
-		return ((List<ScahaTeam>)this.Teams.getWrappedData()).size();
+		int icount = 0;
+		for (ScahaTeam t : this.Teams) {
+			if (_exh || (!_exh && (t.getIsexhibition() == 0))) { 
+				icount++;
+			}
+		}
+		
+		return icount;
 	}
 	
-	public String getTotalTeamCount() {
-		int icount = getTotalITeamCount();
+	public String getTotalTeamCount(boolean _exh) {
+		int icount = getTotalITeamCount(_exh);
 		return (icount == 0 ? "" : icount+"");
+	}
+	
+	/**
+	 * OK.  we are going to count the number of teams this club has given the skill set 
+	 * 
+	 * @param _strDivision
+	 * @param _strSkill
+	 * @return
+	 */
+	public int getXTeamICounts(String _strDivision, String _strSkill) {
+		
+		int icount = 0;
+		for (ScahaTeam t : this.Teams) {
+			if (t.getIsexhibition() == 0) continue;
+			if (t.getTeamdivision().getTag().equals(_strDivision) && 
+					t.getTeamskilllevel().getTag().equals(_strSkill)) {
+				icount++;
+			}
+		}
+		
+		return icount;
+	}
+
+	/**
+	 * OK.  we are going to count the number of teams this club has given the skill set 
+	 * 
+	 * @param _strDivision
+	 * @param _strSkill
+	 * @return
+	 */
+	public int geteXTeamICounts(String _strDivision, String _strSkill) {
+		
+		int icount = 0;
+		for (ScahaTeam t : this.Teams) {
+			if (t.getIsexhibition() == 0) continue;
+			if (t.getXdivisiontag() == null || t.getXskillleveltag() == null) continue;
+			if (t.getXdivisiontag().equals(_strDivision) && 
+					t.getXskillleveltag().equals(_strSkill)) {
+				icount++;
+			}
+		}
+		
+		return icount;
+	}
+	/**
+	 * OK.  we are going to count the number of total X Teams
+	 * @return
+	 */
+	public int getTotalXITeamCount() {
+		
+		int icount = 0;
+		for (ScahaTeam t : this.Teams) {
+			if (t.getIsexhibition() == 1) icount++;
+		}
+		
+		return icount;
 	}
 }
