@@ -129,7 +129,7 @@
 							<td align="left"><p:inputText id="cepexpires" style="width:100px;" value="#{coachloiBean.cepexpires}" rendered="#{coachloiBean.displaycoachcredentials}"/></td>
 							<td><b><h:outputText value="CEP Modules Completed:" rendered="#{coachloiBean.displaycoachcredentials}"/></b></td>
 							<td align="left" colspan="3">
-								<p:selectManyMenu id="cepmodules" value="#{coachloiBean.cepmodulesselected}" style="width:100px;height:75px" rendered="#{coachloiBean.displaycoachcredentials}">
+								<p:selectManyMenu id="cepmodules" showCheckbox="true" value="#{coachloiBean.cepmodulesselected}" style="width:100px;height:75px" rendered="#{coachloiBean.displaycoachcredentials}">
 							    	<f:selectItem itemLabel="8U" itemValue="8U" />  
 						            <f:selectItem itemLabel="10U" itemValue="10U" />  
 						            <f:selectItem itemLabel="12U" itemValue="12U" />

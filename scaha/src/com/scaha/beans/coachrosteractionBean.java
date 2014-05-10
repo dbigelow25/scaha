@@ -42,6 +42,10 @@ public class coachrosteractionBean implements Serializable {
 	private String u18 = null;
 	private String girls = null;
 	private List<String> cepmodulesselected = null;
+	private String coachrole = null;
+	private String safesport = null;
+	private Boolean displaycoachcredentials = null;
+	private Integer rosterid = null;
 	
 	@PostConstruct
     public void init() {
@@ -54,18 +58,59 @@ public class coachrosteractionBean implements Serializable {
         {
     		setSelectedcoach(hsr.getParameter("coachid").toString());
         }
+    	if(hsr.getParameter("rosterid") != null)
+        {
+    		setRosterid(Integer.parseInt(hsr.getParameter("rosterid").toString()));
+        }
     	
     	loadCoachProfile(selectedcoach);
 
     	//doing anything else right here
     }  
     
+	public void setRosterid(Integer id){
+		rosterid = id;
+	}
+	
+	public Integer getRosterid(){
+		return rosterid;
+	}
+	
     public void setCepmodulesselected(List<String> selectedmodules){
     	cepmodulesselected = selectedmodules;
     }
     
     public List<String> getCepmodulesselected(){
     	return cepmodulesselected;
+    }
+    
+    public void setDisplaycoachcredentials(String crole){
+    	if (crole.equals("Manager")){
+    		displaycoachcredentials = false;
+    	}else {
+    		displaycoachcredentials = true;
+    	}
+    	
+    }
+    
+    public Boolean getDisplaycoachcredentials(){
+    	return displaycoachcredentials;
+    }
+    
+    public void setSafesport(String crole){
+    	safesport = crole;
+    }
+    
+    public String getSafesport(){
+    	return safesport;
+    }
+    
+    public void setCoachrole(String crole){
+    	coachrole = crole;
+    }
+    
+    public String getCoachrole(){
+    	return coachrole;
     }
     
     public void setGirls(String snumber){
@@ -206,8 +251,23 @@ public class coachrosteractionBean implements Serializable {
     		if (!selectedplayer.equals("")) {
     		
     			Vector<Integer> v = new Vector<Integer>();
-    			v.add(Integer.parseInt(selectedplayer));
-    			db.getData("CALL scaha.getCoachInfoByCoachId(?)", v);
+    			v.add(rosterid);
+    			db.getData("CALL scaha.getCoachRostertypeByRosterId(?)", v);
+    		    
+    			if (db.getResultSet() != null){
+    				//need to add to an array
+    				rs = db.getResultSet();
+    				while (rs.next()) {
+    					coachrole = rs.getString("rostertype");
+    				}
+    				LOGGER.info("We have results for coach roster type by coach id");
+    			}
+    			rs.close();
+    			setDisplaycoachcredentials(coachrole);
+    			
+    			Vector<Integer> ve = new Vector<Integer>();
+    			ve.add(Integer.parseInt(selectedplayer));
+    			db.getData("CALL scaha.getCoachInfoByCoachId(?)", ve);
     		    
     			if (db.getResultSet() != null){
     				//need to add to an array
@@ -219,7 +279,7 @@ public class coachrosteractionBean implements Serializable {
     					screeningexpires = rs.getString("screeningexpires");
         				cepnumber = rs.getString("cepnumber");
         				ceplevel = rs.getInt("ceplevel");
-        				
+        				safesport = rs.getString("safesport");
         				cepexpires = rs.getString("cepexpires");
         				
         				List<String> templist = new ArrayList<String>();
@@ -281,13 +341,15 @@ public class coachrosteractionBean implements Serializable {
 			
 				//Need to provide info to the stored procedure to save or update
  				LOGGER.info("update coach details");
- 				CallableStatement cs = db.prepareCall("CALL scaha.updateCoachbyCoachId(?,?,?,?,?,?,?,?,?,?,?)");
+ 				CallableStatement cs = db.prepareCall("CALL scaha.updateCoachbyCoachId(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
     		    cs.setInt("coachid", Integer.parseInt(this.selectedcoach));
     		    cs.setString("screenexpires", this.screeningexpires);
     		    cs.setString("cepnum", this.cepnumber);
     		    cs.setInt("levelcep", this.ceplevel);
     		    cs.setString("cepexpire", this.cepexpires);
-    		    
+    		    cs.setString("insafesport", this.safesport);
+    		    cs.setString("inrostertype", this.coachrole);
+    		    cs.setInt("inrosterid", this.rosterid);
     		    //need to set values for modules
     		    Integer u8 = 0;
     		    Integer u10 = 0;
@@ -327,7 +389,8 @@ public class coachrosteractionBean implements Serializable {
     			
     		    db.commit();
     		    rs.close();
-    			db.cleanup();
+			
+    		    db.cleanup();
  				
     		    //logging 
     			LOGGER.info("We are updating transfer info for coach id:" + this.selectedcoach);
@@ -375,6 +438,15 @@ public class coachrosteractionBean implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
+	}
+	
+	public void checkRole(){
+		//need to set coach credential fields to hide when manager is selected.  For all others display.
+		if (this.coachrole.equals("Manager")){
+			this.displaycoachcredentials=false;
+		}else {
+			this.displaycoachcredentials=true;
+		}
 	}
 }
 

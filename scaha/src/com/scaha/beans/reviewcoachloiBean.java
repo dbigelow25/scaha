@@ -313,7 +313,7 @@ public class reviewcoachloiBean implements Serializable {
 	public void addCoachdetails(Coach selectedCoach){
 		
 		String sidcoach = selectedCoach.getIdcoach();
-		
+		String rosterid = sidcoach;
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		
 		try{
@@ -355,7 +355,7 @@ public class reviewcoachloiBean implements Serializable {
 		
 		FacesContext context = FacesContext.getCurrentInstance();
 		try{
-			context.getExternalContext().redirect("addcoachdetails.xhtml?coachid=" + sidcoach);
+			context.getExternalContext().redirect("addcoachdetails.xhtml?coachid=" + sidcoach + "&rosterid=" + rosterid);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
