@@ -32,10 +32,10 @@
                 	<!--  <p:column headerText="Player ID">  
 			            <h:outputText value="#{player.getIdplayer()}" />  
 			        </p:column>-->  
-			        <p:column headerText="First Name">  
+			        <p:column headerText="First Name" filterBy="firstname" filterMatchMode="contains" filterStyle="width:50px">  
 			            <h:outputText value="#{coach.getFirstname()}" />  
 			        </p:column>  
-			        <p:column headerText="Last Name">  
+			        <p:column headerText="Last Name" filterBy="lastname" filterMatchMode="contains" filterStyle="width:50px">  
 			            <h:outputText value="#{coach.getLastname()}" />  
 			        </p:column>  
 			        <p:column headerText="2014 Team">  
@@ -43,6 +43,9 @@
 			        </p:column>
 			        <p:column headerText="LOI Date">  
 			            <h:outputText value="#{coach.getLoidate()}" />  
+			        </p:column>
+			        <p:column headerText="Safesport">  
+			            <h:outputText value="#{coach.getSafesport()}" />  
 			        </p:column>
 			        <p:column headerText="Screening Expires">  
 			            <h:outputText value="#{coach.getScreeningexpires()}" />  
