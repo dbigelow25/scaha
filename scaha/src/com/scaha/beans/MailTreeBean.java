@@ -12,6 +12,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;  
 import javax.mail.internet.InternetAddress;
 import org.primefaces.model.TreeNode;  
@@ -30,7 +31,7 @@ import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.TeamList;
 
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class MailTreeBean implements Serializable, MailableObject {  
       
 	//
@@ -258,6 +259,7 @@ public class MailTreeBean implements Serializable, MailableObject {
     	
     	LOGGER.info("Email: going to send quickmail " + this.subject + ":" + this.body);
     	
+    	this.collectEmails();
 		SendMailSSL mail = new SendMailSSL(this);
 		mail.sendMail();
 		
@@ -330,8 +332,6 @@ public class MailTreeBean implements Serializable, MailableObject {
 	
 	public void resetTree()	{
 		
-    	LOGGER.info("resetTree..." );
-    	
 		this.body = null;
 		this.subject = null;
 		this.setCcemail(null);
@@ -348,8 +348,8 @@ public class MailTreeBean implements Serializable, MailableObject {
 			this.resetChildrenTree(node);
 		}
 		
-		LOGGER.info("setting selected noded to null..." );
 		this.selectedNodes = null;
+
 	}
 	
 	private void resetChildrenTree(TreeNode _tn)	{
@@ -366,11 +366,10 @@ public class MailTreeBean implements Serializable, MailableObject {
 
 	private void resetParentTree(TreeNode _tn)	{
 		if (_tn == null) return;
-		
 		TreeNode pnode = _tn.getParent();
-		pnode.setSelected(false);
 		pnode.setPartialSelected(false);
-		//if (pnode.getParent() != null && pnode.getParent().isSelected() || pnode.getParent().isPartialSelected()) resetParentTree(pnode.getParent());
+		pnode.setSelected(false);
+		if (pnode.getParent() != null && pnode.getParent().isSelected() || pnode.getParent().isPartialSelected()) resetParentTree(pnode);
 	}
 
 	

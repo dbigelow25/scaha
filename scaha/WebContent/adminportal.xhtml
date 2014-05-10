@@ -49,7 +49,7 @@
            </p:menubar>
 	  	<p:growl id="messages" showDetail="true" escape="false"/>  
 	  	<div style="float:left;text-align:top;">
-		<p:accordionPanel id="ap" style="width:425px;font-size:10pt;">
+		<p:panel id="ap" style="width:425px;font-size:10pt;">
 	        	<p:tab id="t1" title="Application Options">
 	            	<p:commandButton id="basic" ajax="true" value="Refresh App" actionListener="#{scahaBean.refreshBean()}" update="@([id$=dlg])" oncomplete="dlg.show();"/>
 	            	<br/>
@@ -62,11 +62,14 @@
        					</p:treeNode>  
    					</p:tree>  
    					
-  					<p:commandButton value="Reset Choices" update="mailtree" process="@this" actionListener="#{mailTreeBean.resetTree()}"  />  
-	            	<p:commandButton id="msgbtn" ajax="true" value="New Message" actionListener="#{mailTreeBean.collectEmails()}" update="@([id$=messages]),@([id$=msgdlg])" oncomplete="msgdlg.show();"/>
-
+  					<p:commandButton value="Reset Choices" update="mailtree" process="@this" actionListener="#{mailTreeBean.resetTree()}">
+  					 <p:resetInput target="mailtree" />
+  					</p:commandButton>  
+	            	<p:commandButton id="msgbtn" ajax="true" value="New Message"  update="@([id$=messages]),@([id$=msgdlg])" oncomplete="msgdlg.show();">
+						 <p:resetInput target="msgdlg" />
+					</p:commandButton>
 	          	</p:tab>
-			</p:accordionPanel>
+			</p:panel>
 		</div>
 		<div style="float:right;text-align:top;">
 			Stuff 
