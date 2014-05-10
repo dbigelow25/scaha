@@ -26,7 +26,7 @@
 			<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">
 		
 				<p:panel id ="panel" header="SCAHA COACH/MANAGER LETTER OF INTENT AND MEMBERSHIP REGISTRATION 2014-2015">
-					
+					<p:fieldset>
 					<table cellpadding="5" cellspacing="0" width="90%">
 						<tr>
 							<th colspan="6" align="center"><b>Club Information</b></th>
@@ -59,25 +59,13 @@
 								</div>
 							</td>
 						</tr>
-						<tr>
-							<td><b>Screening Expires:</b></td>
-							<td align="left"><h:outputText value="#{coachloiBean.screeningexpires}" /></td>
-							<td><b>CEP#:</b></td>
-							<td align="left"><h:outputText value="#{coachloiBean.cepnumber}" /></td>
-							<td><b>CEP Level:</b></td>
-							<td align="left"><h:outputText value="#{coachloiBean.cepleveldisplay}" /></td>
-						</tr>
-						<tr>
-							<td><b>CEP Expires:</b></td>
-							<td align="left"><h:outputText value="#{coachloiBean.cepexpires}" /></td>
-							<td><b>CEP Module:</b></td>
-							<td align="left" colspan="3"><h:outputText value="#{coachloiBean.cepmoduledisplaystring}" /></td>
-						</tr>
-					</table>	
+					</table>
+					</p:fieldset>
 					<p:spacer width="10" height="10" />
+					<p:fieldset>
 					<table cellpadding="5" cellspacing="0" width="90%">
 						<tr>
-							<th colspan="6" align="center"><b>Coach Information</b></th>
+							<th colspan="6" align="center"><b>Coach/Manager Information</b></th>
 						</tr>
 						<tr>
 							<td width="20%"><b>Name(Last,First):</b></td>
@@ -103,7 +91,43 @@
 							<td></td>
 							<td></td>
 						</tr>
+					</table>	
+					</p:fieldset>
+					<p:spacer width="10" height="10" />
+					<p:fieldset>
+					<table cellpadding="5" cellspacing="0" width="90%">
+						<tr>
+							<th colspan="6" align="center"><b>Coach/Manager Credentials</b></th>
+						</tr>
+						<tr>
+							<td width="20%"><b>Team Role:</b></td>
+							<td align="left" colspan="5">
+								<h:outputText value="#{coachloiBean.coachrole}"/>
+							</td>
+						</tr>
+						<tr>
+							<td><b><h:outputText value="CEP Screening Expires:" rendered="#{coachloiBean.displaycoachcredentials}"/></b></td>
+							<td align="left"><h:outputText value="#{coachloiBean.screeningexpires}" rendered="#{coachloiBean.displaycoachcredentials}"/></td>
+							<td><b><h:outputText value="CEP#:" rendered="#{coachloiBean.displaycoachcredentials}"/></b></td>
+							<td align="left"><h:outputText value="#{coachloiBean.cepnumber}" rendered="#{coachloiBean.displaycoachcredentials}"/></td>
+							<td><b><h:outputText value="CEP Level:" rendered="#{coachloiBean.displaycoachcredentials}"/></b></td>
+							<td align="left"><h:outputText value="#{coachloiBean.cepleveldisplay}" rendered="#{coachloiBean.displaycoachcredentials}"/></td>
+						</tr>
+						<tr>
+							<td><b><h:outputText value="CEP Expires:" rendered="#{coachloiBean.displaycoachcredentials}"/></b></td>
+							<td align="left"><h:outputText value="#{coachloiBean.cepexpires}" rendered="#{coachloiBean.displaycoachcredentials}"/></td>
+							<td><b><h:outputText value="CEP Module:" rendered="#{coachloiBean.displaycoachcredentials}"/></b></td>
+							<td align="left" colspan="3"><h:outputText value="#{coachloiBean.cepmoduledisplaystring}" rendered="#{coachloiBean.displaycoachcredentials}"/></td>
+						</tr>
+						<tr>
+							<td><b>Safe Sport Certification:</b></td>
+							<td align="left">
+								<h:outputText value="#{coachloiBean.displaysafesport}"/>
+							</td>
+							<td colspan="4"></td>
+						</tr>
 					</table>
+					</p:fieldset>
 				</p:panel>
 			</p:fieldset>
 			<p:spacer width="10" height="10" />

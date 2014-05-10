@@ -38,6 +38,7 @@ public class coachloiBean implements Serializable, MailableObject {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	private static String mail_reg_body = Utils.getMailTemplateFromFile("/mail/coachloireceipt.html");
+	private static String mail_reg_manager_body = Utils.getMailTemplateFromFile("/mail/managerloireceipt.html");
 	transient private ResultSet rs = null;
 	private List<String> selectedteams = null;
 	private List<String> selectedgirlsteams = null;
@@ -79,12 +80,17 @@ public class coachloiBean implements Serializable, MailableObject {
 	private String clubname = "";
 	private String listofboysteams;
 	private String listofgirlsteams;
+	private Integer safesport = null;
+	private String displaysafesport = null;
+	private String coachrole = null;
+	private Boolean displaycoachcredentials = null;
 	
 	@PostConstruct
     public void init() {
 		//hard code value until we load session variable
 		//hard code value until we load session variable
     	clubid = 1;
+    	this.displaycoachcredentials=true;
     	
     	//load profile id from which we can get club id later
     	FacesContext context = FacesContext.getCurrentInstance();
@@ -115,6 +121,46 @@ public class coachloiBean implements Serializable, MailableObject {
     	//doing anything else right here
     }  
     
+    public Boolean getDisplaycoachcredentials() {
+		// TODO Auto-generated method stub
+		return displaycoachcredentials;
+	}
+    
+    public void setDisplaycoachcredentials(Boolean ssubject){
+    	displaycoachcredentials = ssubject;
+    }
+    
+    public String getCoachrole() {
+		// TODO Auto-generated method stub
+		return coachrole;
+	}
+    
+    public void setCoachrole(String ssubject){
+    	coachrole = ssubject;
+    }
+    
+    public String getDisplaysafesport() {
+		// TODO Auto-generated method stub
+		return displaysafesport;
+	}
+    
+    public void setDisplaysafesport(String ssubject){
+    	if (ssubject.equals("0")){
+    		displaysafesport = "No";
+    	} else {
+    		displaysafesport = "Yes";
+    	}
+    }
+    
+    
+    public Integer getSafesport() {
+		// TODO Auto-generated method stub
+		return safesport;
+	}
+    
+    public void setSafesport(Integer ssubject){
+    	safesport = ssubject;
+    }
     
     public String getListofgirlsteams() {
 		// TODO Auto-generated method stub
@@ -179,9 +225,16 @@ public class coachloiBean implements Serializable, MailableObject {
 		myTokens.add("CEPLEVEL:" + this.cepleveldisplay);
 		myTokens.add("CEPEXPIRES:" + this.cepexpires);
 		myTokens.add("CEPMODULE:" + this.cepmoduledisplaystring);
+		myTokens.add("SAFESPORT:" + this.displaysafesport);
 		myTokens.add("HOMENUMBER:" + this.homenumber);
 		myTokens.add("EMAIL:" + this.email);
-		return Utils.mergeTokens(coachloiBean.mail_reg_body,myTokens);
+		myTokens.add("COACHROLE:" + this.coachrole);
+		
+		if (this.coachrole.equals("Manager")){
+			return Utils.mergeTokens(coachloiBean.mail_reg_manager_body,myTokens);
+		} else {
+			return Utils.mergeTokens(coachloiBean.mail_reg_body,myTokens);
+		}
 	}
 	
 	
@@ -587,6 +640,8 @@ public class coachloiBean implements Serializable, MailableObject {
         				cepnumber = rs.getString("cepnumber");
         				ceplevel = rs.getInt("ceplevel");
         				email = rs.getString("email");
+        				safesport = rs.getInt("safesport");
+        				this.setDisplaysafesport(safesport.toString());
         				
         				if (ceplevel.equals(1)){
         					cepleveldisplay = "Level 1";
@@ -673,6 +728,7 @@ public class coachloiBean implements Serializable, MailableObject {
     				rs = db.getResultSet();
     				
     				while (rs.next()) {
+    					coachrole = rs.getString("rostertype");
     					teamname = rs.getString("teamname");
     					if (displayselectedteam==null){
     						displayselectedteam = teamname;
@@ -692,6 +748,11 @@ public class coachloiBean implements Serializable, MailableObject {
     			rs.close();
     			db.cleanup();
     			
+    			if (this.coachrole!=null){
+	    			if (this.coachrole.equals("Manager")){
+	    				this.displaycoachcredentials=false;
+	    			}
+    			}
     			//need to get list of girls teams signed for
     			v = new Vector<Integer>();
     			v.add(selectedcoach);
@@ -787,60 +848,68 @@ public class coachloiBean implements Serializable, MailableObject {
 	    		    cs.setString("izipcode", this.zip);
 	    		    rs = cs.executeQuery();
 	    			rs.close();
-	    			//need to save coaches screening and cep stuff
-	    			LOGGER.info("updating coach record");
-	 				cs = db.prepareCall("CALL scaha.updateCoach(?,?,?,?,?,?,?,?,?,?,?)");
-	    		    cs.setInt("coachid", this.selectedcoach);
-	    		    cs.setString("screenexpires", this.screeningexpires);
-	    		    cs.setString("cepnum", this.cepnumber);
-	    		    cs.setString("levelcep", this.ceplevel.toString());
-	    		    cs.setString("cepexpire", this.cepexpires);
-	    		    
-	    		    //need to set values for modules
-	    		    Integer u8 = 0;
-	    		    Integer u10 = 0;
-	    		    Integer u12 = 0;
-	    		    Integer u14 = 0;
-	    		    Integer u18 = 0;
-	    		    Integer ugirls = 0;
-	    		    		
-	    		    for (int i = 0; i < this.cepmodulesselected.size(); i++) {
-	    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("8U")){
-	    		    		u8 = 1;
-	    		    	}
-	    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("10U")){
-	    		    		u10 = 1;
-	    		    	}
-	    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("12U")){
-	    		    		u12 = 1;
-	    		    	}
-	    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("14U")){
-	    		    		u14 = 1;
-	    		    	}
-	    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("18U")){
-	    		    		u18 = 1;
-	    		    	}
-	    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("Girls")){
-	    		    		ugirls = 1;
-	    		    	}
-					}
-	    		    
-	    		    cs.setInt("u8", u8);
-	    		    cs.setInt("u10", u10);
-	    		    cs.setInt("u12", u12);
-	    		    cs.setInt("u14", u14);
-	    		    cs.setInt("u18", u18);
-	    		    cs.setInt("ugirls", ugirls);
-	    		    rs = cs.executeQuery();
-	    			rs.close();
 	    			
-	    		    cs = db.prepareCall("CALL scaha.addCoachRoster(?,?,?)");
+	    			if (!this.coachrole.equals("Manager")) {
+	    				//need to save coaches screening and cep stuff
+		    			LOGGER.info("updating coach record");
+		 				cs = db.prepareCall("CALL scaha.updateCoach(?,?,?,?,?,?,?,?,?,?,?,?)");
+		    		    cs.setInt("coachid", this.selectedcoach);
+		    		    cs.setString("screenexpires", this.screeningexpires);
+		    		    cs.setString("cepnum", this.cepnumber);
+		    		    cs.setString("levelcep", this.ceplevel.toString());
+		    		    cs.setString("cepexpire", this.cepexpires);
+		    		    
+		    		    //need to set values for modules
+		    		    Integer u8 = 0;
+		    		    Integer u10 = 0;
+		    		    Integer u12 = 0;
+		    		    Integer u14 = 0;
+		    		    Integer u18 = 0;
+		    		    Integer ugirls = 0;
+		    		    		
+		    		    for (int i = 0; i < this.cepmodulesselected.size(); i++) {
+		    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("8U")){
+		    		    		u8 = 1;
+		    		    	}
+		    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("10U")){
+		    		    		u10 = 1;
+		    		    	}
+		    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("12U")){
+		    		    		u12 = 1;
+		    		    	}
+		    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("14U")){
+		    		    		u14 = 1;
+		    		    	}
+		    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("18U")){
+		    		    		u18 = 1;
+		    		    	}
+		    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("Girls")){
+		    		    		ugirls = 1;
+		    		    	}
+						}
+		    		    
+		    		    cs.setInt("u8", u8);
+		    		    cs.setInt("u10", u10);
+		    		    cs.setInt("u12", u12);
+		    		    cs.setInt("u14", u14);
+		    		    cs.setInt("u18", u18);
+		    		    cs.setInt("ugirls", ugirls);
+		    		    cs.setInt("insafesport", this.safesport);
+		    		    this.setDisplaysafesport(this.safesport.toString());
+		    		    rs = cs.executeQuery();
+		    			rs.close();
+		    			
+	    			}
+	    			
+	    			
+	    		    cs = db.prepareCall("CALL scaha.addCoachRoster(?,?,?,?)");
 	    		    //need to add to the coach roster table for each boys team
 	    			for (int i = 0; i < this.selectedteams.size(); i++) {
 	    		    	LOGGER.info("updating coach roster record for:" + this.selectedteams.get(i));
 						cs.setInt("ipersonid", this.selectedcoach);
 		    		    cs.setInt("iteamid", Integer.parseInt(this.selectedteams.get(i)));
 		    		    cs.setInt("setyear", 2014);
+		    		    cs.setString("inrostertype", this.coachrole);
 		    		    rs = cs.executeQuery();
 		    		    
 		    		    if (rs != null){
@@ -857,7 +926,7 @@ public class coachloiBean implements Serializable, MailableObject {
 					}
 	    		    rs.close();
 	    		    
-	    		    cs = db.prepareCall("CALL scaha.addCoachRoster(?,?,?)");
+	    		    cs = db.prepareCall("CALL scaha.addCoachRoster(?,?,?,?)");
 	    		    //need to add to the coach roster table for each girls team selected
 	    			for (int i = 0; i < this.selectedgirlsteams.size(); i++) {
 		    		    	LOGGER.info("updating coach roster record for:" + this.selectedgirlsteams.get(i));
@@ -865,6 +934,7 @@ public class coachloiBean implements Serializable, MailableObject {
 						cs.setInt("ipersonid", this.selectedcoach);
 		    		    cs.setInt("iteamid", Integer.parseInt(this.selectedgirlsteams.get(i)));
 		    		    cs.setInt("setyear", 2014);
+		    		    cs.setString("inrostertype", this.coachrole);
 		    		    rs = cs.executeQuery();
 		    		    if (rs != null){
 		    				while (rs.next()) {
@@ -1129,6 +1199,16 @@ public class coachloiBean implements Serializable, MailableObject {
 	public InternetAddress[] getPreApprovedICC() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	
+	public void checkRole(){
+		//need to set coach credential fields to hide when manager is selected.  For all others display.
+		if (this.coachrole.equals("Manager")){
+			this.displaycoachcredentials=false;
+		}else {
+			this.displaycoachcredentials=true;
+		}
 	}
 }
 
