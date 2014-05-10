@@ -139,6 +139,7 @@ public class reviewcoachloiBean implements Serializable {
         				String u14 = rs.getString("fourteenu");
         				String u18 = rs.getString("eighteenu");
         				String girls = rs.getString("girls");
+        				String safesport = rs.getString("safesport");
         				
         				Coach ocoach = new Coach();
         				ocoach.setIdcoach(idcoach);
@@ -156,6 +157,7 @@ public class reviewcoachloiBean implements Serializable {
         				ocoach.setU14(u14);
         				ocoach.setU18(u18);
         				ocoach.setGirls(girls);
+        				ocoach.setSafesport(safesport);
         				tempresult.add(ocoach);
     				}
     				rs.close();

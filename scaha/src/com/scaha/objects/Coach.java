@@ -32,10 +32,25 @@ public class Coach extends ScahaObject implements Serializable {
 	private String u14 = null;
 	private String u18 = null;
 	private String girls = null;
+	private String safesport = null;
 	
 	public Coach (){ 
 		
 	}
+	
+	public void setSafesport(String ssafesport){
+    	if (ssafesport.equals("1")){
+    		safesport="Yes";
+    	} else {
+    		safesport="No";
+    	}
+		
+		
+    }
+    
+	public String getSafesport(){
+    	return safesport;
+    }
 	
 	public void setGirls(String snumber){
     	if (snumber.equals("0")){
