@@ -27,7 +27,7 @@ public class Venue extends ScahaObject implements Serializable {
 	private String State =  null;
 	private String Zipcode = null;
 	private String Website = null;
-	private String GMAPParms = null;
+	private String gmapparms = null;
 	private boolean Primary = false;
 	
 	public Venue (Profile _pro, int _id) {
@@ -171,20 +171,6 @@ public class Venue extends ScahaObject implements Serializable {
 	}
 
 	/**
-	 * @return the gMAPParms
-	 */
-	public String getGMAPParms() {
-		return GMAPParms;
-	}
-
-	/**
-	 * @param gMAPParms the gMAPParms to set
-	 */
-	public void setGMAPParms(String gMAPParms) {
-		GMAPParms = gMAPParms;
-	}
-
-	/**
 	 * @return the myClubs
 	 */
 	public ClubList getMyClubs() {
@@ -210,6 +196,24 @@ public class Venue extends ScahaObject implements Serializable {
 	 */
 	public void setPrimary(boolean primary) {
 		Primary = primary;
+	}
+
+	/**
+	 * @return the gmapparms
+	 */
+	public String getGmapparms() {
+		return gmapparms;
+	}
+
+	/**
+	 * @param gmapparms the gmapparms to set
+	 */
+	public void setGmapparms(String gmapparms) {
+		this.gmapparms = gmapparms;
+	}
+	
+	public String toString() {
+		return this.Description;
 	}
 	
 		

@@ -24,7 +24,6 @@ import javax.mail.internet.InternetAddress;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Club;
@@ -34,7 +33,6 @@ import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Person;
 import com.scaha.objects.PersonList;
-import com.scaha.objects.Profile;
 import com.scaha.objects.TeamList;
 
 @ManagedBean
@@ -520,6 +518,7 @@ public class ClubBean implements Serializable,  MailableObject {
 		return Integer.toString(icount);
 		
 	}
+	
 
 	
 }

@@ -46,7 +46,7 @@ public class VenueList extends ListDataModel<Venue> implements Serializable, Sel
 			v.setPhone(rs.getString(i++));
 			v.setEmail(rs.getString(i++));
 			v.setWebsite(rs.getString(i++));
-			v.setGMAPParms(rs.getString(i++));
+			v.setGmapparms(rs.getString(i++));
 			data.add(v);
 		}
 		rs.close();

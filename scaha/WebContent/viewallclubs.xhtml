@@ -10,12 +10,7 @@
 	xmlns:pe="http://primefaces.org/ui/extensions">
 	
 <ui:define name="content">
-	
-<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top">  
-   	<h:outputText value="SCAHA" style="color:#FFCC00;font-size:36px;" />  
-</p:notificationBar>  
-
-<div id="page-div">	
+<div id="div-body">	
 
 	<h:form id="clubsmenu"  >
  	<p:growl id="messages" showDetail="true"/> 
@@ -114,14 +109,19 @@
         <td valign="top" colspan="2">
         <div class="NewsTitle">Rink Venues:</div> 
 			<ui:repeat var="venue" value="#{clubBean.selectedclub.getVenues()}">
-           	<p:panelGrid id="venues" columns="1">  
-            <div class="NewsDate">
-            	#{venue.getDescription()} <br/>
-            	#{venue.getAddress()}, #{venue.getCity()} #{venue.getState()}, #{venue.getZipcode()}<br/>
-            	#{venue.getPhone()} - <i><a href="#{venue.getWebsite()}" target="_blank">#{venue.getWebsite()}</a></i> 
-        	</div> 
-			<p class="GeneralGap" />
-	        </p:panelGrid>
+				#{mapBean.setCurrentvenue(venue)}
+    	        <div class="NewsDate">
+               	<p:panelGrid id="venues" columns="2">
+		        	#{venue.getDescription()}<br/>
+	            	#{venue.getAddress()}, #{venue.getCity()} #{venue.getState()}, #{venue.getZipcode()} <br/>
+	            	#{venue.getPhone()} - <i><a href="#{venue.getWebsite()}" target="_blank">#{venue.getWebsite()}</a></i>
+               		<p:graphicImage id="img" value="/images/marker.png" style="cursor:pointer" title="Location Map" width="30px"/> 
+ 	    			<p class="GeneralGap" />
+	    	    </p:panelGrid>
+		   		</div> 
+ 				<p:overlayPanel id="imgPanel" for="img" showEffect="blind" hideEffect="explode" showEvent="mousedown" hideEvent="mousedown" dismissable="false" showCloseIcon="true">
+  		    		<p:gmap id="mymap" center="#{venue.gmapparms}" zoom="15" type="HYBRID" style="width:600px;height:400px" model="#{mapBean.getMapModel()}" />
+       	        </p:overlayPanel> 
 			</ui:repeat>
         </td>
         </tr>
@@ -215,9 +215,9 @@
     <p:commandButton value="Cancel" reset="true" style="margin-top:10px;" icon="ui-icon-disk" onclick="PF('peepdlg').hide()" />  
 
 	</p:dialog>
-
+	
 	</h:form>
-<p:separator />
+	
 </div>
 
 
