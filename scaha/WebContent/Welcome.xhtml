@@ -6,6 +6,7 @@
      xmlns:h="http://java.sun.com/jsf/html"
      xmlns:ui="http://java.sun.com/jsf/facelets"
      xmlns:p="http://primefaces.org/ui"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 >
 <ui:define name="content">
 <h:body>
@@ -18,8 +19,56 @@
 		</p:graphicImage> 
 		
 -->
-    <p:panel header="Latest SCAHA News" footer="brought to you by iScaha">  
- 	<ui:repeat value="#{newsBean.getNewsItemList()}" var="newsitem">
+
+	 <p:panel header="Latest SCAHA News" footer="brought to you by iScaha"> 
+	  <div class="NewsTitle">Membership Drive by Club!  
+	  <p:progressBar style="width:300px" value="#{memberDriveBean.getProgressValue()}" labelTemplate="{value}%" displayOnly="true"/></div>
+	  <div class="NewsDate">Which SCAHA clubs are getting it done!</div>  
+   	  <div class="NewsText">
+	  <h:outputText  escape="false"  value="The below information is real time stats for all clubs with regards to getting their members registered for this upcoming season.  By the Start of our SCAHA Tryouts
+	  we want this board to be at 100%, so lets go families!!" />
+	  	</div>
+ 	 	<p:spacer height="10px" />
+	 	<p:dataTable 
+ 			id="memberdrive" 
+ 			var="myrow" 
+ 			value="#{memberDriveBean.mydata}" 
+ 			>
+ 			<p:column>
+           		<f:facet name="header">
+            		<h:outputText value="#{memberDriveBean.mydata.rheader.get(0)}" />
+		        </f:facet>
+	            <h:outputText value="#{myrow.get(0)}" />  
+	        </p:column>  
+ 			<p:column styleClass="mtrxColumn">
+           		<f:facet name="header">
+            		<h:outputText value="#{memberDriveBean.mydata.rheader.get(1)}" />
+		        </f:facet>
+	            <h:outputText value="#{myrow.get(1)}" />  
+	        </p:column>  
+ 			<p:column styleClass="mtrxColumn">
+           		<f:facet name="header">
+            		<h:outputText value="#{memberDriveBean.mydata.rheader.get(2)}" />
+		        </f:facet>
+	            <h:outputText value="#{myrow.get(2)}" />  
+	        </p:column>  
+ 			<p:column styleClass="mtrxtotColumn">
+           		<f:facet name="header">
+            		<h:outputText value="#{memberDriveBean.mydata.rheader.get(3)}" />
+		        </f:facet>
+	            <h:outputText value="#{myrow.get(3)}%" />  
+	        </p:column>  
+			 <p:columnGroup type="footer">
+            <p:row>
+                <p:column footerText="SCAHA Totals:" style="text-align:right"  />
+                <p:column footerText="#{memberDriveBean.getTotRegisters()}" />
+                <p:column footerText="#{memberDriveBean.getTotMembers()}" />
+                <p:column footerText="#{memberDriveBean.getTotPercent()}" />
+            </p:row>
+        </p:columnGroup>	    
+	    </p:dataTable>
+	 
+  	  <ui:repeat value="#{newsBean.getNewsItemList()}" var="newsitem">
 		<div class="NewsTitle">#{newsitem.title} 
    		   <p:commandButton rendered="#{profileBean.isSuperUser()}" id="editButton" icon="ui-icon-search"  ajax="true" update="form:editor" onclick="panelwv#{newsitem.getIDStr()}.show();"/>     
    		   </div>
