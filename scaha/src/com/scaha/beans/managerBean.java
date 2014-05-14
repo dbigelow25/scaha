@@ -5,24 +5,29 @@ import java.io.Serializable;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.el.ValueExpression;
-import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.mail.internet.InternetAddress;
 
+import com.gbli.common.SendMailSSL;
+import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.ExhibitionGame;
 import com.scaha.objects.ExhibitionGameDataModel;
+import com.scaha.objects.MailableObject;
 import com.scaha.objects.RosterEdit;
 import com.scaha.objects.RosterEditDataModel;
 import com.scaha.objects.TempGame;
@@ -35,8 +40,8 @@ import com.scaha.objects.TournamentGameDataModel;
 //import com.gbli.common.SendMailSSL;
 
 @ManagedBean
-@RequestScoped
-public class managerBean implements Serializable {
+@ViewScoped
+public class managerBean implements Serializable, MailableObject {
 
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
@@ -92,6 +97,20 @@ public class managerBean implements Serializable {
 	private String gamedate=null;
 	private String gametime=null;
 	private String opponent=null;
+	private String tourneygamelocation=null;
+	private String exhibitiongamelocation=null;
+	
+	//properties for emailing to managers, scaha statistician
+	private String to = null;
+	private String subject = null;
+	private String cc = null;
+	private static String mail_tournament_body = Utils.getMailTemplateFromFile("/mail/tournament.html");
+	private static String mail_tournamentgame_body = Utils.getMailTemplateFromFile("/mail/tournamentgame.html");
+	private static String mail_exhibitiongame_body = Utils.getMailTemplateFromFile("/mail/exhibitiongame.html");
+	private String todaysdate = null;
+	private Boolean addingtournament = null;
+	private Boolean addingtournamentgame = null;
+	private Boolean addingexhibitiongame = null;
 	
 		
 	
@@ -105,7 +124,8 @@ public class managerBean implements Serializable {
         this.setProfid(pb.getProfile().ID);
         getClubID();
         isClubHighSchool();
-    	
+    	setTodaysDate();
+    	setAddingflags();
         //teamid = 131;
         this.setTeamid(pb.getProfile().getManagerteamid());
         
@@ -130,6 +150,117 @@ public class managerBean implements Serializable {
     public managerBean() {  
         
     }  
+    
+    public Boolean getAddingtournament(){
+    	return addingtournament;
+    }
+    
+    public void setAddingtournament(Boolean in){
+    	addingtournament=in;
+    }
+    
+    public Boolean getAddingtournamentgame(){
+    	return addingtournamentgame;
+    }
+    
+    public void setAddingtournamentgame(Boolean in){
+    	addingtournamentgame=in;
+    }
+    
+    public Boolean getAddingexhibitiongame(){
+    	return addingexhibitiongame;
+    }
+    
+    public void setAddingexhibitiongame(Boolean in){
+    	addingexhibitiongame=in;
+    }
+    
+    
+    public String getTodaysdate(){
+    	return todaysdate;
+    }
+    
+    public void setTodaysdate(String tdate){
+    	todaysdate=tdate;
+    }
+    
+    public String getSubject() {
+		// TODO Auto-generated method stub
+		return subject;
+	}
+    
+    public void setSubject(String ssubject){
+    	subject = ssubject;
+    }
+    
+    public String getTextBody() {
+		// TODO Auto-generated method stub
+		List<String> myTokens = new ArrayList<String>();
+		String result = "";
+		if (this.addingtournament){
+			myTokens.add("REQUESTINGTEAM:" + this.teamname);
+			myTokens.add("REQUESTDATE:" + this.todaysdate);
+			myTokens.add("TOURNAMENTNAME:" + this.tournamentname);
+			myTokens.add("STARTDATE:" + this.startdate);
+			myTokens.add("ENDDATE:" + this.enddate);
+			myTokens.add("CONTACT:" + this.contact);
+			myTokens.add("PHONE:" + this.phone);
+			myTokens.add("SANCTION:" + this.sanction);
+			myTokens.add("LOCATION:" + this.location);
+			myTokens.add("WEBSITE:" + this.website);
+			myTokens.add("STATUS:" + "Pending");
+			
+			result = Utils.mergeTokens(managerBean.mail_tournament_body,myTokens);
+		}
+		
+		if (this.addingtournamentgame){
+			myTokens.add("REQUESTINGTEAM:" + this.teamname);
+			myTokens.add("REQUESTDATE:" + this.todaysdate);
+			myTokens.add("TOURNAMENTNAME:" + this.tournamentname);
+			myTokens.add("GAMEDATE:" + this.gamedate);
+			myTokens.add("GAMETIME:" + this.gametime);
+			myTokens.add("OPPONENT:" + this.opponent);
+			myTokens.add("LOCATION:" + this.tourneygamelocation);
+			myTokens.add("STATUS:" + "Pending");
+			
+			result = Utils.mergeTokens(managerBean.mail_tournamentgame_body,myTokens);
+		}
+		
+		if (this.addingexhibitiongame){
+			myTokens.add("REQUESTINGTEAM:" + this.teamname);
+			myTokens.add("REQUESTDATE:" + this.todaysdate);
+			myTokens.add("GAMEDATE:" + this.gamedate);
+			myTokens.add("GAMETIME:" + this.gametime);
+			myTokens.add("OPPONENT:" + this.opponent);
+			myTokens.add("LOCATION:" + this.exhibitiongamelocation);
+			myTokens.add("STATUS:" + "Pending");
+			
+			result = Utils.mergeTokens(managerBean.mail_exhibitiongame_body,myTokens);
+		}
+		
+		return result;
+		
+	}
+	
+	public String getPreApprovedCC() {
+		// TODO Auto-generated method stub
+		return cc;
+	}
+	
+	public void setPreApprovedCC(String scc){
+		cc = scc;
+	}
+	
+	
+	
+	public String getToMailAddress() {
+		// TODO Auto-generated method stub
+		return to;
+	}
+    
+    public void setToMailAddress(String sto){
+    	to = sto;
+    }
     
     public String getGamedate(){
     	return gamedate;
@@ -166,11 +297,27 @@ public class managerBean implements Serializable {
     
     
     public String getLocation(){
-    	return location;
+    	return this.location;
     }
     
     public void setLocation(String name){
-    	location=name;
+    	this.location=name;
+    }
+    
+    public String getTourneygamelocation(){
+    	return this.tourneygamelocation;
+    }
+    
+    public void setTourneygamelocation(String name){
+    	this.tourneygamelocation=name;
+    }
+    
+    public String getExhibitiongamelocation(){
+    	return this.exhibitiongamelocation;
+    }
+    
+    public void setExhibitiongamelocation(String name){
+    	this.exhibitiongamelocation=name;
     }
     
     public String getSanction(){
@@ -644,13 +791,38 @@ public class managerBean implements Serializable {
 			cs.setString("newwebsite", this.website);
 		    cs.executeQuery();
 			db.commit();
-			db.cleanup();
-    		
+			
 			LOGGER.info("manager has added tournament:" + this.tournamentname);
     		
 			getTournament();
 			
 			//need to add email to manager and scaha statistician
+			to = this.pb.getProfile().getUserName();
+			
+			cs = db.prepareCall("CALL scaha.getSCAHAStatisticianEmail()");
+  		    rs = cs.executeQuery();
+  		    if (rs != null){
+  				while (rs.next()) {
+  					to = to + ',' + rs.getString("usercode");
+  				}
+  			}
+  		    rs.close();
+  		    db.cleanup();
+  		    
+			to = "lahockeyfan2@yahoo.com";
+		    this.setToMailAddress(to);
+		    this.setPreApprovedCC("");
+		    this.setSubject(this.tournamentname + " Added for " + this.teamname);
+		    
+			SendMailSSL mail = new SendMailSSL(this);
+			LOGGER.info("Finished creating mail object for " + this.tournamentname + " Added for " + this.teamname);
+			//set flag for getbody to know which template and values to use
+			this.addingtournament=true;
+			mail.sendMail();
+			
+			//set flag back to false;
+			this.addingtournament=false;
+			
 			
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
@@ -899,16 +1071,47 @@ public class managerBean implements Serializable {
 			cs.setString("newgamedate", this.gamedate);
 			cs.setString("newgametime", this.gametime);
 			cs.setString("newopponent", this.opponent);
-			cs.setString("newlocation", this.location);
-			cs.executeQuery();
-			db.commit();
-			db.cleanup();
-    		
+			cs.setString("newlocation", this.tourneygamelocation);
+			rs=cs.executeQuery();
+			if (rs != null){
+  				while (rs.next()) {
+  					this.tournamentname=rs.getString("tournamentname");
+  				}
+  			}
+  		    db.commit();
+			
 			LOGGER.info("manager has added tournament game:" + this.gamedate);
     		
-			getTournamentGames();
 			
 			//need to add email to manager and scaha statistician
+			to = this.pb.getProfile().getUserName();
+			
+			cs = db.prepareCall("CALL scaha.getSCAHAStatisticianEmail()");
+  		    rs = cs.executeQuery();
+  		    if (rs != null){
+  				while (rs.next()) {
+  					to = to + ',' + rs.getString("usercode");
+  				}
+  			}
+  		    rs.close();
+  		    db.cleanup();
+  		    
+			to = "lahockeyfan2@yahoo.com";
+		    this.setToMailAddress(to);
+		    this.setPreApprovedCC("");
+		    this.setSubject("Tournament Game Added vs " + this.opponent);
+		    
+			SendMailSSL mail = new SendMailSSL(this);
+			LOGGER.info("Finished creating mail object for Tournament Game Added vs " + this.opponent);
+			//set flag for getbody to know which template and values to use
+			this.addingtournamentgame=true;
+			mail.sendMail();
+			
+			//set flag back to false;
+			this.addingtournamentgame=false;
+			
+			getTournamentGames();
+			
 			
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
@@ -985,13 +1188,42 @@ public class managerBean implements Serializable {
 			cs.setString("newgamedate", this.gamedate);
 			cs.setString("newgametime", this.gametime);
 			cs.setString("newopponent", this.opponent);
-			cs.setString("newlocation", this.location);
+			cs.setString("newlocation", this.exhibitiongamelocation);
 			cs.executeQuery();
 			db.commit();
-			db.cleanup();
-    		
+			
 			LOGGER.info("manager has added exhibition game:" + this.gamedate);
     		
+			//need to add email to manager and scaha statistician
+			to = this.pb.getProfile().getUserName();
+			
+			cs = db.prepareCall("CALL scaha.getSCAHAStatisticianEmail()");
+  		    rs = cs.executeQuery();
+  		    if (rs != null){
+  				while (rs.next()) {
+  					to = to + ',' + rs.getString("usercode");
+  				}
+  			}
+  		    rs.close();
+  		    db.cleanup();
+  		    
+			to = "lahockeyfan2@yahoo.com";
+		    this.setToMailAddress(to);
+		    this.setPreApprovedCC("");
+		    this.setSubject("Exhibition game Added vs " + this.opponent);
+		    
+			SendMailSSL mail = new SendMailSSL(this);
+			LOGGER.info("Finished creating mail object for exhibition game Added vs " + this.opponent);
+			
+			//set flag for getbody to know which template and values to use
+			this.addingexhibitiongame=true;
+			mail.sendMail();
+			
+			//set flag back to false;
+			this.addingexhibitiongame=false;
+			
+			
+			
 			getExhibitionGames();
 			
 			//need to add email to manager and scaha statistician
@@ -1207,6 +1439,35 @@ public class managerBean implements Serializable {
 			context.addMessage("scahagamesmessages", new FacesMessage(FacesMessage.SEVERITY_WARN,"Action Needed!", "You have Exhibition Games needing the scoresheet uploaded."));
 		}
 		
+	}
+	
+	private void setTodaysDate(){
+		//need to set todays date for email
+		DateFormat dateFormat = new SimpleDateFormat("MM/dd/YYYY");
+		Date date = new Date();
+		this.setTodaysdate(dateFormat.format(date).toString());
+		
+	}
+
+	private void setAddingflags(){
+		//need to set todays date for email
+		this.addingtournament=false;
+		this.addingtournamentgame=false;
+		this.addingexhibitiongame=false;
+		
+	}
+
+	
+	@Override
+	public InternetAddress[] getToMailIAddress() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public InternetAddress[] getPreApprovedICC() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 

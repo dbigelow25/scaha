@@ -49,8 +49,6 @@
 					</td>
 				</tr>
 				<tr>
-					<td><b><h:outputText value="CEP Screening Expires:" rendered="#{coachrosteractionBean.displaycoachcredentials}" /></b></td>
-					<td align="left"><p:inputText id="screeningexpires" style="width:100px;" value="#{coachrosteractionBean.screeningexpires}" rendered="#{coachrosteractionBean.displaycoachcredentials}"/></td>
 					<td><b><h:outputText value="CEP#:" rendered="#{coachrosteractionBean.displaycoachcredentials}"/></b></td>
 					<td align="left"><p:inputText id="cepnumber" style="width:100px;" value="#{coachrosteractionBean.cepnumber}" rendered="#{coachrosteractionBean.displaycoachcredentials}"/></td>
 					<td><b><h:outputText value="CEP Level:" rendered="#{coachrosteractionBean.displaycoachcredentials}"/></b></td>
@@ -66,10 +64,10 @@
 					</td>
 				</tr>
 				<tr>
-					<td><b><h:outputText value="CEP Expires:" rendered="#{coachrosteractionBean.displaycoachcredentials}"/></b></td>
-					<td align="left"><p:inputText id="cepexpires" style="width:100px;" value="#{coachrosteractionBean.cepexpires}" rendered="#{coachrosteractionBean.displaycoachcredentials}"/></td>
-					<td><b><h:outputText value="CEP Modules Completed:" rendered="#{coachrosteractionBean.displaycoachcredentials}"/></b></td>
-					<td align="left" colspan="3">
+					<td valign="top"><b><h:outputText value="CEP Expires:" rendered="#{coachrosteractionBean.displaycoachcredentials}"/></b></td>
+					<td valign="top" align="left"><p:inputText id="cepexpires" style="width:100px;" value="#{coachrosteractionBean.cepexpires}" rendered="#{coachrosteractionBean.displaycoachcredentials}"/></td>
+					<td valign="top"><b><h:outputText value="CEP Modules Completed:" rendered="#{coachrosteractionBean.displaycoachcredentials}"/></b></td>
+					<td valign="top" align="left" colspan="3">
 						<p:selectManyMenu id="cepmodules" showCheckbox="true" value="#{coachrosteractionBean.cepmodulesselected}" style="width:100px;height:75px" rendered="#{coachrosteractionBean.displaycoachcredentials}">
 					    	<f:selectItem itemLabel="8U" itemValue="8U" />  
 				            <f:selectItem itemLabel="10U" itemValue="10U" />  
@@ -88,7 +86,8 @@
 					    	<f:selectItem itemLabel="Yes" itemValue="1"/>
 					    </p:selectOneMenu>
 					</td>
-					<td colspan="4"></td>
+					<td><b><h:outputText value="CAHA Screening Expires:"  /></b></td>
+					<td align="left"><p:inputText id="screeningexpires" style="width:100px;" value="#{coachrosteractionBean.screeningexpires}" /></td>
 				</tr>
 			</table>	
 			<div align="center"><p:commandButton id="completecoach" value="Save Coaching Certification" actionListener="#{coachrosteractionBean.completeCoachDetails()}" ajax="true"/></div>

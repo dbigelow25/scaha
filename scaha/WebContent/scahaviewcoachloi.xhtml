@@ -99,8 +99,6 @@
 							</td>
 						</tr>
 						<tr>
-							<td><b><h:outputText value="CEP Screening Expires:" rendered="#{coachloiBean.displaycoachcredentials}"/></b></td>
-							<td align="left"><h:outputText value="#{coachloiBean.screeningexpires}" rendered="#{coachloiBean.displaycoachcredentials}"/></td>
 							<td><b><h:outputText value="CEP#:" rendered="#{coachloiBean.displaycoachcredentials}"/></b></td>
 							<td align="left"><h:outputText value="#{coachloiBean.cepnumber}" rendered="#{coachloiBean.displaycoachcredentials}"/></td>
 							<td><b><h:outputText value="CEP Level:" rendered="#{coachloiBean.displaycoachcredentials}"/></b></td>
@@ -117,7 +115,9 @@
 							<td align="left">
 								<h:outputText value="#{coachloiBean.displaysafesport}"/>
 							</td>
-							<td colspan="4"></td>
+							<td><b><h:outputText value="CAHA Screening Expires:" /></b></td>
+							<td align="left"><h:outputText value="#{coachloiBean.screeningexpires}" /></td>
+							
 						</tr>
 					</table>	
 					</p:fieldset>

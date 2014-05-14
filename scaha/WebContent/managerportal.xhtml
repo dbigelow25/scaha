@@ -69,13 +69,6 @@
 			<ui:fragment id="edit-transfers" >
 				<h:form id="scahagameform">
 					<p:panel id ="panel" header="SCAHA GAMES">
-					<script>
-						.ui-messages-{severity}-detail{
-							font-size: 20pt;
-							font-family: Verdana;
-							
-						}
-					</script>
 					<p:messages id="scahagamesmessages" escape="true" showDetail="true" autoUpdate="true" closable="false" />
 					<p:dataTable id="scahagames" var="TempGame" value="#{managerBean.getTempGamedatamodel()}" selection="#{managerBean.selectedgame}" selectionMode="single" paginator="true" rows="10" autoupdate="false">
 			            <f:facet name="header">  
@@ -214,7 +207,7 @@
 							</h:column>
 							<h:column width="10%">Location:</h:column>
 							<h:column >
-								<p:inputText id="tourneygamelocation" style="width:200px;" value="#{managerBean.location}" />
+								<p:inputText id="tourneygamelocation" style="width:200px;" value="#{managerBean.tourneygamelocation}" />
 							</h:column>
 						</h:panelGrid>
 						<p:commandButton id="submittournamentgame" update="tournamentgames" value="Add Tournament Game" ajax="true" actionListener="#{managerBean.addTournamentGame()}" oncomplete="tpgoverlay.hide();"/>
@@ -276,7 +269,7 @@
 							</h:column>
 							<h:column width="10%">Location:</h:column>
 							<h:column >
-								<p:inputText id="exhibitiongamelocation" style="width:200px;" value="#{managerBean.location}" />
+								<p:inputText id="exhibitiongamelocation" style="width:200px;" value="#{managerBean.exhibitiongamelocation}" />
 							</h:column>
 						</h:panelGrid>
 						<p:commandButton id="submitexhibitiongame" update="exhibitiongames" value="Add Exhibition Game" ajax="true" actionListener="#{managerBean.addExhibitionGame()}" oncomplete="exgoverlay.hide();"/>
