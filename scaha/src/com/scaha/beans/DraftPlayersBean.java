@@ -175,7 +175,7 @@ public class DraftPlayersBean implements Serializable {
 
    			Vector<String> v = new Vector<String>();
    			v.add(this.searchcriteria);
-   			db.getData("CALL scaha.playersearch(?)", v);
+   			db.getData("CALL scaha.playerloisearch(?)", v);
    			ResultSet rs = db.getResultSet();
    
    			while (rs.next()) {

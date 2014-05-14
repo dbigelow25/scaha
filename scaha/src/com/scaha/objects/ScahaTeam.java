@@ -37,10 +37,12 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 	
 	private int year = 0;
 
+	private String rowkey = "";
 
 	public ScahaTeam (Profile _pro, int _id) {
 		setProfile(_pro);
 		this.ID = _id;
+		this.setRowkey(_id+ "");
 	}
 
 	/**
@@ -396,4 +398,20 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 	public void setXskillleveltag(String xskillleveltag) {
 		this.xskillleveltag = xskillleveltag;
 	}
+
+
+	/**
+	 * @return the rowkey
+	 */
+	public String getRowkey() {
+		return rowkey;
+	}
+
+	/**
+	 * @param rowkey the rowkey to set
+	 */
+	public void setRowkey(String rowkey) {
+		this.rowkey = rowkey;
+	}
+	
 }
