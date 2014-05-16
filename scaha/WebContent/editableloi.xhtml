@@ -117,8 +117,8 @@
 					    </h:column>
 			    	</h:panelGrid>
 			    	<h:panelGrid columns="4" cellpadding="5" cellspacing="0" border="0" style="width:100%">
-						<h:column >Parent/Guardian Signature (enter registration code):</h:column>
-						<h:column ><h:inputSecret id="playerupcode" style="width:40px;" value="#{loiBean.playerupcode}"/></h:column>
+						<h:column ><b>Parent/Guardian Signature (enter registration code):</b></h:column>
+						<h:column ><h:inputSecret id="playerupcode" style="width:120px;" value="#{loiBean.playerupcode}"/></h:column>
 						<h:column >Date:</h:column>
 						<h:column ><h:outputText value="#{loiBean.currentdate}"/></h:column>
 					</h:panelGrid>
@@ -142,8 +142,8 @@
 						</h:column>
 			    	</h:panelGrid>
 			    	<h:panelGrid columns="4" cellpadding="5" cellspacing="0" border="0" style="width:100%">
-						<h:column >Parent/Guardian Signature (enter registration code):</h:column>
-						<h:column ><h:inputSecret id="loicode" style="width:40px;" value="#{loiBean.loicode}" required = "true" requiredMessage="Signature code for LOI was not provided."/></h:column>
+						<h:column ><b>Parent/Guardian Signature (enter registration code):</b></h:column>
+						<h:column ><h:inputSecret id="loicode" style="width:120px;" value="#{loiBean.loicode}" required = "true" requiredMessage="Signature code for LOI was not provided."/></h:column>
 						<h:column >Date:</h:column>
 						<h:column ><h:outputText value="#{loiBean.currentdate}"/></h:column>
 					</h:panelGrid>
