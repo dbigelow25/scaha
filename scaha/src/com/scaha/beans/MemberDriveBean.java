@@ -3,6 +3,7 @@ package com.scaha.beans;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -30,7 +31,9 @@ public class MemberDriveBean implements Serializable  {
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 
-
+	private List<ReturnDataRow> filter;
+	
+	
 	 @PostConstruct
 	 public void init() {
 		 
@@ -111,5 +114,21 @@ public class MemberDriveBean implements Serializable  {
 		return ans;
 		
 
+	}
+
+
+	/**
+	 * @return the filter
+	 */
+	public List<ReturnDataRow> getFilter() {
+		return filter;
+	}
+
+
+	/**
+	 * @param filter the filter to set
+	 */
+	public void setFilter(List<ReturnDataRow> filter) {
+		this.filter = filter;
 	}
 }
