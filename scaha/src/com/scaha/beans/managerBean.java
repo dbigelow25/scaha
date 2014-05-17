@@ -122,6 +122,7 @@ public class managerBean implements Serializable, MailableObject {
         idclub = 1;  
         
         this.setProfid(pb.getProfile().ID);
+        
         getClubID();
         isClubHighSchool();
     	setTodaysDate();

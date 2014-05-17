@@ -113,7 +113,12 @@
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="View Releases"
 							url="confirmrelease.xhtml"
-							rendered="#{profileBean.hasRoleList('S-REG')}" /> 
+							rendered="#{profileBean.hasRoleList('S-REG')}" />
+						<p:menuitem style="font-size: 10pt;width:225px;"
+							value="View Safesport-List"
+							url="viewsafesport.xhtml"
+							rendered="#{profileBean.hasRoleList('S-REG')}" />
+						 
 					</p:menuButton>
 				</p:toolbarGroup>
 				<p:toolbarGroup align="right"

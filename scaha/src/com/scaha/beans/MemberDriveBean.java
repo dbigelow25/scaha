@@ -8,18 +8,12 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
-import org.primefaces.model.map.DefaultMapModel;
-import org.primefaces.model.map.LatLng;
-import org.primefaces.model.map.MapModel;
-import org.primefaces.model.map.Marker;
 
 import com.gbli.common.ReturnDataResultSet;
 import com.gbli.common.ReturnDataRow;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
-import com.scaha.objects.Venue;
 
 @ManagedBean
 @RequestScoped
