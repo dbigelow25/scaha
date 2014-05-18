@@ -37,21 +37,22 @@ public class ReturnDataResultSet extends ListDataModel<ReturnDataRow> implements
 	 */
 	@SuppressWarnings("unchecked")
 	public static ReturnDataResultSet NewReturnDataResultSetFactory(ResultSet rs) throws SQLException {
+
 		
 		List<ReturnDataRow> data = new ArrayList<ReturnDataRow>();
-		
 		ReturnDataRow rdrheader = new ReturnDataRow(-1);
-		int iColCount = rs.getMetaData().getColumnCount();
-		for (int y=1; y<=iColCount; y++) rdrheader.add(rs.getMetaData().getColumnLabel(y));
-		
-		int i = 0;
-		while (rs.next()) {
-			ReturnDataRow rdr = new ReturnDataRow(i++);
-			for (int y=1; y<=iColCount; y++) rdr.add(rs.getObject(y));
-			data.add(rdr);
+		if (rs != null && rs.getMetaData() != null) {
+			int iColCount = rs.getMetaData().getColumnCount();
+			for (int y=1; y<=iColCount; y++) rdrheader.add(rs.getMetaData().getColumnLabel(y));
 			
+			int i = 0;
+			while (rs.next()) {
+				ReturnDataRow rdr = new ReturnDataRow(i++);
+				for (int y=1; y<=iColCount; y++) rdr.add(rs.getObject(y));
+				data.add(rdr);
+				
+			}
 		}
-		
 		return new ReturnDataResultSet(data, rdrheader);
 	}
 	

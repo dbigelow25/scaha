@@ -159,10 +159,16 @@
 					<br />
 				</p:toolbarGroup>
 			</p:toolbar>
-			<ui:fragment style="font-size: 9pt;font-family: Verdana;"
+			<ui:fragment style="font-size:9pt;font-family:Verdana;"
 				rendered="#{empty profileBean.getProfile()}">
-				<h:outputLink id="reglink" value="/scaha/register.xhtml">
+				<h:outputLink id="reglink" value="/scaha/findme.xhtml" style="font-size:9pt;font-family:Verdana;">
 					<h:outputText style="font-size: 9pt;font-family: Verdana;"
+						value="Help! Find My Account" />
+				</h:outputLink>
+				<h:outputText style="font-size: 9pt;font-family: Verdana;"
+					value=" / " />
+				<h:outputLink id="reglink" value="/scaha/register.xhtml" style="font-size:9pt;font-family:Verdana;">
+					<h:outputText style="font-size:9pt;font-family:Verdana;"
 						value="Create New Account" />
 				</h:outputLink>
 				<h:outputText style="font-size: 9pt;font-family: Verdana;"
