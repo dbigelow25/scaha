@@ -2,6 +2,13 @@ package com.scaha.converter;
 
 import java.sql.SQLException;
 import java.util.logging.Logger;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.ConverterException;
+import javax.faces.convert.FacesConverter;
+
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
