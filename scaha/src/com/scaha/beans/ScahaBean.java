@@ -155,6 +155,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 		for (Club c : ScahaClubList) {
 			TeamList tl = c.getScahaTeams();
 			if (tl != null) {
+				@SuppressWarnings("unchecked")
 				List<ScahaTeam> lst = (List<ScahaTeam>) tl.getWrappedData();
 				lst.clear();
 			}
