@@ -22,10 +22,10 @@ import com.scaha.objects.ClubList;
 import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.GeneralSeasonList;
 import com.scaha.objects.MailableObject;
+import com.scaha.objects.MemberList;
 import com.scaha.objects.Profile;
 import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.TeamList;
-import com.scaha.objects.TryoutList;
 
 @ManagedBean
 @ApplicationScoped
@@ -41,6 +41,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 	//
 	private ClubList ScahaClubList  = null;
 	private GeneralSeasonList ScahaSeasonList = null;
+	private MemberList scahaboardmemberlist = null;
 	
 	private Profile DefaultProfile = null;
 	
@@ -52,6 +53,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 		 LOGGER.info("ScahaBean PostConstruct Init: Logger level at:" + LOGGER.getLevel());
 		 LOGGER.setLevel(Level.ALL);
 		 this.setDefaultProfile(new Profile());
+		 this.setExecutiveboard();
 		 refreshBean();
 
 		 
@@ -102,6 +104,8 @@ public class ScahaBean implements Serializable,  MailableObject {
 		}
 		db.free();
 	}
+	
+	
 
 	/**
 	 * Wait some seconds before freeing up the connection
@@ -244,6 +248,21 @@ public class ScahaBean implements Serializable,  MailableObject {
 		ScahaSeasonList = scahaSeasonList;
 	}
 
+	/**
+	 * @return the scahaSeasonList
+	 */
+	public MemberList getScahaboardmemberlist() {
+		return scahaboardmemberlist;
+	}
+
+
+	/**
+	 * @param scahaSeasonList the scahaSeasonList to set
+	 */
+	public void setScahaboardmemberlist(MemberList List) {
+		scahaboardmemberlist = List;
+	}
+	
 
 	/**
 	 * @return the defaultProfile
@@ -270,5 +289,17 @@ public class ScahaBean implements Serializable,  MailableObject {
 	public InternetAddress[] getPreApprovedICC() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public void setExecutiveboard() {
+
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		try {
+			setScahaboardmemberlist(MemberList.NewBoardmemberListFactory(db));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.free();
 	}
 }

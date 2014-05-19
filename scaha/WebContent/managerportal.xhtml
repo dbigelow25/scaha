@@ -119,31 +119,35 @@
 				    	<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" width="100%">
 							<h:column width="10%">Tournament Name:</h:column>
 							<h:column >
-								<p:inputText id="tourneyname" style="width:200px;" value="#{managerBean.tournamentname}" />
+								<p:inputText id="tourneyname" style="width:200px;" value="#{managerBean.tournamentname}" required="true"/>
+							</h:column>
+							<h:column width="10%">Level Playing:</h:column>
+							<h:column >
+								<p:inputText id="levelplaying" style="width:200px;" value="" required="true"/>
 							</h:column>
 							<h:column width="10%">Start Date:</h:column>
 							<h:column >
-								<p:inputText id="startdate" style="width:80px;" value="#{managerBean.startdate}" /> (MM/DD/YYYY)
+								<p:inputText id="startdate" style="width:80px;" value="#{managerBean.startdate}" required="true"/> (MM/DD/YYYY)
 							</h:column>
 							<h:column width="10%">End Date:</h:column>
 							<h:column >
-								<p:inputText id="enddate" style="width:80px;" value="#{managerBean.enddate}" /> (MM/DD/YYYY)
+								<p:inputText id="enddate" style="width:80px;" value="#{managerBean.enddate}" required="true"/> (MM/DD/YYYY)
 							</h:column>
 							<h:column width="10%">Contact:</h:column>
 							<h:column >
-								<p:inputText id="contact" style="width:200px;" value="#{managerBean.contact}" />
+								<p:inputText id="contact" style="width:200px;" value="#{managerBean.contact}" required="true"/>
 							</h:column>
 							<h:column width="10%">Phone:</h:column>
 							<h:column >
-								<p:inputText id="contactphone" style="width:200px;" value="#{managerBean.phone}" />
+								<p:inputText id="contactphone" style="width:200px;" value="#{managerBean.phone}" required="true"/>
 							</h:column>
 							<h:column width="10%">Sanction Number:</h:column>
 							<h:column >
-								<p:inputText id="sanctionnumber" style="width:200px;" value="#{managerBean.sanction}" />
+								<p:inputText id="sanctionnumber" style="width:200px;" value="#{managerBean.sanction}" required="true"/>
 							</h:column>
 							<h:column width="10%">Location:</h:column>
 							<h:column >
-								<p:inputText id="location" style="width:200px;" value="#{managerBean.location}" />
+								<p:inputText id="location" style="width:200px;" value="#{managerBean.location}" required="true"/>
 							</h:column>
 							<h:column width="10%">Website:</h:column>
 							<h:column >

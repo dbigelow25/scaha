@@ -1,13 +1,11 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 
@@ -15,7 +13,6 @@ import javax.faces.model.ListDataModel;
 
 import org.primefaces.model.SelectableDataModel;
 
-import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 ;
 
@@ -38,7 +35,7 @@ public class CoachList extends ListDataModel<ScahaCoach> implements Serializable
 
 	
 	/**
-	 * This will get all Coaches for a given Team and Season
+	 * This will get all Coaches for a given Team and Schedule
 	 * @param _db
 	 * @return
 	 * @throws SQLException 

@@ -117,4 +117,8 @@
 <extension>jpg</extension>
 <mime-type>image/jpg</mime-type>
 </mime-mapping>
+<error-page>
+    <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+    <location>/Weclome.xhtml</location>
+</error-page>
 </web-app>

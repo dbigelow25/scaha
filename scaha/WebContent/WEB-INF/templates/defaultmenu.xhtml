@@ -22,6 +22,8 @@
 							url="safesport.xhtml" />
 						<p:menuitem style="font-size: 12px;" value="2014 Mite Program"
 							url="miteprogram.xhtml" />
+						<p:menuitem style="font-size: 12px;" value="Executive Board"
+							url="boardofdirectors.xhtml" id="executiveboard"/>
 					</p:menuButton>
 					<p:spacer width="2px" />
 					<p:menuButton id="clubs" style="width:125px;" value="Club info">
@@ -113,7 +115,12 @@
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="View Releases"
 							url="confirmrelease.xhtml"
-							rendered="#{profileBean.hasRoleList('S-REG')}" /> 
+							rendered="#{profileBean.hasRoleList('S-REG')}" />
+						<p:menuitem style="font-size: 10pt;width:225px;"
+							value="View Safesport-List"
+							url="viewsafesport.xhtml"
+							rendered="#{profileBean.hasRoleList('S-REG')}" />
+						 
 					</p:menuButton>
 				</p:toolbarGroup>
 				<p:toolbarGroup align="right"
@@ -154,10 +161,16 @@
 					<br />
 				</p:toolbarGroup>
 			</p:toolbar>
-			<ui:fragment style="font-size: 9pt;font-family: Verdana;"
+			<ui:fragment style="font-size:9pt;font-family:Verdana;"
 				rendered="#{empty profileBean.getProfile()}">
-				<h:outputLink id="reglink" value="/scaha/register.xhtml">
+				<h:outputLink id="findme" value="/scaha/findme.xhtml" style="font-size:9pt;font-family:Verdana;">
 					<h:outputText style="font-size: 9pt;font-family: Verdana;"
+						value="Help! Find My Account" />
+				</h:outputLink>
+				<h:outputText style="font-size: 9pt;font-family: Verdana;"
+					value=" / " />
+				<h:outputLink id="reglink" value="/scaha/register.xhtml" style="font-size:9pt;font-family:Verdana;">
+					<h:outputText style="font-size:9pt;font-family:Verdana;"
 						value="Create New Account" />
 				</h:outputLink>
 				<h:outputText style="font-size: 9pt;font-family: Verdana;"
