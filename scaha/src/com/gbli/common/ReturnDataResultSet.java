@@ -49,13 +49,19 @@ public class ReturnDataResultSet extends ListDataModel<ReturnDataRow> implements
 		ReturnDataResultSet rdrs = new ReturnDataResultSet(data,rdrheader);
 		if (rs != null && rs.getMetaData() != null) {
 			int iColCount = rs.getMetaData().getColumnCount();
-			for (int y=1; y<=iColCount; y++) rdrheader.add(rs.getMetaData().getColumnLabel(y));
+			for (int y=1; y<=iColCount; y++) rdrheader.add(rs.getMetaData().getColumnLabel(y),rs.getMetaData().getColumnLabel(y));
 			int i = 0;
 			while (rs.next()) {
-				ReturnDataRow rdr = new ReturnDataRow(i++);
-				for (int y=1; y<=iColCount; y++) rdr.add(rs.getObject(y));
+				ReturnDataRow rdr = new ReturnDataRow(i++,rdrs);
+				for (int y=1; y<=iColCount; y++) {
+					if ( rs.getObject(y) == null) {
+						rdr.add(NULL,rdrheader.get(y-1).toString());
+					} else  {
+						rdr.add(rs.getObject(y),rdrheader.get(y-1).toString());
+						
+					}
+				}
 				data.add(rdr);
-			
 			}
 		}
 		

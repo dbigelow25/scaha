@@ -20,6 +20,7 @@ import javax.mail.internet.InternetAddress;
 import com.gbli.common.ReturnDataResultSet;
 import com.gbli.common.ReturnDataRow;
 import com.gbli.common.SendMailSSL;
+import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.MailableObject;
@@ -32,6 +33,7 @@ public class FindMeBean implements Serializable, MailableObject  {
 
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	private static String mail_body_find_me = Utils.getMailTemplateFromFile("mail/findmeintro.html");
 
 	private ReturnDataResultSet mydata = null;
 	private ReturnDataRow selectedrow = null;
@@ -49,7 +51,8 @@ public class FindMeBean implements Serializable, MailableObject  {
 		    
 		 	LOGGER.info("*************** meSearch() called *************");
 		 	LOGGER.info("search criteria is:" + this.searchcriteria);
-	    	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+
+		 	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 	    	
 	    	try{
 
@@ -58,8 +61,6 @@ public class FindMeBean implements Serializable, MailableObject  {
 	   			db.getData("CALL scaha.srchForMyAccount(?)", v);
 	   			ResultSet rs = db.getResultSet();
 	   			this.mydata = ReturnDataResultSet.NewReturnDataResultSetFactory(rs);
-	    		LOGGER.info("We have results for search criteria " + this.searchcriteria);
-	    		LOGGER.info(this.mydata.toString());
 	    		
 	    	} catch (SQLException e) {
 	    		LOGGER.info("ERROR IN Searching FOR " + this.searchcriteria);
@@ -129,8 +130,8 @@ public class FindMeBean implements Serializable, MailableObject  {
 		context.addMessage(
 				null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Password Reminder Sent",
-                "Your password reminder has been sent to the following e-mail addresses: " + this.getToMailAddress()));
+                "Who Am I",
+                "Account Information has been sent to the following e-mail addresse(s): " + this.getToMailAddress()));
 				
 		//
 		// Lets make sure we return a valid URL
@@ -147,18 +148,23 @@ public class FindMeBean implements Serializable, MailableObject  {
 	}
 	@Override
 	public String getTextBody() {
-		return "Your Usercode is " + selectedrow.get(13).toString() + ".<br/>Your password is:" + selectedrow.get(14).toString(); 
+		
+		List<String> myTokens = new ArrayList<String>();
+		myTokens.add("NAME:" + selectedrow.getByKey("Acount Owner Name"));
+		myTokens.add("USERCODE:" + selectedrow.get(13).toString());
+		myTokens.add("PASS:" + selectedrow.get(14).toString());
+		return Utils.mergeTokens(mail_body_find_me,myTokens);
 	}
 	
 	@Override
 	public String getPreApprovedCC() {
-		// TODO Auto-generated method stub
-		return "info@iscaha.com";
+		return "online@iscaha.com";
 	}
+	
 	@Override
 	public String getToMailAddress() {
 		// TODO Auto-generated method stub
-		return selectedrow.get(13).toString();
+		return selectedrow.get(13).toString() + "," + selectedrow.getByKey("email");
 	}
 		
 
