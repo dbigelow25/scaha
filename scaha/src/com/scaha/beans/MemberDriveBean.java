@@ -103,7 +103,6 @@ public class MemberDriveBean implements Serializable  {
 		}
 		
 		Integer ans = (int) (((reg /mem) * 100)); 
-		LOGGER.info("INTEGER IS" + ans);
 		return ans;
 		
 
