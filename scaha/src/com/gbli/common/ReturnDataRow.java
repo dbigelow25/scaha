@@ -3,14 +3,24 @@
  */
 package com.gbli.common;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
+
+import org.primefaces.expression.impl.ThisExpressionResolver;
 
 
 /**
  * @author dbigelow
  *
  */
+@SuppressWarnings("rawtypes")
 public class ReturnDataRow extends Vector {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	String rowkey = null;
 	String colm1 = null;
@@ -23,14 +33,25 @@ public class ReturnDataRow extends Vector {
 	String col8 = null;
 	String col9 = null;
 	String col10 = null;
+
+	private ReturnDataResultSet rdrs = null;
 	
-	public ReturnDataRow (int _i) {
+	HashMap <String,Integer>hdrmap = new HashMap<String,Integer>();
+	
+	public ReturnDataRow (int _i, ReturnDataResultSet _rdrs) {
 		super();
 		rowkey = Integer.toString(_i);
+		rdrs = _rdrs;
+	}
+	
+	public ReturnDataRow (int _i) {
+		this(_i, null);
 	}
 
+
 	@SuppressWarnings("unchecked")
-	public boolean add(Object _obj) {
+	public boolean add(Object _obj, String _strRowKey) {
+		this.hdrmap.put(_strRowKey, new Integer(this.size()));
 		super.add(_obj);
 		switch ( this.size()) {
 		case 1:
@@ -65,6 +86,13 @@ public class ReturnDataRow extends Vector {
 			break;
 		}
 		return true;
+	}
+	
+	public Object getByKey(String _str) {
+		Integer index = this.hdrmap.get(_str);
+		if (index == null) return null;
+		return get(index.intValue());
+		
 	}
 	/**
 	 * @return the rowkey
@@ -219,6 +247,31 @@ public class ReturnDataRow extends Vector {
 	public void setCol10(String col10) {
 		this.col10 = col10;
 	}
+
+	/**
+	 * @return the rdrs
+	 */
+	public ReturnDataResultSet getRdrs() {
+		return rdrs;
+	}
+
+	/**
+	 * @param rdrs the rdrs to set
+	 */
+	public void setRdrs(ReturnDataResultSet rdrs) {
+		this.rdrs = rdrs;
+	}
+
 	
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		
+		for (Object obj : this) {
+			sb.append(obj.toString() + ", ");
+		}
+		
+		return sb.toString();
+
+	}
 	
 }

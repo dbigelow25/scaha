@@ -35,8 +35,8 @@
  			value="#{memberDriveBean.mydata}" 
  			filteredValue="#{memberDriveBean.filter}">
  			>
- 			<p:column id="c0" headerText="#{memberDriveBean.mydata.rheader.get(0)}" >
-	             <h:outputText value="#{myrow.getColm1()}" />  
+ 			<p:column id="c0" headerText="Club Name" >
+	             <h:outputText value="#{myrow.getByKey('Club Name')}" />  
 	        </p:column>  
  			<p:column styleClass="mtrxColumn">
            		<f:facet name="header">

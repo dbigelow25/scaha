@@ -223,8 +223,6 @@ public class MailTreeBean implements Serializable, MailableObject {
 					  emails.addAll(db.getClubFamilyEmails(c,scaha.getScahaSeasonList().getCurrentSeason()));
     				} catch (SQLException e) {
     					e.printStackTrace();
-    				} catch (UnsupportedEncodingException e) {
-    					e.printStackTrace();
     				}
     				db.free();
     			} else if (obj instanceof String && node.getData().toString().contains("All Members With No Home Team")) {

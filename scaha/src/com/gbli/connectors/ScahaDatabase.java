@@ -208,7 +208,7 @@ public class ScahaDatabase extends Database {
 		cs.close();
 	}
 
-	public List<InternetAddress> getClubFamilyEmails(Club c,	GeneralSeason _cs)  throws SQLException, UnsupportedEncodingException {
+	public List<InternetAddress> getClubFamilyEmails(Club c,	GeneralSeason _cs)  throws SQLException {
 		List<InternetAddress> tmp = new ArrayList<InternetAddress>();
 		PreparedStatement ps = this.prepareStatement("call scaha.getAllMemberEmailsByClubAndSeason(?,?)");
 		ps.setInt(1, c.ID);
@@ -218,7 +218,13 @@ public class ScahaDatabase extends Database {
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 			LOGGER.info("getCLubFamilyEmails:" + rs.getString(1) + ":" +  rs.getString(2));
-			tmp.add(new InternetAddress(rs.getString(2),rs.getString(1)));
+			try {
+				tmp.add(new InternetAddress(rs.getString(2),rs.getString(1)));
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				LOGGER.info(e.getMessage());
+			}
 		}
 		rs.close();
 		ps.close();
