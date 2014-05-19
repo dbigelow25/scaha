@@ -1,6 +1,8 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +40,36 @@ public class ScheduleList extends ListDataModel<Schedule> implements Serializabl
 		List<Schedule> data = new ArrayList<Schedule>();
 	
 		//
-		// Guts to be filled out here...
+		// Lets go get all the schedules for a given general season..
 		// 
 		
+		PreparedStatement ps = _db.prepareStatement("call scaha.getAllSchedulesBySeasonTag(?)");
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			int i = 1;
+			Schedule sch = new Schedule(_pro,rs.getInt(i++));
+			sch.setDescription(rs.getString(i++));
+			sch.setScheduleweektag(rs.getString(i++));
+			sch.setSeasontag(rs.getString(i++));
+			sch.setGametag(rs.getString(i++));
+			sch.setDivsname(rs.getString(i++));
+			sch.setTag(rs.getString(i++));
+			sch.setRank(rs.getInt(i++));
+			sch.setTeamcount(rs.getInt(i++));
+			sch.setByeteamcount(rs.getInt(i++));
+			sch.setStartdate(rs.getString(i++));
+			sch.setEnddate(rs.getString(i++));
+			sch.setLocked((rs.getInt(i++) == 1 ? true : false));
+			sch.setPlayonce((rs.getInt(i++) == 1 ? true : false));
+			sch.setMingamecnt(rs.getInt(i++));
+			sch.setMaxgamecnt(rs.getInt(i++));
+			sch.setMaxbyecnt(rs.getInt(i++));
+			sch.setMaxawaycnt(rs.getInt(i++));
+			data.add(sch);
+		}
+		rs.close();
+		ps.close();
 		return new ScheduleList(data);
-
 	}
 		
 		

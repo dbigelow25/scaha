@@ -1,11 +1,6 @@
 package com.scaha.objects;
 
-public class ScheduleWeek extends ScahaObject {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class Blackout extends ScahaObject {
 
 	/**
 	 * @param args
