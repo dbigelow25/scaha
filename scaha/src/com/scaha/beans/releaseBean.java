@@ -916,9 +916,11 @@ public class releaseBean implements Serializable, MailableObject {
     		    db.commit();
     			db.cleanup();
     			
-    		    
+    			if (this.selectedfinancial==null){
+    				to = to + ',' + this.getParentemail();
+    			}
     		    //and now the family email
-    		    to = to + ',' + this.getParentemail();
+    		    
     		    
     		    //use this will testing the site.  send emails to rob's personal account
     		    
