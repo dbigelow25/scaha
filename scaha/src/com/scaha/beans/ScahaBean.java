@@ -26,6 +26,7 @@ import com.scaha.objects.MemberList;
 import com.scaha.objects.Profile;
 import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.TeamList;
+import com.scaha.objects.ScheduleList;
 
 @ManagedBean
 @ApplicationScoped
@@ -42,6 +43,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 	private ClubList ScahaClubList  = null;
 	private GeneralSeasonList ScahaSeasonList = null;
 	private MemberList scahaboardmemberlist = null;
+	private ScheduleList scahaschedule = null;
 	
 	private Profile DefaultProfile = null;
 	
@@ -54,7 +56,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 		 LOGGER.setLevel(Level.ALL);
 		 this.setDefaultProfile(new Profile());
 		 this.setExecutiveboard();
-		 refreshBean();
+		 this.refreshBean();
 
 		 
 	 }
@@ -81,6 +83,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 		try {
 			setScahaSeasonList(GeneralSeasonList.NewClubListFactory(this.DefaultProfile, db, "SCAHA"));
 			setScahaClubList(ClubList.NewClubListFactory(this.DefaultProfile, db));
+			setScahaschedule(ScheduleList.ListFactory(this.DefaultProfile, db, this.getScahaSeasonList().getCurrentSeason()));
 			loadTeamLists(db);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -302,5 +305,19 @@ public class ScahaBean implements Serializable,  MailableObject {
 			e.printStackTrace();
 		}
 		db.free();
+	}
+
+	/**
+	 * @return the scahaschedule
+	 */
+	public ScheduleList getScahaschedule() {
+		return scahaschedule;
+	}
+
+	/**
+	 * @param scahaschedule the scahaschedule to set
+	 */
+	public void setScahaschedule(ScheduleList scahaschedule) {
+		this.scahaschedule = scahaschedule;
 	}
 }

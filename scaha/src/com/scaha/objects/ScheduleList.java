@@ -14,6 +14,7 @@ import org.primefaces.model.SelectableDataModel;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
+import com.mysql.jdbc.CallableStatement;
 
 public class ScheduleList extends ListDataModel<Schedule> implements Serializable, SelectableDataModel<Schedule> {
 	
@@ -43,8 +44,9 @@ public class ScheduleList extends ListDataModel<Schedule> implements Serializabl
 		// Lets go get all the schedules for a given general season..
 		// 
 		
-		PreparedStatement ps = _db.prepareStatement("call scaha.getAllSchedulesBySeasonTag(?)");
-		ResultSet rs = ps.executeQuery();
+		CallableStatement cs = (CallableStatement) _db.prepareCall("call scaha.getAllSchedulesBySeasonTag(?)");
+		cs.setString(1, _gs.getTag());
+		ResultSet rs = cs.executeQuery();
 		while (rs.next()) {
 			int i = 1;
 			Schedule sch = new Schedule(_pro,rs.getInt(i++));
@@ -66,9 +68,10 @@ public class ScheduleList extends ListDataModel<Schedule> implements Serializabl
 			sch.setMaxbyecnt(rs.getInt(i++));
 			sch.setMaxawaycnt(rs.getInt(i++));
 			data.add(sch);
+			LOGGER.info("Adding schedule " + sch + " to the list...");
 		}
 		rs.close();
-		ps.close();
+		cs.close();
 		return new ScheduleList(data);
 	}
 		
