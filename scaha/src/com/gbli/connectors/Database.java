@@ -532,11 +532,11 @@ public class Database {
 		
 	}
 	
-	protected void setProfile(Profile _pro) {
+	public void setProfile(Profile _pro) {
 		this.m_prof = _pro;
 	}
 	
-	protected Profile getProfile() {
+	public Profile getProfile() {
 		return this.m_prof;
 	}
 	

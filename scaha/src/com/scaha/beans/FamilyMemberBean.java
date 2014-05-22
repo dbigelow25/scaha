@@ -65,16 +65,10 @@ public class FamilyMemberBean  implements Serializable,  MailableObject  {
 	 */
 	public void setCurrentFM(FamilyMember selectedFamilyMember) {
 		this.currentFM = selectedFamilyMember;
-		if (this.currentFM == null) {
-			LOGGER.info("FamilyMemberBean: We have a null family member selected");
-		}
 	}
 
 	public void onFamilyMemberRowSelect(SelectEvent  event) {  
 		FamilyMember fm = (FamilyMember)event.getObject();
-		LOGGER.info("fm:thisid: " + fm.getFamilyMemberID());
-		LOGGER.info("fm:personid: " + fm.getPersonID());
-		LOGGER.info("fm:relationship: " + fm.getRelationship());
 	}  
 
 	public void onFamilyMemberRowUnSelect(UnselectEvent   event) {  

@@ -49,8 +49,7 @@ public class FindMeBean implements Serializable, MailableObject  {
 	 
 	 public void meSearch(){
 		    
-		 	LOGGER.info("*************** meSearch() called *************");
-		 	LOGGER.info("search criteria is:" + this.searchcriteria);
+		 	LOGGER.info("*************** meSearch(" +  this.searchcriteria + ") called *************");
 
 		 	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 	    	

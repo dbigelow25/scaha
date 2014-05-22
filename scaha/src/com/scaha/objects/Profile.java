@@ -150,7 +150,8 @@ public class Profile extends ScahaObject {
 		
 		if (bgood) {
 			prof =  new Profile (id, db, sNickName, _sUser, _sPass, true);
-			LOGGER.info("Login was successful for " + prof.getPerson().getsFirstName() + " " + prof.getPerson().getsLastName() + ", " + prof.getNickName());
+			db.setProfile(prof);
+			LOGGER.info("Login was successful for " + prof);
 		} 
 		
 		db.free();
@@ -219,7 +220,7 @@ public class Profile extends ScahaObject {
 	}
 	
 	public String toString() {
-		return this.getNickName() + " (" + this.m_sUser + ")";
+		return this.m_sUser + "[" + this.getNickName() + "]";
 	}
 	
 	
@@ -244,14 +245,15 @@ public class Profile extends ScahaObject {
 		cs.setString(6,null);
 		cs.registerOutParameter(7, java.sql.Types.INTEGER);
 		cs.execute();
-		
+
+		LOGGER.info(this + ": Has just " + (this.ID < 1 ? " created " : " updated ") + " their profile information.");
 		//
 		// Update the new ID from the database...
 		//
 		this.ID = cs.getInt(7);
 		cs.close();
+		
 
-		LOGGER.info("HERE IS THE NEW ID:" + this.ID);
 
 	}
 	
