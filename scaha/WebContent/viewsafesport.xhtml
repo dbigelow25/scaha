@@ -20,21 +20,46 @@
 	<div style="height:px;diplay:block;">
 	<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />    
 	</div>
-		<p:panel header="Export D-List Options">
-        <h:commandLink>
-            <p:graphicImage value="/images/excel.png" />
-            <p:dataExporter type="xls" target="listofsafesportcertified" fileName="dlist" />
-        </h:commandLink>
- 
-        <h:commandLink>
-            <p:graphicImage value="/images/pdf.png" />
-            <p:dataExporter type="pdf" target="listofsafesportcertified" fileName="dlist"/>
-        </h:commandLink>
-         
-  </p:panel>
-	<p:panel id ="panel" header="2014 Safesport Certified List:">
+		<p:panel header="Add to Safesport List">
+	    	<p:commandButton id="addpersontolist" value="Add Person to List" ajax="true" />
+	    	<p:overlayPanel id="addpersonpanel" widgetVar="addpersongoverlay" for="addpersontolist" hideEffect="fade" dynamic="false">  
+		    	<p:dataTable 
+		 			id="listtoselectfrom" 
+		 			widgetVar="safesports"
+		 			editable="false"
+		 			var="player" 
+		 			value="#{safesportBean.getPersonlist()}" 
+		 			paginator="true" 
+		 			rows="10" 
+		 			>
+		 			
+		           	<p:column filterBy="firstname" filterMatchMode="contains" filterStyle="width:100px" >
+		           		<f:facet name="header">
+		            		<h:outputText value="First Name" />
+				        </f:facet>
+			            <h:outputText value="#{player.firstname}" />  
+			        </p:column>  
+			        <p:column sortBy="lastname" filterBy="lastname" filterMatchMode="contains" filterStyle="width:100px">  
+				        <f:facet name="header">
+		            		<h:outputText value="Last Name" />
+				        </f:facet>
+			            <h:outputText value="#{player.lastname}" />  
+			        </p:column>  
+			        <p:column headerText="Option" >  
+			             <p:splitButton id="addtosafesport" value=""  >
+					        <p:menuitem value="Add to Safe Sport" action="#{safesportBean.setSafesport(player)}" />
+					    </p:splitButton>
+					</p:column>  
+			        
+			        
+			    </p:dataTable>
+	    	</p:overlayPanel> 
+		</p:panel>		
+		
+		<p:panel id ="panel" header="2014 Safesport Certified List:">
 	 		<p:dataTable 
  			id="listofsafesportcertified" 
+ 			widgetVar="safesports"
  			editable="false"
  			var="player" 
  			value="#{safesportBean.getPlayerlist()}" 
@@ -54,14 +79,38 @@
 		        </f:facet>
 	            <h:outputText value="#{player.lastname}" />  
 	        </p:column>  
-	        <p:column sortBy="currentteam" filterBy="currentteam" filterMatchMode="contains"  filterStyle="width:150px">   
+	        <p:column sortBy="currentteam" >   
 		        <f:facet name="header">
             		<h:outputText value="2014 Team" />
 		        </f:facet>
 	            <h:outputText value="#{player.currentteam}" />  
 	        </p:column>
+	        <p:column headerText="Confirmed by SCAHA" sortBy="eligibility" >
+	        	<h:outputText value="#{player.eligibility}" />  
+	        </p:column>
+        	<p:column headerText="Option" >  
+	             <p:splitButton id="setsafesport" value="Set Safesport To: "  >
+			        <p:menuitem value="Confirmed" action="#{safesportBean.setSafesport(player,1)}" update="listofsafesportcertified"/>
+			        <p:menuitem value="Not Confirmed" action="#{safesportBean.setSafesport(player,0)}" update="listofsafesportcertified" />
+			    </p:splitButton>
+			</p:column>  
+	        
+	        
 	    </p:dataTable>
 		</p:panel>
+		<p:panel header="Export Safesport List Options">
+	        <h:commandLink>
+	            <p:graphicImage value="/images/excel.png" />
+	            <p:dataExporter type="xls" target="listofsafesportcertified" fileName="safesportlist" />
+	        </h:commandLink>
+	 
+	        <h:commandLink>
+	            <p:graphicImage value="/images/pdf.png" />
+	            <p:dataExporter type="pdf" target="listofsafesportcertified" fileName="safesportlist"/>
+	        </h:commandLink>
+	         
+	  </p:panel>
+		
 		<p:separator id="customSeparator" style="width:800px;height:2px" />    
  		<div align="center">
 			<p:commandButton id="closeaddteams" value="Close" ajax="false" actionListener="#{safesportBean.closePage()}"/>

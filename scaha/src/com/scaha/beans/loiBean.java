@@ -623,7 +623,7 @@ public class loiBean implements Serializable, MailableObject {
     				while (rs.next()) {
     					resultcount = rs.getInt("idmember");
     				}
-    				LOGGER.info("We have player up code validation results for player details by player id");
+    				LOGGER.info("We have code validation results for player details by person id");
     				if (resultcount.equals(0)){
     					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "The provided LOI signature code is invalid."));
     				}
@@ -659,7 +659,7 @@ public class loiBean implements Serializable, MailableObject {
 	    				bplayerup=true;
 	    			} else {
 	    				if (!(this.selectedgirlsteam==null)){
-	    					resultcount=1;
+	    					//resultcount=1;
 	    				}
 	    			}
 	    			
