@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Club;
+import com.scaha.objects.Coach;
 import com.scaha.objects.Player;
 import com.scaha.objects.PlayerDataModel;
 
@@ -153,6 +154,8 @@ public class reviewloiBean implements Serializable {
         				String sbirthcertificate = rs.getString("birthcertificate");
         				String splayerup = rs.getString("isplayerup");
         				String sindefinite = rs.getString("indefinite");
+        				String confirmed = rs.getString("confirmed");
+        				String rosterid = rs.getString("idroster");
         				
         				Player oplayer = new Player();
         				oplayer.setIdplayer(idplayer);
@@ -192,6 +195,8 @@ public class reviewloiBean implements Serializable {
         				oplayer.setBcverified(sbirthcertificate);
         				oplayer.setLoidate(sloidate);
         				oplayer.setPlayerup(IsPlayerup(splayerup));
+        				oplayer.setConfirmed(confirmed);
+        				oplayer.setRosterid(rosterid);
         				tempresult.add(oplayer);
     				}
     				
@@ -374,6 +379,44 @@ public class reviewloiBean implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+public void confirmLoi(Player selectedPlayer){
+	
+	String sidplayer = selectedPlayer.getRosterid();
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
+
+			if (db.setAutoCommit(false)) {
+			
+				//Need to provide info to the stored procedure to save or update
+ 				LOGGER.info("verify loi code provided");
+ 				CallableStatement cs = db.prepareCall("CALL scaha.confirmCoachLoi(?)");
+    		    cs.setInt("icoachid", Integer.parseInt(sidplayer));
+    		    cs.executeQuery();
+    		    LOGGER.info("We have confirmed loi for player id:" + sidplayer);
+    			
+    			db.commit();
+    			db.cleanup();
+ 			} else {
+		
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("ERROR IN Confirming player id " + sidplayer);
+			e.printStackTrace();
+			db.rollback();
+		} finally {
+			//
+			// always clean up after yourself..
+			//
+			db.free();
+		}
+		
+		playersDisplay();
 	}
 	
 	public void CloseLoi(){

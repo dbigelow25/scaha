@@ -96,8 +96,12 @@
 			        <p:column headerText="Girls">  
 			            <h:outputText value="#{coach.getGirls()}" />  
 			        </p:column>
+			        <p:column headerText="Confirmed">  
+			            <h:outputText value="#{coach.getConfirmed()}" />  
+			        </p:column>
 			        <p:column headerText="Option" >  
 			             <p:splitButton id="wwtransfer" value="Work with "  >
+					        <p:menuitem value="Confirm LOI" action="#{reviewcoachloiBean.confirmLoi(coach)}" update="@form" rendered="#{coach.getConfirmed()=='No'}"/>
 					        <p:menuitem value="Coach Details" action="#{reviewcoachloiBean.addCoachdetails(coach)}" />
 					        <p:menuitem value="View LOI" action="#{reviewcoachloiBean.viewLoi(coach)}"/>
 					        <p:menuitem value="Void LOI" action="#{reviewcoachloiBean.voidLoi(coach)}" update="@form"/>

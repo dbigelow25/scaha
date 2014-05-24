@@ -40,10 +40,34 @@ public class Player extends ScahaObject implements Serializable {
 	private String active = null;
 	private String updated = null;
 	private String jerseynumber = null;
+	private String confirmed = null;
+	private String rosterid = null;
 	
 	public Player (){ 
 		
 	}
+	
+	public String getRosterid(){
+    	return rosterid;
+    }
+	
+	public void setRosterid(String snumber){
+    	rosterid = snumber;
+    }
+	
+	
+	public String getConfirmed(){
+    	return confirmed;
+    }
+	
+	public void setConfirmed(String snumber){
+    	if (snumber.equals("0")){
+    		confirmed = "No";
+    	} else {
+    		confirmed = "Yes";
+    	}
+		
+    }
 	
 	public String getJerseynumber(){
     	return jerseynumber;

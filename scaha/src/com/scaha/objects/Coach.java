@@ -33,6 +33,7 @@ public class Coach extends ScahaObject implements Serializable {
 	private String u18 = null;
 	private String girls = null;
 	private String safesport = null;
+	private String confirmed = null;
 	
 	public Coach (){ 
 		
@@ -48,6 +49,20 @@ public class Coach extends ScahaObject implements Serializable {
 		
     }
     
+	public String getConfirmed(){
+    	return confirmed;
+    }
+	
+	public void setConfirmed(String snumber){
+    	if (snumber.equals("0")){
+    		confirmed = "No";
+    	} else {
+    		confirmed = "Yes";
+    	}
+		
+    }
+    
+	
 	public String getSafesport(){
     	return safesport;
     }

@@ -84,8 +84,13 @@
 			        <p:column headerText="Birth Cert.">  
 			            <h:outputText value="#{player.birthcertificate}" />  
 			        </p:column>
+			        <p:column headerText="Confirmed">  
+			            <h:outputText value="#{player.confirmed}" />  
+			        </p:column>
+			        
 			        <p:column headerText="Option" >  
 			             <p:splitButton id="wwtransfer" value="Work with "  >
+					        <p:menuitem value="Confirm LOI" action="#{reviewloiBean.confirmLoi(player)}" update="@form" rendered="#{player.getConfirmed()=='No'}"/>
 					        <p:menuitem value="Transfer/Citizenship" action="#{reviewloiBean.addTransferCitizenship(player)}" />
 					        <p:menuitem value="View LOI" action="#{reviewloiBean.viewLoi(player)}" />
 					        <p:menuitem value="Void LOI" action="#{reviewloiBean.voidLoi(player)}" update="listofplayers"/>

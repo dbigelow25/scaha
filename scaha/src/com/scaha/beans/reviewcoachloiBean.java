@@ -140,6 +140,7 @@ public class reviewcoachloiBean implements Serializable {
         				String u18 = rs.getString("eighteenu");
         				String girls = rs.getString("girls");
         				String safesport = rs.getString("safesport");
+        				String confirmed = rs.getString("confirmed");
         				
         				Coach ocoach = new Coach();
         				ocoach.setIdcoach(idcoach);
@@ -158,6 +159,7 @@ public class reviewcoachloiBean implements Serializable {
         				ocoach.setU18(u18);
         				ocoach.setGirls(girls);
         				ocoach.setSafesport(safesport);
+        				ocoach.setConfirmed(confirmed);
         				tempresult.add(ocoach);
     				}
     				rs.close();
@@ -414,6 +416,43 @@ public class reviewcoachloiBean implements Serializable {
 		} 
 	}
 	
+public void confirmLoi(Coach selectedCoach){
+		
+		String sidcoach = selectedCoach.getIdcoach();
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
+
+			if (db.setAutoCommit(false)) {
+			
+				//Need to provide info to the stored procedure to save or update
+ 				LOGGER.info("verify loi code provided");
+ 				CallableStatement cs = db.prepareCall("CALL scaha.confirmCoachLoi(?)");
+    		    cs.setInt("icoachid", Integer.parseInt(sidcoach));
+    		    cs.executeQuery();
+    		    LOGGER.info("We have confirmed loi for coach id:" + sidcoach);
+    			
+    			db.commit();
+    			db.cleanup();
+ 			} else {
+		
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("ERROR IN Confirming coach id " + sidcoach);
+			e.printStackTrace();
+			db.rollback();
+		} finally {
+			//
+			// always clean up after yourself..
+			//
+			db.free();
+		}
+		
+		coachesDisplay();
+	}
 	
 	public void CloseLoi(){
 		FacesContext context = FacesContext.getCurrentInstance();
