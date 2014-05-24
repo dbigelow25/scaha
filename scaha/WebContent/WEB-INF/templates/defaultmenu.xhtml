@@ -97,6 +97,10 @@
 							url="clubviewdelinquencylist.xhtml"
 							rendered="#{profileBean.hasRoleList('C-PRES;C-DLIST')}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
+							value="View Safesport List"
+							url="registrarviewsafesport.xhtml"
+							rendered="#{profileBean.hasRoleList('C-REG')}" />
+						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Add Player To D-List" 
 							url="addplayerdelinquent.xhtml"
 							rendered="#{profileBean.hasRoleList('S-REG')}" />
