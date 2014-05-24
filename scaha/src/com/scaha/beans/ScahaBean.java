@@ -1,6 +1,7 @@
 package com.scaha.beans;
 
 import java.io.Serializable;
+import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +10,10 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
 import javax.mail.internet.InternetAddress;
 
 import com.gbli.connectors.ScahaDatabase;
@@ -22,11 +25,12 @@ import com.scaha.objects.ClubList;
 import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.GeneralSeasonList;
 import com.scaha.objects.MailableObject;
+import com.scaha.objects.Member;
 import com.scaha.objects.MemberList;
 import com.scaha.objects.Profile;
 import com.scaha.objects.ScahaTeam;
-import com.scaha.objects.TeamList;
 import com.scaha.objects.ScheduleList;
+import com.scaha.objects.TeamList;
 
 @ManagedBean
 @ApplicationScoped
@@ -319,5 +323,51 @@ public class ScahaBean implements Serializable,  MailableObject {
 	 */
 	public void setScahaschedule(ScheduleList scahaschedule) {
 		this.scahaschedule = scahaschedule;
+	}
+	
+	public void setDisplay(Member member,String flagtype){
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		String profileid = member.getProfileid();
+		String flagstate = "";
+		if (flagtype.equals("Address")){
+			flagstate=member.getActionrenderaddress();
+		}else{
+			flagstate=member.getActionrenderphone();
+		}
+		try{
+
+			if (db.setAutoCommit(false)) {
+			
+				//Need to provide info to the stored procedure to save or update
+ 				LOGGER.info("verify loi code provided");
+ 				CallableStatement cs = db.prepareCall("CALL scaha.setBoardMemberDisplay(?,?,?)");
+    		    cs.setInt("profileid", Integer.parseInt(profileid));
+    		    cs.setInt("flagstate", Integer.parseInt(flagstate));
+    		    cs.setString("flagtype", flagtype);
+    		    cs.executeQuery();
+    		    
+    		    db.commit();
+    			db.cleanup();
+ 				
+    		    //logging 
+    			LOGGER.info("We are have set " + flagtype + " display for " + profileid);
+    		    
+    		} else {
+		
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("ERROR IN set " + flagtype + " display for " + profileid);
+			e.printStackTrace();
+			db.rollback();
+		} finally {
+			//
+			// always clean up after yourself..
+			//
+			db.free();
+		}
+		
+		this.setExecutiveboard();
 	}
 }

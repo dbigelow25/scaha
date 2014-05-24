@@ -48,10 +48,27 @@ public class MemberList extends ListDataModel<Member> implements Serializable, S
 				mem.setMembername(rs.getString("membername"));
 				mem.setMemberemail(rs.getString("memberemail"));
 				mem.setMemberrole(rs.getString("memberrole"));
+				mem.setMemberrolecode(rs.getString("memberrolecode"));
 				mem.setMemberphone(rs.getString("phonenumber"));
 				mem.setMemberaddress(rs.getString("memberaddress"));
 				mem.setRenderaddress(rs.getBoolean("renderaddress"));
 				mem.setRenderphone(rs.getBoolean("renderphone"));
+				mem.setProfileid(rs.getString("idbod"));
+				if (rs.getString("renderaddress").equals("1")){
+					mem.setActionrenderaddress("0");
+					mem.setActionrenderaddressmessage("Hide Address");
+				} else {
+					mem.setActionrenderaddress("1");
+					mem.setActionrenderaddressmessage("Show Address");
+				}
+				if (rs.getString("renderphone").equals("1")){
+					mem.setActionrenderphoine("0");
+					mem.setActionrenderphonemessage("Hide Phone");
+				}else{
+					mem.setActionrenderphoine("1");
+					mem.setActionrenderphonemessage("Show Phone");
+				}
+				
 				data.add(mem);
 		}
 		
