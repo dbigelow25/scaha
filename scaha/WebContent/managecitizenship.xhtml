@@ -22,8 +22,8 @@
 	<ui:define name="content">
 		<div id="page-div">
 		<p:tabMenu activeIndex="1">  
-		    <p:menuitem value="Transfer Information" url="#{rosteractionBean.gotoTransferInformation}"  />  
-		    <p:menuitem value="Citizenship Information" url="#{rosteractionBean.gotoCitizenship}" icon="ui-icon-star"/>  
+		    <p:menuitem value="Transfer/Citizenship Information" url="#{rosteractionBean.gotoTransferInformation}"  />  
+		    <p:menuitem value="Birth Certificate Information" url="#{rosteractionBean.gotoCitizenship}" icon="ui-icon-star"/>  
 		</p:tabMenu>  
 			    
 		
@@ -36,7 +36,7 @@
 						<f:facet name="header">
 								<h:column colspan="2">Player Information</h:column>
 						</f:facet>	
-						<h:column><b>2014 Transfer for <h:outputText value="#{rosteractionBean.playername}"/></b></h:column>
+						<h:column><b>Birth Certificate for <h:outputText value="#{rosteractionBean.playername}"/></b></h:column>
 					</h:panelGrid>
 				</p:fieldset>
 			    <p:fieldset id="fs2" toggleable="false" toggleSpeed="500">

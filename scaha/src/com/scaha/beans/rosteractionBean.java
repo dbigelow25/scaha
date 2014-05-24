@@ -38,6 +38,7 @@ public class rosteractionBean implements Serializable {
 	private String expirationdate = null;
 	private Integer transferid = null;
 	private Integer birthcertificate = null;
+	private String citizenship = null;
 	private String gotoTransferInformation = null;
 	private String gotoCitizenship = null;
 	
@@ -63,7 +64,15 @@ public class rosteractionBean implements Serializable {
     	gotoCitizenship = "managecitizenship.xhtml?playerid=" + this.selectedplayer;
     }  
     
-    public void setGotoTransferInformation(String url){
+	public void setCitizenship(String cit){
+    	citizenship = cit;
+    }
+    
+    public String getCitizenship(){
+    	return citizenship;
+    }
+    
+	public void setGotoTransferInformation(String url){
     	gotoTransferInformation = url;
     }
     
@@ -160,6 +169,7 @@ public class rosteractionBean implements Serializable {
         				transfer = rs.getInt("citizenshiptransfers");
         				transferindefinite = rs.getInt("indefinite");
         				birthcertificate = rs.getInt("birthcertificate");
+        				citizenship = rs.getString("citizenship");
         				
         				Date dexpirationdate = rs.getDate("expirationdate");
         				
@@ -203,7 +213,7 @@ public class rosteractionBean implements Serializable {
 			
 				//Need to provide info to the stored procedure to save or update
  				LOGGER.info("verify loi code provided");
- 				CallableStatement cs = db.prepareCall("CALL scaha.saveTransfer(?,?,?,?,?)");
+ 				CallableStatement cs = db.prepareCall("CALL scaha.saveTransfer(?,?,?,?,?,?)");
     		    cs.setInt("transferid", this.transferid);
     		    cs.setInt("playerid", Integer.parseInt(this.selectedplayer));
     		    cs.setInt("transfer", this.transfer);
@@ -213,6 +223,7 @@ public class rosteractionBean implements Serializable {
     		    }else{
     		    	cs.setString("sexpirationdate",this.expirationdate);
     		    }
+    		    cs.setString("incitizenship", citizenship);
     		    cs.executeQuery();
     			
     		    db.commit();

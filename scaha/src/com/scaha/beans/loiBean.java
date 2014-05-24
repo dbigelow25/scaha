@@ -781,14 +781,18 @@ public class loiBean implements Serializable, MailableObject {
 		    			}
 	    			}
 	    		    
-	    		    
+	    		    to = "";
 	    			LOGGER.info("Sending email to club registrar, family, and scaha registrar");
 	    			cs = db.prepareCall("CALL scaha.getClubRegistrarEmail(?)");
 	    		    cs.setInt("iclubid", this.clubid);
 	    		    rs = cs.executeQuery();
 	    		    if (rs != null){
 	    				while (rs.next()) {
-	    					to = rs.getString("usercode");
+	    					if (!to.equals("")){
+	    						to = to + "," + rs.getString("usercode");
+	    					}else {
+	    						to = rs.getString("usercode");
+	    					}
 	    				}
 	    			}
 					rs.close();

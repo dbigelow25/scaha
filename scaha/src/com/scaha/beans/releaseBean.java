@@ -919,7 +919,6 @@ public class releaseBean implements Serializable, MailableObject {
     			if (this.selectedfinancial==null){
     				to = to + ',' + this.getParentemail();
     			}
-    		    //and now the family email
     		    
     		    
     		    //use this will testing the site.  send emails to rob's personal account
