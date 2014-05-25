@@ -347,14 +347,22 @@ public class releaseBean implements Serializable, MailableObject {
 		myTokens.add("USANUMBER:" + this.usanumber);
 		myTokens.add("PARENTNAME:" + this.parentname);
 		myTokens.add("PARENTEMAIL:" + this.parentemail);
-		myTokens.add("REASON:" + this.displayreason);
+		myTokens.add("REASON: " + this.displayreason);
 		myTokens.add("SUSPENSION:" + this.displaysuspension);
 		if (this.displaypermanent){
 			myTokens.add("FINANCIAL:" + this.displayfinancial);
 		}
 		if (this.displaytemporary){
-			myTokens.add("BEGINNINGDATE:" + this.beginningdate);
-			myTokens.add("ENDINGDATE:" + this.endingdate);
+			if (this.beginningdate==null || this.beginningdate.equals("")){
+				myTokens.add("BEGINNINGDATE: " + this.beginningdate);
+			} else {
+				myTokens.add("BEGINNINGDATE:" + this.beginningdate);
+			}
+			if (this.endingdate==null || this.endingdate.equals("")){
+				myTokens.add("ENDINGDATE: " + this.endingdate);
+			} else {
+				myTokens.add("ENDINGDATE:" + this.endingdate);
+			}
 		}
 		myTokens.add("RELEASINGCLUB:" + this.releasingclubdivision);
 		if (this.displayacceptingclub==null){
@@ -372,8 +380,11 @@ public class releaseBean implements Serializable, MailableObject {
 		}else {
 			myTokens.add("SKILLLEVEL:" + this.displayacceptingskilllevel);
 		}
-		
-		myTokens.add("COMMENTS:" + this.comments);
+		if (this.comments==null || this.comments.equals("")){
+			myTokens.add("COMMENTS: " + this.comments);
+		} else {
+			myTokens.add("COMMENTS:" + this.comments);
+		}
 		
 		String result = null;
 		if (this.displaypermanent){
