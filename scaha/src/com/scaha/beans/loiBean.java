@@ -1060,7 +1060,7 @@ public class loiBean implements Serializable, MailableObject {
 
 		//perform logic to check if team selected is for player up
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-		
+		Boolean is2yearplayerup = false;
 		try{
 			
 			//first lets check if the team selected is too young for the players dob
@@ -1090,6 +1090,7 @@ public class loiBean implements Serializable, MailableObject {
 				
 				
 				//need to check if player up code is needed
+				//if player is 2 year player up don't allow
 				LOGGER.info("verify if user needs to enter player up code");
 				cs = db.prepareCall("CALL scaha.IsPlayerUpNeeded(?,?)");
 				cs.setInt("birthyear",Integer.parseInt(year));
@@ -1106,6 +1107,7 @@ public class loiBean implements Serializable, MailableObject {
 					
 					while (rs.next()) {
 						resultcount = rs.getInt("divisioncount");
+						is2yearplayerup = rs.getBoolean("2yearplayerup");
 					}
 					LOGGER.info("We have validation whether player needs player up code or not");
 				}
@@ -1138,14 +1140,21 @@ public class loiBean implements Serializable, MailableObject {
 			}
 			
 			
-			if (resultcount.equals(0) && ageoldercount.equals(0) && pwtobtmcount.equals(0)){
+			if (resultcount.equals(0) && ageoldercount.equals(0) && pwtobtmcount.equals(0) && !is2yearplayerup){
 				this.setDisplayplayerup(true);
 			} else {
-				this.setDisplayplayerup(false);
-				if (pwtobtmcount.equals(1)){
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "Player up from peewee to bantams is not allowed."));
+				if (is2yearplayerup){
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "2 or more years player up is not allowed."));
 					this.selectedteam=null;
+					this.selectedgirlsteam=null;
+				}else{
+					this.setDisplayplayerup(false);
+					if (pwtobtmcount.equals(1)){
+						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "Player up from peewee to bantams is not allowed."));
+						this.selectedteam=null;
+					}
 				}
+				
 			}
 		
 			if (sourceteam.equals("M")){

@@ -115,46 +115,52 @@
 					<h:outputLink id="addtournamentlink" value="javascript:void(0)" >
 						<h:outputText style = "font-size: 9pt;font-family: Verdana;" value="Add a Tournament" />
 					</h:outputLink>
-					<p:overlayPanel id="tournamentPanel" widgetVar="tpoverlay" for="addtournamentlink" hideEffect="fade" dynamic="false">  
+					<p:overlayPanel id="tournamentPanel" widgetVar="tpoverlay" for="addtournamentlink" hideEffect="fade" dynamic="true" style="width: 400px;">  
+				    	<p:messages id="tournamentmessages" escape="true" showDetail="false" autoUpdate="true" closable="true" />
 				    	<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" width="100%">
 							<h:column width="10%">Tournament Name:</h:column>
 							<h:column >
-								<p:inputText id="tourneyname" style="width:200px;" value="#{managerBean.tournamentname}" required="true"/>
+								<p:inputText id="tourneyname" style="width:200px;" value="#{managerBean.tournamentname}" required="true" requiredMessage="Tournament name is required"/>
 							</h:column>
 							<h:column width="10%">Level Playing:</h:column>
 							<h:column >
-								<p:inputText id="levelplaying" style="width:200px;" value="" required="true"/>
+								<p:inputText id="levelplaying" style="width:200px;" value="#{managerBean.levelplayed}" required="true" requiredMessage="Level your team is playing is required."/>
 							</h:column>
 							<h:column width="10%">Start Date:</h:column>
 							<h:column >
-								<p:inputText id="startdate" style="width:80px;" value="#{managerBean.startdate}" required="true"/> (MM/DD/YYYY)
+								<p:inputText id="startdate" style="width:80px;" value="#{managerBean.startdate}" required="true" requiredMessage="Tournament start date is required"/> (MM/DD/YYYY)
 							</h:column>
 							<h:column width="10%">End Date:</h:column>
 							<h:column >
-								<p:inputText id="enddate" style="width:80px;" value="#{managerBean.enddate}" required="true"/> (MM/DD/YYYY)
+								<p:inputText id="enddate" style="width:80px;" value="#{managerBean.enddate}" required="true" requiredMessage="Tournament end date is required"/> (MM/DD/YYYY)
 							</h:column>
 							<h:column width="10%">Contact:</h:column>
 							<h:column >
-								<p:inputText id="contact" style="width:200px;" value="#{managerBean.contact}" required="true"/>
+								<p:inputText id="contact" style="width:200px;" value="#{managerBean.contact}" required="false"/>
 							</h:column>
 							<h:column width="10%">Phone:</h:column>
 							<h:column >
-								<p:inputText id="contactphone" style="width:200px;" value="#{managerBean.phone}" required="true"/>
+								<p:inputText id="contactphone" style="width:200px;" value="#{managerBean.phone}" required="false"/>
 							</h:column>
 							<h:column width="10%">Sanction Number:</h:column>
 							<h:column >
-								<p:inputText id="sanctionnumber" style="width:200px;" value="#{managerBean.sanction}" required="true"/>
+								<p:inputText id="sanctionnumber" style="width:200px;" value="#{managerBean.sanction}" required="true" requiredMessage="Tournament Sanction Number is required"/>
 							</h:column>
 							<h:column width="10%">Location:</h:column>
 							<h:column >
-								<p:inputText id="location" style="width:200px;" value="#{managerBean.location}" required="true"/>
+								<p:inputText id="location" style="width:200px;" value="#{managerBean.location}" required="true" requiredMessage="Tournament location is required"/>
 							</h:column>
 							<h:column width="10%">Website:</h:column>
 							<h:column >
-								<p:inputText id="Website" style="width:200px;" value="#{managerBean.website}" />
+								<p:inputText id="Website" style="width:200px;" value="#{managerBean.website}" required="false"/>
+							</h:column>
+							<h:column >
+								<p:commandButton id="submittournament" update="tournaments,gametournament,tournamentmessages,tourneyname,levelplaying,startdate,enddate,contact,contactphone,sanctionnumber,location,Website" value="Add Tournament" ajax="true" actionListener="#{managerBean.addTournament()}" />
+							</h:column>
+							<h:column >
+								<p:commandButton id="closeaddtourney" value="Close" ajax="true" onclick="tpoverlay.hide();" />
 							</h:column>
 						</h:panelGrid>
-						<p:commandButton id="submittournament" update="tournaments,gametournament" value="Add Tournament" ajax="true" actionListener="#{managerBean.addTournament()}" oncomplete="tpoverlay.hide();"/>
 			    	</p:overlayPanel> 
 					<br></br>
 					<p:dataTable id="tournaments" var="tournament" value="#{managerBean.getTournamentdatamodel()}" selection="#{managerBean.selectedtournament}" rows="10" autoupdate="false">

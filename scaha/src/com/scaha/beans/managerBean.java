@@ -92,6 +92,7 @@ public class managerBean implements Serializable, MailableObject {
 	private String sanction;
 	private String location;
 	private String website;
+	private String levelplayed;
 	
 	//properties for adding tournament/exhibition games
 	private String gamedate=null;
@@ -202,6 +203,7 @@ public class managerBean implements Serializable, MailableObject {
 			myTokens.add("REQUESTINGTEAM:" + this.teamname);
 			myTokens.add("REQUESTDATE:" + this.todaysdate);
 			myTokens.add("TOURNAMENTNAME:" + this.tournamentname);
+			myTokens.add("LEVELPLAYED:" + this.levelplayed);
 			myTokens.add("STARTDATE:" + this.startdate);
 			myTokens.add("ENDDATE:" + this.enddate);
 			myTokens.add("CONTACT:" + this.contact);
@@ -287,6 +289,14 @@ public class managerBean implements Serializable, MailableObject {
     	opponent=gdate;
     }
     
+    
+    public String getLevelplayed(){
+    	return levelplayed;
+    }
+    
+    public void setLevelplayed(String name){
+    	levelplayed=name;
+    }
     
     public String getWebsite(){
     	return website;
@@ -780,9 +790,10 @@ public class managerBean implements Serializable, MailableObject {
     	
     	try{
     		//first get team name
-    		CallableStatement cs = db.prepareCall("CALL scaha.addTournamentForTeam(?,?,?,?,?,?,?,?,?)");
+    		CallableStatement cs = db.prepareCall("CALL scaha.addTournamentForTeam(?,?,?,?,?,?,?,?,?,?)");
 			cs.setInt("teamid", this.teamid);
 			cs.setString("newtournamentname", this.tournamentname);
+			cs.setString("newlevelplayed", this.levelplayed);
 			cs.setString("newstartdate", this.startdate);
 			cs.setString("newenddate", this.enddate);
 			cs.setString("newcontact", this.contact);
@@ -824,6 +835,20 @@ public class managerBean implements Serializable, MailableObject {
 			//set flag back to false;
 			this.addingtournament=false;
 			
+			//need to send successful message
+			FacesContext.getCurrentInstance().addMessage("tournamentmessages", new FacesMessage(FacesMessage.SEVERITY_INFO,this.tournamentname + " has been added for team: " + this.teamname, ""));
+			
+			//need to clear values from overlay form after done
+			this.tournamentname="";
+			this.levelplayed="";
+			this.startdate="";
+			this.enddate="";
+			this.contact="";
+			this.phone="";
+			this.sanction="";
+			this.location="";
+			this.website="";
+		    
 			
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
