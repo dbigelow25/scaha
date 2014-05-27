@@ -1,28 +1,22 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<ui:composition template="/WEB-INF/templates/layout.xhtml"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:pe="http://primefaces.org/ui/extensions">
-	
-<ui:define name="content">
-	
-<p:notificationBar position="top" effect="slide" widgetVar="bar" styleClass="top">  
-   	<h:outputText value="SCAHA" style="color:#FFCC00;font-size:36px;" />  
-</p:notificationBar>  
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:pe="http://primefaces.org/ui/extensions"
+>
 
-<div id="page-div">	
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+<ui:define name="content">
 
 	<h:form id="clubsmenu"  >
- 	<p:growl id="messages" showDetail="true"/> 
   	<pe:masterDetail id="masterDetail" > 
-  	
     <pe:masterDetailLevel level="1" levelLabel="2014 Club Tryouts" showAllBreadcrumbItems="true">  
-
   		<p:dataTable id="listofclubs" var="club" value="#{scahaBean.getScahaClubList()}" >
   			<p:column headerText="" />  
             <p:column >
@@ -55,7 +49,7 @@
             		<h:outputText style="font-size: 12px;" value="Coach" />
             	</f:facet>
             </p:column>
-            <p:subTable var="peep" value="#{club.getTryoutlist()}" tableStyle="width:auto">
+            <p:subTable id="tryout" var="peep" value="#{club.getTryoutlist()}" tableStyle="width:auto">
 	            <f:facet name="header">
 	            	<div style="float:left;vertical-align:middle;width:75px;font-size: 12px;">
 	            	<p:graphicImage id="logoimage1" value="#{clubBean.getClubLogoByParmId()}"  width="30" height="30" >
@@ -65,7 +59,13 @@
 	            	<div style=	"float:left;margin-top:15px;margin-left:10px;vertical-align:middle;width:300px;">
 	            		<h:outputText style="font-size: 12px;" value=" #{club.getClubname()}" />
 	            	</div>
-	            	<div style="float:right;margin-top:15px;margin-left:10px;text-align:right;vertical-align:middle;width:200px;font-size: 11px;">
+	            	<div style=	"float:right;margin-top:5px;margin-left:10px;vertical-align:middle;">
+	            		<p:commandButton rendered="false" id="lnk" update="@([id$=dialog])" action="#{clubBean.setClubViaParm()}" icon="ui-icon-print" oncomplete="PF('tryoutdlg').show()" >   
+	            		 	<f:setPropertyActionListener target="#{clubBean.clubid}" value="#{club.getClubID()}" /> 
+						</p:commandButton>
+					 	<p:tooltip for="lnk" value="Print The Tryout Information for the #{club.getClubname()}" showEvent="focus" hideEvent="blur"/>  
+	            	</div>
+	            	<div style="float:right;margin-top:15px;margin-left:10px;text-align:right;vertical-align:middle;font-size: 11px;">
 	            	  (<i><h:outputLink value="#{club.getWebSite()}">#{club.getWebSite()}</h:outputLink></i>)
    		       		</div>
         		</f:facet>
@@ -91,22 +91,56 @@
         	    <p:column headerText="Coach">
 					#{peep.getCoach()}
         	    </p:column>
-        	    
-        	    <f:facet name="footer">
-        	    	<div style="float:left;margin-top:15px;margin-left:10px;text-align:right;vertical-align:middle;width:200px;">
-	            	  (<i><h:outputLink value="#{club.getWebSite()}">#{club.getWebSite()}</h:outputLink></i>)
-   		      	</div>
-        		</f:facet>
-			</p:subTable>
+ 			</p:subTable>
    		</p:dataTable>
+   		
+	<p:dialog 
+		id="dialog" 
+		header="#{scahaBean.getScahaSeasonList().getCurrentSeason().getDescription()} Tryout Schedule For The #{clubBean.selectedclub.getClubname()} " 
+		widgetVar="tryoutdlg" resizable="false"  
+        width="800" 
+        height = "500" 
+        showEffect="clip" 
+        hideEffect="fold"
+        > 
+		
+		<div id = "right" style="float:right;vertical-align:middle;font-size: 12px;">
+	   		<p:commandButton id="toPrint" value="print" icon="ui-icon-print" ajax="true">
+    		  	 <p:printer target = "table" />
+	   		</p:commandButton>
+		</div>
+       	<div class="NewsTitle">	#{clubBean.selectedclub.getClubname()} Tryout Schedule: </div>
+   		<div class="NewsDate"> For The #{scahaBean.getScahaSeasonList().getCurrentSeason().getDescription()}</div>
+   		<p:dataTable  id="table" var="tryout" value="#{clubBean.selectedclub.getTryoutlist()}">
+   		   <f:facet name="header">  
+    	       #{scahaBean.getScahaSeasonList().getCurrentSeason().getDescription()} Tryout Schedule For The #{clubBean.selectedclub.getClubname()} 
+	        </f:facet>  
+            <p:column style="font-size: 12px;" headerText="Date">
+  	            #{tryout.getTryoutdate()}
+ 	            </p:column >
+           <p:column style="font-size: 12px;" headerText="Start">
+  	            #{tryout.getTryouttime()}
+      	    </p:column>
+           <p:column style="font-size: 12px;" headerText="Division">
+  	            #{tryout.getDivision()}
+      	    </p:column>
+           <p:column headerText="Level">
+			#{tryout.getLevel()}
+      	    </p:column>
+      	    <p:column headerText="Location">
+			#{tryout.getLocation()}
+			<h:outputText value="See our website for tryout times." rendered="#{tryout.getUsewebsite()}" />
+      	    </p:column>
+      	    <p:column headerText="Coach">
+			#{tryout.getCoach()}
+      	    </p:column>
+ 		</p:dataTable>
+	</p:dialog>
+   		
 	</pe:masterDetailLevel>
 	</pe:masterDetail>
-
-	
 	</h:form>
-<p:separator />
-</div>
-
-
+	
 </ui:define>
 </ui:composition>
+</html>

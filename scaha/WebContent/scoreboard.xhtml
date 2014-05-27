@@ -21,7 +21,23 @@
 	<p:layout id="layout" style="min-height:2000px;overflow:hidden !important;">
 	
 		<p:layoutUnit id="header" position="north" >
-			THIS IS WHERE THE CAROSEL GOES
+		    <p:carousel value="#{scahaBean.getScahaClubList()}" headerText="Highlighted Games" var="club" rows="7" circular= "true" autoPlayInterval="5000">
+    	   	 <h:panelGrid columns="3" style="width:100px" cellpadding="5" columnClasses="label,value" headerText="SCAHA Scoreboard">
+      				<p:graphicImage id="logoimage1" value="#{clubBean.getClubLogoByParmId()}"  width="20px" height = "20px" >
+	            		<f:param id = "target" name="target" value="#{club.getClubID()}" />
+					</p:graphicImage> 
+    	           <h:outputText value=" @ " />
+      				<p:graphicImage id="logoimage1" value="#{clubBean.getClubLogoByParmId()}"  width="20px" height = "20px" >
+	            		<f:param id = "target" name="target" value="#{club.getClubID()}" />
+					</p:graphicImage> 
+    	           <h:outputText value=" Away " />
+    	           <h:outputText value=" vs " />
+    	           <h:outputText value="Home"/>
+    	           <h:outputText value=" -- " />
+    	           <h:outputText value=" 10:OO PM " />
+    	           <h:outputText value=" -- " />
+       	 	</h:panelGrid>
+   		</p:carousel>
 		</p:layoutUnit>
  		<p:layoutUnit id="left" position="west" size="220" resizable="false" closable="false" collapsible="false" header="Scoreboard" >
 			<h:form id="rosterform">		

@@ -64,6 +64,7 @@ public class ClubBean implements Serializable,  MailableObject {
 	}
 
 	private int currentLevel = 1;
+	private int clubid = 0;
 	
 	private Club selectedclub = null;
 	private TeamList selectedTeamList = null;
@@ -203,9 +204,15 @@ public class ClubBean implements Serializable,  MailableObject {
 		String get = context.getExternalContext().getRequestParameterMap().get("target");
 	    if (get == null) {
     		return new DefaultStreamedContent();
+	    } else if (get.length() == 0) {
+    		return new DefaultStreamedContent();
 	    }
     	int id = Integer.parseInt(get);
 	    Club myclub  = scaha.findClubByID(id);
+	    if (myclub == null) {
+			LOGGER.info("*** Could not find club... for id LOGO ID IS (" + get + ") ");
+    		return new DefaultStreamedContent();
+	    }
 		return getClubLogo(myclub);
 	}
 
@@ -219,6 +226,12 @@ public class ClubBean implements Serializable,  MailableObject {
 		this.selectedclub = scaha.findClubByID(_id);
 		LOGGER.info((this.selectedclub == null ? "setClub found nothing in masterlist!" : "setting to club " + this.selectedclub.getClubname()));
 		return "";
+	}
+	
+	public void setClubViaParm() {
+		this.selectedclub = scaha.findClubByID(this.clubid);
+		LOGGER.info((this.selectedclub == null ? "setClub found nothing in masterlist!" : "setting to club " + this.selectedclub.getClubname()));
+	
 	}
 	
 	/**
@@ -517,6 +530,20 @@ public class ClubBean implements Serializable,  MailableObject {
 		
 		return Integer.toString(icount);
 		
+	}
+
+	/**
+	 * @return the clubid
+	 */
+	public int getClubid() {
+		return clubid;
+	}
+
+	/**
+	 * @param clubid the clubid to set
+	 */
+	public void setClubid(int clubid) {
+		this.clubid = clubid;
 	}
 	
 
