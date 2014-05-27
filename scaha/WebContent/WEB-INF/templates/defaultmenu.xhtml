@@ -46,7 +46,9 @@
 					</p:menuButton>
 					<p:spacer width="2px" />
 					<p:commandButton value="Score Board"
-						actionListener="#{scoreboardBean.buildIt}" ajax="false" />
+						actionListener="#{scoreboardBean.buildIt}"
+						ajax="false"
+						rendered="#{profileBean.isSuperUser()}" /> 
 					<p:spacer width="2px" />
 					
 				</p:toolbarGroup>
