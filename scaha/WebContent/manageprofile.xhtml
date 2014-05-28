@@ -65,7 +65,7 @@
             	<h:outputText style="font-size: 10pt;" value="#{profileBean.getDOB()}"/>
             	<h:outputText style="font-size: 10pt;" value="Phone Number:" />
             	<h:outputText style="font-size: 10pt;" value="#{profileBean.getPhoneNumber()}"/>
-            	<h:outputText style="font-size: 10pt;" value="Alt Email:" />
+            	<h:outputText style="font-size: 10pt;" value="Primary Email:" />
             	<h:outputText style="font-size: 10pt;" value="#{profileBean.getAltemail()}"/>
             	<h:outputText style="font-size: 10pt;" value="Address:" />
             	<h:outputText style="font-size: 10pt;" value="#{profileBean.getCompleteAddress()}" />
@@ -123,7 +123,7 @@
       				</p:selectOneMenu> 		
       				<p:message id="m_gender" closable="true" for="gender"/>			
 
-					<p:outputLabel style="font-size: 10pt;"  for="email" value="alternate eMail:"></p:outputLabel>
+					<p:outputLabel style="font-size: 10pt;"  for="email" value="Primary eMail:"></p:outputLabel>
 					<p:inputText id="email" style="width:200px;font-size:10pt;" value="#{profileBean.chgAltEmail}" />
 					<p:message id="m_email" closable="true" for="email"/>
 

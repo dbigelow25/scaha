@@ -29,6 +29,7 @@ import com.scaha.objects.Member;
 import com.scaha.objects.MemberList;
 import com.scaha.objects.Profile;
 import com.scaha.objects.ScahaTeam;
+import com.scaha.objects.Schedule;
 import com.scaha.objects.ScheduleList;
 import com.scaha.objects.TeamList;
 
@@ -56,13 +57,14 @@ public class ScahaBean implements Serializable,  MailableObject {
 	 @PostConstruct
 	 public void init() {
 		 
-		 LOGGER.info("ScahaBean PostConstruct Init: Logger level at:" + LOGGER.getLevel());
+		 LOGGER.info("******************* START: SCAHA BEAN INIT... ***********************");
+		 LOGGER.info("\t old level at:" + LOGGER.getLevel());
 		 LOGGER.setLevel(Level.ALL);
+		 LOGGER.info("\t new level at:" + LOGGER.getLevel());
 		 this.setDefaultProfile(new Profile());
 		 this.setExecutiveboard();
 		 this.refreshBean();
-
-		 
+		 LOGGER.info("******************* FINISH: SCAHA BEAN INIT... ***********************");
 	 }
 	 
 	 @PreDestroy
@@ -112,6 +114,20 @@ public class ScahaBean implements Serializable,  MailableObject {
 		db.free();
 	}
 	
+	public void refreshScheduleList() {
+		this.resetScheduleList();
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		try {
+			setScahaschedule(ScheduleList.ListFactory(this.DefaultProfile, db, this.getScahaSeasonList().getCurrentSeason()));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		db.free();
+		
+	}
+	
+	
 	
 
 	/**
@@ -150,6 +166,29 @@ public class ScahaBean implements Serializable,  MailableObject {
 			list.clear();
 		}
 			
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void resetScheduleList() {
+		if (this.scahaschedule != null) {
+			List<Schedule> list = (List<Schedule>) this.scahaschedule.getWrappedData();
+			for (Schedule c : list) {
+				// TODO
+//				ClubAdminList cal = c.getS;
+//				TeamList tl = c.getScahaTeams();
+//				if (cal != null) {
+//					List<ClubAdmin> lca = (List<ClubAdmin>) cal.getWrappedData();
+//					lca.clear();
+//				}
+//				if (tl != null) {
+//					List<ScahaTeam> lst = (List<ScahaTeam>) tl.getWrappedData();
+//					lst.clear();
+//				}
+			}
+			list.clear();
+		}
+		this.scahaschedule = null;
+		
 	}
 	
 	/**

@@ -21,23 +21,25 @@
 	<p:layout id="layout" style="min-height:2000px;overflow:hidden !important;">
 	
 		<p:layoutUnit id="header" position="north" >
-		    <p:carousel value="#{scahaBean.getScahaClubList()}" headerText="Highlighted Games" var="club" rows="7" circular= "true" autoPlayInterval="5000">
-    	   	 <h:panelGrid columns="3" style="width:100px" cellpadding="5" columnClasses="label,value" headerText="SCAHA Scoreboard">
+		
+		<div id="outer" style="width:100%">  
+    		<div id="centerit">
+			<p:carousel value="#{scahaBean.getScahaClubList()}" headerText="Highlighted Games" var="club" rows="7" circular= "true" autoPlayInterval="5000">
+    	   	 <h:panelGrid columns="3" style="width:100px;height:75px;" cellpadding="1" headerText="SCAHA Scoreboard">
       				<p:graphicImage id="logoimageaw" value="#{clubBean.getClubLogoByParmId()}"  width="20px" height = "20px" >
-	            		<f:param id = "target" name="target" value="#{club.getClubID()}" />
+	            		<f:param name="target" value="#{club.getClubID()}" />
 					</p:graphicImage> 
-    	           <h:outputText value=" @ " />
+    	           <h:outputText style="text-align:center;" value=" AT " />
       				<p:graphicImage id="logoimagehm" value="#{clubBean.getClubLogoByParmId()}"  width="20px" height = "20px" >
-	            		<f:param id = "target" name="target" value="#{club.getClubID()}" />
+	            		<f:param name="target" value="#{club.getClubID()}" />
 					</p:graphicImage> 
-    	           <h:outputText value=" Away " />
-    	           <h:outputText value=" vs " />
-    	           <h:outputText value="Home"/>
     	           <h:outputText value=" -- " />
     	           <h:outputText value=" 10:OO PM " />
     	           <h:outputText value=" -- " />
        	 	</h:panelGrid>
    		</p:carousel>
+   		</div>
+   		</div>
 		</p:layoutUnit>
  		<p:layoutUnit id="left" position="west" size="220" resizable="false" closable="false" collapsible="false" header="Scoreboard" >
 			<h:form id="rosterform">		
@@ -48,6 +50,17 @@
 		<p:layoutUnit id="center" position="center" >
 			<ui:fragment id="edit-transfers" >
 				<h:form id="scahagameform">
+					
+					<p:selectOneMenu styleClass="ddlistbox" id="season" value="#{scoreboardBean.season}">
+            			<f:selectItem style="font-size:10pt;" itemLabel="View a Season..." itemValue="" />
+            			<f:selectItems value="#{scoreboardBean.seasonlist}" />
+        			</p:selectOneMenu>				
+		
+					<p:selectOneMenu styleClass="ddlistbox"  id="schedule" value="#{scoreboardBean.schedule}">
+            			<f:selectItem style="font-size:10pt;" itemLabel="View a Schedule..." itemValue="" />
+            			<f:selectItems  value="#{scoreboardBean.schedlist}" />
+        			</p:selectOneMenu>				
+		
 					<p:panel id ="panel" header="SCAHA GAMES">
 					<p:messages id="scahagamesmessages" escape="true" showDetail="true" autoUpdate="true" closable="false" />
 					<p:dataTable id="scahagames" var="TempGame" value="#{managerBean.getTempGamedatamodel()}" selection="#{managerBean.selectedgame}" selectionMode="single" paginator="true" rows="10" autoupdate="false">

@@ -14,6 +14,8 @@
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
 <ui:define name="content">
 	
+	<div class="NewsTitle">#{scahaBean.getScahaSeasonList().getCurrentSeason().getDescription()} Master Tryout Schedule: </div>
+   	<p/>
 	<h:form id="form"  >
     	<p:dataTable id="listofclubs" var="club" value="#{scahaBean.getScahaClubList()}" >
   			<p:column headerText="" />  
@@ -109,32 +111,33 @@
 	   		</p:commandButton>
 		</div>
 		<p:panel id="update" style="margin-bottom:5px">
-		<p:graphicImage id="up1" value="#{clubBean.getClubLogoByParmId()}"  width="45" height="45" >
-        	<f:param id = "target" name="target" value="#{clubBean.selectedclub.getClubID()}" />
-		</p:graphicImage>
+		
+		<p:graphicImage id="logoimage2" value="#{clubBean.getClubLogo()}" cache="false" width="60">
+ 			<f:param name="aaa" value="#{scahaBean.getDate()}"/>
+ 		</p:graphicImage> 
        	<div id="up2" class="NewsTitle">#{clubBean.selectedclub.getClubname()} Tryout Schedule: </div>
    		<div class="NewsDate"> For The #{scahaBean.getScahaSeasonList().getCurrentSeason().getDescription()}</div>
    		<p:dataTable  id="table" var="tryout" value="#{clubBean.selectedclub.getTryoutlist()}">
    		   <f:facet name="header">  
     	       #{scahaBean.getScahaSeasonList().getCurrentSeason().getDescription()} Tryout Schedule For The #{clubBean.selectedclub.getClubname()} 
 	        </f:facet>  
-           <p:column style="font-size: 10pt;" headerText="Date">
+           <p:column style="font-size:9pt;" headerText="Date">
   	           		<h:outputText style="font-size:9pt;" value="#{tryout.getTryoutdate()}" />
  	       </p:column >
-           <p:column style="font-size: 10pt;" headerText="Start">
+           <p:column style="font-size:9pt;" headerText="Start">
   			<h:outputText style="font-size:9pt;" value="#{tryout.getTryouttime()}" />
       	    </p:column>
-           <p:column headerText="Division">
+           <p:column style="font-size:9pt;" headerText="Division">
 			<h:outputText style="font-size:9pt;" value="#{tryout.getDivision()}" />
       	    </p:column>
-           <p:column headerText="Level">
+           <p:column style="font-size:9pt;" headerText="Level">
 			<h:outputText style="font-size:9pt;" value="#{tryout.getLevel()} " />
       	    </p:column>
-      	    <p:column headerText="Location">
+      	    <p:column style="font-size:9pt;" headerText="Location">
 			<h:outputText style="font-size:9pt;" value="#{tryout.getLocation()}" />
 			<h:outputText style="font-size:9pt;" value="See our website for tryout times." rendered="#{tryout.getUsewebsite()}" />
       	    </p:column>
-      	    <p:column headerText="Coach">
+      	    <p:column style="font-size:9pt;" headerText="Coach">
 			<h:outputText style="font-size:9pt;" value="#{tryout.getCoach()}" />
       	    </p:column>
  		</p:dataTable>
