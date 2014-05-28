@@ -1136,8 +1136,19 @@ public class managerBean implements Serializable, MailableObject {
 			//set flag back to false;
 			this.addingtournamentgame=false;
 			
+			//need to clear overlay panel values
+			this.selectedtournamentforgame="0";
+			this.gamedate="";
+			this.gametime="";
+			this.opponent="";
+			this.tourneygamelocation="";
+			
+			
+			
 			getTournamentGames();
 			
+			//need to send successful message
+			FacesContext.getCurrentInstance().addMessage("tournamentgamemessages", new FacesMessage(FacesMessage.SEVERITY_INFO,this.tournamentname + "game has been added for team: " + this.teamname, ""));
 			
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
@@ -1248,6 +1259,14 @@ public class managerBean implements Serializable, MailableObject {
 			//set flag back to false;
 			this.addingexhibitiongame=false;
 			
+			//need to send successful message
+			FacesContext.getCurrentInstance().addMessage("exhibitiongamemessages", new FacesMessage(FacesMessage.SEVERITY_INFO,"The exhibition game against " + this.opponent + " has been added for team: " + this.teamname, ""));
+			
+			//need to clear fields for overlay panel
+			this.gamedate="";
+			this.gametime="";
+			this.opponent="";
+			this.exhibitiongamelocation="";
 			
 			
 			getExhibitionGames();
