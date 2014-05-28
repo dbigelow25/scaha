@@ -170,7 +170,7 @@ public class MultiMedia extends ScahaObject implements Serializable {
 	}
 	
 	public StreamedContent getStreamedContent() {
-		 if (this.mmObject == null) return new DefaultStreamedContent();  // Nothing to stream
+		 if (this.mmObject == null) return new DefaultStreamedContent();  
 		 return new DefaultStreamedContent(new ByteArrayInputStream(this.mmObject),this.getExtension());
 	}
 	

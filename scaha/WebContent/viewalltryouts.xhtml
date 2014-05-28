@@ -13,11 +13,9 @@
 
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
 <ui:define name="content">
-
-	<h:form id="clubsmenu"  >
-  	<pe:masterDetail id="masterDetail" > 
-    <pe:masterDetailLevel level="1" levelLabel="2014 Club Tryouts" showAllBreadcrumbItems="true">  
-  		<p:dataTable id="listofclubs" var="club" value="#{scahaBean.getScahaClubList()}" >
+	
+	<h:form id="form"  >
+    	<p:dataTable id="listofclubs" var="club" value="#{scahaBean.getScahaClubList()}" >
   			<p:column headerText="" />  
             <p:column >
             	<f:facet name="header">
@@ -60,7 +58,7 @@
 	            		<h:outputText style="font-size: 12px;" value=" #{club.getClubname()}" />
 	            	</div>
 	            	<div style=	"float:right;margin-top:5px;margin-left:10px;vertical-align:middle;">
-	            		<p:commandButton rendered="false" id="lnk" update="@([id$=dialog])" action="#{clubBean.setClubViaParm()}" icon="ui-icon-print" oncomplete="PF('tryoutdlg').show()" >   
+	            		<p:commandButton id="lnk" update=":form:update" action="#{clubBean.setClubViaParm()}" icon="ui-icon-print" oncomplete="PF('tryoutdlg').show()" >   
 	            		 	<f:setPropertyActionListener target="#{clubBean.clubid}" value="#{club.getClubID()}" /> 
 						</p:commandButton>
 					 	<p:tooltip for="lnk" value="Print The Tryout Information for the #{club.getClubname()}" showEvent="focus" hideEvent="blur"/>  
@@ -93,52 +91,55 @@
         	    </p:column>
  			</p:subTable>
    		</p:dataTable>
-   		
-	<p:dialog 
-		id="dialog" 
-		header="#{scahaBean.getScahaSeasonList().getCurrentSeason().getDescription()} Tryout Schedule For The #{clubBean.selectedclub.getClubname()} " 
-		widgetVar="tryoutdlg" resizable="false"  
-        width="800" 
-        height = "500" 
-        showEffect="clip" 
-        hideEffect="fold"
-        > 
+		<p:dialog 
+			id="dialog" 
+			header="#{scahaBean.getScahaSeasonList().getCurrentSeason().getDescription()} Tryout Schedule For The #{clubBean.selectedclub.getClubname()} " 
+			widgetVar="tryoutdlg" 
+			resizable="false"  
+	        width="900px" 
+	        height = "600px" 
+	        showEffect="clip" 
+	        hideEffect="fold"
+	       
+	    > 
 		
 		<div id = "right" style="float:right;vertical-align:middle;font-size: 12px;">
 	   		<p:commandButton id="toPrint" value="print" icon="ui-icon-print" ajax="true">
-    		  	 <p:printer target = "table" />
+    		  	 <p:printer  target = "update" />
 	   		</p:commandButton>
 		</div>
-       	<div class="NewsTitle">	#{clubBean.selectedclub.getClubname()} Tryout Schedule: </div>
+		<p:panel id="update" style="margin-bottom:5px">
+		<p:graphicImage id="up1" value="#{clubBean.getClubLogoByParmId()}"  width="45" height="45" >
+        	<f:param id = "target" name="target" value="#{clubBean.selectedclub.getClubID()}" />
+		</p:graphicImage>
+       	<div id="up2" class="NewsTitle">#{clubBean.selectedclub.getClubname()} Tryout Schedule: </div>
    		<div class="NewsDate"> For The #{scahaBean.getScahaSeasonList().getCurrentSeason().getDescription()}</div>
    		<p:dataTable  id="table" var="tryout" value="#{clubBean.selectedclub.getTryoutlist()}">
    		   <f:facet name="header">  
     	       #{scahaBean.getScahaSeasonList().getCurrentSeason().getDescription()} Tryout Schedule For The #{clubBean.selectedclub.getClubname()} 
 	        </f:facet>  
-            <p:column style="font-size: 12px;" headerText="Date">
-  	            #{tryout.getTryoutdate()}
- 	            </p:column >
-           <p:column style="font-size: 12px;" headerText="Start">
-  	            #{tryout.getTryouttime()}
+           <p:column style="font-size: 10pt;" headerText="Date">
+  	           		<h:outputText style="font-size:9pt;" value="#{tryout.getTryoutdate()}" />
+ 	       </p:column >
+           <p:column style="font-size: 10pt;" headerText="Start">
+  			<h:outputText style="font-size:9pt;" value="#{tryout.getTryouttime()}" />
       	    </p:column>
-           <p:column style="font-size: 12px;" headerText="Division">
-  	            #{tryout.getDivision()}
+           <p:column headerText="Division">
+			<h:outputText style="font-size:9pt;" value="#{tryout.getDivision()}" />
       	    </p:column>
            <p:column headerText="Level">
-			#{tryout.getLevel()}
+			<h:outputText style="font-size:9pt;" value="#{tryout.getLevel()} " />
       	    </p:column>
       	    <p:column headerText="Location">
-			#{tryout.getLocation()}
-			<h:outputText value="See our website for tryout times." rendered="#{tryout.getUsewebsite()}" />
+			<h:outputText style="font-size:9pt;" value="#{tryout.getLocation()}" />
+			<h:outputText style="font-size:9pt;" value="See our website for tryout times." rendered="#{tryout.getUsewebsite()}" />
       	    </p:column>
       	    <p:column headerText="Coach">
-			#{tryout.getCoach()}
+			<h:outputText style="font-size:9pt;" value="#{tryout.getCoach()}" />
       	    </p:column>
  		</p:dataTable>
+ 		</p:panel>
 	</p:dialog>
-   		
-	</pe:masterDetailLevel>
-	</pe:masterDetail>
 	</h:form>
 	
 </ui:define>

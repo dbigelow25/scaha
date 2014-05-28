@@ -194,7 +194,7 @@ public class ClubBean implements Serializable,  MailableObject {
 				e.printStackTrace();
 			}  
             
-            return null;
+			return new DefaultStreamedContent();
 
 		}
 	}
@@ -213,6 +213,8 @@ public class ClubBean implements Serializable,  MailableObject {
 			LOGGER.info("*** Could not find club... for id LOGO ID IS (" + get + ") ");
     		return new DefaultStreamedContent();
 	    }
+	    
+	    LOGGER.info("*** club is...("+ myclub + ") for id LOGO ID IS (" + get + ") ");
 		return getClubLogo(myclub);
 	}
 
