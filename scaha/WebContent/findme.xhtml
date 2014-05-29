@@ -46,10 +46,10 @@
 			<p:column headerText="Acount Owner Name">  
 				<h:outputText value="#{rdr.getByKey('Acount Owner Name')}" />  
 			</p:column>  
-			<p:column headerText="Street Address">  
+<!-- 		<p:column headerText="Street Address">  
 				<h:outputText value="#{rdr.get(7)}" />  
 			</p:column>  
-
+ -->
 			<p:column style="width:4%">
                 <p:commandButton id="selectButton" update=":form:display" oncomplete="PF('me').show()" icon="ui-icon-search" title="View">
                 <f:setPropertyActionListener value="#{rdr}" target="#{findMeBean.selectedrow}" />
@@ -65,9 +65,9 @@
             <h:outputText value="#{findMeBean.selectedrow.getByKey('Acount Owner Name')}" style="font-weight:bold"/>
             <h:outputText value="Searched Name" />
             <h:outputText value="#{findMeBean.selectedrow.get(6)}" style="font-weight:bold"/>
-            <h:outputText value="Street Address:" />
+<!--             <h:outputText value="Street Address:" />
             <h:outputText value="#{findMeBean.selectedrow.get(7)}" style="font-weight:bold"/>
-            <h:outputText value="e-mail address:" />
+ -->            <h:outputText value="e-mail address:" />
             <h:outputText value="#{findMeBean.selectedrow.get(13)}" style="font-weight:bold"/>
         </h:panelGrid>
  
