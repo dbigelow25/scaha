@@ -35,10 +35,11 @@
 					<h:column><b>Display Loi's:</b></h:column>
 					<h:column>
 						<p:selectOneMenu value="#{reviewloiBean.selectedtabledisplay}" >
-					    	<f:selectItem itemLabel="For Today" itemValue="1"/>
+					    	<f:selectItem itemLabel="Awaiting Confirmation" itemValue="1"/>
 					    	<f:selectItem itemLabel="Missing Birthcertificate" itemValue="2"/>
 					    	<f:selectItem itemLabel="Missing Transfer" itemValue="3"/>
 					    	<f:selectItem itemLabel="For Club" itemValue="4"/>
+					    	<f:selectItem itemLabel="All LOIs" itemValue="5"/>
 					    </p:selectOneMenu>
 					</h:column>
 					<h:column><b>Club (only applies to "For Club" search):</b></h:column>

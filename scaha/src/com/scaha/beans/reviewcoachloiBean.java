@@ -119,8 +119,13 @@ public class reviewcoachloiBean implements Serializable {
     				CallableStatement cs = db.prepareCall("CALL scaha.getCoachLoiByClub(?)");
 	    			cs.setInt("clubid", Integer.parseInt(this.selectedclub));
     				rs = cs.executeQuery();
-    			}
-    		    
+    			} else if (selectedtabledisplay.equals("5")){
+					CallableStatement cs = db.prepareCall("CALL scaha.getAllCoachLoi()");
+	    			rs = cs.executeQuery();
+				}
+		    
+    			
+    			
     			if (rs != null){
     				
     				while (rs.next()) {
