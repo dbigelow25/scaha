@@ -44,35 +44,89 @@
 					</h:column>
 				</h:panelGrid>
 				<br></br>
+				<p:panel header="Export LOI Options">
+			        <h:commandLink>
+			            <p:graphicImage value="/images/excel.png" />
+			            <p:dataExporter type="xls" target="listofplayers" fileName="loilist" />
+			        </h:commandLink>
+			 
+			        <h:commandLink>
+			            <p:graphicImage value="/images/pdf.png" />
+			            <p:dataExporter type="pdf" target="listofplayers" fileName="loilist"/>
+			        </h:commandLink>
+			         
+			    </p:panel>
+	    
 				<p:dataTable id="listofplayers" var="player" rowKey="#{player.IDplayer}" value="#{registrarloiBean.getPlayerdatamodel()}" selection="#{registrarloiBean.selectedplayer}" paginator="true" rows="10" autoupdate="false">
                 	<!--  <p:column headerText="Player ID">  
 			            <h:outputText value="#{player.getIdplayer()}" />  
 			        </p:column>-->  
-			        <p:column headerText="First Name">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="First Name" />
+				        </f:facet>
 			            <h:outputText value="#{player.getFirstname()}" />  
 			        </p:column>  
-			        <p:column headerText="Last Name">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="Last Name" />
+				        </f:facet>
 			            <h:outputText value="#{player.getLastname()}" />  
 			        </p:column>  
-			        <p:column headerText="2014 Team">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="2014 Team" />
+				        </f:facet>
+			            
 			            <h:outputText value="#{player.getCurrentteam()}" />  
 			        </p:column>
-			        <p:column headerText="2013 Team">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="2013 Team" />
+				        </f:facet>
+			            
 			            <h:outputText value="#{player.getPreviousteam()}" />  
 			        </p:column>
-			        <p:column headerText="DOB">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="DOB" />
+				        </f:facet>
+			            
 			            <h:outputText value="#{player.getDob()}" />  
 			        </p:column>
-			        <p:column headerText="Player Up">  
+			        <p:column >
+			        	<f:facet name="header">
+		            		<h:outputText value="Player Up" />
+				        </f:facet>
+			              
 			            <h:outputText value="#{player.getPlayerup()}" />  
 			        </p:column>
-			        <p:column headerText="LOI Date">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="LOI Date" />
+				        </f:facet>
+			            
 			            <h:outputText value="#{player.getLoidate()}" />  
 			        </p:column>
-			        <p:column headerText="Citizenship">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="USA Mem #" />
+				        </f:facet>
+			            
+			            <h:outputText value="#{player.getUsamembership()}" />  
+			        </p:column>
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="Citizenship" />
+				        </f:facet>
+			            
 			            <h:outputText value="#{player.citizenshiplabel}" rendered="#{player.ctverified}" />  
 			        </p:column>
-			        <p:column headerText="Birth Cert.">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="Bith Cert." />
+				        </f:facet>
+			            
 			            <h:outputText value="#{player.birthcertificate}" />  
 			        </p:column>
 			        <p:column headerText="Option" >  
@@ -83,7 +137,8 @@
 			    </p:dataTable>
 			</p:panel>
 			
-			<p:separator id="customSeparator" style="width:800px;height:2px" />    
+			<p:separator id="customSeparator" style="width:800px;height:2px" />
+			
 	</h:form>
 	<h:form>
 			<div align="center"><p:commandButton id="closeaddteams" value="Close" ajax="false" actionListener="#{registrarloiBean.closePage()}"/></div>

@@ -155,6 +155,7 @@ public class registrarloiBean implements Serializable {
         				}
         				String sdob = rs.getString("dob");
         				String sloidate = rs.getString("loidate");
+        				String susamember = rs.getString("usamembership");
         				String scitizenship = rs.getString("citizenship");
         				String scitizenshipexpiredate = rs.getString("citizenshipexpiredate");
         				String scitizenshiptransfer = rs.getString("citizenshiptransfer");
@@ -202,6 +203,7 @@ public class registrarloiBean implements Serializable {
         				oplayer.setBirthcertificate(sbirthcertificate);
         				oplayer.setBcverified(sbirthcertificate);
         				oplayer.setLoidate(sloidate);
+        				oplayer.setUsamembership(susamember);
         				oplayer.setPlayerup(IsPlayerup(splayerup));
         				tempresult.add(oplayer);
     				}

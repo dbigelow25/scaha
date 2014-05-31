@@ -26,55 +26,125 @@
 	</p:notificationBar>  
   	<h:form>
 			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+			<p:panel header="Export LOI Options">
+		        <h:commandLink>
+		            <p:graphicImage value="/images/excel.png" />
+		            <p:dataExporter type="xls" target="listofcoaches" fileName="loicoacheslist" />
+		        </h:commandLink>
+		 
+		        <h:commandLink>
+		            <p:graphicImage value="/images/pdf.png" />
+		            <p:dataExporter type="pdf" target="listofcoaches" fileName="loicoacheslist"/>
+		        </h:commandLink>
+		         
+		    </p:panel>
 			<p:panel id ="panel" header="View Coach/Manager Loi's:">
 				<br></br>
 				<p:dataTable id="listofcoaches" var="coach" rowKey="#{coach.IDcoach}" value="#{registrarcoachloiBean.getCoachdatamodel()}" selection="#{registrarcoachloiBean.selectedcoach}" paginator="true" rows="10" autoupdate="false">
                 	<!--  <p:column headerText="Player ID">  
 			            <h:outputText value="#{player.getIdplayer()}" />  
 			        </p:column>-->  
-			        <p:column headerText="First Name" filterBy="firstname" filterMatchMode="contains" filterStyle="width:50px">  
+			        <p:column filterBy="firstname" filterMatchMode="contains" filterStyle="width:50px">  
+			            <f:facet name="header">
+		            		<h:outputText value="First Name" />
+				        </f:facet>
 			            <h:outputText value="#{coach.getFirstname()}" />  
 			        </p:column>  
-			        <p:column headerText="Last Name" filterBy="lastname" filterMatchMode="contains" filterStyle="width:50px">  
+			        <p:column  filterBy="lastname" filterMatchMode="contains" filterStyle="width:50px">  
+			            <f:facet name="header">
+		            		<h:outputText value="Last Name" />
+				        </f:facet>
 			            <h:outputText value="#{coach.getLastname()}" />  
 			        </p:column>  
-			        <p:column headerText="2014 Team">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="2014 Team" />
+				        </f:facet>
 			            <h:outputText value="#{coach.getTeamname()}" />  
 			        </p:column>
-			        <p:column headerText="LOI Date">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="LOI Date" />
+				        </f:facet>
 			            <h:outputText value="#{coach.getLoidate()}" />  
 			        </p:column>
-			        <p:column headerText="Safesport">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="USA Mem #" />
+				        </f:facet>
+			            
+			            <h:outputText value="#{coach.getUsamembership()}" />  
+			        </p:column>
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="Safesport" />
+				        </f:facet>
 			            <h:outputText value="#{coach.getSafesport()}" />  
 			        </p:column>
-			        <p:column headerText="Screening Expires">  
+			        <p:column >
+			        	<f:facet name="header">
+		            		<h:outputText value="Screening Expires" />
+				        </f:facet>
 			            <h:outputText value="#{coach.getScreeningexpires()}" />  
 			        </p:column>
-			        <p:column headerText="CEP Number">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="CEP Number" />
+				        </f:facet>
 			            <h:outputText value="#{coach.getCepnumber()}" />  
 			        </p:column>
-			        <p:column headerText="CEP Level">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="CEP Level" />
+				        </f:facet>
 			            <h:outputText value="#{coach.getCeplevel()}" />  
 			        </p:column>
-			        <p:column headerText="CEP Expires">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="CEP Expires" />
+				        </f:facet>
+			            
 			            <h:outputText value="#{coach.getCepexpires()}" />  
 			        </p:column>
-			        <p:column headerText="8U">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="8U" />
+				        </f:facet>
+			            
 			            <h:outputText value="#{coach.getU8()}" />  
 			        </p:column>
-			        <p:column headerText="10U">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="10U" />
+				        </f:facet>
 			            <h:outputText value="#{coach.getU10()}" />  
 			        </p:column>
-			        <p:column headerText="12U">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="12U" />
+				        </f:facet>
+			            
 			            <h:outputText value="#{coach.getU12()}" />  
 			        </p:column>
-			        <p:column headerText="14U">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="14U" />
+				        </f:facet>
+			            
 			            <h:outputText value="#{coach.getU14()}" />  
 			        </p:column>
-			        <p:column headerText="18U">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="18U" />
+				        </f:facet>
+			            
 			            <h:outputText value="#{coach.getU18()}" />  
 			        </p:column>
-			        <p:column headerText="Girls">  
+			        <p:column >  
+			            <f:facet name="header">
+		            		<h:outputText value="Girls" />
+				        </f:facet>
+			            
 			            <h:outputText value="#{coach.getGirls()}" />  
 			        </p:column>
 			        <p:column headerText="Option" >  
@@ -85,7 +155,9 @@
 			    </p:dataTable>
 			</p:panel>
 			
-			<p:separator id="customSeparator" style="width:800px;height:2px" />    
+			<p:separator id="customSeparator" style="width:800px;height:2px" />
+			
+	        
 	</h:form>
 	<h:form>
 			<div align="center"><p:commandButton id="closeaddteams" value="Close" ajax="false" actionListener="#{registrarcoachloiBean.closePage()}"/></div>

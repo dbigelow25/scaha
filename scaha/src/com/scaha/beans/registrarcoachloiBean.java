@@ -148,6 +148,7 @@ public class registrarcoachloiBean implements Serializable {
     				String slastname = rs.getString("lname");
     				String steam = rs.getString("teamname");
     				String sloidate = rs.getString("loidate");
+    				String susamember = rs.getString("usamembership");
     				String screeningexpires = rs.getString("screeningexpires");
     				String cepnumber = rs.getString("cepnumber");
     				String ceplevel = rs.getString("ceplevel");
@@ -165,6 +166,7 @@ public class registrarcoachloiBean implements Serializable {
     				ocoach.setFirstname(sfirstname);
     				ocoach.setLastname(slastname);
     				ocoach.setLoidate(sloidate);
+    				ocoach.setUsamembership(susamember);
     				ocoach.setTeamname(steam);
     				ocoach.setScreeningexpires(screeningexpires);
     				ocoach.setCepnumber(cepnumber);

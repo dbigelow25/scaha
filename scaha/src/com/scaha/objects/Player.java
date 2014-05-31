@@ -42,9 +42,18 @@ public class Player extends ScahaObject implements Serializable {
 	private String jerseynumber = null;
 	private String confirmed = null;
 	private String rosterid = null;
+	private String usamembership = null;
 	
 	public Player (){ 
 		
+	}
+	
+	public String getUsamembership(){
+		return usamembership;
+	}
+	
+	public void setUsamembership(String value){
+		usamembership=value;
 	}
 	
 	public String getRosterid(){
