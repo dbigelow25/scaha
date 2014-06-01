@@ -137,6 +137,24 @@
 						 
 					</p:menuButton>
 				</p:toolbarGroup>
+				<p:toolbarGroup align="left" rendered="#{profileBean.hasRoleList('C-REG')}">
+					<p:menuButton id="cregistrars" style="width:125px;" value="Registrar Support" type="button">
+						<p:menuitem style="font-size: 10pt;width:225px;"
+							icon="ui-icon-arrowthickstop-1-s"
+							value="Training Video"
+							url="downloads/ISCAHA_Registrar_Training.wmv"
+							rendered="#{profileBean.hasRoleList('C-REG')}"
+							target="_blank"
+							/>
+						<p:menuitem style="font-size: 10pt;width:225px;"
+							icon="ui-icon-arrowthickstop-1-s"
+							value="Authorization Form"
+							url="downloads/SCAHA_LOI_AUTHORIZATION.docx"
+							rendered="#{profileBean.hasRoleList('C-REG')}"
+							target="_blank"
+							/>
+					</p:menuButton>
+				</p:toolbarGroup>
 				<p:toolbarGroup align="right"
 					rendered="#{not empty profileBean.getProfile()}">
 					<h:outputText value="Welcome #{profileBean.getNickName()}"></h:outputText>
