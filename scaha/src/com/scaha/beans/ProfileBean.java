@@ -11,6 +11,7 @@ import com.scaha.objects.Profile;
 import com.scaha.objects.Role;
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -1050,6 +1051,39 @@ public void setChgUserName(String chgUserName) {
 	this.chgUserName = chgUserName;
 }
 
+
+/**
+ * getClubID - This returns the main club you are assoicated with..
+ * 
+ * @return
+ */
+public int getClubID(){
+	
+	//first lets get club id for the logged in profile
+	int idClub = 0;
+	if (this.getProfile() != null) {
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		try{
+			
+			db.getData("CALL scaha.getClubforPerson(" + this.getProfile().ID + ")");
+			ResultSet rs = db.getResultSet();
+			if (rs.next()) {
+				idClub = rs.getInt("idclub");
+			}
+			rs.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("ERROR IN loading club by profile");
+			e.printStackTrace();
+		} finally {
+			db.free();
+		}
+	
+	}
+	
+	return idClub;
+
+}
 private void buildMailBody(String _strMailBody, Person per) {
 	
 	List<String> myTokens = new ArrayList<String>();
