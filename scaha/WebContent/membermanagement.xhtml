@@ -44,56 +44,66 @@
     <p:menuitem value="Change Password" url="changepassword.xhtml"/>  
 
 </p:tabMenu>  
-<h:form id="form">
 <p/>
+<h:form id="form">
+<p:messages id = "messages" showDetail="true"/>
+
 <div class="NewsTitle">#{profileBean.getProfile().getPerson().getFam().getFamilyName()} </div>
  	<p/>
 	<p:fieldset id="fs1" style="font-size:10pt;" toggleable="false" toggleSpeed="500">  
  		The following members tree up under your account.  The only way to add more members is through first registering them through 
    		<a target="_Window" href="https://www.usahockeyregistration.com/register_form_input.action">USA Hockey Registration.</a>
-   		Please fill in all the information accurately on their site because we will re-use all of it.. including the contact information for our base on data.
+   		Please fill in all the information accurately on the USA Hockey site because we will re-use all of it.. including the contact information. <p/>
+   		If you want to resend your confirmation information for the member.. simply RIGHT CLICK on the row and select Resend Confirmation.  It will be sent to your e-mail.
     </p:fieldset>  
 	<p/>
-   	<p:fieldset id="fs2" toggleable="false" toggleSpeed="500">  	      
-	<p:dataTable id="familymembers" var="familymember" value="#{profileBean.getFamilyMembers()}" selectionMode = "single" selection = "#{familymemberBean.currentFM}">  
-        <p:column style="font-size:10pt;" headerText="Name"><h:outputText style="font-size:10pt;" value="#{familymember.getsFirstName()} #{familymember.getsLastName()}" /></p:column>  
-		<p:column style="font-size:10pt;" headerText="Relationship"><h:outputText style="font-size:10pt;" value="#{familymember.getRelationship()}" /></p:column>		
-		<p:column style="font-size:10pt;" headerText="DOB."><h:outputText style="font-size:10pt;" value="#{familymember.getDob()}" /></p:column>  
-  		<p:column style="font-size:10pt;" headerText="CMPs"><h:outputText style="font-size:10pt;" value="#{familymember.getMembertypes()}" /></p:column>  
-  		<p:column style="font-size:10pt;" headerText="#{profileBean.getCurrentUSAHockeySeason()}"><p:outputLabel style="font-size:12pt;font-family:monospace;!important" value="#{familymember.getUsaHockeyNumber()}" /></p:column>  
-		<p:column style="font-size:10pt;" headerText="#{profileBean.getCurrentSCAHAHockeySeason()}"><p:outputLabel style="font-size:12pt;font-family:monospace;!important" value="#{familymember.getScahaHockeyNumber()}" /></p:column>  
-   		 <f:facet name="footer">  
-            <p:commandButton id="viewButton" value="View" icon="ui-icon-search"  
-                    update=":form:display" oncomplete="PF('memDialog').show()"/>  
-        </f:facet>  
-  
+   	<p:fieldset id="fs2" toggleable="false" toggleSpeed="500"> 
+   	 
+   	<p:contextMenu for="familymembers">  
+   	 	<p:menuitem id="viewButton" style="font-size:9pt;" value="View Detail" icon="ui-icon-search" update=":form:display,familymembers" oncomplete="PF('memDialog').show()"/>  
+        <p:menuitem value="Resend Confirmation" style="font-size:9pt;" update=":form:messages,familymembers" icon="ui-icon-search" actionListener="#{familymemberBean.resendMemberReceipt}"/>  
+    </p:contextMenu>  
+		      
+	<p:dataTable 
+		id="familymembers" 
+		var="familymember" 
+		value="#{profileBean.getFamilyMembers()}" 
+		selectionMode = "single" 
+		selection = "#{familymemberBean.currentFM}"
+		>  
+        <p:column style="font-size:10pt;width:150px;" headerText="Name"><h:outputText style="font-size:10pt;" value="#{familymember.getsFirstName()} #{familymember.getsLastName()}" /></p:column>  
+		<p:column style="font-size:10pt;width:150px;" headerText="Relationship"><h:outputText style="font-size:10pt;" value="#{familymember.getRelationship()}" /></p:column>		
+		<p:column style="font-size:10pt;width:100px;" headerText="DOB."><h:outputText style="font-size:10pt;" value="#{familymember.getDob()}" /></p:column>  
+  		<p:column style="font-size:10pt;width:100px;" headerText="CMPs"><h:outputText style="font-size:10pt;" value="#{familymember.getMembertypes()}" /></p:column>  
+  		<p:column style="font-size:10pt;width:150px;" headerText="#{profileBean.getCurrentUSAHockeySeason()}"><p:outputLabel style="font-size:12pt;font-family:monospace;!important" value="#{familymember.getUsaHockeyNumber()}" /></p:column>  
+		<p:column style="font-size:10pt;width:150px;" headerText="#{profileBean.getCurrentSCAHAHockeySeason()}"><p:outputLabel style="font-size:12pt;font-family:monospace;!important" value="#{familymember.getScahaHockeyNumber()}" /></p:column>  
+   
     </p:dataTable>  
   
     <p:dialog id="dialog" header="Member Detail for the #{scahaBean.getScahaSeasonList().getCurrentSeason().getDescription()} " widgetVar="memDialog" resizable="false"  
-              width="500" height = "500" showEffect="clip" hideEffect="fold">  
+              width="500" height = "500" showEffect="clip" hideEffect="fold" >  
   
   		<p:commandButton id="toPrint" value="Print" ajax="true" >
     	    <p:printer target="display" />
 	    </p:commandButton>
-		<p:spacer width="20px" />
-  		<p:commandButton id="e-mail" value="Send Reg Info" ajax="false" actionListener="familymemberBean.resendMemberReceipt()" />
-
-    
-        <p:panelGrid id="display" columns="2" cellpadding="4">  
+		<p:separator />
+		<p:panelGrid id="display" columns="2" cellpadding="4">  
   
             <h:outputText style="font-size:14pt;" value="Name:" />  
             <h:outputText style="font-size:14pt;" value="#{familymemberBean.currentFM.getsFirstName()} #{familymemberBean.currentFM.getsLastName()}" />  
   
             <h:outputText style="font-size:14pt;" value="DOB:" />  
             <h:outputText style="font-size:14pt;" value="#{familymemberBean.currentFM.getDob()}" />  
+  
+            <h:outputText style="font-size:14pt;" value="USA #:" />  
+            <h:outputText style="font-size:14pt;" value="#{familymemberBean.currentFM.getUSAHockeyNumber()}" />  
             
             <h:outputText style="font-size:14pt;" value="SCAHA #:" />  
             <h:outputText style="font-size:14pt;" value="#{familymemberBean.currentFM.getScahaHockeyNumber()}" />  
-
         </p:panelGrid>  
-
-        
-        
+		<p:separator />
+	
+                
     </p:dialog>
     
     </p:fieldset>

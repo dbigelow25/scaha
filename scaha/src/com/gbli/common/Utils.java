@@ -1178,13 +1178,9 @@ public class Utils {
      * @return
      */
 	public static String mergeTokens(String _str, List<String> _sparms) {
-		// TODO Auto-generated method stub
-		//
-		// lets loop through this.. its in pars of 2s  the first being
-		// the target token.  
-		//
-		// where the second one is the value you want to replace it with.
 		
+		LOGGER.info("Utilites.. mergingTokens now..");
+	
 		for (String s : _sparms ){
 			
 			String[] parts = s.split(":");

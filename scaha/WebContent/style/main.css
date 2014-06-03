@@ -7,6 +7,11 @@ img { border-style: none; }
     margin: 0 auto;
 }
 
+ul.ui-menu-child {
+    white-space: nowrap;
+    width: auto !important;
+}
+
 .ddlistbox {
     color: red;
     font-size:8pt;

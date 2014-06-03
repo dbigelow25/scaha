@@ -10,13 +10,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.mail.internet.InternetAddress;
-
-import org.primefaces.event.SelectEvent;
-import org.primefaces.event.UnselectEvent;
-import org.primefaces.model.StreamedContent;
 
 import com.gbli.common.SendMailSSL;
 import com.gbli.common.Utils;
@@ -25,8 +20,6 @@ import com.gbli.context.ContextManager;
 import com.scaha.objects.FamilyMember;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Person;
-import com.scaha.objects.ScahaMember;
-import com.scaha.objects.UsaHockeyRegistration;
 
 @ManagedBean(name="familymemberBean")
 @RequestScoped
@@ -36,6 +29,7 @@ public class FamilyMemberBean  implements Serializable,  MailableObject  {
 	// Class Level Variables
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	public static String mail_seasonpass = Utils.getMailTemplateFromFile("mail/seasonpass.html");
 	
 	private String MergedBody = null;
 	//
@@ -86,12 +80,11 @@ public class FamilyMemberBean  implements Serializable,  MailableObject  {
 	@Override
 	public String getSubject() {
 		// TODO Auto-generated method stub
-		return null;
+		return "SCAHA Season Pass Information for " + this.currentFM;
 	}
 	@Override
 	public String getTextBody() {
-		// TODO Auto-generated method stub
-		return null;
+		return MergedBody;
 	}
 	@Override
 	public String getPreApprovedCC() {
@@ -114,15 +107,7 @@ public class FamilyMemberBean  implements Serializable,  MailableObject  {
 		this.currentFM = selectedFamilyMember;
 	}
 
-	public void onFamilyMemberRowSelect(SelectEvent  event) {  
-		FamilyMember fm = (FamilyMember)event.getObject();
-	}  
 
-	public void onFamilyMemberRowUnSelect(UnselectEvent   event) {  
-		FamilyMember fm = (FamilyMember)event.getObject();
-	}
-	
-	
 	public String resendMemberReceipt() {
 		
 		LOGGER.info("Resending Member Reg for " + this.currentFM);
@@ -130,11 +115,13 @@ public class FamilyMemberBean  implements Serializable,  MailableObject  {
 		
 		Person tper = pb.getProfile().getPerson();
 		Person per = (Person)this.currentFM;
-		UsaHockeyRegistration usar = this.currentFM.getUsaHockeyRegistration();
-		ScahaMember mem = this.currentFM.getSMember();
+		String usar = this.currentFM.getUsaHockeyNumber();
+		String mem = this.currentFM.getScahaHockeyNumber();
 		this.buildMailBody(db, tper, per, usar, mem);
 		SendMailSSL mail = new SendMailSSL(this);
 		mail.sendMail();
+		
+		db.free();
 		
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getFlash().setKeepMessages(true);			
@@ -142,24 +129,41 @@ public class FamilyMemberBean  implements Serializable,  MailableObject  {
 		context.addMessage(
 				null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Member Registration",
+                "Member Registration Successfully Resent",
                 "We have successfully sent a registration receipt reminder to your address on file.  You will be receiving a confirmation e-mail shortly"));
 		
 		return "true";
 		
 	}
 	
-	private void buildMailBody(ScahaDatabase _db, Person tper, Person per, UsaHockeyRegistration usar2, ScahaMember mem) {
+	public String getMemberReceipt() {
 		
-		// TODO Auto-generated method stub
+		LOGGER.info("getMemberReceipt Reg for " + this.currentFM);
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase", pb.getProfile());
+		
+		Person tper = pb.getProfile().getPerson();
+		Person per = (Person)this.currentFM;
+		String usar = this.currentFM.getUsaHockeyNumber();
+		String mem = this.currentFM.getScahaHockeyNumber();
+		this.buildMailBody(db, tper, per, usar, mem);
+		db.free();
+		return this.MergedBody;
+	}
+	
+	private void buildMailBody(ScahaDatabase _db, Person tper, Person per, String _strUSA, String _strMem) {
+
+		LOGGER.info("buildMailBody Reg for " + this.currentFM + ":tp:" + tper + ":per:" + per + ":usar:" + _strUSA + ":mem:" + _strMem);
 		List<String> myTokens = new ArrayList<String>();
 		myTokens.add("PFIRST:" + per.getsFirstName());
 		myTokens.add("PLAST:" + per.getsLastName());
 		myTokens.add("FIRSTNAME:" + tper.getsFirstName());
 		myTokens.add("LASTNAME:" + tper.getsLastName());
-		myTokens.add("USAHNUM:" + usar2.getUSAHnum());
-		myTokens.add("SCAHANUM:" + mem.getSCAHANumber());
+		myTokens.add("USAHNUM:" + _strUSA);
+		myTokens.add("SCAHANUM:" + _strMem);
 		myTokens.add("SEASON:" + scaha.getScahaSeasonList().getCurrentSeason().getDescription());
+		
+		LOGGER.info("buildMailBody Prepare for BC.." );
+			
 		try {
 			if (_db.isPersonPlayer(per.ID)) {
 				if (_db.checkForBC(per.ID)) {
@@ -174,9 +178,9 @@ public class FamilyMemberBean  implements Serializable,  MailableObject  {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		myTokens.add("SEASON:" + scaha.getScahaSeasonList().getCurrentSeason().getDescription());
-			
-		this.MergedBody =  Utils.mergeTokens(MemberBean.mail_body,myTokens);
+		
+		LOGGER.info("buildMailBody:about to merge" + this.currentFM);
+		this.MergedBody =  Utils.mergeTokens(mail_seasonpass,myTokens);
 		
 	}
 
