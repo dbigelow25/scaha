@@ -80,9 +80,6 @@ public class managerosterBean implements Serializable {
 		    ResultSet rs = cs.executeQuery();
 			
 			if (rs != null){
-				//need to add to an array
-				//rs = db.getResultSet();
-				
 				while (rs.next()) {
 					String idclub = rs.getString("idclubs");
 					String clubname = rs.getString("clubname");

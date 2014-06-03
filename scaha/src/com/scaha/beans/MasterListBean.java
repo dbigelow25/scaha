@@ -49,7 +49,9 @@ public class MasterListBean implements Serializable  {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-   		 LOGGER.info(" *************** FINISH: POST INIT FOR MasterListBean *****************");
+   		 
+   		db.free();
+   		LOGGER.info(" *************** FINISH: POST INIT FOR MasterListBean *****************");
    		
 	 }
 
