@@ -72,9 +72,12 @@
     <p:dialog id="dialog" header="Member Detail for the #{scahaBean.getScahaSeasonList().getCurrentSeason().getDescription()} " widgetVar="memDialog" resizable="false"  
               width="500" height = "500" showEffect="clip" hideEffect="fold">  
   
-  		<p:commandButton id="toPrint" value="Print" ajax="true">
+  		<p:commandButton id="toPrint" value="Print" ajax="true" >
     	    <p:printer target="display" />
 	    </p:commandButton>
+		<p:spacer width="20px" />
+  		<p:commandButton id="e-mail" value="Send Reg Info" ajax="false" actionListener="familymemberBean.resendMemberReceipt()" />
+
     
         <p:panelGrid id="display" columns="2" cellpadding="4">  
   
@@ -86,7 +89,7 @@
             
             <h:outputText style="font-size:14pt;" value="SCAHA #:" />  
             <h:outputText style="font-size:14pt;" value="#{familymemberBean.currentFM.getScahaHockeyNumber()}" />  
-            <h:outputText style="font-size:14pt;" value="SCAHA # (BarCoded):" />  
+
         </p:panelGrid>  
 
         

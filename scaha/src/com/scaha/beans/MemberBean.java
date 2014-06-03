@@ -47,7 +47,7 @@ public class MemberBean implements Serializable, MailableObject {
 	
 	private static final long serialVersionUID = 3L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
-	private static String mail_body = Utils.getMailTemplateFromFile("mail/seasonpass.html");
+	public static String mail_body = Utils.getMailTemplateFromFile("mail/seasonpass.html");
 	private String MergedBody = null;
 
 	private UsaHockeyRegistration usar = null;
