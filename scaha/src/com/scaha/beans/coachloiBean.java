@@ -606,6 +606,7 @@ public class coachloiBean implements Serializable, MailableObject {
 	
 	//used to populate loi form with player information
 	public void loadCoachProfile(Integer selectedcoach){
+		
 		//first get player detail information then get family members
 		Integer personID = 0;
 		
