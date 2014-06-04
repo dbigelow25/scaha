@@ -467,7 +467,6 @@ public class loiBean implements Serializable, MailableObject {
 	public void loadPlayerProfile(Integer selectedplayer){
 		//first get player detail information then get family members
 		Integer personID = 0;
-		
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	
     	try{
@@ -1139,6 +1138,22 @@ public class loiBean implements Serializable, MailableObject {
 			    
 			} else {
 				resultcount = 1;
+			}
+			
+			//need to check if a girl player is on boys team already or if on girls team already
+			String isgirlsteam = getThisYearGirlsTeam();
+			String isboysteam = getThisYearBoysTeam();
+			
+			if (!isgirlsteam.equals("") && sourceteam.equals("F")){
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "Player is already LOI'd to a girls team."));
+				this.selectedteam=null;
+				this.selectedgirlsteam=null;
+			}
+			
+			if (!isboysteam.equals("") && sourceteam.equals("M")){
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "Player is already LOI'd to a boys team."));
+				this.selectedteam=null;
+				this.selectedgirlsteam=null;
 			}
 			
 			if (isbeforeaaa){
