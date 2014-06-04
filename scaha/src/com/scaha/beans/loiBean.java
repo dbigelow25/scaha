@@ -1061,6 +1061,7 @@ public class loiBean implements Serializable, MailableObject {
 		//perform logic to check if team selected is for player up
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		Boolean is2yearplayerup = false;
+		Boolean isbeforeaaa = false;
 		try{
 			
 			//first lets check if the team selected is too young for the players dob
@@ -1108,6 +1109,7 @@ public class loiBean implements Serializable, MailableObject {
 					while (rs.next()) {
 						resultcount = rs.getInt("divisioncount");
 						is2yearplayerup = rs.getBoolean("2yearplayerup");
+						isbeforeaaa = rs.getBoolean("beforeaaa");
 					}
 					LOGGER.info("We have validation whether player needs player up code or not");
 				}
@@ -1139,7 +1141,12 @@ public class loiBean implements Serializable, MailableObject {
 				resultcount = 1;
 			}
 			
-			
+			if (isbeforeaaa){
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,"", "Not allowed to LOI for this division/skill level before tryout date."));
+				this.selectedteam=null;
+				this.selectedgirlsteam=null;
+			}
+					
 			if (resultcount.equals(0) && ageoldercount.equals(0) && pwtobtmcount.equals(0) && !is2yearplayerup){
 				this.setDisplayplayerup(true);
 			} else {
@@ -1154,7 +1161,6 @@ public class loiBean implements Serializable, MailableObject {
 						this.selectedteam=null;
 					}
 				}
-				
 			}
 		
 			if (sourceteam.equals("M")){
