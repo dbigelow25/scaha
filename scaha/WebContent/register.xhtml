@@ -11,7 +11,18 @@
 	<ui:define name="content">
 	
 	<h:form id="myform">
-			<p:panel id ="panel" header="Member Registration Information:">
+	
+	<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">  
+    	     STOP AND READ!!  PLEASE DO NOT ATTMEPT TO CREATE AN ACCOUNT FOR ONE OF YOUR CHILDREN!  THIS VIEW IS TO CREATE A <b>FAMILY ACCOUNT</b>
+    	     THE ACCOUNT HOLDER NEEDS TO BE AN ADULT (LIKE YOU), PLEASE DO NOT FILL THIS INFORMATION OUT TO THAT OF ANOTHER FAMILY MEMBER OR CHILD! <p/>
+    	     The SCAHA REGISTRATION PROCESS will either CREATE or UPDATE this Family account with your child's information automatically.   YOU JUST NEED TO GO TO USA HOCKEY AND 
+    	     REGISTER FOR THE 2014/15 SEASON AND OBTAIN YOUR 14 DIGIT NUMBER.  THEN COME BACK TO THIS SITE, LOGIN, and START THE 'REGISTER FOR SCAHA' PROCESS...<p/>
+    	     DO NOT ATTEMPT TO CREATE A NEW ACCOUNT FOR YOUR CHILD, OR CHANGE INFORMATION BELOW TO REFLECT YOUR CHILD's DOB and NAME. <p/>
+    	     Thanks!  
+   		</p:fieldset>  
+	
+	  	<p:spacer width="10" height="10" />	
+			<p:panel id ="panel" header="Create a Family Account:">
 				<p:panelGrid style="font-size:10pt;" columns="4" cellpadding="3">
 
 					<p:outputLabel for="firstname" style="font-size:12pt;" value="First Name" />
@@ -58,11 +69,11 @@
 					<p:message id="m_nickname" for="nickname" />	
 
 					<p:outputLabel for="dob" style="font-size:12pt;" value="Date of Birth" />
-					<p:inputMask id="dob" style="width:150px;font-size:12pt;" value="#{registrationBean.DOB}" mask="99/99/9999" required = "true" requiredMessage="Date of Birth cannot be blank."/>  
-<!--					<p:calendar id="dob"   yearRange="1935:2014" value="#{registrationBean.DOB}" showOn="button" popupIconOnly="false" pattern ="MM/dd/yyyy"  navigator="true" required = "true" requiredMessage="Date of Birth cannot be blank." />
-  -->
-					
-					<p:tooltip for="dob" style="font-size:12pt;" value="When were you born?  " showEffect="fade" hideEffect="fade" />  
+					<p:inputMask id="dob" style="width:150px;font-size:12pt;" value="#{registrationBean.DOB}" mask="99/99/9999" required = "true" requiredMessage="Date of Birth cannot be blank.">
+						<f:validator validatorId="dobAdultValidator" />
+						<f:ajax event="blur" render="m_dob" />
+					</p:inputMask>
+					<p:tooltip for="dob" style="font-size:12pt;" value="When were you born? You have to be an adult to Create a Family Account " showEffect="fade" hideEffect="fade" />  
 					<p:message id="m_dob" for="dob" />	
 
 					<p:outputLabel for="gender" style="font-size:12pt;" value="Gender" />

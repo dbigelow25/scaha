@@ -60,8 +60,7 @@
    	<p:fieldset id="fs2" toggleable="false" toggleSpeed="500"> 
    	 
    	<p:contextMenu for="familymembers">  
-   	 	<p:menuitem id="viewButton" style="font-size:9pt;" value="View Detail" icon="ui-icon-search" update=":form:display,familymembers" oncomplete="PF('memDialog').show()"/>  
-        <p:menuitem value="Resend Confirmation" style="font-size:9pt;" update=":form:messages,familymembers" icon="ui-icon-search" actionListener="#{familymemberBean.resendMemberReceipt}"/>  
+        <p:menuitem value="email confirmation" style="font-size:9pt;" update=":form:messages,familymembers" icon="ui-icon-search" actionListener="#{familymemberBean.resendMemberReceipt}"/>  
     </p:contextMenu>  
 		      
 	<p:dataTable 

@@ -44,8 +44,13 @@
 	<ui:fragment id="view-pers" rendered="#{profileBean.isViewPerson()}">
 	
   		<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">  
-    	      <h:outputText style="font-size: 12pt;"  value="The following information is your personal account information.  Please change any contact
-                                                       you need to.  The only thing you cannot change is your usercode. "/>  
+    	     The following information is your FAMILY ACCOUNT. <p/>
+    	     STOP AND READ!!  PLEASE DO NOT CHANGE THIS INFORMATION TO THAT OF ANOTHER FAMILY MEMBER OR CHILD! <br/>
+    	     THE ACCOUNT HOLDER NEEDS TO BE AN ADULT (LIKE YOU), PLEASE DO NOT FILL THIS INFORMATION OUT TO THAT OF ANOTHER FAMILY MEMBER OR CHILD! <p/>
+    	     The SCAHA REGISTRATION PROCESS will either CREATE or UPDATE this Family account with your child's information automatically.   YOU JUST NEED TO GO TO USA HOCKEY AND 
+    	     REGISTER FOR THE 2014/15 SEASON AND OBTAIN YOUR 14 DIGIT NUMBER.  THEN COME BACK TO THIS SITE, LOGIN, and START THE 'REGISTER FOR SCAHA' PROCESS...<p/>
+    	     DO NOT ATTEMPT TO CREATE A NEW ACCOUNT FOR YOUR CHILD, OR CHANGE INFORMATION BELOW TO REFLECT YOUR CHILD's DOB and NAME. <p/>
+    	     Thanks! 
    		</p:fieldset>  
 	
 	  	<p:spacer width="10" height="10" />
@@ -85,6 +90,14 @@
 	
 	<p:focus context="edit-pers"/> 
 	<p:fieldset id="fs4" toggleable="false" toggleSpeed="500">  
+	     The following information is your FAMILY ACCOUNT. <p/>
+    	     STOP AND READ!!  PLEASE DO NOT CHANGE THIS INFORMATION TO THAT OF ANOTHER FAMILY MEMBER OR CHILD! <br/>
+    	     THE ACCOUNT HOLDER NEEDS TO BE AN ADULT (LIKE YOU), PLEASE DO NOT FILL THIS INFORMATION OUT TO THAT OF ANOTHER FAMILY MEMBER OR CHILD! <p/>
+    	     The SCAHA REGISTRATION PROCESS will either CREATE or UPDATE this Family account with your child's information automatically.   YOU JUST NEED TO GO TO USA HOCKEY AND 
+    	     REGISTER FOR THE 2014/15 SEASON AND OBTAIN YOUR 14 DIGIT NUMBER.  THEN COME BACK TO THIS SITE, LOGIN, and START THE 'REGISTER FOR SCAHA' PROCESS...<p/>
+    	     DO NOT ATTEMPT TO CREATE A NEW ACCOUNT FOR YOUR CHILD, OR CHANGE INFORMATION BELOW TO REFLECT YOUR CHILD's DOB and NAME. <p/>
+    	     Thanks! 
+   	
           <h:outputText style="font-size: 12px;" value="When you have completed making your changes, please click the Update Information button."/>
    	</p:fieldset>  
 
@@ -113,9 +126,11 @@
 					<p:message id="m_nickname" closable="false" for="nickname"/>
 
 					<p:outputLabel style="font-size: 10pt;"  for="dob"  value="Date of Birth:"></p:outputLabel>
-					<p:inputMask id="dob" value="#{profileBean.chgDOB}" style="width:150px;font-size:10pt;" mask="99/99/9999" />  
+					<p:inputMask id="dob" value="#{profileBean.chgDOB}" style="width:150px;font-size:10pt;" mask="99/99/9999" required = "true" requiredMessage="Date of Birth cannot be blank." >  
+						<f:validator validatorId="dobAdultValidator" />
+					</p:inputMask>
 					<p:message id="m_dob" closable="false" for="dob"/>
-
+	
 					<p:outputLabel style="font-size: 10pt;"  for="gender" value="Gender:" ></p:outputLabel>
 				    <p:selectOneMenu id="gender" style="font-size: 10pt;" value="#{profileBean.chgGender}">  
 			            <f:selectItem itemLabel="Male" itemValue="M"></f:selectItem> 
