@@ -57,7 +57,7 @@
 	<managed-bean>
 		<managed-bean-name>reviewloiBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.reviewloiBean</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
+		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>rosteractionBean</managed-bean-name>
@@ -77,7 +77,7 @@
 	<managed-bean>
 		<managed-bean-name>registrarloiBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.registrarloiBean</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
+		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>reviewcoachloiBean</managed-bean-name>

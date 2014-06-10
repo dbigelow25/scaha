@@ -116,23 +116,48 @@ public class reviewloiBean implements Serializable {
     		if (db.setAutoCommit(false)) {
     			
     			if (selectedtabledisplay.equals("1")){
-    				CallableStatement cs = db.prepareCall("CALL scaha.getLoiList(?)");
+    				CallableStatement cs = db.prepareCall("CALL scaha.getLoiListByClub(?,?)");
 	    			java.sql.Date sqlDate = new java.sql.Date(date.getTime());
 	    			cs.setDate("lookupdate", sqlDate);
+	    			if (this.selectedclub==null){
+	    				cs.setInt("clubid", 0);
+	    			}else {
+	    				cs.setInt("clubid", Integer.parseInt(this.selectedclub));
+	    			}
+	    			
 	    			rs = cs.executeQuery();
     			} else if (selectedtabledisplay.equals("2")){
-    				CallableStatement cs = db.prepareCall("CALL scaha.getLoiMissingBirthCertificate()");
+    				CallableStatement cs = db.prepareCall("CALL scaha.getLoiMissingBirthCertificateByClub(?)");
+    				if (this.selectedclub==null){
+	    				cs.setInt("clubid", 0);
+	    			}else {
+	    				cs.setInt("clubid", Integer.parseInt(this.selectedclub));
+	    			}
+	    			
 	    			rs = cs.executeQuery();
     			} else if (selectedtabledisplay.equals("3")){
-    				CallableStatement cs = db.prepareCall("CALL scaha.getLoiMissingTransfer()");
+    				CallableStatement cs = db.prepareCall("CALL scaha.getLoiMissingTransferByClub(?)");
+    				if (this.selectedclub==null){
+	    				cs.setInt("clubid", 0);
+	    			}else {
+	    				cs.setInt("clubid", Integer.parseInt(this.selectedclub));
+	    			}
+	    			
 	    			rs = cs.executeQuery();
     			} else if (selectedtabledisplay.equals("4")){
     				CallableStatement cs = db.prepareCall("CALL scaha.getLoiByClub(?)");
 	    			cs.setInt("clubid", Integer.parseInt(this.selectedclub));
     				rs = cs.executeQuery();
     			} else if (selectedtabledisplay.equals("5")){
-    				CallableStatement cs = db.prepareCall("CALL scaha.getAllLoi()");
-	    			rs = cs.executeQuery();
+    				CallableStatement cs = db.prepareCall("CALL scaha.getAllLoiByClub(?)");
+    				if (this.selectedclub==null){
+	    				cs.setInt("clubid", 0);
+	    			}else {
+	    				cs.setInt("clubid", Integer.parseInt(this.selectedclub));
+	    			}
+    				rs = cs.executeQuery();
+    				
+	    			
     			}
     		    
     		    

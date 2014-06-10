@@ -121,4 +121,7 @@
     <exception-type>javax.faces.application.ViewExpiredException</exception-type>
     <location>/Weclome.xhtml</location>
 </error-page>
+<session-config>
+	<session-timeout>60</session-timeout>
+</session-config>
 </web-app>

@@ -160,11 +160,25 @@ public class registrarcoachloiBean implements Serializable {
     				String u18 = rs.getString("eighteenu");
     				String girls = rs.getString("girls");
     				String safesport = rs.getString("safesport");
+    				String address = rs.getString("address");
+    				String city = rs.getString("city");
+    				String state = rs.getString("state");
+    				String zip = rs.getString("zipcode");
+    				String email1 = rs.getString("email1");
+    				String email2 = rs.getString("email2");
+    				String phone = rs.getString("phone");
     				
     				Coach ocoach = new Coach();
     				ocoach.setIdcoach(idcoach);
     				ocoach.setFirstname(sfirstname);
     				ocoach.setLastname(slastname);
+    				ocoach.setAddress(address);
+    				ocoach.setCity(city);
+    				ocoach.setState(state);
+    				ocoach.setZip(zip);
+    				ocoach.setEmail1(email1);
+    				ocoach.setEmail2(email2);
+    				ocoach.setPhone(phone);
     				ocoach.setLoidate(sloidate);
     				ocoach.setUsamembership(susamember);
     				ocoach.setTeamname(steam);

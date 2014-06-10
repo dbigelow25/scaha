@@ -165,6 +165,14 @@ public class registrarloiBean implements Serializable {
         				String sbirthcertificate = rs.getString("birthcertificate");
         				String splayerup = rs.getString("isplayerup");
         				String sindefinite = rs.getString("indefinite");
+        				String sparentname = rs.getString("PG First") + " " + rs.getString("PG Last");
+        				String saddress = rs.getString("Address");
+        				String scity = rs.getString("City");
+        				String sstate = rs.getString("State");
+        				String szip = rs.getString("zipcode");
+        				String sphone = rs.getString("phone");
+        				String semail = rs.getString("e-mail1");
+        				String semail2 = rs.getString("e-mail2");
         				
         				Player oplayer = new Player();
         				oplayer.setIdplayer(idplayer);
@@ -205,6 +213,14 @@ public class registrarloiBean implements Serializable {
         				oplayer.setLoidate(sloidate);
         				oplayer.setUsamembership(susamember);
         				oplayer.setPlayerup(IsPlayerup(splayerup));
+        				oplayer.setParentname(sparentname);
+        				oplayer.setAddress(saddress);
+        				oplayer.setCity(scity);
+        				oplayer.setState(sstate);
+        				oplayer.setZip(szip);
+        				oplayer.setPhone(sphone);
+        				oplayer.setEmail1(semail);
+        				oplayer.setEmail2(semail2);
         				tempresult.add(oplayer);
     				}
     				

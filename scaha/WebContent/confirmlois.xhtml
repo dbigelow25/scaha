@@ -38,19 +38,21 @@
 					    	<f:selectItem itemLabel="Awaiting Confirmation" itemValue="1"/>
 					    	<f:selectItem itemLabel="Missing Birthcertificate" itemValue="2"/>
 					    	<f:selectItem itemLabel="Missing Transfer" itemValue="3"/>
-					    	<f:selectItem itemLabel="For Club" itemValue="4"/>
 					    	<f:selectItem itemLabel="All LOIs" itemValue="5"/>
 					    </p:selectOneMenu>
 					</h:column>
-					<h:column><b>Club (only applies to "For Club" search):</b></h:column>
+					<h:column><b>Club :</b></h:column>
 					<h:column>
 						<p:selectOneMenu value="#{reviewloiBean.selectedclub}" >
-					    	<f:selectItem itemLabel="Select One" itemValue=""/>
+					    	<f:selectItem itemLabel="Select All" itemValue="0"/>
 					    	<f:selectItems value="#{reviewloiBean.getListofClubs()}" var="club" itemLabel="#{club.getClubname()}" itemValue="#{club.getClubid()}"/>
 					    </p:selectOneMenu>
 					</h:column>
 					<h:column>
 						<p:commandButton id="updatedisplay" value="Load Loi's" actionListener="#{reviewloiBean.playersDisplay()}" ajax="true" update="listofplayers"/>
+					</h:column>
+					<h:column>
+						To clear the column sort (once selected) you will need to reload the page by selecting "Confirm Lois from the My Actions Menu."
 					</h:column>
 				</h:panelGrid>
 				<br></br>
@@ -58,13 +60,13 @@
                 	<!--  <p:column headerText="Player ID">  
 			            <h:outputText value="#{player.getIdplayer()}" />  
 			        </p:column>-->  
-			        <p:column filterBy="firstname" filterMatchMode="contains" filterStyle="width:50px" headerText="First Name">  
+			        <p:column sortBy="firstname" filterBy="firstname" filterMatchMode="contains" filterStyle="width:50px" headerText="First Name">  
 			            <h:outputText value="#{player.getFirstname()}" />  
 			        </p:column>  
-			        <p:column filterBy="lastname" filterMatchMode="contains" filterStyle="width:50px" headerText="Last Name">  
+			        <p:column sortBy="lastname" filterBy="lastname" filterMatchMode="contains" filterStyle="width:50px" headerText="Last Name">  
 			            <h:outputText value="#{player.getLastname()}" />  
 			        </p:column>  
-			        <p:column headerText="2014 Team">  
+			        <p:column sortBy="currentteam" filterBy="currentteam" filterMatchMode="contains" filterStyle="width:50px" headerText="2014 Team">  
 			            <h:outputText value="#{player.getCurrentteam()}" />  
 			        </p:column>
 			        <p:column headerText="2013 Team">  
@@ -73,19 +75,19 @@
 			        <p:column headerText="DOB">  
 			            <h:outputText value="#{player.getDob()}" />  
 			        </p:column>
-			        <p:column headerText="Player Up">  
+			        <p:column headerText="Player Up" sortBy="playerup">  
 			            <h:outputText value="#{player.getPlayerup()}" />  
 			        </p:column>
-			        <p:column headerText="LOI Date">  
+			        <p:column headerText="LOI Date" sortBy="loidate">  
 			            <h:outputText value="#{player.getLoidate()}" />  
 			        </p:column>
-			        <p:column headerText="Citizenship">  
+			        <p:column headerText="Citizenship" sortBy="ctverified">  
 			            <h:outputText value="#{player.citizenshiplabel}" rendered="#{player.ctverified}" />  
 			        </p:column>
-			        <p:column headerText="Birth Cert.">  
+			        <p:column headerText="Birth Cert." sortBy="birthcertificate">  
 			            <h:outputText value="#{player.birthcertificate}" />  
 			        </p:column>
-			        <p:column headerText="Confirmed">  
+			        <p:column headerText="Confirmed" sortBy="confirmed">  
 			            <h:outputText value="#{player.confirmed}" />  
 			        </p:column>
 			        

@@ -43,9 +43,87 @@ public class Player extends ScahaObject implements Serializable {
 	private String confirmed = null;
 	private String rosterid = null;
 	private String usamembership = null;
+	private String parentname = null;
+	private String address = null;
+	private String city = null;
+	private String state = null;
+	private String zip = null;
+	private String phone = null;
+	private String email1 = null;
+	private String email2 = null;
 	
 	public Player (){ 
 		
+	}
+	public String getParentname(){
+		return parentname;
+	}
+	
+	public void setParentname(String value){
+		parentname=value;
+	}
+	
+	
+	public String getAddress(){
+		return address;
+	}
+	
+	public void setAddress(String value){
+		address=value;
+	}
+	
+	
+	public String getCity(){
+		return city;
+	}
+	
+	public void setCity(String value){
+		city=value;
+	}
+	
+	
+	public String getState(){
+		return state;
+	}
+	
+	public void setState(String value){
+		state=value;
+	}
+	
+	
+	public String getZip(){
+		return zip;
+	}
+	
+	public void setZip(String value){
+		zip=value;
+	}
+	
+	
+	public String getPhone(){
+		return phone;
+	}
+	
+	public void setPhone(String value){
+		phone=value;
+	}
+	
+	
+	public String getEmail1(){
+		return email1;
+	}
+	
+	public void setEmail1(String value){
+		email1=value;
+	}
+	
+	
+	public String getEmail2(){
+		return email2;
+	}
+	
+	public void setEmail2(String value){
+		email2=value;
 	}
 	
 	public String getUsamembership(){
