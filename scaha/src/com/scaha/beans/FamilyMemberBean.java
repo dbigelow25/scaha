@@ -115,6 +115,11 @@ public class FamilyMemberBean  implements Serializable,  MailableObject  {
 		
 		Person tper = pb.getProfile().getPerson();
 		Person per = (Person)this.currentFM;
+		
+		if (this.currentFM == null)  {
+			LOGGER.info("Did not snag currentFM.. cannot send..bailing");
+			return "true";
+		}
 		String usar = this.currentFM.getUsaHockeyNumber();
 		String mem = this.currentFM.getScahaHockeyNumber();
 		this.buildMailBody(db, tper, per, usar, mem);
