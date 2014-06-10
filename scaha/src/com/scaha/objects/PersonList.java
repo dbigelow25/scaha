@@ -46,14 +46,28 @@ public class PersonList extends ListDataModel<Person> implements Serializable, S
 	
 		
 		LOGGER.info ("USAR:" + _usah.toString());
+		LOGGER.info ("USAR:FIRST NAME:" + _usah.getFirstName());
+		LOGGER.info ("USAR:LAST NAME:" + _usah.getLastName());
+		LOGGER.info ("USAR:DOB:" + _usah.getDOB());
 
 		int loopcount = 0;
 		List<Person> data = new ArrayList<Person>();
-	
+
+		boolean goodparms = true;
+		
+		if (_pro.getPerson() == null) {
+			LOGGER.info("**SERVER ERRROR ****, Profile getPerson returns nothing");
+			goodparms = false;
+		} else if (_pro.getPerson().getFamily() == null) {
+			LOGGER.info("**SERVER ERRROR ****, Person in the Profile Has No Family Structure.. THis is bad!!");
+			goodparms = false;
+		}
+		
+		if (!goodparms) {
+			return new PersonList(data);
+		}
+
 		PreparedStatement ps = _db.prepareStatement("call scaha.getPersonbyUSAHockeyMatchFNLNDOB(?,?,?)");
-		LOGGER.info ("USAR:LAST NAME:" + _usah.getFirstName());
-		LOGGER.info ("USAR:LAST NAME:" + _usah.getLastName());
-		LOGGER.info ("USAR:DOB:" + _usah.getDOB());
 
 		//
 		// OK.. we simply want to seach until we get a hit.. The first SQL is the most likely candidate
