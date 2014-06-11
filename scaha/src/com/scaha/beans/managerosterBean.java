@@ -83,7 +83,6 @@ public class managerosterBean implements Serializable {
 				while (rs.next()) {
 					String idclub = rs.getString("idclubs");
 					String clubname = rs.getString("clubname");
-					LOGGER.info("manage Rosters working on Club:" + clubname);
 					Club club = new Club();
 					club.setClubid(idclub);
 					club.setClubname(clubname);
@@ -102,8 +101,6 @@ public class managerosterBean implements Serializable {
 						while (rssub.next()) {
 	    					String idteam = rssub.getString("idteams");
 	        				String teamname = rssub.getString("teamname");
-	    					LOGGER.info("manage Rosters working on Team:" + teamname);
-	
 	        				String activeplayercount = rssub.getString("activeplayercount");
 	        				String totalplayercount = rssub.getString("totalplayercount");
 	        				String totalcoachcount = rssub.getString("totalcoachcount");
