@@ -38,6 +38,7 @@ public class reviewloiBean implements Serializable {
 	private Boolean displayclublist = null;
 	private String selectedclub = null;
 	private String selectedplayerid = null;
+	private String notes = null;
 	
 	
 	@PostConstruct
@@ -54,7 +55,7 @@ public class reviewloiBean implements Serializable {
          
     }  
     
-   
+    
     
     public String getSelectedplayerid(){
     	return selectedplayerid;
@@ -185,6 +186,7 @@ public class reviewloiBean implements Serializable {
         				String sindefinite = rs.getString("indefinite");
         				String confirmed = rs.getString("confirmed");
         				String rosterid = rs.getString("idroster");
+        				String notes = rs.getString("notes");
         				
         				Player oplayer = new Player();
         				oplayer.setIdplayer(idplayer);
@@ -197,6 +199,7 @@ public class reviewloiBean implements Serializable {
         				oplayer.setCitizenshiptransfer(scitizenshiptransfer);
         				oplayer.setCtverified(scitizenshiptransfer);
         				oplayer.setCTExpirationdate(scitizenshipexpiredate);
+        				oplayer.setNotes(notes);
         				
         				if (scitizenship!=null){
 	        				if (!scitizenship.equals("USA")){

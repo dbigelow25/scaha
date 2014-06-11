@@ -111,8 +111,14 @@ public class reviewcoachloiBean implements Serializable {
     		if (db.setAutoCommit(false)) {
     			
     			if (selectedtabledisplay.equals("1")){
-    				CallableStatement cs = db.prepareCall("CALL scaha.getCoachLoiList(?)");
+    				CallableStatement cs = db.prepareCall("CALL scaha.getCoachLoiListByClub(?,?)");
 	    			java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+	    			if (this.selectedclub==null){
+	    				cs.setInt("clubid", 0);
+	    			}else {
+	    				cs.setInt("clubid", Integer.parseInt(this.selectedclub));
+	    			}
+	    			
 	    			cs.setDate("lookupdate", sqlDate);
 	    			rs = cs.executeQuery();
     			} else if (selectedtabledisplay.equals("4")){
@@ -120,7 +126,12 @@ public class reviewcoachloiBean implements Serializable {
 	    			cs.setInt("clubid", Integer.parseInt(this.selectedclub));
     				rs = cs.executeQuery();
     			} else if (selectedtabledisplay.equals("5")){
-					CallableStatement cs = db.prepareCall("CALL scaha.getAllCoachLoi()");
+					CallableStatement cs = db.prepareCall("CALL scaha.getAllCoachLoiByClub(?)");
+					if (this.selectedclub==null){
+	    				cs.setInt("clubid", 0);
+	    			}else {
+	    				cs.setInt("clubid", Integer.parseInt(this.selectedclub));
+	    			}
 	    			rs = cs.executeQuery();
 				}
 		    

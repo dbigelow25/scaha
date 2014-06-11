@@ -84,7 +84,17 @@
 			        </p:column>  
 				</p:dataTable>
 			</p:fieldset> 
-			<div align="center"><p:commandButton id="printloi" value="Print LOI" onclick="window.print(); return false;"/><p:spacer width="5"/><p:commandButton id="closeloi" value="Close LOI"  actionListener="#{reviewloiBean.CloseLoi()}"/></div>
+			<p:fieldset>
+				<div align="center" valign="top">
+					<table cellpadding="5" cellspacing="0" width="90%">
+						<tr>
+							<td valign="top"><b>Notes:</b></td>
+							<td><p:inputTextarea value="#{loiBean.notes}" rows="3" cols="100"/></td>
+						</tr>
+					</table>
+				 </div>
+			</p:fieldset>
+			<div align="center"><p:commandButton id="printloi" value="Print LOI" onclick="window.print(); return false;"/><p:spacer width="5"/><p:commandButton id="closeloi" value="Close LOI"  actionListener="#{reviewloiBean.CloseLoi()}"/><p:spacer width="5"/><p:commandButton id="sendnote" value="Send Note"  actionListener="#{loiBean.SendNote()}"/></div>
 		</h:form>
 		</ui:fragment>
 		</div>

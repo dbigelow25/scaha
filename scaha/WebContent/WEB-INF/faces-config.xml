@@ -82,7 +82,7 @@
 	<managed-bean>
 		<managed-bean-name>reviewcoachloiBean</managed-bean-name>
 		<managed-bean-class>com.scaha.beans.reviewcoachloiBean</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
+		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>playerreleaseBean</managed-bean-name>

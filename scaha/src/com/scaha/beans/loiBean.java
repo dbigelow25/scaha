@@ -41,6 +41,7 @@ public class loiBean implements Serializable, MailableObject {
 	private static String mail_reg_body = Utils.getMailTemplateFromFile("/mail/loireceipt.html");
 	private static String girlsmail_reg_body = Utils.getMailTemplateFromFile("/mail/girlsloireceipt.html");
 	private static String playerupmail_reg_body = Utils.getMailTemplateFromFile("/mail/playeruploireceipt.html");
+	private static String sendingnote_reg_body = Utils.getMailTemplateFromFile("/mail/sendingnote.html");
 	transient private ResultSet rs = null;
 	private String selectedteam = null;
 	private String selectedgirlsteam = null;
@@ -75,9 +76,12 @@ public class loiBean implements Serializable, MailableObject {
 	private Boolean bplayerup = null;
 	private Boolean displayplayerup = null;
 	private Boolean ishighschool = null;
+	private String notes = null;
+	private Boolean sendingnote = null;
 	
 	@PostConstruct
     public void init() {
+		this.setSendingnote(false);
 		//hard code value until we load session variable
     	FacesContext context = FacesContext.getCurrentInstance();
     	Application app = context.getApplication();
@@ -106,6 +110,23 @@ public class loiBean implements Serializable, MailableObject {
 	public loiBean() {  
         
     }  
+	
+	public Boolean getSendingnote(){
+    	return sendingnote;
+    }
+    
+    public void setSendingnote(Boolean value){
+    	sendingnote=value;
+    }
+    
+	
+	public String getNotes(){
+    	return notes;
+    }
+    
+    public void setNotes(String value){
+    	notes=value;
+    }
     
 	public Boolean getIshighschool(){
     	return ishighschool;
@@ -156,7 +177,11 @@ public class loiBean implements Serializable, MailableObject {
 		myTokens.add("FIRSTNAME:" + this.firstname);
 		myTokens.add("LASTNAME:" + this.lastname);
 		myTokens.add("CLUBNAME:" + this.getClubName());
-		myTokens.add("SELECTEDBOYSTEAM:" + this.displayselectedteam + " ");
+		if (this.sendingnote){
+			myTokens.add("SELECTEDBOYSTEAM:" + this.getThisYearBoysTeam() + " ");
+		}else {
+			myTokens.add("SELECTEDBOYSTEAM:" + this.displayselectedteam + " ");
+		}
 		if (this.displayselectedgirlsteam==null){
 			myTokens.add("SELECTEDGRLSTEAM: ");
 		}else {
@@ -180,16 +205,22 @@ public class loiBean implements Serializable, MailableObject {
 		}else {
 			myTokens.add("LASTYEARTEAM:" + this.lastyearteam);
 		}
+		myTokens.add("NOTES: " + this.notes);
 		
-		if (this.displayselectedgirlsteam==null){
-			if (bplayerup){
-				return Utils.mergeTokens(loiBean.playerupmail_reg_body,myTokens);
-			} else {
-				return Utils.mergeTokens(loiBean.mail_reg_body,myTokens);
-			}
+		if (this.sendingnote){
+			return Utils.mergeTokens(loiBean.sendingnote_reg_body, myTokens);
 		} else {
-			return Utils.mergeTokens(loiBean.girlsmail_reg_body,myTokens);
+			if (this.displayselectedgirlsteam==null){
+				if (bplayerup){
+					return Utils.mergeTokens(loiBean.playerupmail_reg_body,myTokens);
+				} else {
+					return Utils.mergeTokens(loiBean.mail_reg_body,myTokens);
+				}
+			} else {
+				return Utils.mergeTokens(loiBean.girlsmail_reg_body,myTokens);
+			}
 		}
+		
 		
 	}
 	
@@ -497,6 +528,7 @@ public class loiBean implements Serializable, MailableObject {
         				lastyearclub = rs.getString("clubname");
         				parentid = rs.getInt("parentid");
         				citizenship = rs.getString("citizenship");
+        				notes = rs.getString("notes");
         				
         				if (citizenship.equals("CAN")){
         					citizenship="Canada";
@@ -1288,6 +1320,89 @@ public void getClubID(){
 	public InternetAddress[] getPreApprovedICC() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void SendNote(){
+		this.setSendingnote(true);
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
+
+			if (db.setAutoCommit(false)) {
+			
+				//Need to store note first
+ 				LOGGER.info("storing note for :" + this.selectedplayer);
+ 				CallableStatement cs = db.prepareCall("CALL scaha.saveNote(?,?)");
+ 				cs.setString("innote", this.notes);
+ 				cs.setInt("personid", this.selectedplayer);
+    		    
+    		    cs.executeQuery();
+    			
+    		        
+    		    to = "";
+    			LOGGER.info("Sending email to club registrar, and scaha registrar");
+    			cs = db.prepareCall("CALL scaha.getClubRegistrarEmailByPersonID(?)");
+    		    cs.setInt("personid", this.selectedplayer);
+    		    rs = cs.executeQuery();
+    		    if (rs != null){
+    				while (rs.next()) {
+    					if (!to.equals("")){
+    						to = to + "," + rs.getString("usercode");
+    					}else {
+    						to = rs.getString("usercode");
+    					}
+    				}
+    			}
+				rs.close();
+	    		    
+	    			
+		        cs = db.prepareCall("CALL scaha.getSCAHARegistrarEmail()");
+    		    rs = cs.executeQuery();
+    		    if (rs != null){
+    				while (rs.next()) {
+    					to = to + ',' + rs.getString("usercode");
+    				}
+    			}
+    		    rs.close();
+		    		    
+		    	//hard my email address for testing purposes
+    		    //to = "lahockeyfan2@yahoo.com";
+    		    this.setToMailAddress(to);
+    		    this.setPreApprovedCC("");
+    		    this.setSubject("SCAHA LOI Review Note for: " + this.firstname + " " + this.lastname + " LOI with " + this.getClubName());
+    		    
+				SendMailSSL mail = new SendMailSSL(this);
+				LOGGER.info("Finished creating mail note object for " + this.firstname + " " + this.lastname + " LOI with " + this.getClubName());
+				mail.sendMail();
+					
+				db.commit();
+				db.cleanup();
+					
+			} else {
+				this.setSendingnote(false);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("ERROR IN Sending Note " + this.selectedplayer);
+			e.printStackTrace();
+			db.rollback();
+			this.setSendingnote(false);
+		} finally {
+			//
+			// always clean up after yourself..
+			//
+			db.free();
+		}
+		this.setSendingnote(true);
+		FacesContext context = FacesContext.getCurrentInstance();
+		origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
+		try{
+			context.getExternalContext().redirect("confirmlois.xhtml");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 }
