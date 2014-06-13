@@ -41,6 +41,7 @@ public class rosteractionBean implements Serializable {
 	private String citizenship = null;
 	private String gotoTransferInformation = null;
 	private String gotoCitizenship = null;
+	private String dob = null;
 	
 	@PostConstruct
     public void init() {
@@ -64,6 +65,14 @@ public class rosteractionBean implements Serializable {
     	gotoCitizenship = "managecitizenship.xhtml?playerid=" + this.selectedplayer;
     }  
     
+	public void setDob(String value){
+		dob = value;
+	}
+	
+	public String getDob(){
+		return dob;
+	}
+	
 	public void setCitizenship(String cit){
     	citizenship = cit;
     }
@@ -170,6 +179,7 @@ public class rosteractionBean implements Serializable {
         				transferindefinite = rs.getInt("indefinite");
         				birthcertificate = rs.getInt("birthcertificate");
         				citizenship = rs.getString("citizenship");
+        				dob = rs.getString("dob");
         				
         				Date dexpirationdate = rs.getDate("expirationdate");
         				
@@ -262,10 +272,10 @@ public class rosteractionBean implements Serializable {
 			
 				//Need to provide info to the stored procedure to save or update
  				LOGGER.info("verify loi code provided");
- 				CallableStatement cs = db.prepareCall("CALL scaha.saveCertificate(?,?)");
+ 				CallableStatement cs = db.prepareCall("CALL scaha.saveCertificateandDOB(?,?,?)");
     		    cs.setInt("playerid", Integer.parseInt(this.selectedplayer));
     		    cs.setInt("certificate", this.birthcertificate);
-    		    
+    		    cs.setString("indob", this.dob);
     		    cs.executeQuery();
     		    
     		    db.commit();

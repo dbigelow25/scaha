@@ -99,6 +99,9 @@
 			        <p:column sortBy="confirmed" headerText="Confirmed">  
 			            <h:outputText value="#{coach.getConfirmed()}" />  
 			        </p:column>
+			        <p:column headerText="Notes">  
+			            <h:outputText value="#{coach.getNotes()}" />  
+			        </p:column>
 			        <p:column headerText="Option" >  
 			             <p:splitButton id="wwtransfer" value="Work with "  >
 					        <p:menuitem value="Confirm LOI" action="#{reviewcoachloiBean.confirmLoi(coach)}" update="@form" rendered="#{coach.getConfirmed()=='No'}"/>

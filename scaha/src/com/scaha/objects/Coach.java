@@ -42,9 +42,18 @@ public class Coach extends ScahaObject implements Serializable {
 	private String phone = null;
 	private String email1 = null;
 	private String email2 = null;
+	private String notes = null;
 	
 	public Coach (){ 
 		
+	}
+	
+	public String getNotes(){
+		return notes;
+	}
+	
+	public void setNotes(String value){
+		notes=value;
 	}
 	
 	public String getAddress(){

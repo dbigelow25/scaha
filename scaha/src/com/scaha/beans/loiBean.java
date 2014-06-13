@@ -178,7 +178,12 @@ public class loiBean implements Serializable, MailableObject {
 		myTokens.add("LASTNAME:" + this.lastname);
 		myTokens.add("CLUBNAME:" + this.getClubName());
 		if (this.sendingnote){
-			myTokens.add("SELECTEDBOYSTEAM:" + this.getThisYearBoysTeam() + " ");
+			if (this.displaygirlteam){
+				myTokens.add("SELECTEDBOYSTEAM:" + this.getThisYearGirlsTeam() + " ");
+			}else {
+				myTokens.add("SELECTEDBOYSTEAM:" + this.getThisYearBoysTeam() + " ");
+			}
+				
 		}else {
 			myTokens.add("SELECTEDBOYSTEAM:" + this.displayselectedteam + " ");
 		}
@@ -1369,10 +1374,15 @@ public void getClubID(){
     		    //to = "lahockeyfan2@yahoo.com";
     		    this.setToMailAddress(to);
     		    this.setPreApprovedCC("");
-    		    this.setSubject("SCAHA LOI Review Note for: " + this.firstname + " " + this.lastname + " LOI with " + this.getClubName());
+    		    if (!(this.displaygirlteam)){
+    		    	this.setSubject("SCAHA LOI Review Note for: " + this.firstname + " " + this.lastname + " LOI with " + this.getThisYearBoysTeam());
+    		    }else {
+    		    	this.setSubject("SCAHA LOI Review Note for: " + this.firstname + " " + this.lastname + " LOI with " + this.getThisYearGirlsTeam());
+    		    }
+    		    
     		    
 				SendMailSSL mail = new SendMailSSL(this);
-				LOGGER.info("Finished creating mail note object for " + this.firstname + " " + this.lastname + " LOI with " + this.getClubName());
+				LOGGER.info("Finished creating mail note object for " + this.firstname + " " + this.lastname + " LOI with " + this.displayselectedteam);
 				mail.sendMail();
 					
 				db.commit();

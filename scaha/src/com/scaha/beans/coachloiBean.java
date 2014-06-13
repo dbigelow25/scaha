@@ -39,6 +39,7 @@ public class coachloiBean implements Serializable, MailableObject {
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	private static String mail_reg_body = Utils.getMailTemplateFromFile("/mail/coachloireceipt.html");
 	private static String mail_reg_manager_body = Utils.getMailTemplateFromFile("/mail/managerloireceipt.html");
+	private static String sendingnote_reg_body = Utils.getMailTemplateFromFile("/mail/sendingcoachnote.html");
 	transient private ResultSet rs = null;
 	private List<String> selectedteams = null;
 	private List<String> selectedgirlsteams = null;
@@ -84,11 +85,15 @@ public class coachloiBean implements Serializable, MailableObject {
 	private String displaysafesport = null;
 	private String coachrole = null;
 	private Boolean displaycoachcredentials = null;
+	private String notes = null;
+	private Boolean sendingnote = null;
+	private String origin = null;
 	
 	@PostConstruct
     public void init() {
 		//hard code value until we load session variable
 		//hard code value until we load session variable
+		this.sendingnote=false;
     	clubid = 1;
     	this.displaycoachcredentials=true;
     	
@@ -120,6 +125,24 @@ public class coachloiBean implements Serializable, MailableObject {
     	
     	//doing anything else right here
     }  
+    
+    public Boolean getSendingnote(){
+    	return sendingnote;
+    }
+    
+    public void setSendingnote(Boolean value){
+    	sendingnote=value;
+    }
+    
+	
+	public String getNotes(){
+    	return notes;
+    }
+    
+    public void setNotes(String value){
+    	notes=value;
+    }
+    
     
     public Boolean getDisplaycoachcredentials() {
 		// TODO Auto-generated method stub
@@ -206,15 +229,22 @@ public class coachloiBean implements Serializable, MailableObject {
 		myTokens.add("FIRSTNAME:" + this.firstname);
 		myTokens.add("LASTNAME:" + this.lastname);
 		myTokens.add("CLUBNAME:" + this.getClubName());
-		if (this.listofboysteams==null){
-			myTokens.add("BOYSTEAMS:  ");
+		
+		if (this.sendingnote){
+			myTokens.add("BOYSTEAMS:" + this.displayselectedteam + " ");
+			myTokens.add("GIRLSTEAMS:" + this.displayselectedgirlsteam + " ");
 		} else {
-			myTokens.add("BOYSTEAMS:" + this.listofboysteams + " ");
-		}
-		if (this.listofgirlsteams==null){
-			myTokens.add("GIRLSTEAMS:  ");
-		}else {
-			myTokens.add("GIRLSTEAMS:" + this.listofgirlsteams + " ");
+			if (this.listofboysteams==null){
+				myTokens.add("BOYSTEAMS:  ");
+			} else {
+				myTokens.add("BOYSTEAMS:" + this.listofboysteams + " ");
+			}
+			if (this.listofgirlsteams==null){
+				myTokens.add("GIRLSTEAMS:  ");
+			}else {
+				myTokens.add("GIRLSTEAMS:" + this.listofgirlsteams + " ");
+			}
+			
 		}
 		myTokens.add("ADDRESS:" + this.address);
 		myTokens.add("CITY:" + this.city);
@@ -229,11 +259,15 @@ public class coachloiBean implements Serializable, MailableObject {
 		myTokens.add("HOMENUMBER:" + this.homenumber);
 		myTokens.add("EMAIL:" + this.email);
 		myTokens.add("COACHROLE:" + this.coachrole);
-		
-		if (this.coachrole.equals("Manager")){
-			return Utils.mergeTokens(coachloiBean.mail_reg_manager_body,myTokens);
+		myTokens.add("NOTES:" + this.notes);
+		if (this.sendingnote){
+			return Utils.mergeTokens(coachloiBean.sendingnote_reg_body, myTokens);
 		} else {
-			return Utils.mergeTokens(coachloiBean.mail_reg_body,myTokens);
+			if (this.coachrole.equals("Manager")){
+				return Utils.mergeTokens(coachloiBean.mail_reg_manager_body,myTokens);
+			} else {
+				return Utils.mergeTokens(coachloiBean.mail_reg_body,myTokens);
+			}
 		}
 	}
 	
@@ -642,6 +676,7 @@ public class coachloiBean implements Serializable, MailableObject {
         				ceplevel = rs.getInt("ceplevel");
         				email = rs.getString("email");
         				safesport = rs.getInt("safesport");
+        				notes = rs.getString("notes");
         				this.setDisplaysafesport(safesport.toString());
         				
         				if (ceplevel.equals(1)){
@@ -1217,5 +1252,154 @@ public class coachloiBean implements Serializable, MailableObject {
 			this.displaycoachcredentials=true;
 		}
 	}
+	
+	public void SendNote(){
+		this.setSendingnote(true);
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
+
+			if (db.setAutoCommit(false)) {
+			
+				//Need to store note first
+ 				LOGGER.info("storing note for :" + this.selectedcoach);
+ 				CallableStatement cs = db.prepareCall("CALL scaha.saveNote(?,?)");
+ 				cs.setString("innote", this.notes);
+ 				cs.setInt("personid", this.selectedcoach);
+    		    
+    		    cs.executeQuery();
+    			
+    		    
+    		  //need to get list of girls teams signed for
+    		    Vector<Integer> v = new Vector<Integer>();
+    			v.add(this.selectedcoach);
+    			db.getData("CALL scaha.getCoachGirlsTeams(?)", v);
+    			List<String> tempgirlteams = new ArrayList<String>();
+    			String teamname = "";
+    			if (db.getResultSet() != null){
+    				//need to add to an array
+    				rs = db.getResultSet();
+    				
+    				while (rs.next()) {
+    					teamname = rs.getString("teamname");
+    					if (displayselectedgirlsteam==null){
+    						displayselectedgirlsteam = teamname;
+    					} else {
+    						if (displayselectedgirlsteam.equals("")){
+    							displayselectedgirlsteam = teamname;
+	    					} else {
+	    						displayselectedgirlsteam = displayselectedgirlsteam + "," + teamname;
+	    					}
+    					}
+    					
+    					
+    					
+    					tempgirlteams.add(teamname);
+    				}
+    				LOGGER.info("We have results for teams for the coach");
+    			}
+    			this.setGirlsteams(tempgirlteams);
+    			teamname = "";
+    			rs.close();
+    		
+    			//need to get list of boys teams signed for
+    			v = new Vector<Integer>();
+    			v.add(selectedcoach);
+    			db.getData("CALL scaha.getCoachTeams(?)", v);
+    		    List<String> tempteams = new ArrayList<String>();
+    			
+    			
+    			if (db.getResultSet() != null){
+    				//need to add to an array
+    				rs = db.getResultSet();
+    				
+    				while (rs.next()) {
+    					coachrole = rs.getString("rostertype");
+    					teamname = rs.getString("teamname");
+    					if (displayselectedteam==null){
+    						displayselectedteam = teamname;
+    					} else {
+    						if (displayselectedteam.equals("")){
+	    						displayselectedteam = teamname;
+	    					} else {
+	    						displayselectedteam = displayselectedteam + "," + teamname;
+	    					}
+    					}
+    					tempteams.add(teamname);
+    				}
+    				LOGGER.info("We have results for teams for the coach");
+    			}
+    			this.setBoysteams(tempteams);
+    			teamname = "";
+    			rs.close();
+    			
+    			
+    		        
+    		    to = "";
+    			LOGGER.info("Sending email to club registrar, and scaha registrar");
+    			cs = db.prepareCall("CALL scaha.getClubRegistrarEmailByPersonID(?)");
+    		    cs.setInt("personid", this.selectedcoach);
+    		    rs = cs.executeQuery();
+    		    if (rs != null){
+    				while (rs.next()) {
+    					if (!to.equals("")){
+    						to = to + "," + rs.getString("usercode");
+    					}else {
+    						to = rs.getString("usercode");
+    					}
+    				}
+    			}
+				rs.close();
+	    		    
+	    			
+		        cs = db.prepareCall("CALL scaha.getSCAHARegistrarEmail()");
+    		    rs = cs.executeQuery();
+    		    if (rs != null){
+    				while (rs.next()) {
+    					to = to + ',' + rs.getString("usercode");
+    				}
+    			}
+    		    rs.close();
+		    		    
+		    	//hard my email address for testing purposes
+    		    //to = "lahockeyfan2@yahoo.com";
+    		    this.setToMailAddress(to);
+    		    this.setPreApprovedCC("");
+    		    this.setSubject("SCAHA LOI Review Note for: " + this.firstname + " " + this.lastname + " LOI");
+    		    
+				SendMailSSL mail = new SendMailSSL(this);
+				LOGGER.info("Finished creating mail note object for " + this.firstname + " " + this.lastname + " LOI");
+				mail.sendMail();
+					
+				db.commit();
+				db.cleanup();
+					
+			} else {
+				this.setSendingnote(false);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("ERROR IN Sending Note " + this.selectedcoach);
+			e.printStackTrace();
+			db.rollback();
+			this.setSendingnote(false);
+		} finally {
+			//
+			// always clean up after yourself..
+			//
+			db.free();
+		}
+		this.setSendingnote(true);
+		FacesContext context = FacesContext.getCurrentInstance();
+		origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
+		try{
+			context.getExternalContext().redirect("confirmcoachlois.xhtml");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }
 

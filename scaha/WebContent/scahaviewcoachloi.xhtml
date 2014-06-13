@@ -124,7 +124,17 @@
 					
 				</p:panel>
 			</p:fieldset>
-			<div align="center"><p:commandButton id="printloi" value="Print LOI" onclick="window.print(); return false;"/><p:spacer width="5"/><p:commandButton id="closeloi" value="Close LOI"  actionListener="#{reviewcoachloiBean.CloseLoi()}"/></div>
+			<p:fieldset>
+				<div align="center" valign="top">
+					<table cellpadding="5" cellspacing="0" width="90%">
+						<tr>
+							<td valign="top"><b>Notes:</b></td>
+							<td><p:inputTextarea value="#{coachloiBean.notes}" rows="3" cols="100"/></td>
+						</tr>
+					</table>
+				 </div>
+			</p:fieldset>
+			<div align="center"><p:commandButton id="printloi" value="Print LOI" onclick="window.print(); return false;"/><p:spacer width="5"/><p:commandButton id="closeloi" value="Close LOI"  actionListener="#{reviewcoachloiBean.CloseLoi()}"/><p:spacer width="5"/><p:commandButton id="sendnote" value="Send Note"  actionListener="#{coachloiBean.SendNote()}"/><!-- <p:spacer width="5"/><p:commandButton id="confirmloi" value="Confirm LOI"  actionListener="#{reviewcoachloiBean.confirmLoiFromViewLoi(coachloiBean.selectedcoach)}"/> --></div>
 		</ui:fragment>
 		</h:form>
 	</ui:define>
