@@ -934,7 +934,7 @@ public class releaseBean implements Serializable, MailableObject {
     		    
     		    //use this will testing the site.  send emails to rob's personal account
     		    
-    		    to = "lahockeyfan2@yahoo.com";
+    		    //to = "lahockeyfan2@yahoo.com";
     		    this.setToMailAddress(to);
     		    this.cc="";
     		    this.setSubject(this.firstname + " " + this.lastname + " Released from " + this.clubname);

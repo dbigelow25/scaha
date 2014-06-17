@@ -10,10 +10,8 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
-import javax.faces.context.FacesContext;
 import javax.mail.internet.InternetAddress;
 
 import com.gbli.connectors.ScahaDatabase;
@@ -32,6 +30,7 @@ import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.Schedule;
 import com.scaha.objects.ScheduleList;
 import com.scaha.objects.TeamList;
+import com.scaha.objects.YearList;
 
 @ManagedBean
 @ApplicationScoped
@@ -49,6 +48,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 	private GeneralSeasonList ScahaSeasonList = null;
 	private MemberList scahaboardmemberlist = null;
 	private ScheduleList scahaschedule = null;
+	private YearList scahayearlist = null;
 	
 	private Profile DefaultProfile = null;
 	
@@ -63,6 +63,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 		 LOGGER.info("\t new level at:" + LOGGER.getLevel());
 		 this.setDefaultProfile(new Profile());
 		 this.setExecutiveboard();
+		 this.setMeetingminutes();
 		 this.refreshBean();
 		 LOGGER.info("******************* FINISH: SCAHA BEAN INIT... ***********************");
 	 }
@@ -303,11 +304,28 @@ public class ScahaBean implements Serializable,  MailableObject {
 	}
 
 
+	
 	/**
 	 * @param scahaSeasonList the scahaSeasonList to set
 	 */
 	public void setScahaboardmemberlist(MemberList List) {
 		scahaboardmemberlist = List;
+	}
+	
+	/**
+	 * @return the scahaYearList
+	 */
+	public YearList getScahayearlist() {
+		return scahayearlist;
+	}
+
+
+	
+	/**
+	 * @param scahaSeasonList the scahaSeasonList to set
+	 */
+	public void setScahayearlist(YearList List) {
+		scahayearlist = List;
 	}
 	
 
@@ -350,6 +368,18 @@ public class ScahaBean implements Serializable,  MailableObject {
 		db.free();
 	}
 
+	public void setMeetingminutes() {
+
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		try {
+			setScahayearlist(YearList.NewYearListFactory(db));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.free();
+	}
+	
 	/**
 	 * @return the scahaschedule
 	 */
