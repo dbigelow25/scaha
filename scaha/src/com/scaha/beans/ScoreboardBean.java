@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
@@ -23,7 +24,7 @@ import com.scaha.objects.Schedule;
 import com.scaha.objects.ScheduleList;
 
 @ManagedBean
-@ViewScoped
+@RequestScoped
 public class ScoreboardBean implements Serializable,  MailableObject {
 
 	@ManagedProperty(value="#{scahaBean}")
@@ -76,8 +77,6 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	
 	
 	
-	
-	
 	/**
 	 * This guy builds up the scoreboard related information..
 	 * Then routes the user to the correct page
@@ -103,51 +102,66 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		
 	}
 	
+	/**
+	 * Recalc schedule for season..
+	 */
+	public void onSeasonChange() {
+		refreshSelectedItems();
+	}
 	
 	private void refreshSelectedItems() {
 		
 		//
 		// ok.. lets do the schedules now..
 		//
+		
 		schedlist = new ArrayList<SelectItem>();
-        SelectItemGroup sgpre = new SelectItemGroup("Pre Season");
-        SelectItemGroup sgreg  = new SelectItemGroup("Regular Season");
-        SelectItemGroup sgpst = new SelectItemGroup("Post Season");
-        SelectItemGroup sgoth = new SelectItemGroup("Other");
-        
-        List<SelectItem> lpre = new ArrayList<SelectItem>();
-        List<SelectItem> lreg = new ArrayList<SelectItem>();
-        List<SelectItem> lpst = new ArrayList<SelectItem>();
-        List<SelectItem> loth = new ArrayList<SelectItem>();
-        
-        for (Schedule s : this.getSchedules()) {
-        	if (s.getDescription().contains("Pre Season")) {
-        		lpre.add(new SelectItem(s, s.toString()));
-        	} else if (s.getDescription().contains("Regular")) {
-        		lreg.add(new SelectItem(s, s.toString()));
-        	} else if (s.getDescription().contains("Post Season")) {
-        		lpst.add(new SelectItem(s, s.toString()));
-        	} else { 
-        		loth.add(new SelectItem(s, s.toString()));
-        		
-        	}
-        }
-        if (lpre.size() > 0) {
-        	sgpre.setSelectItems(lpre.toArray(new SelectItem[lpre.size()]));
-        	schedlist.add(sgpre);
-        }
-        if (lreg.size() > 0) {
-            sgreg.setSelectItems(lreg.toArray(new SelectItem[lreg.size()]));
-        	schedlist.add(sgreg);
-        }
-        if (lpst.size() > 0) {
-            sgpst.setSelectItems(lpst.toArray(new SelectItem[lpst.size()]));
-        }
-        if (loth.size() > 0) {
-            sgoth.setSelectItems(loth.toArray(new SelectItem[loth.size()]));
-        	schedlist.add(sgoth);
-        }
-        
+		LOGGER.info("Refresh.. season is:" + season);
+		
+		if (this.season != null) {
+			SelectItemGroup sgpre = new SelectItemGroup("Pre Season");
+	        SelectItemGroup sgreg  = new SelectItemGroup("Regular Season");
+	        SelectItemGroup sgpst = new SelectItemGroup("Post Season");
+	        SelectItemGroup sgoth = new SelectItemGroup("Other");
+	        
+	        List<SelectItem> lpre = new ArrayList<SelectItem>();
+	        List<SelectItem> lreg = new ArrayList<SelectItem>();
+	        List<SelectItem> lpst = new ArrayList<SelectItem>();
+	        List<SelectItem> loth = new ArrayList<SelectItem>();
+	        
+	        for (Schedule s : this.getSchedules()) {
+	        	
+	        	if (s.getSeasontag().equals(this.season.getTag())) {
+		        	if (s.getDescription().contains("Pre Season")) {
+		        		lpre.add(new SelectItem(s, s.toString()));
+		        	} else if (s.getDescription().contains("Regular")) {
+		        		lreg.add(new SelectItem(s, s.toString()));
+		        	} else if (s.getDescription().contains("Post Season")) {
+		        		lpst.add(new SelectItem(s, s.toString()));
+		        	} else { 
+		        		loth.add(new SelectItem(s, s.toString()));
+		        	}
+	        	}
+	        }
+	        
+	        if (lpre.size() > 0) {
+	        	sgpre.setSelectItems(lpre.toArray(new SelectItem[lpre.size()]));
+	        	schedlist.add(sgpre);
+	        }
+	        
+	        if (lreg.size() > 0) {
+	            sgreg.setSelectItems(lreg.toArray(new SelectItem[lreg.size()]));
+	        	schedlist.add(sgreg);
+	        }
+	        if (lpst.size() > 0) {
+	            sgpst.setSelectItems(lpst.toArray(new SelectItem[lpst.size()]));
+	        }
+	        if (loth.size() > 0) {
+	            sgoth.setSelectItems(loth.toArray(new SelectItem[loth.size()]));
+	        	schedlist.add(sgoth);
+	        }
+	        
+		}
         //
 		// ok.. lets do the seasons now..
 		//
