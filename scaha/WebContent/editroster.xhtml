@@ -55,6 +55,36 @@
 	            <p:commandButton id="wwrelease" value="Edit Player" action="#{editrosterBean.editrosterdetail(player)}" />
 			</p:column>
     	</p:dataTable>
+    	<p:spacer width="10" height="10" />
+    	<p:dataTable id="listofcoaches" var="coach" value="#{editrosterBean.getCoaches()}" >
+			<p:column style="font-size: 12px;align: center;" headerText="">
+            	#{coach.getTeamrole()}
+           	</p:column >
+        	<p:column style="font-size: 12px;align: center;" headerText="Last Name">
+            	#{coach.getLastname()}
+           	</p:column >
+        	<p:column style="font-size: 12px;align: center;" headerText="First Name">
+            	#{coach.getFirstname()}
+           	</p:column >
+        	<p:column style="font-size: 12px;" headerText="Eligibility">
+            	#{coach.getEligibility()}
+           	</p:column >
+        	<p:column style="font-size: 12px;" headerText="Drop">
+            	#{coach.getDrop()}
+           	</p:column >
+        	<p:column style="font-size: 12px;" headerText="Added">
+            	#{coach.getAdded()}
+           	</p:column >
+        	<p:column style="font-size: 12px;" headerText="Active">
+            	#{coach.getActive()}
+           	</p:column >
+        	<p:column style="font-size: 12px;" headerText="Updated">
+            	#{coach.getUpdated()}
+           	</p:column >
+        	<p:column headerText="Option" >  
+	            <p:commandButton id="coachloi" value="Edit Coach" action="#{editrosterBean.editcoachrosterdetail(coach)}" />
+			</p:column>
+    	</p:dataTable>
     </p:panel>
     </h:form>
     <p:spacer width="10" height="10" />

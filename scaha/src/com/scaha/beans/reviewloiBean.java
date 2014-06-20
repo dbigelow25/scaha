@@ -413,7 +413,7 @@ public class reviewloiBean implements Serializable {
 		}
 	}
 	
-public void confirmLoi(Player selectedPlayer){
+	public void confirmLoi(Player selectedPlayer){
 	
 	String sidplayer = selectedPlayer.getRosterid();
 		
@@ -460,5 +460,41 @@ public void confirmLoi(Player selectedPlayer){
 			e.printStackTrace();
 		}
 	}
+	
+	public void confirmLoifromview(Integer sidplayer){
+		
+			ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+			
+			try{
+
+				if (db.setAutoCommit(false)) {
+				
+					//Need to provide info to the stored procedure to save or update
+	 				LOGGER.info("verify loi code provided");
+	 				CallableStatement cs = db.prepareCall("CALL scaha.confirmCoachLoi(?)");
+	    		    cs.setInt("icoachid", sidplayer);
+	    		    cs.executeQuery();
+	    		    LOGGER.info("We have confirmed loi for player id:" + sidplayer.toString());
+	    			
+	    			db.commit();
+	    			db.cleanup();
+	 			} else {
+			
+				}
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				LOGGER.info("ERROR IN Confirming player id " + sidplayer.toString());
+				e.printStackTrace();
+				db.rollback();
+			} finally {
+				//
+				// always clean up after yourself..
+				//
+				db.free();
+			}
+			
+		}
+	
 }
 

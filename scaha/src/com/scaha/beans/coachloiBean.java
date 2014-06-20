@@ -225,10 +225,10 @@ public class coachloiBean implements Serializable, MailableObject {
 	public String getTextBody() {
 		// TODO Auto-generated method stub
 		List<String> myTokens = new ArrayList<String>();
-		myTokens.add("LOIDATE:" + this.currentdate);
-		myTokens.add("FIRSTNAME:" + this.firstname);
-		myTokens.add("LASTNAME:" + this.lastname);
-		myTokens.add("CLUBNAME:" + this.getClubName());
+		myTokens.add("LOIDATE: " + this.currentdate);
+		myTokens.add("FIRSTNAME: " + this.firstname);
+		myTokens.add("LASTNAME: " + this.lastname);
+		myTokens.add("CLUBNAME: " + this.getClubName());
 		
 		if (this.sendingnote){
 			myTokens.add("BOYSTEAMS:" + this.displayselectedteam + " ");
@@ -237,29 +237,29 @@ public class coachloiBean implements Serializable, MailableObject {
 			if (this.listofboysteams==null){
 				myTokens.add("BOYSTEAMS:  ");
 			} else {
-				myTokens.add("BOYSTEAMS:" + this.listofboysteams + " ");
+				myTokens.add("BOYSTEAMS: " + this.listofboysteams + " ");
 			}
 			if (this.listofgirlsteams==null){
 				myTokens.add("GIRLSTEAMS:  ");
 			}else {
-				myTokens.add("GIRLSTEAMS:" + this.listofgirlsteams + " ");
+				myTokens.add("GIRLSTEAMS: " + this.listofgirlsteams + " ");
 			}
 			
 		}
-		myTokens.add("ADDRESS:" + this.address);
-		myTokens.add("CITY:" + this.city);
-		myTokens.add("STATE:" + this.state);
-		myTokens.add("ZIP:" + this.zip);
-		myTokens.add("SCREENINGEXPIRES:" + this.screeningexpires);
-		myTokens.add("CEPNUM:" + this.cepnumber);
-		myTokens.add("CEPLEVEL:" + this.cepleveldisplay);
-		myTokens.add("CEPEXPIRES:" + this.cepexpires);
-		myTokens.add("CEPMODULE:" + this.cepmoduledisplaystring);
-		myTokens.add("SAFESPORT:" + this.displaysafesport);
-		myTokens.add("HOMENUMBER:" + this.homenumber);
-		myTokens.add("EMAIL:" + this.email);
-		myTokens.add("COACHROLE:" + this.coachrole);
-		myTokens.add("NOTES:" + this.notes);
+		myTokens.add("ADDRESS: " + this.address);
+		myTokens.add("CITY: " + this.city);
+		myTokens.add("STATE: " + this.state);
+		myTokens.add("ZIP: " + this.zip);
+		myTokens.add("SCREENINGEXPIRES: " + this.screeningexpires);
+		myTokens.add("CEPNUM: " + this.cepnumber);
+		myTokens.add("CEPLEVEL: " + this.cepleveldisplay);
+		myTokens.add("CEPEXPIRES: " + this.cepexpires);
+		myTokens.add("CEPMODULE: " + this.cepmoduledisplaystring);
+		myTokens.add("SAFESPORT: " + this.displaysafesport);
+		myTokens.add("HOMENUMBER: " + this.homenumber);
+		myTokens.add("EMAIL: " + this.email);
+		myTokens.add("COACHROLE: " + this.coachrole);
+		myTokens.add("NOTES: " + this.notes);
 		if (this.sendingnote){
 			return Utils.mergeTokens(coachloiBean.sendingnote_reg_body, myTokens);
 		} else {

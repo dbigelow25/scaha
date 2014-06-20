@@ -10,18 +10,13 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.el.ValueExpression;
-import javax.faces.application.Application;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
-import com.scaha.objects.Club;
+import com.scaha.objects.Coach;
 import com.scaha.objects.Player;
-import com.scaha.objects.PlayerDataModel;
-import com.scaha.objects.Team;
 
 //import com.gbli.common.SendMailSSL;
 
@@ -33,6 +28,8 @@ public class editrosterBean implements Serializable {
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	transient private ResultSet rs = null;
 	private List<Player> players = null;
+	private List<Coach> coaches = null;
+	private Coach selectedcoach = null;
 	private Player selectedplayer = null;
 	private Integer teamid = null;
 	private String teamname = null;
@@ -83,6 +80,7 @@ public class editrosterBean implements Serializable {
     
     public void getRoster(){
 		List<Player> templist = new ArrayList<Player>();
+		List<Coach> tempcoachlist = new ArrayList<Coach>();
 		
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	
@@ -102,7 +100,7 @@ public class editrosterBean implements Serializable {
 			rs.close();
 			db.cleanup();
     		
-    		//next get roster
+    		//next get player roster
 //TODO			cs = db.prepareCall("CALL scaha.getRosterByTeamId(?)");
 			cs = db.prepareCall("CALL scaha.getRosterPlayersByTeamId(?)");
 			cs.setInt("teamid", this.teamid);
@@ -140,6 +138,45 @@ public class editrosterBean implements Serializable {
 			rs.close();
 			db.cleanup();
     		
+			//next get coach roster
+			//TODO			cs = db.prepareCall("CALL scaha.getRosterByTeamId(?)");
+			cs = db.prepareCall("CALL scaha.getRosterCoachesByTeamId(?)");
+			cs.setInt("teamid", this.teamid);
+		    rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					String coachid = rs.getString("idroster");
+					String cfname = rs.getString("fname");
+					String clname = rs.getString("lname");
+					String celigibility = rs.getString("eligibility");
+					String cdrop = rs.getString("dropped");
+					String cadded = rs.getString("added");
+					String cactive = rs.getString("active");
+					String cupdated = rs.getString("updated");
+					String teamrole = rs.getString("teamrole");
+					
+					
+					Coach coach = new Coach();
+					coach.setIdcoach(coachid);
+					coach.setFirstname(cfname);
+					coach.setLastname(clname);
+					coach.setEligibility(celigibility);
+					coach.setDrop(cdrop);
+					coach.setAdded(cadded);
+					coach.setActive(cactive);
+					coach.setUpdated(cupdated);
+					coach.setTeamrole(teamrole);
+					
+					tempcoachlist.add(coach);
+				}
+				LOGGER.info("We have results for team roster");
+			}
+			rs.close();
+			db.cleanup();
+			    		
+			
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN loading teams");
@@ -153,8 +190,18 @@ public class editrosterBean implements Serializable {
     	}
 		
     	setPlayers(templist);
+    	setCoaches(tempcoachlist);
 		
 	}
+    
+    public List<Coach> getCoaches(){
+		return coaches;
+	}
+	
+	public void setCoaches(List<Coach> list){
+		coaches = list;
+	}
+	
     
     public List<Player> getPlayers(){
 		return players;
@@ -166,6 +213,18 @@ public class editrosterBean implements Serializable {
 	
 	public void editrosterdetail(Player splayer){
 		String idplayer = splayer.getIdplayer();
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		try{
+			context.getExternalContext().redirect("editrosterdetail.xhtml?playerid=" + idplayer + "&teamid=" + this.teamid);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void editcoachrosterdetail(Coach scoach){
+		String idplayer = scoach.getIdcoach();
 		
 		FacesContext context = FacesContext.getCurrentInstance();
 		try{
