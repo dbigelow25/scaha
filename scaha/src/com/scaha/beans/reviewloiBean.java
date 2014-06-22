@@ -39,23 +39,28 @@ public class reviewloiBean implements Serializable {
 	private String selectedclub = null;
 	private String selectedplayerid = null;
 	private String notes = null;
+	private Integer rosteridforconfirm = null;
 	
-	
-	@PostConstruct
+ 	@PostConstruct
     public void init() {
 		players = new ArrayList<Player>();  
         PlayerDataModel = new PlayerDataModel(players);
         this.setSelectedtabledisplay("1");
         
         playersDisplay();
-
     }
 	
     public reviewloiBean() {  
          
     }  
     
+    public Integer getRosteridforconfirm(){
+    	return rosteridforconfirm;
+    }
     
+    public void setRosteridforconfirm(Integer value){
+    	rosteridforconfirm=value;
+    }
     
     public String getSelectedplayerid(){
     	return selectedplayerid;
@@ -403,10 +408,11 @@ public class reviewloiBean implements Serializable {
 	public void viewLoi(Player selectedPlayer){
 		
 		String sidplayer = selectedPlayer.getIdplayer();
+		String sidroster = selectedPlayer.getRosterid();
 				
 		FacesContext context = FacesContext.getCurrentInstance();
 		try{
-			context.getExternalContext().redirect("scahaviewloi.xhtml?playerid=" + sidplayer);
+			context.getExternalContext().redirect("scahaviewloi.xhtml?playerid=" + sidplayer + "&rid=" + sidroster);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -470,7 +476,7 @@ public class reviewloiBean implements Serializable {
 				if (db.setAutoCommit(false)) {
 				
 					//Need to provide info to the stored procedure to save or update
-	 				LOGGER.info("verify loi code provided");
+	 				LOGGER.info("confirming player :" + sidplayer);
 	 				CallableStatement cs = db.prepareCall("CALL scaha.confirmCoachLoi(?)");
 	    		    cs.setInt("icoachid", sidplayer);
 	    		    cs.executeQuery();
@@ -492,6 +498,14 @@ public class reviewloiBean implements Serializable {
 				// always clean up after yourself..
 				//
 				db.free();
+			}
+		
+			FacesContext context = FacesContext.getCurrentInstance();
+			try{
+				context.getExternalContext().redirect("confirmlois.xhtml");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			
 		}

@@ -44,6 +44,10 @@ public class Venue extends ScahaObject implements Serializable {
 		//
 	}
 
+	public Venue(){
+		
+	}
+	
 	/**
 	 * @return the tag
 	 */
