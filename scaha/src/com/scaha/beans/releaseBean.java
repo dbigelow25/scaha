@@ -888,19 +888,24 @@ public class releaseBean implements Serializable, MailableObject {
     					this.displayacceptingskilllevel = rs.getString("levelsname");
     					this.displayfinancial = rs.getString("financial");
     				}
-    				LOGGER.info("We have results for club list");
+    				LOGGER.info("We have results for release info");
     			}
     			rs.close();
     			db.cleanup();
     			//need to send email to club registrars, family, and scaha registrar
     			//first releasing club
+    			to = "";
     			LOGGER.info("Sending email to club registrar, family, and scaha registrar");
     			cs = db.prepareCall("CALL scaha.getClubRegistrarEmail(?)");
     		    cs.setInt("iclubid", this.clubid);
     		    rs = cs.executeQuery();
     		    if (rs != null){
     				while (rs.next()) {
-    					to = rs.getString("usercode");
+    					if (to.equals("")){
+    						to = rs.getString("usercode");
+    					}else{
+    						to = to + ',' + rs.getString("usercode");
+    					}
     				}
     			}
     		    rs.close();
@@ -911,7 +916,12 @@ public class releaseBean implements Serializable, MailableObject {
     		    rs = cs.executeQuery();
     		    if (rs != null){
     				while (rs.next()) {
-    					to = rs.getString("usercode");
+    					if (to.equals("")){
+    						to = rs.getString("usercode");
+    					}else{
+    						to = to + ',' + rs.getString("usercode");
+    					}
+    					
     				}
     			}
     		    rs.close();
