@@ -511,6 +511,12 @@ public class releaseBean implements Serializable, MailableObject {
     		db.free();
     	}
 		
+    	//need to add a non-scaha option for accepting club
+    	Club club = new Club();
+		club.setClubid("999");
+		club.setClubname("Non-SCAHA");
+		templist.add(club);
+    	
     	setClubs(templist);
 		
 		return getClubs();
@@ -883,7 +889,12 @@ public class releaseBean implements Serializable, MailableObject {
     				while (rs.next()) {
     					this.displayreason = rs.getString("reasonname");
     					this.displaysuspension = rs.getString("suspension");
-    					this.displayacceptingclub = rs.getString("acceptingclubname");
+    					if (this.selectedacceptingclub.equals("999")){
+    						this.displayacceptingclub = "Non-SCAHA";
+    					}else{
+    						this.displayacceptingclub = rs.getString("acceptingclubname");
+    					}
+    					
     					this.displayacceptingdivision = rs.getString("division_name");
     					this.displayacceptingskilllevel = rs.getString("levelsname");
     					this.displayfinancial = rs.getString("financial");
