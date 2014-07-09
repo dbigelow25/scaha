@@ -27,10 +27,20 @@ public class Tournament extends ScahaObject implements Serializable {
 	private String email = null;
 	private List<Venue> venues = null;
 	private List<TournamentDivision> divisions = null;
+	private String requestingteam = null;
 	
 	public Tournament (){ 
 		
 	}
+	
+	public String getRequestingteam(){
+		return requestingteam;
+	}
+	
+	public void setRequestingteam(String value){
+		requestingteam=value;
+	}
+	
 	
 	public String getEmail(){
 		return email;

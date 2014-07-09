@@ -76,9 +76,18 @@
 							url="adminportal.xhtml"
 							rendered="#{profileBean.isSuperUser()}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
-							value="Manager Portal(Not PR)" 
+							value="Manager Portal" 
 							url="managerportal.xhtml"
 							rendered="#{profileBean.isSuperUser()}" />
+						<p:menuitem style="font-size: 10pt;width:225px;"
+							value="Approve Tourney Req" 
+							url="approvetournaments.xhtml"
+							rendered="#{profileBean.isSuperUser()}" />
+						<p:menuitem style="font-size: 10pt;width:225px;"
+							value="Approve Exhibition Req" 
+							url="approveexhibitiongames.xhtml"
+							rendered="#{profileBean.isSuperUser()}" />
+						
 						<p:menuitem style="font-size: 10pt;width:225px;" 
 							value="Manage Your Teams"
 							url="addteams.xhtml"
