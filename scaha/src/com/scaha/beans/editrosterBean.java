@@ -118,6 +118,7 @@ public class editrosterBean implements Serializable {
 					String active = rs.getString("active");
 					String updated = rs.getString("updated");
 					String jerseynumber = rs.getString("jerseynumber");
+					String dob = rs.getString("dob");
 					
 					
 					Player player = new Player();
@@ -130,6 +131,7 @@ public class editrosterBean implements Serializable {
 					player.setActive(active);
 					player.setUpdated(updated);
 					player.setJerseynumber(jerseynumber);
+					player.setDob(dob);
 					
 					templist.add(player);
 				}
