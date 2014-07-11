@@ -18,15 +18,15 @@
 				</td>
 			</tr>
 		</table>
- 		<p:dataTable var="scholarathlete" value="#{scholarathleteBean.getScholarAthletes()}" border="1">  
-	        <p:column headerText="Name" style="text-align: center">  
-	            <h:outputText value="#{scholarathlete.getName()}" />  
+ 		<p:dataTable var="result" value="#{scholarathleteBean.getListofplayers()}" paginator="true" rows="12" >
+ 		    <p:column headerText="Name" style="text-align: center">  
+	            <h:outputText value="#{result.getPlayername()}" />  
 	        </p:column>  
 	        <p:column headerText="Club" style="text-align: center">  
-	            <h:outputText value="#{scholarathlete.getClub()}" />  
+	            <h:outputText value="#{result.getCurrentteam()}" />  
 	        </p:column>  
 	        <p:column headerText="Division" style="text-align: center">  
-	            <h:outputText value="#{scholarathlete.getDivision()}"/>
+	            <h:outputText value="#{result.getDob()} #{result.getAddress()}"/>
 	        </p:column>  
 		</p:dataTable>
  	</p:panel>
