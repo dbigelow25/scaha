@@ -34,13 +34,13 @@ public class MemberList extends ListDataModel<Member> implements Serializable, S
     }  
 
 	
-	public static MemberList NewBoardmemberListFactory(ScahaDatabase _db) throws SQLException {
+	public static MemberList NewBoardmemberListFactory(ScahaDatabase _db,String sqlparam) throws SQLException {
 		
 		LOGGER.info ("Getting list of board members");
 
 		List<Member> data = new ArrayList<Member>();
 	
-		PreparedStatement ps = _db.prepareStatement("call scaha.getScahaBoardMembers()");
+		PreparedStatement ps = _db.prepareStatement(sqlparam);
 		
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
