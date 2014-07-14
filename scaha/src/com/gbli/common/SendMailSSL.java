@@ -68,7 +68,11 @@ public class SendMailSSL {
 	 * We will start simple here and hardcode for now..
 	 * 
 	 */
+	
 	public final void sendMail() {
+		this.sendMail(null);
+	}
+	public final void sendMail(String _strFromTag) {
  
  		try {
  
@@ -78,7 +82,9 @@ public class SendMailSSL {
  			LOGGER.info("Instansiating a new message for e-mail...");
  			
 			Message message = new MimeMessage(m_sess);
-			message.setFrom(new InternetAddress(SendMailSSL.getUsername()+"@iscaha.com","iScaha Online InfoHub"));
+			message.setFrom(new InternetAddress(SendMailSSL.getUsername()+"@iscaha.com","iscaha InfoHub" + (_strFromTag != null ? "(" + _strFromTag + ")" : "" )));
+			// TODO
+			// message.setReplyTo(m_mo. lets get replay to)
 			
 			//
 			// We are moving from String based to InternetAddress Based
