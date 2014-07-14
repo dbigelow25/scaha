@@ -44,9 +44,9 @@ public class ScheduleList extends ListDataModel<Schedule> implements Serializabl
 		// Lets go get all the schedules for a given general season..
 		// 
 		
-		CallableStatement cs = (CallableStatement) _db.prepareCall("call scaha.getAllSchedulesBySeasonTag(?)");
-		cs.setString(1, _gs.getTag());
-		ResultSet rs = cs.executeQuery();
+		PreparedStatement ps  =  _db.prepareStatement("call scaha.getAllSchedulesBySeasonTag(?)");
+		ps.setString(1, _gs.getTag());
+		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 			int i = 1;
 			Schedule sch = new Schedule(_pro,rs.getInt(i++));
@@ -58,7 +58,6 @@ public class ScheduleList extends ListDataModel<Schedule> implements Serializabl
 			sch.setTag(rs.getString(i++));
 			sch.setRank(rs.getInt(i++));
 			sch.setTeamcount(rs.getInt(i++));
-			sch.setByeteamcount(rs.getInt(i++));
 			sch.setStartdate(rs.getString(i++));
 			sch.setEnddate(rs.getString(i++));
 			sch.setLocked((rs.getInt(i++) == 1 ? true : false));
@@ -68,10 +67,21 @@ public class ScheduleList extends ListDataModel<Schedule> implements Serializabl
 			sch.setMaxbyecnt(rs.getInt(i++));
 			sch.setMaxawaycnt(rs.getInt(i++));
 			data.add(sch);
+			//
+			// test out participant 
+			// 
+			_db.syncTeamsToSchedule(sch, _gs);
+			//
+			// lets refresh ourselves
+			//
+			sch.refresh(_db);
+
+			_db.genGames(sch);
+			
 			LOGGER.info("Adding schedule " + sch + " to the list...");
 		}
 		rs.close();
-		cs.close();
+		ps.close();
 		return new ScheduleList(data);
 	}
 		

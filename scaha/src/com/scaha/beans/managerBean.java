@@ -125,11 +125,11 @@ public class managerBean implements Serializable, MailableObject {
         this.setProfid(pb.getProfile().ID);
         
         getClubID();
-        isClubHighSchool();
+        //isClubHighSchool();
     	setTodaysDate();
     	setAddingflags();
-        //teamid = 131;
-        this.setTeamid(pb.getProfile().getManagerteamid());
+        teamid = pb.getProfile().getManagerteamid();
+        this.setTeamid(teamid);
         
         
         //Load team roster
@@ -200,43 +200,43 @@ public class managerBean implements Serializable, MailableObject {
 		List<String> myTokens = new ArrayList<String>();
 		String result = "";
 		if (this.addingtournament){
-			myTokens.add("REQUESTINGTEAM:" + this.teamname);
-			myTokens.add("REQUESTDATE:" + this.todaysdate);
-			myTokens.add("TOURNAMENTNAME:" + this.tournamentname);
-			myTokens.add("LEVELPLAYED:" + this.levelplayed);
-			myTokens.add("STARTDATE:" + this.startdate);
-			myTokens.add("ENDDATE:" + this.enddate);
-			myTokens.add("CONTACT:" + this.contact);
-			myTokens.add("PHONE:" + this.phone);
-			myTokens.add("SANCTION:" + this.sanction);
-			myTokens.add("LOCATION:" + this.location);
-			myTokens.add("WEBSITE:" + this.website);
-			myTokens.add("STATUS:" + "Pending");
+			myTokens.add("REQUESTINGTEAM: " + this.teamname);
+			myTokens.add("REQUESTDATE: " + this.todaysdate);
+			myTokens.add("TOURNAMENTNAME: " + this.tournamentname);
+			myTokens.add("LEVELPLAYED: " + this.levelplayed);
+			myTokens.add("STARTDATE: " + this.startdate);
+			myTokens.add("ENDDATE: " + this.enddate);
+			myTokens.add("CONTACT: " + this.contact);
+			myTokens.add("PHONE: " + this.phone);
+			myTokens.add("SANCTION: " + this.sanction);
+			myTokens.add("LOCATION: " + this.location);
+			myTokens.add("WEBSITE: " + this.website);
+			myTokens.add("STATUS: " + "Pending");
 			
 			result = Utils.mergeTokens(managerBean.mail_tournament_body,myTokens);
 		}
 		
 		if (this.addingtournamentgame){
-			myTokens.add("REQUESTINGTEAM:" + this.teamname);
-			myTokens.add("REQUESTDATE:" + this.todaysdate);
-			myTokens.add("TOURNAMENTNAME:" + this.tournamentname);
-			myTokens.add("GAMEDATE:" + this.gamedate);
-			myTokens.add("GAMETIME:" + this.gametime);
-			myTokens.add("OPPONENT:" + this.opponent);
-			myTokens.add("LOCATION:" + this.tourneygamelocation);
-			myTokens.add("STATUS:" + "Pending");
+			myTokens.add("REQUESTINGTEAM: " + this.teamname);
+			myTokens.add("REQUESTDATE: " + this.todaysdate);
+			myTokens.add("TOURNAMENTNAME: " + this.tournamentname);
+			myTokens.add("GAMEDATE: " + this.gamedate);
+			myTokens.add("GAMETIME: " + this.gametime);
+			myTokens.add("OPPONENT: " + this.opponent);
+			myTokens.add("LOCATION: " + this.tourneygamelocation);
+			myTokens.add("STATUS: " + "Pending");
 			
 			result = Utils.mergeTokens(managerBean.mail_tournamentgame_body,myTokens);
 		}
 		
 		if (this.addingexhibitiongame){
-			myTokens.add("REQUESTINGTEAM:" + this.teamname);
-			myTokens.add("REQUESTDATE:" + this.todaysdate);
-			myTokens.add("GAMEDATE:" + this.gamedate);
-			myTokens.add("GAMETIME:" + this.gametime);
-			myTokens.add("OPPONENT:" + this.opponent);
-			myTokens.add("LOCATION:" + this.exhibitiongamelocation);
-			myTokens.add("STATUS:" + "Pending");
+			myTokens.add("REQUESTINGTEAM: " + this.teamname);
+			myTokens.add("REQUESTDATE: " + this.todaysdate);
+			myTokens.add("GAMEDATE: " + this.gamedate);
+			myTokens.add("GAMETIME: " + this.gametime);
+			myTokens.add("OPPONENT: " + this.opponent);
+			myTokens.add("LOCATION: " + this.exhibitiongamelocation);
+			myTokens.add("STATUS: " + "Pending");
 			
 			result = Utils.mergeTokens(managerBean.mail_exhibitiongame_body,myTokens);
 		}
@@ -490,7 +490,7 @@ public class managerBean implements Serializable, MailableObject {
     public void loadScahaGames(){
     	List<TempGame> tempresult = new ArrayList<TempGame>();
     	//dummy data until schedule is built
-		TempGame ogame = new TempGame();
+		/*TempGame ogame = new TempGame();
 		ogame.setIdgame(1);
 		ogame.setDate("Sat Sep 2nd, 2014");
 		ogame.setTime("12:00 PM");
@@ -522,7 +522,7 @@ public class managerBean implements Serializable, MailableObject {
 		ogame.setAwayscore("");
 		ogame.setHomescore("");
 		tempresult.add(ogame);
-		
+		*/
 		setGames(tempresult);
     	TempGameDataModel = new TempGameDataModel(games);
     }
@@ -828,6 +828,7 @@ public class managerBean implements Serializable, MailableObject {
 		    
 			SendMailSSL mail = new SendMailSSL(this);
 			LOGGER.info("Finished creating mail object for " + this.tournamentname + " Added for " + this.teamname);
+			
 			//set flag for getbody to know which template and values to use
 			this.addingtournament=true;
 			mail.sendMail();

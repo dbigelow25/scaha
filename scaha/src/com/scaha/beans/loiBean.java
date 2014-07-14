@@ -78,6 +78,7 @@ public class loiBean implements Serializable, MailableObject {
 	private Boolean ishighschool = null;
 	private String notes = null;
 	private Boolean sendingnote = null;
+	private Integer rosteridforconfirm = null;
 	
 	@PostConstruct
     public void init() {
@@ -104,12 +105,28 @@ public class loiBean implements Serializable, MailableObject {
     	
     	loadPlayerProfile(selectedplayer);
     	setDisplayplayerup(false);
+    	
+    	//need to get roster id if included in query string to support confirming loi from view loi page for scaha registrar
+    	//will need to load player profile information for confirming loi
+		if(hsr.getParameter("rid") != null)
+	      {
+	  		rosteridforconfirm = Integer.parseInt(hsr.getParameter("rid").toString());
+	      }
     }
 	
 	
 	public loiBean() {  
         
     }  
+	
+	public Integer getRosteridforconfirm(){
+    	return rosteridforconfirm;
+    }
+    
+    public void setRosteridforconfirm(Integer value){
+    	rosteridforconfirm=value;
+    }
+    
 	
 	public Boolean getSendingnote(){
     	return sendingnote;

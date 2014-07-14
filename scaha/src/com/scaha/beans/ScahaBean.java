@@ -47,6 +47,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 	private ClubList ScahaClubList  = null;
 	private GeneralSeasonList ScahaSeasonList = null;
 	private MemberList scahaboardmemberlist = null;
+	private MemberList scahaprogramdirectorlist = null;
 	private ScheduleList scahaschedule = null;
 	private YearList scahayearlist = null;
 	
@@ -308,10 +309,25 @@ public class ScahaBean implements Serializable,  MailableObject {
 	/**
 	 * @param scahaSeasonList the scahaSeasonList to set
 	 */
+	public void setScahaprogramdirectorlist(MemberList List) {
+		scahaprogramdirectorlist = List;
+	}
+	
+	/**
+	 * @return the scahaSeasonList
+	 */
+	public MemberList getScahaprogramdirectorlist() {
+		return scahaprogramdirectorlist;
+	}
+
+
+	
+	/**
+	 * @param scahaSeasonList the scahaSeasonList to set
+	 */
 	public void setScahaboardmemberlist(MemberList List) {
 		scahaboardmemberlist = List;
 	}
-	
 	/**
 	 * @return the scahaYearList
 	 */
@@ -360,7 +376,8 @@ public class ScahaBean implements Serializable,  MailableObject {
 
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		try {
-			setScahaboardmemberlist(MemberList.NewBoardmemberListFactory(db));
+			setScahaboardmemberlist(MemberList.NewBoardmemberListFactory(db,"call scaha.getScahaBoardMembers()"));
+			setScahaprogramdirectorlist(MemberList.NewBoardmemberListFactory(db,"call scaha.getScahaProgramDirectors()"));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

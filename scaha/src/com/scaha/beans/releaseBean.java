@@ -511,6 +511,12 @@ public class releaseBean implements Serializable, MailableObject {
     		db.free();
     	}
 		
+    	//need to add a non-scaha option for accepting club
+    	Club club = new Club();
+		club.setClubid("999");
+		club.setClubname("Non-SCAHA");
+		templist.add(club);
+    	
     	setClubs(templist);
 		
 		return getClubs();
@@ -883,24 +889,34 @@ public class releaseBean implements Serializable, MailableObject {
     				while (rs.next()) {
     					this.displayreason = rs.getString("reasonname");
     					this.displaysuspension = rs.getString("suspension");
-    					this.displayacceptingclub = rs.getString("acceptingclubname");
+    					if (this.selectedacceptingclub.equals("999")){
+    						this.displayacceptingclub = "Non-SCAHA";
+    					}else{
+    						this.displayacceptingclub = rs.getString("acceptingclubname");
+    					}
+    					
     					this.displayacceptingdivision = rs.getString("division_name");
     					this.displayacceptingskilllevel = rs.getString("levelsname");
     					this.displayfinancial = rs.getString("financial");
     				}
-    				LOGGER.info("We have results for club list");
+    				LOGGER.info("We have results for release info");
     			}
     			rs.close();
     			db.cleanup();
     			//need to send email to club registrars, family, and scaha registrar
     			//first releasing club
+    			to = "";
     			LOGGER.info("Sending email to club registrar, family, and scaha registrar");
     			cs = db.prepareCall("CALL scaha.getClubRegistrarEmail(?)");
     		    cs.setInt("iclubid", this.clubid);
     		    rs = cs.executeQuery();
     		    if (rs != null){
     				while (rs.next()) {
-    					to = rs.getString("usercode");
+    					if (to.equals("")){
+    						to = rs.getString("usercode");
+    					}else{
+    						to = to + ',' + rs.getString("usercode");
+    					}
     				}
     			}
     		    rs.close();
@@ -911,7 +927,12 @@ public class releaseBean implements Serializable, MailableObject {
     		    rs = cs.executeQuery();
     		    if (rs != null){
     				while (rs.next()) {
-    					to = rs.getString("usercode");
+    					if (to.equals("")){
+    						to = rs.getString("usercode");
+    					}else{
+    						to = to + ',' + rs.getString("usercode");
+    					}
+    					
     				}
     			}
     		    rs.close();

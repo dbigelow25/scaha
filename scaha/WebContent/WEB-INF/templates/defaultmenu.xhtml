@@ -22,12 +22,14 @@
 							url="safesport.xhtml" />
 						<p:menuitem style="font-size: 12px;" value="2014 Mite Program"
 							url="miteprogram.xhtml" />
-						<p:menuitem style="font-size: 12px;" value="Executive Board"
+						<p:menuitem style="font-size: 12px;" value="Executive Committee"
 							url="boardofdirectors.xhtml" id="executiveboard"/>
 						<p:menuitem style="font-size: 12px;" value="2013-2014 Guidebook"
 							url="downloads/2013-14-SCAHA-Guidebook.pdf" id="guidebook" target="_blank"/>
 						<p:menuitem style="font-size: 12px;" value="Meeting Minutes"
 							url="viewmeetingminutes.xhtml" id="meetingminutes"/>
+						<p:menuitem style="font-size: 12px;" value="Tournaments"
+							url="viewtournamentform.xhtml" id="scahatournaments"/>
 					</p:menuButton>
 					<p:spacer width="2px" />
 					<p:menuButton id="clubs" style="width:125px;" value="Club info">
@@ -36,7 +38,9 @@
 						<p:menuitem style="font-size: 12px;" value="Declarations"
 							url="/declarations.xhtml" />
 						<p:menuitem style="font-size: 12px;" value="Tryouts"
-							url="/viewalltryouts.xhtml" />	
+							url="/viewalltryouts.xhtml" />
+						<p:menuitem style="font-size: 12px;" value="Openings"
+							url="/viewallopenings.xhtml" />	
 					</p:menuButton>
 					<p:spacer width="2px" />
 					<p:menuButton id="menu2" style="width:125px;" value="Season Info"
@@ -72,9 +76,18 @@
 							url="adminportal.xhtml"
 							rendered="#{profileBean.isSuperUser()}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
-							value="Manager Portal(Not PR)" 
+							value="Manager Portal" 
 							url="managerportal.xhtml"
 							rendered="#{profileBean.isSuperUser()}" />
+						<p:menuitem style="font-size: 10pt;width:225px;"
+							value="Approve Tourney Req" 
+							url="approvetournaments.xhtml"
+							rendered="#{profileBean.isSuperUser()}" />
+						<p:menuitem style="font-size: 10pt;width:225px;"
+							value="Approve Exhibition Req" 
+							url="approveexhibitiongames.xhtml"
+							rendered="#{profileBean.isSuperUser()}" />
+						
 						<p:menuitem style="font-size: 10pt;width:225px;" 
 							value="Manage Your Teams"
 							url="addteams.xhtml"

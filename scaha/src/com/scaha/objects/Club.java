@@ -1,11 +1,7 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
-import java.sql.CallableStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import com.gbli.connectors.ScahaDatabase;
@@ -34,6 +30,7 @@ public class Club extends ScahaObject implements Serializable {
 	private TryoutList tryoutlist = null;
 	private TeamList Teams = null;
 	private VenueList Venues = null;
+	private OpeningsList openings = null;
 	
 	/**
 	 * @return the tag
@@ -164,6 +161,20 @@ public class Club extends ScahaObject implements Serializable {
 	 */
 	public TryoutList getTryoutlist() {
 		return tryoutlist;
+	}
+
+	/**
+	 * @param openinglist the openinglist to set
+	 */
+	public void setOpeninglist(OpeningsList tl) {
+		this.openings = tl;
+	}
+	
+	/**
+	 * @return the tryoutlist
+	 */
+	public OpeningsList getOpeninglist() {
+		return openings;
 	}
 
 	/**

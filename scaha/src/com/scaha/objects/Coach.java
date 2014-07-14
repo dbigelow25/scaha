@@ -43,10 +43,68 @@ public class Coach extends ScahaObject implements Serializable {
 	private String email1 = null;
 	private String email2 = null;
 	private String notes = null;
+	private String eligibility = null;
+	private String drop = null;
+	private String added = null;
+	private String active = null;
+	private String updated = null;
+	private String teamrole = null;
+	
 	
 	public Coach (){ 
 		
 	}
+	
+	public String getTeamrole(){
+    	return teamrole;
+    }
+    
+    public void setTeamrole(String fname){
+    	teamrole=fname;
+    } 
+	
+    public String getUpdated(){
+    	return updated;
+    }
+    
+    public void setUpdated(String fname){
+    	updated=fname;
+    } 
+	
+	public String getActive(){
+    	return active;
+    }
+    
+    public void setActive(String fname){
+    	active=fname;
+    } 
+	
+	
+	public String getAdded(){
+    	return added;
+    }
+    
+    public void setAdded(String fname){
+    	added=fname;
+    } 
+	
+	
+	public String getDrop(){
+    	return drop;
+    }
+    
+    public void setDrop(String fname){
+    	drop=fname;
+    } 
+	
+	
+	public String getEligibility(){
+    	return eligibility;
+    }
+    
+    public void setEligibility(String fname){
+    	eligibility=fname;
+    }
 	
 	public String getNotes(){
 		return notes;

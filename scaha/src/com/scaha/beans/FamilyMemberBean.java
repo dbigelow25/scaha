@@ -118,6 +118,7 @@ public class FamilyMemberBean  implements Serializable,  MailableObject  {
 		
 		if (this.currentFM == null)  {
 			LOGGER.info("Did not snag currentFM.. cannot send..bailing");
+			db.free();
 			return "true";
 		}
 		String usar = this.currentFM.getUsaHockeyNumber();

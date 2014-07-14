@@ -39,23 +39,28 @@ public class reviewloiBean implements Serializable {
 	private String selectedclub = null;
 	private String selectedplayerid = null;
 	private String notes = null;
+	private Integer rosteridforconfirm = null;
 	
-	
-	@PostConstruct
+ 	@PostConstruct
     public void init() {
 		players = new ArrayList<Player>();  
         PlayerDataModel = new PlayerDataModel(players);
         this.setSelectedtabledisplay("1");
         
         playersDisplay();
-
     }
 	
     public reviewloiBean() {  
          
     }  
     
+    public Integer getRosteridforconfirm(){
+    	return rosteridforconfirm;
+    }
     
+    public void setRosteridforconfirm(Integer value){
+    	rosteridforconfirm=value;
+    }
     
     public String getSelectedplayerid(){
     	return selectedplayerid;
@@ -403,17 +408,18 @@ public class reviewloiBean implements Serializable {
 	public void viewLoi(Player selectedPlayer){
 		
 		String sidplayer = selectedPlayer.getIdplayer();
+		String sidroster = selectedPlayer.getRosterid();
 				
 		FacesContext context = FacesContext.getCurrentInstance();
 		try{
-			context.getExternalContext().redirect("scahaviewloi.xhtml?playerid=" + sidplayer);
+			context.getExternalContext().redirect("scahaviewloi.xhtml?playerid=" + sidplayer + "&rid=" + sidroster);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-public void confirmLoi(Player selectedPlayer){
+	public void confirmLoi(Player selectedPlayer){
 	
 	String sidplayer = selectedPlayer.getRosterid();
 		
@@ -460,5 +466,49 @@ public void confirmLoi(Player selectedPlayer){
 			e.printStackTrace();
 		}
 	}
+	
+	public void confirmLoifromview(Integer sidplayer){
+		
+			ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+			
+			try{
+
+				if (db.setAutoCommit(false)) {
+				
+					//Need to provide info to the stored procedure to save or update
+	 				LOGGER.info("confirming player :" + sidplayer);
+	 				CallableStatement cs = db.prepareCall("CALL scaha.confirmCoachLoi(?)");
+	    		    cs.setInt("icoachid", sidplayer);
+	    		    cs.executeQuery();
+	    		    LOGGER.info("We have confirmed loi for player id:" + sidplayer.toString());
+	    			
+	    			db.commit();
+	    			db.cleanup();
+	 			} else {
+			
+				}
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				LOGGER.info("ERROR IN Confirming player id " + sidplayer.toString());
+				e.printStackTrace();
+				db.rollback();
+			} finally {
+				//
+				// always clean up after yourself..
+				//
+				db.free();
+			}
+		
+			FacesContext context = FacesContext.getCurrentInstance();
+			try{
+				context.getExternalContext().redirect("confirmlois.xhtml");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+	
 }
 

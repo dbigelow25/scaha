@@ -22,6 +22,8 @@ public class ExhibitionGame extends ScahaObject implements Serializable {
 	private String tournamentname = null;
 	private String status = null;
 	private Boolean rendered = null;
+	private String requestingteam = null;
+	private String manageremail = null;
 	
 	public ExhibitionGame (){ 
 		
@@ -35,7 +37,24 @@ public class ExhibitionGame extends ScahaObject implements Serializable {
     	rendered=fname;
     }
 	
-	public String getDate(){
+    
+    public String getManageremail(){
+    	return manageremail;
+    }
+    
+    public void setManageremail(String fname){
+    	manageremail=fname;
+    }
+    
+    public String getRequestingteam(){
+    	return requestingteam;
+    }
+    
+    public void setRequestingteam(String fname){
+    	requestingteam=fname;
+    }
+    
+    public String getDate(){
     	return date;
     }
     

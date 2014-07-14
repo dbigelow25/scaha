@@ -1,12 +1,21 @@
 package com.scaha.objects;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Logger;
+
+import com.gbli.connectors.ScahaDatabase;
+import com.gbli.context.ContextManager;
+
 public class Schedule extends ScahaObject {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+
 	
 	private String scheduleweektag = null;
 	private String seasontag = null;
@@ -14,9 +23,7 @@ public class Schedule extends ScahaObject {
 	private String divsname = null;
 	private String gametag = null;
 	private String description = null;
-	private int gamecount = 0;
 	private int teamcount = 0;
-	private int byeteamcount = 0;
 	private boolean playonce = false;
 	private boolean locked = false;
 	private int rank = 0;
@@ -128,22 +135,6 @@ public class Schedule extends ScahaObject {
 
 
 	/**
-	 * @return the gamecount
-	 */
-	public int getGamecount() {
-		return gamecount;
-	}
-
-
-	/**
-	 * @param gamecount the gamecount to set
-	 */
-	public void setGamecount(int gamecount) {
-		this.gamecount = gamecount;
-	}
-
-
-	/**
 	 * @return the teamcount
 	 */
 	public int getTeamcount() {
@@ -158,21 +149,6 @@ public class Schedule extends ScahaObject {
 		this.teamcount = teamcount;
 	}
 
-
-	/**
-	 * @return the byeteamcount
-	 */
-	public int getByeteamcount() {
-		return byeteamcount;
-	}
-
-
-	/**
-	 * @param byeteamcount the byeteamcount to set
-	 */
-	public void setByeteamcount(int byeteamcount) {
-		this.byeteamcount = byeteamcount;
-	}
 
 
 	/**
@@ -336,6 +312,40 @@ public class Schedule extends ScahaObject {
 	 */
 	public void setMaxgamecnt(int maxgamecnt) {
 		this.maxgamecnt = maxgamecnt;
+	}
+	
+	/**
+	 * Get the latest Details of myself..
+	 * 
+	 * @param _db
+	 * @throws SQLException
+	 */
+	public void refresh(ScahaDatabase _db) throws SQLException {
+		
+		LOGGER.info("Refreshing Object Data for schedule " + this);
+		PreparedStatement ps  =  _db.prepareStatement("call scaha.getScheduleById(?)");
+		ps.setInt(1, this.ID);
+		ResultSet rs = ps.executeQuery();
+		int i=1;
+		if (rs.next()) {
+			setDescription(rs.getString(i++));
+			setScheduleweektag(rs.getString(i++));
+			setSeasontag(rs.getString(i++));
+			setGametag(rs.getString(i++));
+			setDivsname(rs.getString(i++));
+			setTag(rs.getString(i++));
+			setRank(rs.getInt(i++));
+			setTeamcount(rs.getInt(i++));
+			setStartdate(rs.getString(i++));
+			setEnddate(rs.getString(i++));
+			setLocked((rs.getInt(i++) == 1 ? true : false));
+			setPlayonce((rs.getInt(i++) == 1 ? true : false));
+			setMingamecnt(rs.getInt(i++));
+			setMaxgamecnt(rs.getInt(i++));
+			setMaxbyecnt(rs.getInt(i++));
+			setMaxawaycnt(rs.getInt(i++));
+		}
+		rs.close();
 	}
 
 }

@@ -170,7 +170,7 @@
 						</h:panelGrid>
 			    	</p:overlayPanel> 
 					<br></br>
-					<p:dataTable id="tournaments" var="tournament" value="#{managerBean.getTournamentdatamodel()}" selection="#{managerBean.selectedtournament}" rows="10" autoupdate="false">
+					<p:dataTable id="tournaments" var="tournament" value="#{managerBean.getTournamentdatamodel()}" selection="#{managerBean.selectedtournament}" rows="5" autoupdate="false">
 			            <f:facet name="header">  
 				        	2014-2015 TOURNAMENTS PLAYING IN
 				        </f:facet> 
@@ -243,7 +243,7 @@
 						
 			    	</p:overlayPanel> 
 					<br></br>
-					<p:dataTable id="tournamentgames" var="tournamentgame" value="#{managerBean.getTournamentgamedatamodel()}" selection="#{managerBean.selectedtournamentgame}" rows="10" autoupdate="false">
+					<p:dataTable id="tournamentgames" var="tournamentgame" value="#{managerBean.getTournamentgamedatamodel()}" selection="#{managerBean.selectedtournamentgame}" paginator="true" rows="5" autoupdate="false">
 			            <f:facet name="header">  
 				        	2014-2015 TOURNAMENT GAMES
 				        </f:facet> 
@@ -314,7 +314,7 @@
 						
 			    	</p:overlayPanel> 
 					<br></br>
-					<p:dataTable id="exhibitiongames" var="exhibitiongame" value="#{managerBean.getExhibitiongamedatamodel()}" selection="#{managerBean.selectedexhibitiongame}" rows="10" autoupdate="false">
+					<p:dataTable id="exhibitiongames" var="exhibitiongame" value="#{managerBean.getExhibitiongamedatamodel()}" selection="#{managerBean.selectedexhibitiongame}" paginator="true" rows="5" autoupdate="false">
 			            <f:facet name="header">  
 				        	2014-2015 Exhibition GAMES
 				        </f:facet> 

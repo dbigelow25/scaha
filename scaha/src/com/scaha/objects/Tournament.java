@@ -1,15 +1,9 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
-import java.sql.CallableStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Vector;
+import java.util.List;
 import java.util.logging.Logger;
 
-import org.primefaces.event.CellEditEvent;
-
-import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
 public class Tournament extends ScahaObject implements Serializable {
@@ -27,10 +21,77 @@ public class Tournament extends ScahaObject implements Serializable {
 	private String website = null;
 	private String status = null;
 	private Boolean rendered = null;
+	private String sanction = null;
+	private String startdate = null;
+	private String enddate = null;
+	private String email = null;
+	private List<Venue> venues = null;
+	private List<TournamentDivision> divisions = null;
+	private String requestingteam = null;
 	
 	public Tournament (){ 
 		
 	}
+	
+	public String getRequestingteam(){
+		return requestingteam;
+	}
+	
+	public void setRequestingteam(String value){
+		requestingteam=value;
+	}
+	
+	
+	public String getEmail(){
+		return email;
+	}
+	
+	public void setEmail(String value){
+		email=value;
+	}
+	
+	public String getEnddate(){
+		return enddate;
+	}
+	
+	public void setEnddate(String value){
+		enddate=value;
+	}
+	
+	
+	public List<Venue> getVenues(){
+		return venues;
+	}
+	
+	public void setVenues(List<Venue> list){
+		venues = list;
+	}
+	
+	public List<TournamentDivision> getDivisions(){
+		return divisions;
+	}
+	
+	public void setDivisions(List<TournamentDivision> list){
+		divisions = list;
+	}
+	
+	
+	public String getStartdate(){
+		return startdate;
+	}
+	
+	public void setStartdate(String value){
+		startdate=value;
+	}
+	
+	public String getSanction(){
+		return sanction;
+	}
+	
+	public void setSanction(String value){
+		sanction=value;
+	}
+	
 	
 	public Boolean getRendered(){
     	return rendered;
