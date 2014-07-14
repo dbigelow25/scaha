@@ -414,8 +414,10 @@ public class MemberBean implements Serializable, MailableObject {
 			if (membertype.contains("Manager")) {
 				sm = new ScahaManager(pro,per);
 				sm.update(db);
-			}
-			if (membertype.contains("Coach")) {
+				sc = new ScahaCoach(pro,per);
+				sc.update(db);
+
+			} else if (membertype.contains("Coach")) {
 				sc = new ScahaCoach(pro,per);
 				sc.update(db);
 
