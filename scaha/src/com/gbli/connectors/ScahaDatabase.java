@@ -5,6 +5,7 @@ package com.gbli.connectors;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.CallableStatement;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ import com.scaha.objects.Profile;
 import com.scaha.objects.Schedule;
 
 import java.sql.PreparedStatement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import javax.mail.internet.InternetAddress;
 
@@ -425,7 +428,7 @@ public class ScahaDatabase extends Database {
 	 * @throws SQLException 
 	 * 
 	 */
-	private void syncSlotsToClub(Club _cl, GeneralSeason _gs) throws SQLException {
+	public void syncSlotsToClub(Club _cl, GeneralSeason _gs) throws SQLException {
 	
 		LOGGER.info("syncSlotsToClub: Reviewing slot requirements for Club:" + _cl);
 		
@@ -433,6 +436,7 @@ public class ScahaDatabase extends Database {
 		CallableStatement cs1 = this.prepareCall("call scaha.syncSlotsForClubByRank(?,?,?,?,?,?)");
 		CallableStatement cs2 = this.prepareCall("call scaha.removeExcessSlotsByClub(?,?,?,?,?,?)");
 
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");  
 		//
 		// lets get the information for the outside loop now..
 		//
@@ -445,24 +449,26 @@ public class ScahaDatabase extends Database {
 		String sLatestDate = dates.get(dates.size() -1);
 		pruneSlots(_cl,_gs, sEarliestDate, sLatestDate);
 		
-		
-
 		for (String date : dates) {
-			
-			 ps1.setInt(1, _cl.ID);
-			 ps1.setString(2,_gs.getTag());
-			 ps1.setString(3,date);
-			
-			 ResultSet rs = ps1.executeQuery();
-			 ReturnDataResultSet rdrs = ReturnDataResultSet.NewReturnDataResultSetFactory(rs);
-			 rs.close();
-			 
-			 for (ReturnDataRow rdr : rdrs) {
-				int i=1;
-				String sFromDate = (String)rdr.elementAt(i++);
-				String sToDate = (String)rdr.elementAt(i++);
+			ps1.setInt(1, _cl.ID);
+			ps1.setString(2,_gs.getTag());
+			ps1.setString(3,date);
+			LOGGER.info("syncSlotsToClub: calling getSlotTemplateForClub for Club: " + _cl + ", date=" + date);
+			ResultSet rs = ps1.executeQuery();
+			ReturnDataResultSet rdrs = ReturnDataResultSet.NewReturnDataResultSetFactory(rs);
+			rs.close();
+			LOGGER.info("syncSlotsToClub: returned from call getSlotTemplateForClub for Club: " + _cl + ", date=" + date);
+
+			for (ReturnDataRow rdr : rdrs) {
+				int i=0;
+				String sFromDate = df.format((Date)rdr.elementAt(i++));
+				LOGGER.info("syncSlotsToClub: sFromDate is:" + sFromDate);
+				String sToDate = df.format((Date)rdr.elementAt(i++));
+				LOGGER.info("syncSlotsToClub: sToDate is:" + sToDate);
 				String sGameTag = (String)rdr.elementAt(i++);
+				LOGGER.info("syncSlotsToClub: GameTag is:" + sGameTag);
 				int iSlotCount =  Integer.parseInt(rdr.elementAt(i++).toString());
+				LOGGER.info("syncSlotsToClub: iSlotCount is:" + iSlotCount);
 				LOGGER.info("syncSlotsToClub: Slot req for club " + _cl + " are sc=" + iSlotCount + ". fdate=" + sFromDate + ". todate=" + sToDate + ". gl=" + sGameTag);
 				for (int c = 1;c<=iSlotCount;c++) {
 					i=1;
@@ -472,7 +478,7 @@ public class ScahaDatabase extends Database {
 					cs1.setString(i++,sToDate);
 					cs1.setInt(i++,c);
 					cs1.setString(i++,sGameTag);
-					cs1.executeUpdate();
+					cs1.execute();
 				}
 				//
 				// ok.. for the given week.. we want to remove any slots that exist that are above and beyond
@@ -484,7 +490,7 @@ public class ScahaDatabase extends Database {
 				cs2.setString(i++,sToDate);
 				cs2.setInt(i++,iSlotCount);
 				cs2.setString(i++,sGameTag);
-				cs2.executeUpdate();
+				cs2.execute();
 				
 			 }
 			 
@@ -500,7 +506,7 @@ public class ScahaDatabase extends Database {
 		//
 		// The club could have recently added club slots to make up for their short commings
 		// 
-		synchClubSlots(_cl,_gs);  // Match them up based upon date and unassigned
+		syncClubSlots(_cl,_gs);  // Match them up based upon date and unassigned
 		fillMisfitSlots(_cl, _gs, "1.5"); // take any extra club provided slots and force them into an open gen slot
 		fillMisfitSlots(_cl, _gs, "1.25"); // take any extra club provided slots and force them into an open gen slot
 		createBonusSlots(_cl, _gs); // Generate bonus slots
@@ -538,13 +544,16 @@ public class ScahaDatabase extends Database {
 	 */
 	public void pruneSlots (Club _cl, GeneralSeason _gs, String _sFromDate, String _sToDate) throws SQLException {
 		
+		LOGGER.info("pruneSlots:  for Club:" + _cl + ", gs=" + _gs + ", fd=" + _sFromDate + ", td=" + _sToDate);
+		
 		CallableStatement csDelete = this.prepareCall("call scaha.pruneSlots(?,?,?,?)");
 		int i=1;
 		csDelete.setInt(i++, _cl.ID);
 		csDelete.setString(i++, _gs.getTag());
 		csDelete.setString(i++, _sFromDate);
 		csDelete.setString(i++, _sToDate);
-		csDelete.executeUpdate();
+		csDelete.execute();
+		csDelete.close();
 	
 	}
 	
@@ -563,14 +572,14 @@ public class ScahaDatabase extends Database {
 	 * @param _cl
 	 * @throws SQLException 
 	 */
-	public void synchClubSlots(Club _cl, GeneralSeason _gs) throws SQLException {
+	public void syncClubSlots(Club _cl, GeneralSeason _gs) throws SQLException {
 
-		CallableStatement cs1 = this.prepareCall("call scaha.syncClubSlotstoSlots(?,?");
+		CallableStatement cs1 = this.prepareCall("call scaha.syncClubSlotstoSlots(?,?)");
 
 		int i = 1;
 		cs1.setInt(i++, _cl.ID);
 		cs1.setString(i++, _gs.getTag());
-		
+		cs1.execute();
 		LOGGER.info("synchClubSlots: Merged slots to club slots for club :" + _cl);
 		cs1.close();
 	}
@@ -583,14 +592,20 @@ public class ScahaDatabase extends Database {
 	 */
 	public void fillMisfitSlots (Club _cl, GeneralSeason _gs, String _sGameTag) throws SQLException {
 		
-		PreparedStatement ps1 = prepareStatement("call scaha.getUnassignedSlotCount(?,?");
-		CallableStatement cs1 = prepareCall("call scaha.syncAlternateClubSlots(?,?,?");
-		CallableStatement cs2 = prepareCall("call scaha.syncAnyClubSlots(?,?,?");
+		LOGGER.info("fillMisfitSlots for Club " +  _cl + ", gs=" + _gs + ",  gt=" + _sGameTag);
+
+		PreparedStatement ps1 = prepareStatement("call scaha.getUnassignedSlotCount(?,?)");
+		CallableStatement cs1 = prepareCall("call scaha.syncAlternateClubSlots(?,?,?)");
+		CallableStatement cs2 = prepareCall("call scaha.syncAnyClubSlots(?,?,?)");
 		
+		ps1.setInt(1,_cl.ID);
+		ps1.setString(2,_gs.getTag());
 		ResultSet rs = ps1.executeQuery();
 		rs.next();
-		int iCount = getResultSet().getInt(1);
+		int iCount = rs.getInt(1);
 		rs.close();
+		LOGGER.info("fillMisfitSlots for Club " +  _cl + ". iCount = " + iCount);
+
 		for	 (int iv = 1;iv<=iCount;iv++) {
 			int i = 1;
 			cs1.setInt(i++, _cl.ID);
@@ -605,7 +620,7 @@ public class ScahaDatabase extends Database {
 		//
 		rs = ps1.executeQuery();
 		rs.next();
-		iCount = getResultSet().getInt(1);
+		iCount = rs.getInt(1);
 		rs.close();
 		for (int iv = 1;iv<=iCount;iv++) {
 			int i = 1;
@@ -632,11 +647,12 @@ public class ScahaDatabase extends Database {
 	 */
 	public void createBonusSlots (Club _cl, GeneralSeason _gs) throws SQLException {
 		
-		CallableStatement cs2 = prepareCall("call scaha.genBonusSlots(?,?");
+		CallableStatement cs2 = prepareCall("call scaha.genBonusSlots(?,?)");
 		int i = 1;
 		cs2.setInt(i++, _cl.ID);
 		cs2.setString(i++, _gs.getTag());
 		cs2.executeUpdate();
+		cs2.close();
 		
 	}
 	

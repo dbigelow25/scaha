@@ -1,13 +1,55 @@
 package com.scaha.objects;
 
-public class ParticipantList {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+import javax.faces.model.ListDataModel;
 
+import org.primefaces.model.SelectableDataModel;
+
+import com.gbli.context.ContextManager;
+
+/**
+* This holds all the smarts for a given Schedule.  There are many combinations of schedules between teams and seasons
+* In this system
+* @author David
+*
+*/
+public class ParticipantList extends ListDataModel<Participant> implements Serializable, SelectableDataModel<Schedule> {
+
+	//
+	// We need to implement a hashmap so we can directly fetch things we need.
+	//
+	
+	private static final long serialVersionUID = 1L;
+	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	
+	public ParticipantList(List<Participant> _lst) {  
+		super(_lst);
+   }
+	
+	public static ParticipantList NewListFactory() {
+		return new ParticipantList(new ArrayList<Participant>());
 	}
+
+	@Override
+	public Schedule getRowData(String arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getRowKey(Schedule arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void reset() {
+		// TODO Auto-generated method stub
+		((ArrayList<Participant>)this.getWrappedData()).clear();
+	}  
 
 }
