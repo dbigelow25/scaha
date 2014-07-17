@@ -10,4 +10,9 @@ public class Participant extends ScahaObject {
 
 	}
 
+	public Object getTeam() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

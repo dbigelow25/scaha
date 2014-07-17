@@ -439,6 +439,7 @@ public class Schedule extends ScahaObject {
 					iblowupcount = 0;
 					break;
 				}
+
 				if (iloopcount > 5) {
 					iloopcount=0;
 					iblowupcount++;
@@ -448,21 +449,22 @@ public class Schedule extends ScahaObject {
 						break;
 					}
 
-	//				for (int i = y;i>=0 + ibacktrack;i--) {
-	//					ScheduleWeek swb = (ScheduleWeek)sws.get(i);
-	//					swb.backoutSchedule(db, this);
+					for (int i = y;i>=0 + ibacktrack;i--) {
+						ScheduleWeek swb = (ScheduleWeek)sws.get(i);
+						swb.backoutSchedule(db, this);
 					}
 					y=-1 + ibacktrack;
 					break;
 				}
 			
 				sw.setScheduleComplete(true);
+				sw.setAvailableToPlay(db);
+			}
 		}
-//				sw.setAvailableToPlay(db);
-//				
-//				//
-//				// lets loop through all the teams that have to play 
-//				//
+				
+				//
+				// lets loop through all the teams that have to play 
+				//
 //				for (Integer key : sw.getAvailToPlayKeys()) {
 //
 //					pMain = (Participant)parts.getChildAtID(key.intValue());
@@ -815,5 +817,11 @@ public class Schedule extends ScahaObject {
 //		db.free();
 
 	}
-
+			
+	public Participant getParticipantAtID(int intValue) {
+		// TODO Auto-generated method stub
+		return this.partlist.getByKey(intValue);
+	}
+	
 }
+

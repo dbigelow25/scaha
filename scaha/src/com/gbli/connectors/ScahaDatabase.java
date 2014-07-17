@@ -19,9 +19,11 @@ import com.gbli.common.ReturnDataRow;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Club;
 import com.scaha.objects.GeneralSeason;
+import com.scaha.objects.Participant;
 import com.scaha.objects.Person;
 import com.scaha.objects.Profile;
 import com.scaha.objects.Schedule;
+import com.scaha.objects.ScheduleWeek;
 
 import java.sql.PreparedStatement;
 import java.text.DateFormat;
@@ -654,6 +656,16 @@ public class ScahaDatabase extends Database {
 		cs2.executeUpdate();
 		cs2.close();
 		
+	}
+
+	public ArrayList<Integer>  getAvailableParticipants(ScheduleWeek scheduleWeek) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public ArrayList<Integer> getAvailableMatchups(Participant _p, Schedule _se, ScheduleWeek scheduleWeek, boolean b) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
