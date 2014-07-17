@@ -417,6 +417,229 @@ public class ScahaDatabase extends Database {
 		LOGGER.info("genGames: Inserted missing games finished for season " + _sc);
 						
 	}	
+	
+	/**
+	 * This little guy will rip through all the seasons that a club participates in and will generate all the slots that
+	 * are missing.  There are generic slots that do not care about blackout weekends of clubs, etc.  The slots that get 
+	 * generated from here can be played any time.. at any venue.  The scheduling engine does this for them.
+	 * @throws SQLException 
+	 * 
+	 */
+	private void syncSlotsToClub(Club _cl, GeneralSeason _gs) throws SQLException {
+	
+		LOGGER.info("syncSlotsToClub: Reviewing slot requirements for Club:" + _cl);
+		
+		PreparedStatement ps1 = this.prepareStatement("call scaha.getSlotTemplateForClub(?,?,?)");
+		CallableStatement cs1 = this.prepareCall("call scaha.syncSlotsForClubByRank(?,?,?,?,?,?)");
+		CallableStatement cs2 = this.prepareCall("call scaha.removeExcessSlotsByClub(?,?,?,?,?,?)");
+
+		//
+		// lets get the information for the outside loop now..
+		//
+		ArrayList<String> dates = getWeekendsForAllSchedules(_gs);
+		
+		//
+		// Lets remove too early and too late
+		//
+		String sEarliestDate = dates.get(0);
+		String sLatestDate = dates.get(dates.size() -1);
+		pruneSlots(_cl,_gs, sEarliestDate, sLatestDate);
+		
+		
+
+		for (String date : dates) {
+			
+			 ps1.setInt(1, _cl.ID);
+			 ps1.setString(2,_gs.getTag());
+			 ps1.setString(3,date);
+			
+			 ResultSet rs = ps1.executeQuery();
+			 ReturnDataResultSet rdrs = ReturnDataResultSet.NewReturnDataResultSetFactory(rs);
+			 rs.close();
+			 
+			 for (ReturnDataRow rdr : rdrs) {
+				int i=1;
+				String sFromDate = (String)rdr.elementAt(i++);
+				String sToDate = (String)rdr.elementAt(i++);
+				String sGameTag = (String)rdr.elementAt(i++);
+				int iSlotCount =  Integer.parseInt(rdr.elementAt(i++).toString());
+				LOGGER.info("syncSlotsToClub: Slot req for club " + _cl + " are sc=" + iSlotCount + ". fdate=" + sFromDate + ". todate=" + sToDate + ". gl=" + sGameTag);
+				for (int c = 1;c<=iSlotCount;c++) {
+					i=1;
+					cs1.setInt(i++,_cl.ID);
+					cs1.setString(i++,_gs.getTag());
+					cs1.setString(i++,sFromDate);
+					cs1.setString(i++,sToDate);
+					cs1.setInt(i++,c);
+					cs1.setString(i++,sGameTag);
+					cs1.executeUpdate();
+				}
+				//
+				// ok.. for the given week.. we want to remove any slots that exist that are above and beyond
+				// andy count
+				i=1;
+				cs2.setInt(i++,_cl.ID);
+				cs2.setString(i++,_gs.getTag());
+				cs2.setString(i++,sFromDate);
+				cs2.setString(i++,sToDate);
+				cs2.setInt(i++,iSlotCount);
+				cs2.setString(i++,sGameTag);
+				cs2.executeUpdate();
+				
+			 }
+			 
+		
+		}
+		
+		cs1.close();
+		cs2.close();
+		ps1.close();
+		//
+		// ok.. now we have to look to see if we can take our generic slots and see if we can assign any club slots to
+		// give them real meaning
+		//
+		// The club could have recently added club slots to make up for their short commings
+		// 
+		synchClubSlots(_cl,_gs);  // Match them up based upon date and unassigned
+		fillMisfitSlots(_cl, _gs, "1.5"); // take any extra club provided slots and force them into an open gen slot
+		fillMisfitSlots(_cl, _gs, "1.25"); // take any extra club provided slots and force them into an open gen slot
+		createBonusSlots(_cl, _gs); // Generate bonus slots
+		LOGGER.info("syncSlotsToClub: Done reviewing slot requirements for Club:" + _cl);
+		
+	}
+	
+	/**
+	 * Here we simply return all the Starting Weekends of all the seasons we have to look at
+	 * 
+	 * @param _cl
+	 * @return
+	 * @throws SQLException 
+	 */
+	public ArrayList<String> getWeekendsForAllSchedules(GeneralSeason _gs) throws SQLException {
+		
+		ArrayList<String> dates = new ArrayList<String>();
+		PreparedStatement ps = this.prepareStatement("call scaha.getWeekendStartsForAllSchedules(?)");
+		ps.setString(1,_gs.getTag());
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			int i = 1;
+			dates.add(rs.getString(i++));
+		}
+		rs.close();
+		return dates;
+	}
+	
+	/**
+	 *  * For a given club.. this remove any slots that exist prior to the earliest start date of the club
+	 *
+	 * @param _cl
+	 * @param _sDate
+	 * @throws SQLException 
+	 */
+	public void pruneSlots (Club _cl, GeneralSeason _gs, String _sFromDate, String _sToDate) throws SQLException {
+		
+		CallableStatement csDelete = this.prepareCall("call scaha.pruneSlots(?,?,?,?)");
+		int i=1;
+		csDelete.setInt(i++, _cl.ID);
+		csDelete.setString(i++, _gs.getTag());
+		csDelete.setString(i++, _sFromDate);
+		csDelete.setString(i++, _sToDate);
+		csDelete.executeUpdate();
+	
+	}
+	
+	/**
+	 * synchClubSlots  
+	 * 
+	 * This will take all the club slots given and assign them to the generic slots created by the software
+	 * It assigned them to open slots only.
+	 * 
+	 *  We need to check to make sure we do not have any clubslots assigned to two diffent genslots
+	 *  
+	 *  we then have to try to find "best fit" club slots to the remaining open slots in the system
+	 *  
+	 *  Finally.. we have to remove any excess generated slots that do not have a club slot assigned to it.
+	 *  
+	 * @param _cl
+	 * @throws SQLException 
+	 */
+	public void synchClubSlots(Club _cl, GeneralSeason _gs) throws SQLException {
+
+		CallableStatement cs1 = this.prepareCall("call scaha.syncClubSlotstoSlots(?,?");
+
+		int i = 1;
+		cs1.setInt(i++, _cl.ID);
+		cs1.setString(i++, _gs.getTag());
+		
+		LOGGER.info("synchClubSlots: Merged slots to club slots for club :" + _cl);
+		cs1.close();
+	}
+	
+	/** 
+	 * fillMisfitSlots - This will simply loop through all the unassigned generated slots and fill them in with unused 
+	 * club slots..
+	 * @param _cl
+	 * @throws SQLException 
+	 */
+	public void fillMisfitSlots (Club _cl, GeneralSeason _gs, String _sGameTag) throws SQLException {
+		
+		PreparedStatement ps1 = prepareStatement("call scaha.getUnassignedSlotCount(?,?");
+		CallableStatement cs1 = prepareCall("call scaha.syncAlternateClubSlots(?,?,?");
+		CallableStatement cs2 = prepareCall("call scaha.syncAnyClubSlots(?,?,?");
+		
+		ResultSet rs = ps1.executeQuery();
+		rs.next();
+		int iCount = getResultSet().getInt(1);
+		rs.close();
+		for	 (int iv = 1;iv<=iCount;iv++) {
+			int i = 1;
+			cs1.setInt(i++, _cl.ID);
+			cs1.setString(i++, _gs.getTag());
+			cs1.setString(i++, _sGameTag);
+			cs1.executeUpdate();
+			LOGGER.info("fillMisfitSlots: alternate slot pass:" + iv + " of " + iCount + " for Club " +  _cl + " for gamelength:" + _sGameTag);
+		}
+
+		//
+		// now lets go after any slot.. and mark the club slot as used by an alternate 
+		//
+		rs = ps1.executeQuery();
+		rs.next();
+		iCount = getResultSet().getInt(1);
+		rs.close();
+		for (int iv = 1;iv<=iCount;iv++) {
+			int i = 1;
+			cs2.setInt(i++, _cl.ID);
+			cs2.setString(i++, _gs.getTag());
+			cs2.setString(i++, _sGameTag);
+			cs2.executeUpdate();
+			LOGGER.info("fillMisfitSlots: ANY slot pass:" + iv + " of " + iCount + " for Club " +  _cl + " for gamelength:" + _sGameTag);
+		}
+		
+		cs1.close();
+		cs2.close();
+		ps1.close();
+	}
+	
+	/** 
+	 * createBonusSlots - This will simply look for any extra slots that were given.   For each one found we:
+	 * Create a Slot for it with the appropriate from, to date
+	 * make the ranking 99
+	 * tie the current club slot you are on the the newly generated slot.
+	 * We will need to find a seasonweek the fits between the actdate.. any seasonweek will do for the given club
+	 * @param _cl
+	 * @throws SQLException 
+	 */
+	public void createBonusSlots (Club _cl, GeneralSeason _gs) throws SQLException {
+		
+		CallableStatement cs2 = prepareCall("call scaha.genBonusSlots(?,?");
+		int i = 1;
+		cs2.setInt(i++, _cl.ID);
+		cs2.setString(i++, _gs.getTag());
+		cs2.executeUpdate();
+		
+	}
+	
 }
 	
 
