@@ -217,9 +217,7 @@ public class ScahaDatabase extends Database {
 		List<InternetAddress> tmp = new ArrayList<InternetAddress>();
 		PreparedStatement ps = this.prepareStatement("call scaha.getAllMemberEmailsByClubAndSeason(?,?)");
 		ps.setInt(1, c.ID);
-		// TODO
-//		ps.setString(2,_cs.getTag()); TMP until new teams are formed
-		ps.setString(2,"SCAHA-1314");
+		ps.setString(2,_cs.getTag()); 
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 			LOGGER.info("getCLubFamilyEmails:" + rs.getString(1) + ":" +  rs.getString(2));
@@ -243,8 +241,7 @@ public class ScahaDatabase extends Database {
 		
 		PreparedStatement ps = this.prepareStatement("call scaha.getAllMemberEmailsByNoTeamAndSeason(?)");
 		// TODO
-//		ps.setString(1,_cs.getTag()); TMP until new teams are formed
-		ps.setString(1,"SCAHA-1314");
+		ps.setString(1,currentSeason.getTag()); 
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 			LOGGER.info("getRenegadeFamilyEmails:" + rs.getString(1) + ":" +  rs.getString(2));
