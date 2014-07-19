@@ -1,6 +1,7 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import javax.faces.model.ListDataModel;
 
 import org.primefaces.model.SelectableDataModel;
 
+import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
 /**
@@ -20,13 +22,12 @@ import com.gbli.context.ContextManager;
 */
 public class ParticipantList extends ListDataModel<Participant> implements Serializable, SelectableDataModel<Schedule> {
 
-	//
-	// We need to implement a hashmap so we can directly fetch things we need.
-	//
-	
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	
+//
+	// We need to implement a hashmap so we can directly fetch things we need.
+	//
 	private HashMap<String, Participant> hm = new HashMap<String,Participant>();
 	
 	public ParticipantList(List<Participant> _lst) {  
@@ -35,6 +36,20 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 	
 	public static ParticipantList NewListFactory() {
 		return new ParticipantList(new ArrayList<Participant>());
+	}
+
+	/**
+	 * Here we have to fetch the a list of participants.. (who in turn will be associated with a given Team
+	 * Which needs to be retrieved as well.
+	 * 
+	 * @param _pro
+	 * @param _db
+	 * @param _sch
+	 * @return
+	 * @throws SQLException
+	 */
+	public static ParticipantList NewListFactory (Profile _pro, ScahaDatabase _db, Schedule _sch) throws SQLException {
+		return null;
 	}
 
 	@Override
@@ -52,7 +67,7 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 
 
 	@SuppressWarnings("unchecked")
-	public ArrayList<Participant> getScheduleWeekArray() {
+	public ArrayList<Participant> getParticipantArray() {
 		return (ArrayList<Participant>)this.getWrappedData();
 	}
 	

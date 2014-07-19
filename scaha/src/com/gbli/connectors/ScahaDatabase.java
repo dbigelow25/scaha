@@ -22,8 +22,10 @@ import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.Participant;
 import com.scaha.objects.Person;
 import com.scaha.objects.Profile;
+import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.Schedule;
 import com.scaha.objects.ScheduleWeek;
+import com.scaha.objects.TeamGameInfo;
 
 import java.sql.PreparedStatement;
 import java.text.DateFormat;
@@ -46,14 +48,39 @@ public class ScahaDatabase extends Database {
 	public static String c_sp_actionlist = "Call scaha.getActionTree(?)";
 	public static String c_PS_CHECK_FOR_USER = "Call scaha.checkForUser(?)";
 	public static String cs_UPDATE_CLUB_STAFFER = "call scaha.updateClubStaffer(?,?,?,?)";
+	public static String c_GET_TEAM_GAME_COUNT_BY_SCHED = "call scaha.getTeamGameCountsBySchedule(?,?)";
+	public static String c_GET_DATES_TEAM_GAME = "call scaha.getTeamGameCountsBySchedule(?,?)";
+	public static String c_GET_AVAILABLE_PARTICIPANTS = "call scaha.getAvailableParticipants(?,?)";
+	public static String c_GET_AVAILABLE_MATCHUPS = "call scaha.getAvailableMatchups(?,?,?,?,?,?,?)";
 	
+	PreparedStatement ps_TeamGameCountBySched = null;
+	PreparedStatement ps_DatesTeamGone = null;
+	PreparedStatement ps_GetAvailableParticipants = null;
+	PreparedStatement ps_GetAvailableMatchups = null;
 	
 	public ScahaDatabase(int _iId, String _sDriver, String _sURL, String _sUser, String _sPwd) {
 		super(_iId, _sDriver, _sURL, _sUser, _sPwd);
+		
+		try {
+			ps_TeamGameCountBySched = this.prepareStatement(c_GET_TEAM_GAME_COUNT_BY_SCHED);
+			ps_DatesTeamGone = this.prepareStatement(c_GET_DATES_TEAM_GAME);
+			ps_GetAvailableParticipants = this.prepareStatement(c_GET_AVAILABLE_PARTICIPANTS);
+			ps_GetAvailableMatchups = this.prepareStatement(c_GET_AVAILABLE_MATCHUPS);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	public ScahaDatabase(String _sDriver, String _sURL, String _sUser, String _sPwd) {
 		super(_sDriver, _sURL, _sUser, _sPwd);
+		try {
+			ps_TeamGameCountBySched = this.prepareStatement(c_GET_TEAM_GAME_COUNT_BY_SCHED);
+			ps_DatesTeamGone = this.prepareStatement(c_GET_DATES_TEAM_GAME);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -229,7 +256,6 @@ public class ScahaDatabase extends Database {
 			try {
 				tmp.add(new InternetAddress(rs.getString(2),rs.getString(1)));
 			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				LOGGER.info(e.getMessage());
 			}
@@ -245,7 +271,6 @@ public class ScahaDatabase extends Database {
 		List<InternetAddress> tmp = new ArrayList<InternetAddress>();
 		
 		PreparedStatement ps = this.prepareStatement("call scaha.getAllMemberEmailsByNoTeamAndSeason(?)");
-		// TODO
 		ps.setString(1,currentSeason.getTag()); 
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
@@ -658,16 +683,137 @@ public class ScahaDatabase extends Database {
 		
 	}
 
-	public ArrayList<Integer>  getAvailableParticipants(ScheduleWeek scheduleWeek) {
+	public ArrayList<Integer>  getAvailableParticipants(ScheduleWeek sw) throws SQLException {
+		ArrayList<Integer> keys = new ArrayList<Integer>();
+		
+		ps_GetAvailableParticipants.setInt(1, sw.ID);
+		ps_GetAvailableParticipants.setInt(2, sw.getSchedule().ID);
+		ResultSet rs = ps_GetAvailableParticipants.executeQuery();
+		while (rs.next()) {
+			keys.add(Integer.valueOf(getResultSet().getInt(1)));	
+		}
+		LOGGER.fine("getAvailableParticipants:for seasonweek:all available participants:" + keys);
+		return keys;
+		
+	}
+
+	public ArrayList<Integer> getAvailableMatchups(Participant _p, Schedule _se, ScheduleWeek _sw, boolean _sq) throws SQLException {
+		ArrayList<Integer> keys = new ArrayList<Integer>();
+	
+		LOGGER.info("pRank:"+ _p.getRank() + ":idseason:" + _se.ID + ":squeeze:" + _sq);
+
+		int i = 1;
+		ps_GetAvailableMatchups.setInt(i++, _sw.ID);
+		ps_GetAvailableMatchups.setInt(i++, _se.ID);
+		ps_GetAvailableMatchups.setInt(i++, _p.getTeam().ID);
+		ps_GetAvailableMatchups.setInt(i++, _p.getRank());
+		ps_GetAvailableMatchups.setString(i++, _sw.getFromDate());
+		ps_GetAvailableMatchups.setString(i++, _sw.getToDate());
+		ps_GetAvailableMatchups.setInt(i++,(_sq ? 1: 0));
+		
+		ResultSet rs = ps_GetAvailableMatchups.executeQuery();
+		while (rs.next()) {
+		  keys.add(Integer.valueOf(rs.getInt(1)));	
+		}
+		rs.close();
+		LOGGER.fine("getAvailableMatchups:all available matchups:" + keys);
+		return keys;
+	}
+	
+	/**
+	 *  refresh - TeamGameInfo .. updates all the pertinant information you want to track for a team
+	 *  from the database
+	 * @param _tgi
+	 * @throws SQLException 
+	 */
+	public void refresh(TeamGameInfo _tgi, Schedule _se) throws SQLException {
+		
+		ScahaTeam tm = _tgi.getTeam();
+		ps_TeamGameCountBySched.setInt(1,tm.ID);
+		ps_TeamGameCountBySched.setInt(1,_se.ID);
+		
+		ResultSet rs = ps_TeamGameCountBySched.executeQuery();
+		while (rs.next()) {
+			_tgi.setTotalGames(getResultSet().getInt(1));
+			_tgi.setHomeGames(getResultSet().getInt(2));
+			_tgi.setAwayGames(getResultSet().getInt(3));
+			_tgi.setExGames(getResultSet().getInt(4));
+		}
+		rs.close();
+		
+		if (!_tgi.isBODLoaded()) {
+			ps_DatesTeamGone.setInt(1,tm.ID);
+			rs = ps_DatesTeamGone.executeQuery();
+			while (rs.next()) {
+					_tgi.getHmBOD().put(rs.getString(1),"");
+			}
+			
+			rs.close();
+		}
+		//
+		// ok.. lets mark the out of town as loaded..
+		//
+		_tgi.setBODLoaded(true);
+
+	}
+
+	public ArrayList<Integer> getAvailableSlotIDs(Club clMain,
+			ScahaTeam tmMain, ScheduleWeek sw) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public ArrayList<Integer> getAvailableMatchups(Participant _p, Schedule _se, ScheduleWeek scheduleWeek, boolean b) {
+	public boolean checkclubblock(Participant pMatch, Participant pMain,
+			Schedule schedule) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void getAllAvailableSlots(Schedule schedule, Participant pMatch) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void getAllUsedSlots(Schedule schedule, Participant pMatch) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean checkHomeOnly(Participant pMatch, String actDate) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public String getSlotDate(Integer integer) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
+	public boolean checkClubOffDay(Participant pMain, String slotDate) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void getSlotsForMatchup(ArrayList<Integer> slMatchIDs,
+			Participant pMatch) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Participant calcHomeParticipant(Schedule schedule,
+			Participant pMain, Participant pMatch,
+			ArrayList<Integer> slMainIDs, ArrayList<Integer> slMatchIDs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void scheduleGame(Schedule schedule, ScheduleWeek sw,
+			Participant pMain, Participant pMatch, Integer integer,
+			boolean bumpOn) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
 	
 

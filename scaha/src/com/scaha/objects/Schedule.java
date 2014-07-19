@@ -379,7 +379,13 @@ public class Schedule extends ScahaObject {
 	}
 	
 	
-	public void schedule(boolean _bsqueeze) {
+	/**
+	 * This is the massive scheduling Engine..
+	 * 
+	 * @param _bsqueeze
+	 * @throws SQLException
+	 */
+	public void schedule(boolean _bsqueeze) throws SQLException {
 
 		LOGGER.info((_bsqueeze ? "SQUEEZE MODE " : " STANDARD MODE "));
 		
@@ -393,11 +399,11 @@ public class Schedule extends ScahaObject {
 		
 		// Define all the main object for the match team
 		Participant pMain = null;
-		Team tmMain = null;
+		ScahaTeam tmMain = null;
 		Club clMain = null;
 		// Define all the match objects for the match team
 		Participant pMatch = null;
-		Team tmMatch = null;
+		ScahaTeam tmMatch = null;
 		Club clMatch = null;
 		boolean squeezeit = false;
 		
@@ -407,8 +413,8 @@ public class Schedule extends ScahaObject {
 		// for each season.. step through the season weeks
 		
 		
-		ArrayList<Participant> parts = null;
-		ArrayList<ScheduleWeek> sws = (ArrayList<ScheduleWeek>)this.getSwlist().getWrappedData();
+		ArrayList<Participant> parts = this.getPartlist().getParticipantArray();
+		ArrayList<ScheduleWeek> sws = getSwlist().getScheduleWeekArray();
 
 		
 		LOGGER.info("Schedule has " + sws.size() + " schedule weeks.");
@@ -459,362 +465,327 @@ public class Schedule extends ScahaObject {
 			
 				sw.setScheduleComplete(true);
 				sw.setAvailableToPlay(db);
-			}
-		}
 				
 				//
 				// lets loop through all the teams that have to play 
 				//
-//				for (Integer key : sw.getAvailToPlayKeys()) {
-//
-//					pMain = (Participant)parts.getChildAtID(key.intValue());
-//					tmMain = pMain.getTeam();
-//					clMain = (Club)ContextManager.c_clubs.getChildAtID(tmMain.getIdClub());
-//					LOGGER.info("schedule:Refreshing Main Team:" + pMain.getTeam());
-//					tmMain.getTeamGameInfo().refreshInfo(db,this);
-//
-//					if (sw.isAlreadyScheduled(pMain)) {
-//						LOGGER.info("schedule:alreadyscheduled a game for team:" + pMain.getTeam().getName() + ". Skipping..");
-//						continue;
-//					} 
-//
-//					if (tmMain.isOutOfTown(sw)) {
-//						LOGGER.info("schedule:  Main Team is hout of town this week: " + pMain.getTeam().getName() + ". Skipping..");
-//						continue;
-//					} 
-//						
-//					//
-//					// if we are squeezing.. we need to get all available matchups.. even if they have games currently scheduled.
-//					//
-//					sw.setAvailableMatchups(db,pMain, this);
-//					LOGGER.info("schedule:Matchups are:" +sw.getMatchUpKeys());
-//											
-//					if (sw.noMatchups()) {
-//						if (this.getTeamCount() % 2 != 0 && (_bsqueeze || iloopcount == 4)) {
-//							LOGGER.info("ISTS SQUEESE TIME");
-//							sw.setAvailableMatchupsSqueeze(db,pMain, this);
-//							squeezeit = true;
-//						} else if (sw.getBumpCount() > 5 && _bsqueeze) {
-//							sw.setAvailableMatchupsSqueeze(db,pMain, this);
-//							squeezeit = true;
-//						} else if (this.getTeamCount() % 2 == 0 ) {
-//							if (iloopcount <= 4) {
-//								sw.backoutSchedule(db, this, pMain);
-//								sw.setScheduleComplete(false);
-//								break;
-//							} else if (iloopcount == 4) {
-//								sw.setAvailableMatchupsSqueeze(db,pMain, this);
-//								squeezeit = true;
-//							}
-//							
-//						}  
-//					}
-//						
-//					//
-//					// if the team is out of town.. then mark the available ice as -2
-//					//
-//					
-//					LOGGER.info("Scheduling:Main Team Assumes a Home position: " + tmMain);
-//					
-//					bhome = true;
-//					
-//					if (tmMain.isOutOfTown(sw)) {
-//						slMainIDs.clear();
-//						slMainIDs.add(Integer.valueOf(-2));
-//						LOGGER.info("Scheduling:" + " out of town detection.. ice is -2 for " + tmMain.toString());
-//					} else if (tmMain.isByeTeam()){
-//						slMainIDs.clear();
-//						slMainIDs.add(Integer.valueOf(-1));
-//						LOGGER.info("Scheduling:" + " Bye Detection for " + tmMain.toString());
-//					} else {
-//						slMainIDs = db.getAvailableSlotIDs(clMain,tmMain, sw);
-//					}
-//
-//					if (slMainIDs.size() == 0) {
-//						LOGGER.info("Scheduling:" + tmMain.getSName() + " for " + sw.getFromDate() + " wants home game.. but does not have ice.  Switching to away mode.");
-//						bhome = false;
-//					}
-//					
-//					//
-//					// now lets iterate through the potential matchups
-//					//
-//					
-//					while (!sw.getMatchUpKeys().isEmpty()) { 
-//
-//						pMatch = (Participant)parts.getChildAtID(sw.getMatchUpKeys().get(0));
-//						slMatchIDs.clear();
-//						tmMatch = pMatch.getTeam();
-//						clMatch = (Club)ContextManager.c_clubs.getChildAtID(tmMatch.getIdClub());
-//						tmMatch.getTeamGameInfo().refreshInfo(db,this);
-//						
-//						LOGGER.info("Scheduler: Match Team .. pulled from the rubble:" + tmMatch);
-//						
-////						if (tmMatch.hasEnoughGames(this) && tmMain.hasEnoughGames(this)) {
-////							LOGGER.info("schedule:  Main Team and match team has enough games: " + pMain + " " + pMatch + ". Skipping..");
-////							sw.getMatchUpKeys().remove(0);
-////							continue;
-////						}
-//
-//					//	if (!tmMatch.gameCapCheck(this,tmMain) || !tmMain.gameCapCheck(this,tmMatch)) {
-//					//		LOGGER.info("schedule:  Match Team enough games: " + pMain + " " + pMatch + ". Skipping..");
-//					//		sw.getMatchUpKeys().remove(0);
-//					//		continue;
-//					//	}
-//
-//						if (!db.checkclubblock(pMatch, pMain, this)) {
-//							LOGGER.info("Block alert" + pMatch + ". Skipping..");
-//							sw.getMatchUpKeys().remove(0);
-//							continue;
-//						}
-//						
-//						//
-//						// Out of Town Checker
-//						//
-//						if (tmMain.isByeTeam() && tmMatch.isOutOfTown(sw)) {
-//							LOGGER.info("schedule:Main is bye.. match is out of town.. let it be a bye");
-//						} else if (tmMain.isOutOfTown(sw) && tmMatch.isByeTeam()) {
-//							LOGGER.info("schedule:Main is out o town.. match is bye.. let it be a bye");
-//						} else if (tmMatch.isOutOfTown(sw)) {
-//							LOGGER.info("schedule:Match Team is out of town..." + pMatch + ". Skipping..");
-//							sw.getMatchUpKeys().remove(0);
-//							continue;
-//						}
-//						
-//						//
-//						// only disregard the Match Team already being processed if squeeze is on
-//						// we need the double up
-//
-//						// if we had to squeeze.. then lets punch a hole in the schedule
-//						// and try to make it happen
-//						if (squeezeit) {
-//							foundmatchup = false;
-//							LOGGER.info("Putting on the squeeezeee A");
-//							db.getAllAvailableSlots(this,pMatch);
-//							db.getAllAvailableSlots(this,pMain);
-//							db.getAllUsedSlots(this,  pMatch);
-//							db.getAllUsedSlots(this,  pMain);
-//							for (Slot myslot : pMain.getSlotsAvail()) {
-//								if (!db.checkHomeOnly(pMatch,myslot.actDate)) {
-//									if (pMain.canIPlay(this, myslot, pMatch) && pMatch.canIPlay(this, myslot, pMain)) {
-//										bhome = true;
-//										slMainIDs.clear();
-//										slMainIDs.add(Integer.valueOf(myslot.getID()));
-//										foundmatchup = true;
-//										break;
-//									}
-//								}	
-//							}
-//							for (Slot myslot : pMatch.getSlotsAvail()) {
-//								if (!db.checkHomeOnly(pMain,myslot.actDate)) {
-//									if (pMain.canIPlay(this, myslot, pMatch) && pMatch.canIPlay(this, myslot, pMain)) {
-//										bhome = false;
-//										slMatchIDs.clear();
-//										slMatchIDs.add(Integer.valueOf(myslot.getID()));
-//										foundmatchup = true;
-//										break;
-//									}
-//								}
-//							}
-//							if (!foundmatchup) {
-//								LOGGER.info("Did not find any squeeze ice.. moving on");
-//								sw.getMatchUpKeys().remove(0);
-//								continue;
-//							}
-//						} else {
-//							slMatchIDs= db.getAvailableSlotIDs(clMatch,tmMatch, sw);
-//						}
-//					
-//						if (tmMatch.isOutOfTown(sw)) {
-//							slMatchIDs.clear();
-//							slMatchIDs.add(Integer.valueOf(-2));
-//						} else if (tmMatch.isByeTeam()) {
-//							slMatchIDs.clear();
-//							slMatchIDs.add(Integer.valueOf(-1));
-//						}
-//
-//					
-//						if (tmMain.isByeTeam() && !tmMatch.isByeTeam() && tmMatch.getTeamGameInfo().getByeGames() >= this.getMaxByeCount()) {
-//							LOGGER.info("*** WARNING **** schedule:Match already reached maximum byes for season:" + pMatch + ". Skipping..");
-//							sw.getMatchUpKeys().remove(0);
-//							continue;
-//						} else if (!tmMain.isByeTeam() && tmMatch.isByeTeam() && tmMain.getTeamGameInfo().getByeGames() >= this.getMaxByeCount()) {
-//							LOGGER.info("*** WARNING **** schedule:Main already reached maximum byes for season:" + pMatch + ". Skipping..");
-//							sw.getMatchUpKeys().remove(0);
-//							continue;
-//						} else if (slMatchIDs.isEmpty() && slMainIDs.isEmpty()) {
-//							if (_bsqueeze){
-//								squeezeit = true;
-//								LOGGER.info("Putting on the squeeezeee");
-//								db.getAllAvailableSlots(this,pMatch);
-//								db.getAllAvailableSlots(this,pMain);
-//								db.getAllUsedSlots(this,  pMatch);
-//								db.getAllUsedSlots(this,  pMain);
-//								for (Slot myslot : pMain.getSlotsAvail()) {
-//									if (!db.checkHomeOnly(pMatch,myslot.actDate)) {
-//										if (pMain.canIPlay(this, myslot, pMatch) && pMatch.canIPlay(this, myslot, pMain)) {
-//											bhome = true;
-//											slMainIDs.clear();
-//											slMainIDs.add(Integer.valueOf(myslot.getID()));
-//											foundmatchup = true;
-//											break;
-//										}
-//									}	
-//								}
-//								for (Slot myslot : pMatch.getSlotsAvail()) {
-//									if (!db.checkHomeOnly(pMain,myslot.actDate)) {
-//										if (pMain.canIPlay(this, myslot, pMatch) && pMatch.canIPlay(this, myslot, pMain)) {
-//											bhome = false;
-//											slMatchIDs.clear();
-//											slMatchIDs.add(Integer.valueOf(myslot.getID()));
-//											break;
-//										}
-//									}
-//								}
-//
-//								if (slMatchIDs.isEmpty() && slMainIDs.isEmpty()) {
-//									LOGGER.info("*** WARNING **** Niether Team Has Ice **** skipping...");
-//									sw.getMatchUpKeys().remove(0);
-//									continue;
-//								}  
-//							} else {
-//								LOGGER.info("*** WARNING **** Niether Team Has Ice **** skipping...");
-//								sw.getMatchUpKeys().remove(0);
-//								continue;
-//							}
-//						}
-//
-//						while (!slMatchIDs.isEmpty()) {
-//							if (db.checkHomeOnly(pMain, db.getSlotDate(slMatchIDs.get(0)))) {
-//								slMatchIDs.remove(0);
-//								LOGGER.info("1 Main has home only on this day clear the Match Slot IDs");
-//							} else {
-//								break;
-//							}
-//						}						
-//						while (!slMainIDs.isEmpty()) {
-//							if (db.checkHomeOnly(pMatch, db.getSlotDate(slMainIDs.get(0)))) {
-//								slMainIDs.remove(0);
-//								LOGGER.info("1 Match has to be a home game.. so we must clear the Main Slot IDs");
-//							} else {
-//								break;
-//							}
-//						}
-//						
-//
-//						while (!slMainIDs.isEmpty()) {
-//							if (db.checkClubOffDay(pMain, db.getSlotDate(slMainIDs.get(0)))) {
-//								slMainIDs.remove(0);
-//								LOGGER.info("1 Main is gone.. so we must clear  Slot IDs");
-//							} else {
-//								break;
-//							}
-//						}
-//
-//						while (!slMatchIDs.isEmpty()) {
-//							if (db.checkClubOffDay(pMain, db.getSlotDate(slMatchIDs.get(0)))) {
-//								slMatchIDs.remove(0);
-//								LOGGER.info("2 Main is gone.. so we must clear  Slot IDs");
-//							} else {
-//								break;
-//							}
-//						}
-//
-//						while (!slMatchIDs.isEmpty()) {
-//							if (db.checkClubOffDay(pMatch, db.getSlotDate(slMatchIDs.get(0)))) {
-//								slMatchIDs.remove(0);
-//								LOGGER.info("3 Match is gone.. so we must clear  Slot IDs");
-//							} else {
-//								break;
-//							}
-//						}
-//						
-//						while (!slMainIDs.isEmpty()) {
-//							if (db.checkClubOffDay(pMatch, db.getSlotDate(slMainIDs.get(0)))) {
-//								slMainIDs.remove(0);
-//								LOGGER.info("4 Match is gone.. so we must clear  Slot IDs");
-//							} else { 
-//								break;
-//							}
-//						}
-//						
-//						//
-//						// we need to double check the slots because a squeeze could have moved a slot forward into a non squeeze week
-//						//
-//						db.getAllUsedSlots(this,  pMatch);
-//						db.getSlotsForMatchup(slMatchIDs,pMatch);
-//						db.getAllUsedSlots(this,  pMain);
-//						db.getSlotsForMatchup(slMainIDs,pMain);
-//						if (!tmMain.isByeTeam()) {
-//							slMainIDs.clear();
-//							for (Slot myslot : pMain.getSlotsMatchup()) {
-//								if (pMain.canIPlay(this, myslot, pMatch) && pMatch.canIPlay(this, myslot, pMain)) {
-//									slMainIDs.add(Integer.valueOf(myslot.getID()));
-//								}
-//							}	
-//						}
-//						if (!tmMatch.isByeTeam()) {
-//							slMatchIDs.clear();
-//							for (Slot myslot : pMatch.getSlotsMatchup()) {
-//								if (pMain.canIPlay(this, myslot, pMatch) && pMatch.canIPlay(this, myslot, pMain)) {
-//									slMatchIDs.add(Integer.valueOf(myslot.getID()));
-//								}
-//							}	
-//						}						
-//						LOGGER.info("Scheduler:MAIN Slots Scrubbed are:" + slMainIDs);
-//						LOGGER.info("Scheduler:Match Slots Scrubbed are:" + slMatchIDs);
-//						
-//						if (!tmMatch.gameCapCheck(this,tmMain) || !tmMain.gameCapCheck(this,tmMatch)) {
-//							LOGGER.info("schedule:  Match Team enough games: " + pMain + " " + pMatch + ". Skipping..");
-//							sw.getMatchUpKeys().remove(0);
-//							continue;
-//						}
-//						if (slMatchIDs.isEmpty() && slMainIDs.isEmpty()) {
-//							LOGGER.info("*** WARNING Level 2**** Niether Team Has Ice **** skipping...");
-//							sw.getMatchUpKeys().remove(0);
-//							continue;
-//						} else 
-//
-//						if (squeezeit) {
-//							LOGGER.info("schedule:Closing the squeeze now...");
-//							squeezeit = false;
-//						} else if (tmMain.isByeTeam()) {
-//							LOGGER.info("schedule:bye game on the Main side letting it go through as is...");
-//						} else if (tmMatch.isByeTeam()) {
-//							LOGGER.info("schedule:bye game on the matchup side.. flipping to away...");
-//						} else if (tmMatch.isOutOfTown(sw) && tmMain.isOutOfTown(sw)) {
-//							LOGGER.info(" Both Teams are out of town.. schedule them now.:" + pMatch +":" + pMain);
-//						}
-//
-//
-//						// schedule the game .. see who gets home..
-//						//
-//						Participant pHome = db.calcHomeParticipant(this, pMain, pMatch, slMainIDs, slMatchIDs);
-//						
-//						if (pHome.equals(pMain)) {
-//							LOGGER.info("Main Slots: " + slMainIDs);
-//								db.scheduleGame(this, sw, pMain, pMatch, slMainIDs.get(0),sw.isBumpOn());
-//						} else if (pHome.equals(pMatch)) {
-//							LOGGER.info("Match Slots: " + slMatchIDs);
-//							db.scheduleGame(this, sw, pMatch, pMain,  slMatchIDs.get(0),sw.isBumpOn());
-//						} else {
-//							LOGGER.info("SNAFU on scheduling game..");
-//						}
-//						//
-//						// lets place them in the processed list
-//						// reset the bump list
-//						// and clear the matchupkeys.
-//						sw.addPrcoessListPart(pMain);
-//						sw.addPrcoessListPart(pMatch);
-//						//sw.resetBumpList();
-//						sw.getMatchUpKeys().clear();
-//						
-//					}
-//				}
-//			}
-//			//if (y==7) break;
-//		}
-//		
-//		db.free();
+				for (Integer key : sw.getAvailToPlayKeys()) {
+
+					pMain = partlist.getByKey(key.intValue());
+					tmMain = pMain.getTeam();
+					//clMain = (Club)ContextManager.c_clubs.getChildAtID(tmMain.getIdClub());
+					LOGGER.info("schedule:Refreshing Main Team:" + pMain.getTeam());
+					tmMain.getTeamGameInfo().refreshInfo(db,this);
+
+					if (sw.isAlreadyScheduled(pMain)) {
+						LOGGER.info("schedule:alreadyscheduled a game for team:" + pMain.getTeam() + ". Skipping..");
+						continue;
+					} 
+
+					if (tmMain.isOutOfTown(sw)) {
+						LOGGER.info("schedule:  Main Team is hout of town this week: " + pMain.getTeam() + ". Skipping..");
+						continue;
+					} 
+						
+					//
+					// if we are squeezing.. we need to get all available matchups.. even if they have games currently scheduled.
+					//
+					sw.setAvailableMatchups(db,pMain, this);
+					LOGGER.info("schedule:Matchups are:" +sw.getMatchUpKeys());
+											
+					if (sw.noMatchups()) {
+						if (this.getTeamcount() % 2 != 0 && (_bsqueeze || iloopcount == 4)) {
+							LOGGER.info("ISTS SQUEESE TIME");
+							sw.setAvailableMatchupsSqueeze(db,pMain, this);
+							squeezeit = true;
+						} else if (sw.getBumpCount() > 5 && _bsqueeze) {
+							sw.setAvailableMatchupsSqueeze(db,pMain, this);
+							squeezeit = true;
+						} else if (this.getTeamcount() % 2 == 0 ) {
+							if (iloopcount <= 4) {
+								sw.backoutSchedule(db, this, pMain);
+								sw.setScheduleComplete(false);
+								break;
+							} else if (iloopcount == 4) {
+								sw.setAvailableMatchupsSqueeze(db,pMain, this);
+								squeezeit = true;
+							}
+							
+						}  
+					}
+						
+					//
+					// if the team is out of town.. then mark the available ice as -2
+					//
+					
+					LOGGER.info("Scheduling:Main Team Assumes a Home position: " + tmMain);
+					
+					bhome = true;
+					
+					if (tmMain.isOutOfTown(sw)) {
+						slMainIDs.clear();
+						slMainIDs.add(Integer.valueOf(-2));
+						LOGGER.info("Scheduling:" + " out of town detection.. ice is -2 for " + tmMain.toString());
+					} else {
+						slMainIDs = db.getAvailableSlotIDs(clMain,tmMain, sw);
+					}
+
+					if (slMainIDs.size() == 0) {
+						LOGGER.info("Scheduling:" + tmMain + " for " + sw.getFromDate() + " wants home game.. but does not have ice.  Switching to away mode.");
+						bhome = false;
+					}
+					
+					//
+					// now lets iterate through the potential matchups
+					//
+					
+					while (!sw.getMatchUpKeys().isEmpty()) { 
+
+						pMatch = this.partlist.getByKey((sw.getMatchUpKeys().get(0)));
+						slMatchIDs.clear();
+						tmMatch = pMatch.getTeam();
+						clMatch = tmMatch.getTeamClub();
+						tmMatch.getTeamGameInfo().refreshInfo(db,this);
+						
+						LOGGER.info("Scheduler: Match Team .. pulled from the rubble:" + tmMatch);
+
+						if (!tmMatch.gameCapCheck(this,tmMain) || !tmMain.gameCapCheck(this,tmMatch)) {
+							LOGGER.info("schedule:  Match Team enough games: " + pMain + " " + pMatch + ". Skipping..");
+							sw.getMatchUpKeys().remove(0);
+							continue;
+						}
+
+						if (!db.checkclubblock(pMatch, pMain, this)) {
+							LOGGER.info("Block alert" + pMatch + ". Skipping..");
+							sw.getMatchUpKeys().remove(0);
+							continue;
+						}
+						
+						//
+						// Out of Town Checker
+						//
+						if (tmMatch.isOutOfTown(sw)) {
+							LOGGER.info("schedule:Match Team is out of town..." + pMatch + ". Skipping..");
+							sw.getMatchUpKeys().remove(0);
+							continue;
+						}
+						
+						//
+						// only disregard the Match Team already being processed if squeeze is on
+						// we need the double up
+
+						// if we had to squeeze.. then lets punch a hole in the schedule
+						// and try to make it happen
+						if (squeezeit) {
+							foundmatchup = false;
+							LOGGER.info("Putting on the squeeezeee A");
+							db.getAllAvailableSlots(this,pMatch);
+							db.getAllAvailableSlots(this,pMain);
+							db.getAllUsedSlots(this,  pMatch);
+							db.getAllUsedSlots(this,  pMain);
+							for (Slot myslot : pMain.getSlotsAvail()) {
+								if (!db.checkHomeOnly(pMatch,myslot.actDate)) {
+									if (pMain.canIPlay(this, myslot, pMatch) && pMatch.canIPlay(this, myslot, pMain)) {
+										bhome = true;
+										slMainIDs.clear();
+										slMainIDs.add(Integer.valueOf(myslot.ID));
+										foundmatchup = true;
+										break;
+									}
+								}	
+							}
+							for (Slot myslot : pMatch.getSlotsAvail()) {
+								if (!db.checkHomeOnly(pMain,myslot.actDate)) {
+									if (pMain.canIPlay(this, myslot, pMatch) && pMatch.canIPlay(this, myslot, pMain)) {
+										bhome = false;
+										slMatchIDs.clear();
+										slMatchIDs.add(Integer.valueOf(myslot.ID));
+										foundmatchup = true;
+										break;
+									}
+								}
+							}
+							if (!foundmatchup) {
+								LOGGER.info("Did not find any squeeze ice.. moving on");
+								sw.getMatchUpKeys().remove(0);
+								continue;
+							}
+						} else {
+							slMatchIDs= db.getAvailableSlotIDs(clMatch,tmMatch, sw);
+						}
+					
+						if (tmMatch.isOutOfTown(sw)) {
+							slMatchIDs.clear();
+							slMatchIDs.add(Integer.valueOf(-2));
+						}
+
+						if (slMatchIDs.isEmpty() && slMainIDs.isEmpty()) {
+							if (_bsqueeze){
+								squeezeit = true;
+								LOGGER.info("Putting on the squeeezeee");
+								db.getAllAvailableSlots(this,pMatch);
+								db.getAllAvailableSlots(this,pMain);
+								db.getAllUsedSlots(this,  pMatch);
+								db.getAllUsedSlots(this,  pMain);
+								for (Slot myslot : pMain.getSlotsAvail()) {
+									if (!db.checkHomeOnly(pMatch,myslot.actDate)) {
+										if (pMain.canIPlay(this, myslot, pMatch) && pMatch.canIPlay(this, myslot, pMain)) {
+											bhome = true;
+											slMainIDs.clear();
+											slMainIDs.add(Integer.valueOf(myslot.ID));
+											foundmatchup = true;
+											break;
+										}
+									}	
+								}
+								for (Slot myslot : pMatch.getSlotsAvail()) {
+									if (!db.checkHomeOnly(pMain,myslot.actDate)) {
+										if (pMain.canIPlay(this, myslot, pMatch) && pMatch.canIPlay(this, myslot, pMain)) {
+											bhome = false;
+											slMatchIDs.clear();
+											slMatchIDs.add(Integer.valueOf(myslot.ID));
+											break;
+										}
+									}
+								}
+
+								if (slMatchIDs.isEmpty() && slMainIDs.isEmpty()) {
+									LOGGER.info("*** WARNING **** Niether Team Has Ice **** skipping...");
+									sw.getMatchUpKeys().remove(0);
+									continue;
+								}  
+							} else {
+								LOGGER.info("*** WARNING **** Niether Team Has Ice **** skipping...");
+								sw.getMatchUpKeys().remove(0);
+								continue;
+							}
+						}
+
+						while (!slMatchIDs.isEmpty()) {
+							if (db.checkHomeOnly(pMain, db.getSlotDate(slMatchIDs.get(0)))) {
+								slMatchIDs.remove(0);
+								LOGGER.info("1 Main has home only on this day clear the Match Slot IDs");
+							} else {
+								break;
+							}
+						}						
+						while (!slMainIDs.isEmpty()) {
+							if (db.checkHomeOnly(pMatch, db.getSlotDate(slMainIDs.get(0)))) {
+								slMainIDs.remove(0);
+								LOGGER.info("1 Match has to be a home game.. so we must clear the Main Slot IDs");
+							} else {
+								break;
+							}
+						}
+						
+
+						while (!slMainIDs.isEmpty()) {
+							if (db.checkClubOffDay(pMain, db.getSlotDate(slMainIDs.get(0)))) {
+								slMainIDs.remove(0);
+								LOGGER.info("1 Main is gone.. so we must clear  Slot IDs");
+							} else {
+								break;
+							}
+						}
+
+						while (!slMatchIDs.isEmpty()) {
+							if (db.checkClubOffDay(pMain, db.getSlotDate(slMatchIDs.get(0)))) {
+								slMatchIDs.remove(0);
+								LOGGER.info("2 Main is gone.. so we must clear  Slot IDs");
+							} else {
+								break;
+							}
+						}
+
+						while (!slMatchIDs.isEmpty()) {
+							if (db.checkClubOffDay(pMatch, db.getSlotDate(slMatchIDs.get(0)))) {
+								slMatchIDs.remove(0);
+								LOGGER.info("3 Match is gone.. so we must clear  Slot IDs");
+							} else {
+								break;
+							}
+						}
+						
+						while (!slMainIDs.isEmpty()) {
+							if (db.checkClubOffDay(pMatch, db.getSlotDate(slMainIDs.get(0)))) {
+								slMainIDs.remove(0);
+								LOGGER.info("4 Match is gone.. so we must clear  Slot IDs");
+							} else { 
+								break;
+							}
+						}
+						
+						//
+						// we need to double check the slots because a squeeze could have moved a slot forward into a non squeeze week
+						//
+						db.getAllUsedSlots(this,  pMatch);
+						db.getSlotsForMatchup(slMatchIDs,pMatch);
+						db.getAllUsedSlots(this,  pMain);
+						db.getSlotsForMatchup(slMainIDs,pMain);
+						slMainIDs.clear();
+						for (Slot myslot : pMain.getSlotsMatchup()) {
+							if (pMain.canIPlay(this, myslot, pMatch) && pMatch.canIPlay(this, myslot, pMain)) {
+								slMainIDs.add(Integer.valueOf(myslot.ID));
+							}
+						}	
+						slMatchIDs.clear();
+						for (Slot myslot : pMatch.getSlotsMatchup()) {
+							if (pMain.canIPlay(this, myslot, pMatch) && pMatch.canIPlay(this, myslot, pMain)) {
+								slMatchIDs.add(Integer.valueOf(myslot.ID));
+							}
+						}	
+						
+						LOGGER.info("Scheduler:MAIN Slots Scrubbed are:" + slMainIDs);
+						LOGGER.info("Scheduler:Match Slots Scrubbed are:" + slMatchIDs);
+						
+						if (!tmMatch.gameCapCheck(this,tmMain) || !tmMain.gameCapCheck(this,tmMatch)) {
+							LOGGER.info("schedule:  Match Team enough games: " + pMain + " " + pMatch + ". Skipping..");
+							sw.getMatchUpKeys().remove(0);
+							continue;
+						}
+						if (slMatchIDs.isEmpty() && slMainIDs.isEmpty()) {
+							LOGGER.info("*** WARNING Level 2**** Niether Team Has Ice **** skipping...");
+							sw.getMatchUpKeys().remove(0);
+							continue;
+						} else 
+
+						if (squeezeit) {
+							LOGGER.info("schedule:Closing the squeeze now...");
+							squeezeit = false;
+						} else if (tmMatch.isOutOfTown(sw) && tmMain.isOutOfTown(sw)) {
+							LOGGER.info(" Both Teams are out of town.. schedule them now.:" + pMatch +":" + pMain);
+						}
+
+
+						// schedule the game .. see who gets home..
+						//
+						Participant pHome = db.calcHomeParticipant(this, pMain, pMatch, slMainIDs, slMatchIDs);
+						
+						if (pHome.equals(pMain)) {
+							LOGGER.info("Main Slots: " + slMainIDs);
+								db.scheduleGame(this, sw, pMain, pMatch, slMainIDs.get(0),sw.isBumpOn());
+						} else if (pHome.equals(pMatch)) {
+							LOGGER.info("Match Slots: " + slMatchIDs);
+							db.scheduleGame(this, sw, pMatch, pMain,  slMatchIDs.get(0),sw.isBumpOn());
+						} else {
+							LOGGER.info("SNAFU on scheduling game..");
+						}
+						//
+						// lets place them in the processed list
+						// reset the bump list
+						// and clear the matchupkeys.
+						sw.addPrcoessListPart(pMain);
+						sw.addPrcoessListPart(pMatch);
+						//sw.resetBumpList();
+						sw.getMatchUpKeys().clear();
+						
+					}
+				}
+			}
+			//if (y==7) break;
+		}
+		
+		db.free();
 
 	}
 			

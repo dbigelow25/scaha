@@ -1,6 +1,7 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -19,9 +20,17 @@ public class ScheduleWeek extends ScahaObject implements Serializable {
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	
-	private boolean ScheduleComplete = false;
 	
-	private Schedule schedule = null;
+	String SName = null;
+	String Name = null;
+	int Week = 0;
+	String FromDate = null;
+	String ToDate = null;
+	String Tag = null;
+	String SeasonTag = null;
+	
+	private Schedule Schedule = null;
+	private boolean ScheduleComplete = false;
 	
 	//
 	// used to help scheduling objects..
@@ -33,8 +42,8 @@ public class ScheduleWeek extends ScahaObject implements Serializable {
 	ParticipantList pBump = ParticipantList.NewListFactory();
 
 	int iBC = 0;
+
 	public HashMap<String, String> hmPattern = new HashMap<String, String>(); 
-	
 	ArrayList<Integer> AvauilToPlayKeys = new ArrayList<Integer>();
 	ArrayList<Integer> MatchUpKeys = new ArrayList<Integer>();
 
@@ -53,6 +62,104 @@ public class ScheduleWeek extends ScahaObject implements Serializable {
 		ScheduleComplete = scheduleComplete;
 	}
 	
+	/**
+	 * @return the sName
+	 */
+	public String getSName() {
+		return SName;
+	}
+
+	/**
+	 * @param sName the sName to set
+	 */
+	public void setSName(String sName) {
+		SName = sName;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return Name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		Name = name;
+	}
+
+	/**
+	 * @return the week
+	 */
+	public int getWeek() {
+		return Week;
+	}
+
+	/**
+	 * @param week the week to set
+	 */
+	public void setWeek(int week) {
+		Week = week;
+	}
+
+	/**
+	 * @return the fromDate
+	 */
+	public String getFromDate() {
+		return FromDate;
+	}
+
+	/**
+	 * @param fromDate the fromDate to set
+	 */
+	public void setFromDate(String fromDate) {
+		FromDate = fromDate;
+	}
+
+	/**
+	 * @return the toDate
+	 */
+	public String getToDate() {
+		return ToDate;
+	}
+
+	/**
+	 * @param toDate the toDate to set
+	 */
+	public void setToDate(String toDate) {
+		ToDate = toDate;
+	}
+
+	/**
+	 * @return the tag
+	 */
+	public String getTag() {
+		return Tag;
+	}
+
+	/**
+	 * @param tag the tag to set
+	 */
+	public void setTag(String tag) {
+		Tag = tag;
+	}
+
+	/**
+	 * @return the seasonTag
+	 */
+	public String getSeasonTag() {
+		return SeasonTag;
+	}
+
+	/**
+	 * @param seasonTag the seasonTag to set
+	 */
+	public void setSeasonTag(String seasonTag) {
+		SeasonTag = seasonTag;
+	}
+
 	public void resetBumpList() {
 		pBump.reset();
 	}
@@ -115,11 +222,11 @@ public class ScheduleWeek extends ScahaObject implements Serializable {
 		return pProc.getByKey(_p.ID) != null;
 	}
 	
-	public void setAvailableMatchups(ScahaDatabase _db, Participant _p, Schedule _se) {
+	public void setAvailableMatchups(ScahaDatabase _db, Participant _p, Schedule _se) throws SQLException {
 		setMatchUpKeys(_db.getAvailableMatchups(_p,_se, this, false));
 	}
 
-	public void setAvailableMatchupsSqueeze(ScahaDatabase _db, Participant _p, Schedule _se) {
+	public void setAvailableMatchupsSqueeze(ScahaDatabase _db, Participant _p, Schedule _se) throws SQLException {
 		setMatchUpKeys(_db.getAvailableMatchups(_p,_se, this, true));
 		weedOutMaxGamers(_db);
 	}
@@ -195,7 +302,7 @@ public class ScheduleWeek extends ScahaObject implements Serializable {
 		this.setScheduleComplete(false);
 	}
 	
-	public void setAvailableToPlay(ScahaDatabase _db) {
+	public void setAvailableToPlay(ScahaDatabase _db) throws SQLException {
 		setAvailToPlayKeys(_db.getAvailableParticipants(this));
 	}
 	
@@ -208,7 +315,7 @@ public class ScheduleWeek extends ScahaObject implements Serializable {
 	public void weedOutMaxGamers(ScahaDatabase _db) {
 		ArrayList<Integer> am = new ArrayList<Integer>();
 		for (Integer match : getMatchUpKeys()) {
-			Participant pMatch = schedule.getParticipantAtID(match.intValue());
+			Participant pMatch = Schedule.getParticipantAtID(match.intValue());
 		//	pMatch.getTeam().getTeamGameInfo().refreshInfo(_db,schedule);
 		//	if (pMatch.getTeam().getTotalGames() > schedule.getGameCount()) {
 		// TODO		am.add(match);
@@ -224,6 +331,20 @@ public class ScheduleWeek extends ScahaObject implements Serializable {
 			getMatchUpKeys().remove(match);
 		}
 
+	}
+
+	/**
+	 * @return the schedule
+	 */
+	public Schedule getSchedule() {
+		return Schedule;
+	}
+
+	/**
+	 * @param schedule the schedule to set
+	 */
+	public void setSchedule(Schedule schedule) {
+		Schedule = schedule;
 	}
 	
 }
