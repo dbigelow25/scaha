@@ -163,5 +163,11 @@ public class Participant extends ScahaObject implements Serializable {
 		SlotsMatchup = new Vector<Slot>();
 	}
 	
+	public void resetSlotsAvail() {
+		this.SlotsAvail = new Vector<Slot>();
+	}
 	
+	public void resetSlotsPlayed() {
+		SlotsPlaying = new Vector<Slot>();
+	}
 }

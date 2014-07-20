@@ -555,6 +555,9 @@ public class Schedule extends ScahaObject {
 							continue;
 						}
 
+						//
+						// Are these teams blocked from playing each other?
+						//
 						if (!db.checkclubblock(pMatch, pMain, this)) {
 							LOGGER.info("Block alert" + pMatch + ". Skipping..");
 							sw.getMatchUpKeys().remove(0);

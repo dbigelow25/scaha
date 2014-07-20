@@ -121,6 +121,14 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 	}
 
 	/**
+	 * We want to know if this team is an exhibition team
+	 * @return
+	 */
+	public boolean isExhibition() {
+		return isexhibition == 1;
+	}
+	
+	/**
 	 * @param isexhibition the isexhibition to set
 	 */
 	public void setIsexhibition(int isexhibition) {
