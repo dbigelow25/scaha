@@ -1054,6 +1054,7 @@ public class ScahaDatabase extends Database {
 			rs = ps_getGameIdForSlot.executeQuery();
 			while (rs.next()) {
 				LOGGER.info("ATTEMPTING TO USE A FILLED SLOT!! SCREATCHING HALT" + _iSlotID);
+				rs.close();
 				System.exit(0);
 			}
 		}
