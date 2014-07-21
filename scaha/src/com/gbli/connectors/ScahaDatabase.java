@@ -473,10 +473,10 @@ public class ScahaDatabase extends Database {
 		
 		// We will always have at least one iteration.
 		int iCount = 0;
-		int iGames = _sc.getMingamecnt();
+		int iGames = _sc.getMaxgamecnt();
 		int iGamesPerIteration = _sc.getTeamcount() - 1 ;
 		
-		LOGGER.info("genGames: Check for " + _sc + ". iCount=" + iCount + ": iGames=" + _sc.getMingamecnt() + ": Team Count-1=" + (_sc.getTeamcount() - 1));
+		LOGGER.info("genGames: Check for " + _sc + ". iCount=" + iCount + ": iGames=" + iGames + ": Team Count-1=" + iGamesPerIteration);
 			
 		//
 		// Lets calculate the number of iterations now..
