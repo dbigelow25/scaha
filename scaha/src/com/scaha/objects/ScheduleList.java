@@ -67,6 +67,17 @@ public class ScheduleList extends ListDataModel<Schedule> implements Serializabl
 			sch.setMaxbyecnt(rs.getInt(i++));
 			sch.setMaxawaycnt(rs.getInt(i++));
 			data.add(sch);
+			//
+			// test out participant 
+			// 
+			_db.syncTeamsToSchedule(sch, _gs);
+			//
+			// lets refresh ourselves
+			//
+			sch.refresh(_db);
+
+			_db.genGames(sch);
+			
 			LOGGER.info("Adding schedule " + sch + " to the list...");
 		}
 		rs.close();

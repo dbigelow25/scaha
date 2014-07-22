@@ -170,43 +170,6 @@ public class ScahaBean implements Serializable,  MailableObject {
 			
 	}
 	
-
-	@SuppressWarnings("unchecked")
-	public void syncClubSlots() {
-		
-		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-		try {
-			if (this.ScahaClubList != null) {
-				List<Club> list = (List<Club>) this.ScahaClubList.getWrappedData();
-				for (Club c : list) {
-					db.syncSlotsToClub(c, ScahaSeasonList.getCurrentSeason());
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		db.free();
-			
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void syncGameMatrix() {
-		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-		try {
-			if (this.scahaschedule != null) {
-				List<Schedule> list = (List<Schedule>) this.scahaschedule.getWrappedData();
-				for (Schedule sch : list) {
-					db.syncTeamsToSchedule(sch,  ScahaSeasonList.getCurrentSeason());
-					sch.refresh(db);
-					db.genGames(sch);
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		db.free();
-	}
-	
 	@SuppressWarnings("unchecked")
 	private void resetScheduleList() {
 		if (this.scahaschedule != null) {

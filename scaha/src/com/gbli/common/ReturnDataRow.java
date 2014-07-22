@@ -261,7 +261,7 @@ public class ReturnDataRow extends Vector {
 	public void setRdrs(ReturnDataResultSet rdrs) {
 		this.rdrs = rdrs;
 	}
-	
+
 	
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
@@ -274,15 +274,4 @@ public class ReturnDataRow extends Vector {
 
 	}
 	
-	public String toClassString() {
-		StringBuffer sb = new StringBuffer();
-		
-		for (Object obj : this) {
-			sb.append(obj.getClass() + ", ");
-		}
-		
-		return sb.toString();
-
-	}
-
 }

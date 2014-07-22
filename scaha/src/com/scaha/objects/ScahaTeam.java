@@ -35,8 +35,6 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 	private String xdivisiontag = null;
 	private String xskillleveltag = null;
 	
-	private TeamGameInfo tgi = null;
-	
 	private int year = 0;
 
 	private String rowkey = "";
@@ -120,14 +118,6 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 		return isexhibition;
 	}
 
-	/**
-	 * We want to know if this team is an exhibition team
-	 * @return
-	 */
-	public boolean isExhibition() {
-		return isexhibition == 1;
-	}
-	
 	/**
 	 * @param isexhibition the isexhibition to set
 	 */
@@ -424,86 +414,4 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 		this.rowkey = rowkey;
 	}
 	
-	
-	/**
-	 * @return the teamGameInfo
-	 */
-	public TeamGameInfo getTeamGameInfo() {
-		if (tgi == null) {
-			this.setTeamGameInfo(new TeamGameInfo(this));
-		}
-		return tgi;
-	}
-
-	public int getTotalGames() {
-		return this.getTeamGameInfo().getAwayGames() + this.getTeamGameInfo().getHomeGames();
-	}
-	
-	/**
-	 * @param teamGameInfo the teamGameInfo to set
-	 */
-	public void setTeamGameInfo(TeamGameInfo teamGameInfo) {
-		tgi = teamGameInfo;
-	}
-	
-	/**
-	 * Returns true if the tean is out of town this weekend..
-	 * 
-	 * @param _sw
-	 * @return
-	 */
-	public boolean isOutOfTown(ScheduleWeek _sw) {
-		
-		for (String date : getTeamGameInfo().getHmBOD().keySet()) {
-			if (date.compareTo(_sw.getFromDate().trim()) >= 0 && date.compareTo(_sw.getToDate().trim()) <= 0) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public boolean gameCapCheck(Schedule _se, ScahaTeam _op) {
-
-		int imytot = this.getTeamGameInfo().getHomeGames() + this.getTeamGameInfo().getAwayGames();
-		int ioptot = _op.getTeamGameInfo().getHomeGames() + _op.getTeamGameInfo().getAwayGames();
-		int igamecap = _se.getMaxgamecnt();
-		
-		LOGGER.info("gamecapcheck:mytot=" + imytot + ", ioptot=" + ioptot + ", igamecap =" + igamecap + ", teamcount=" + _se.getTeamcount());
-		//
-		// if we have an odd number of teams.
-		//
-		// then if my opponent is at the game cap .. but I am not one away.. then we have to play..
-		//
-		
-		if (this.ID  == 76 && imytot == 17) {
-			return false;
-		}
-		if (_op.ID == 76 && ioptot == 17) {
-			return false;
-		}
-		if (_se.getTeamcount() % 2 != 0) {
-			if (imytot == igamecap + 1) {
-				LOGGER.info("gamecap:  I (" + this +  ") ODD I at my limit..");
-				return false;
-				
-			}
-			if (imytot == igamecap && ioptot > igamecap) {
-				LOGGER.info("gamecap:  I (" + this +  ") ODD am at my game cap.. my opponent is over it..");
-				return false;
-			}
-			if (imytot == igamecap && ioptot == igamecap) {
-				LOGGER.info("gamecap:  I (" + this +  ") ODD am at game cap.. and my opponent is as well");
-				return false;
-			}
-			return true;
-		}
-		// if either are at game cap here.. return 	
-		if (_se.getTeamcount() % 2 == 0) {
-			if (imytot == igamecap) {
-				LOGGER.info("gamecap:  I (" + this +  ") EVEN - I AM AT MY GAME CAP...");
-				return false;
-			}
-		}
-		return true;
-	}
 }
