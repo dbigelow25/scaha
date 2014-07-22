@@ -48,9 +48,9 @@
 		</p:layoutUnit>
 		
 		<p:layoutUnit id="center" position="center" >
-				<h:form id="scahagameform">
+				<h:form id="scheduleform">
 					<p:selectOneMenu styleClass="ddlistbox" id="season" value="#{scoreboardBean.season}" ajax="true">
-        				<p:ajax listener="#{scoreboardBean.onSeasonChange()}" update="schedule" />
+        				<p:ajax listener="#{scoreboardBean.onSeasonChange()}" update=":scheduleform:schedule" />
             			<f:selectItem style="font-size:10pt;" itemLabel="View a Season..." itemValue="" noSelectionOption="true" />
             			<f:selectItems value="#{scoreboardBean.seasonlist}" />
       	        	</p:selectOneMenu>				

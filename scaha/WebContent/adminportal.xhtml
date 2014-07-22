@@ -54,8 +54,8 @@
 	            	<p:commandButton id="basic" ajax="true" value="Refresh App" actionListener="#{scahaBean.refreshBean()}" update="@([id$=dlg])" oncomplete="dlg.show();"/>
 	            	<br/>
   	            	<p:commandButton id="dbtest" ajax="true" value="Test DB" actionListener="#{scahaBean.testDB(10)}" />
-  	            	<p:commandButton id="syncgameMatrix" ajax="true" value="Slot Sync" actionListener="#{scahaBean.syncGameMatrix()}" update="@([id$=dlg])" oncomplete="dlg.show();"/>
-  	            	<p:commandButton id="syncslot" ajax="true" value="Slot Sync" actionListener="#{scahaBean.syncClubSlots()}" update="@([id$=dlg])" oncomplete="dlg.show();"/>
+  	            	<p:commandButton id="syncgameMatrix" ajax="true" value="Gen Game Matrix" actionListener="#{scahaBean.syncGameMatrix()}" update="@([id$=dlg])" oncomplete="dlg.show();"/>
+  	            	<p:commandButton id="syncslot" ajax="true" value="Gen Slot Matrix" actionListener="#{scahaBean.syncClubSlots()}" update="@([id$=dlg])" oncomplete="dlg.show();"/>
 	            	<br/>
         		</p:tab>
 	            <p:tab id="t2" title="Messaging Center">
