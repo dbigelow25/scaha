@@ -54,15 +54,21 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 		
 		List<Participant> data = new ArrayList<Participant>();
 
-		PreparedStatement ps = _db.prepareStatement("call scaha.getParticipantKeysAndRankBySchedule(?)");
+		PreparedStatement ps = _db.prepareStatement("call scaha.getParticipantsBySchedule(?)");
 		ps.setInt(1,_sch.ID);
 		ResultSet rs = ps.executeQuery();
+		int y = 1;
 		while (rs.next()) {
 			int i = 1;
 			Participant part = new Participant(rs.getInt(i++),_pro);
 			part.setRank(rs.getInt(i++));
 			part.setTeam(_tl.getScahaTeamAt(rs.getInt(i++)));
+			part.setWins(rs.getInt(i++));
+			part.setLoses(rs.getInt(i++));
+			part.setTies(rs.getInt(i++));
+			part.setPoints(rs.getInt(i++));
 			part.setSchedule(_sch);
+			part.setPlace(y++);
 			LOGGER.info("Found new Participant for schedule " + _sch + ". " + part);
 			data.add(part);
 		}

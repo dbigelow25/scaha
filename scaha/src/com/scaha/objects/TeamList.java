@@ -55,69 +55,68 @@ public class TeamList extends ListDataModel<ScahaTeam> implements Serializable, 
 		
 		List<ScahaTeam> data = new ArrayList<ScahaTeam>();
 		
+		PreparedStatement pst = _db.prepareStatement("call scaha.getAllTeamsByClubAndSeason(?,?)");
 		PreparedStatement ps = _db.prepareStatement("call scaha.getAllCoachByTeam(?)");
 		PreparedStatement ps2 = _db.prepareStatement("call scaha.getAllManagerByTeam(?)");
 		
-		Vector<Object> v = new Vector<Object>();
-		v.add(new Integer(_cl.ID));
-		v.add( _gs.getTag());
 		
-		if (_db.getData("call scaha.getAllTeamsByClubAndSeason(?,?)",v)) {
-			
-			int y = 1;
-			ResultSet rs = _db.getResultSet();
-			while (rs.next()) {
-				int i = 1;
-				ScahaTeam tm = new ScahaTeam(_pro,rs.getInt(i++));
-				tm.setSname(rs.getString(i++));
-				tm.setTeamname(rs.getString(i++));
-				tm.setTeamgender(rs.getString(i++));
-				int idSkill = rs.getInt(i++);
-				tm.setSkillleveltag(rs.getString(i++));
-				int idDivs = rs.getInt(i++);
-				tm.setDivisiontag(rs.getString(i++));
-				tm.setIsexhibition(rs.getInt(i++));
-				tm.setSeasontag(rs.getString(i++));
-				tm.setYear(rs.getInt(i++));
-				tm.setScheduletags(rs.getString(i++));
-				int idSkill2 = rs.getInt(i++);
-				SkillLevel sl = new SkillLevel(_pro, idSkill);
-				sl.setSkilllevelname(rs.getString(i++));
-				sl.setTag(rs.getString(i++));
-				Division div = new Division(_pro,idDivs);
-				int idiv2 = rs.getInt(i++);
-				div.setDivisionname(rs.getString(i++));
-				div.setTag(rs.getString(i++));
-				tm.setXdivisiontag(rs.getString(i++));
-				tm.setXskillleveltag(rs.getString(i++));
-				tm.setSdivision(div.getDivisionname());
-				tm.setSskilllevel(sl.getSkilllevelname());
-				//
-				// We will worry about creating the other objects later.. they are reference objects
-				// and we need to be carefull not to create a ton of copies floating around
-				//
-				// they are the skilllevel, divisions, and seasons.
-				tm.setTeamdivision(div);
-				tm.setTeamskilllevel(sl);
-				tm.setTeamClub(_cl);
-				data.add(tm);
-			}
-			rs.close();
-			
+		pst.setInt(1, _cl.ID);
+		pst.setString(2, _gs.getTag());
+		ResultSet rs = pst.executeQuery();
+		while (rs.next()) {
+			int i = 1;
+			ScahaTeam tm = new ScahaTeam(_pro,rs.getInt(i++));
+			tm.setSname(rs.getString(i++));
+			tm.setTeamname(rs.getString(i++));
+			tm.setTeamgender(rs.getString(i++));
+			int idSkill = rs.getInt(i++);
+			tm.setSkillleveltag(rs.getString(i++));
+			int idDivs = rs.getInt(i++);
+			tm.setDivisiontag(rs.getString(i++));
+			tm.setIsexhibition(rs.getInt(i++));
+			tm.setSeasontag(rs.getString(i++));
+			tm.setYear(rs.getInt(i++));
+			tm.setScheduletags(rs.getString(i++));
+			int idSkill2 = rs.getInt(i++);
+			SkillLevel sl = new SkillLevel(_pro, idSkill);
+			sl.setSkilllevelname(rs.getString(i++));
+			sl.setTag(rs.getString(i++));
+			Division div = new Division(_pro,idDivs);
+			int idiv2 = rs.getInt(i++);
+			div.setDivisionname(rs.getString(i++));
+			div.setTag(rs.getString(i++));
+			tm.setXdivisiontag(rs.getString(i++));
+			tm.setXskillleveltag(rs.getString(i++));
+			tm.setSdivision(div.getDivisionname());
+			tm.setSskilllevel(sl.getSkilllevelname());
 			//
-			// ok.. if we need to get all the admin staff.. then list go get this right now!
+			// We will worry about creating the other objects later.. they are reference objects
+			// and we need to be carefull not to create a ton of copies floating around
 			//
-			// For any team.. the admin staff is coaches.. assistant Coaches.. and Managers
-			// for any team..
-			if (_badmin) {
-				for (ScahaTeam tm : data) {
-					tm.setCoachs(CoachList.NewCoachListFactory(_pro, ps, tm));
-					tm.setManagers(ManagerList.NewManagerListFactory(_pro, ps2, tm));
-				}
-			}
-				
+			// they are the skilllevel, divisions, and seasons.
+			tm.setTeamdivision(div);
+			tm.setTeamskilllevel(sl);
+			tm.setTeamClub(_cl);
+			data.add(tm);
+			LOGGER.info("TeamListFactory.. adding Team:" + tm);
 		}
-
+		rs.close();
+			
+		//
+		// ok.. if we need to get all the admin staff.. then list go get this right now!
+		//
+		// For any team.. the admin staff is coaches.. assistant Coaches.. and Managers
+		// for any team..
+		if (_badmin) {
+			for (ScahaTeam tm : data) {
+				LOGGER.info("TeamListFactory.. adding Coaches to Team:" + tm);
+				tm.setCoachs(CoachList.NewCoachListFactory(_pro, ps, tm));
+				LOGGER.info("TeamListFactory.. adding Managers to Team:" + tm);
+				tm.setManagers(ManagerList.NewManagerListFactory(_pro, ps2, tm));
+			}
+		}
+				
+		pst.close();
 		ps.close();
 		ps2.close();
 		return new TeamList(data);

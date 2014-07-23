@@ -2,19 +2,14 @@ package com.scaha.beans;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.faces.model.SelectItemGroup;
 import javax.mail.internet.InternetAddress;
 
 import com.gbli.context.ContextManager;
@@ -121,6 +116,7 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		
 		this.selectedschedule = this.schedules.getSchedule(this.selectedscheduleid);
 		LOGGER.info("schedule change request detected new id is:" + this.selectedscheduleid + ":" + this.selectedschedule);
+		this.partlist = null;
 		if (this.selectedschedule != null) {
 			this.partlist = this.selectedschedule.getPartlist();
 			LOGGER.info("here is schedule partlist" + partlist.toString());
@@ -135,6 +131,7 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		LOGGER.info("Refreshing Schedule List for season:" + this.selectedseason);
 		this.schedulelist = null;	
 		this.schedules = null;
+		this.partlist = null;
 		if (this.selectedseason != null) {
 			this.schedules = this.selectedseason.getSchedList();
 			LOGGER.info("season schedule is: " + schedules);

@@ -206,6 +206,10 @@ public class ScahaBean implements Serializable,  MailableObject {
 			e.printStackTrace();
 		}
 		db.free();
+		
+		this.refreshClubList();
+		this.refreshScheduleList();
+		
 	}
 	
 	@SuppressWarnings("unchecked")

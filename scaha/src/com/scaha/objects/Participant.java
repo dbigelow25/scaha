@@ -16,6 +16,11 @@ public class Participant extends ScahaObject implements Serializable {
 	private ScahaTeam  team = null;
 	private Schedule schedule = null;
 	private int Rank = 0;
+	private int place = 0;
+	private int wins = 0;
+	private int loses = 0;
+	private int ties = 0;
+	private int points = 0;
 	
 	private Vector<Slot> SlotsAvail = new Vector<Slot>();
 	private Vector<Slot> SlotsPlaying = new Vector<Slot>();
@@ -174,5 +179,75 @@ public class Participant extends ScahaObject implements Serializable {
 	
 	public void resetSlotsPlayed() {
 		SlotsPlaying = new Vector<Slot>();
+	}
+
+	/**
+	 * @return the place
+	 */
+	public int getPlace() {
+		return place;
+	}
+
+	/**
+	 * @param place the place to set
+	 */
+	public void setPlace(int place) {
+		this.place = place;
+	}
+
+	/**
+	 * @return the wins
+	 */
+	public int getWins() {
+		return wins;
+	}
+
+	/**
+	 * @param wins the wins to set
+	 */
+	public void setWins(int wins) {
+		this.wins = wins;
+	}
+
+	/**
+	 * @return the loses
+	 */
+	public int getLoses() {
+		return loses;
+	}
+
+	/**
+	 * @param loses the loses to set
+	 */
+	public void setLoses(int loses) {
+		this.loses = loses;
+	}
+
+	/**
+	 * @return the ties
+	 */
+	public int getTies() {
+		return ties;
+	}
+
+	/**
+	 * @param ties the ties to set
+	 */
+	public void setTies(int ties) {
+		this.ties = ties;
+	}
+
+	/**
+	 * @return the points
+	 */
+	public int getPoints() {
+		return points;
+	}
+
+	/**
+	 * @param points the points to set
+	 */
+	public void setPoints(int points) {
+		this.points = points;
 	}
 }

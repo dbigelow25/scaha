@@ -55,12 +55,10 @@
 							url="suspensions.xhtml" />	
 					</p:menuButton>
 					<p:spacer width="2px" />
-					<p:commandButton value="Score Board"
+					<p:commandButton value="Schedule"
 						actionListener="#{scoreboardBean.buildIt}"
 						ajax="false"
-						rendered="#{profileBean.isSuperUser()}" /> 
-					<p:spacer width="2px" />
-					
+						/> 
 				</p:toolbarGroup>
 				<p:toolbarGroup align="left" rendered="#{not empty profileBean.getProfile()}">
 					<p:menuButton id="customer" style="width:125px;" value="My Actions" type="button">
