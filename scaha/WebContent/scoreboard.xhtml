@@ -48,20 +48,42 @@
 		</p:layoutUnit>
 		
 		<p:layoutUnit id="center" position="center" >
-				<h:form id="scheduleform">
-					<p:selectOneMenu styleClass="ddlistbox" id="season" value="#{scoreboardBean.season}" ajax="true">
-        				<p:ajax listener="#{scoreboardBean.onSeasonChange()}" update=":scheduleform:schedule" />
-            			<f:selectItem style="font-size:10pt;" itemLabel="View a Season..." itemValue="" noSelectionOption="true" />
-            			<f:selectItems value="#{scoreboardBean.seasonlist}" />
-      	        	</p:selectOneMenu>				
-		
-					<p:selectOneMenu styleClass="ddlistbox"  id="schedule" value="#{scoreboardBean.schedule}">
-            			<f:selectItem style="font-size:10pt;" itemLabel="View a Schedule..." itemValue="" noSelectionOption="true" />
-            			<f:selectItems  value="#{scoreboardBean.schedlist}" />
-        			</p:selectOneMenu>				
-					
-				</h:form>
-		</p:layoutUnit>
+		<h:form id="scheduleform">
+				<p:selectOneMenu styleClass="ddlistbox" id="myseasons" value="#{scoreboardBean.selectedseasonid}" >
+       	   			<f:selectItem style="font-size:10pt;" itemLabel="View a Season..." itemValue="0" />
+           			<f:selectItems value="#{scoreboardBean.getSeasonlist()}"  var="season"  itemLabel="#{season.getDescription()}" itemValue="#{season.getKey()}"/>
+           			<p:ajax listener="#{scoreboardBean.onSeasonChange()}" process="@this" update="myschedules"/>
+       			</p:selectOneMenu>
+       							
+ 				<p:selectOneMenu styleClass="ddlistbox"  id="myschedules" value="#{scoreboardBean.selectedscheduleid}" >
+         			<f:selectItem style="font-size:10pt;" itemLabel="View a Schedule..." itemValue="0" />
+          			<f:selectItems  value="#{scoreboardBean.getSchedulelist()}" var="schedule" itemLabel="#{schedule.getDescription()}" itemValue="#{schedule.getKey()}" />
+          			<p:ajax listener="#{scoreboardBean.onScheduleChange()}" process="@this" update="@this @form :scheduleform:testContainer testContainer"/>
+        		</p:selectOneMenu>				
+			  <p:outputPanel id="testContainer">
+			
+				<p:dataTable  id= "parts" var="part" value="#{scoreboardBean.getPartlist()}">
+  		          <p:column headerText="Team Name " style="font-size: 12px;">
+   	    	         <h:outputText style="font-size: 12px;" value="#{part.getTeam().getTeamdivision().divisionname} #{part.getTeam().getTeamskilllevel().skilllevelname} - #{part.getTeam().getTeamname()} " />
+         	   </p:column >
+				</p:dataTable>
+        		</p:outputPanel>
+        	 	   
+          <!--   <p:column headerText="Head Coach" style="font-size: 12px;">
+   	             <h:outputText style="font-size: 12px;" value="#{empty team.getHeadCoach()  ? 'No Head Coach Set' : team.getHeadCoach().getsFirstName()} #{empty team.getHeadCoach() ? '' : team.getHeadCoach().getsLastName()}" />
+            </p:column >
+            <p:column headerText="e-mail" style="font-size: 12px;">
+   	             <h:outputText style="font-size: 11px;" value="#{empty team.getHeadCoach()  ? 'No e-mail found' : team.getHeadCoach().getsEmail()}" />
+            </p:column >
+            <p:column headerText="Manager" style="font-size: 12px;">
+    	         <h:outputText style="font-size: 12px;" value="#{empty team.getManager()  ? 'No Manager Set' : team.getManager().getsFirstName()} #{empty team.getManager() ? '' : team.getManager().getsLastName()}" />
+            </p:column >
+            <p:column headerText="e-mail" style="font-size: 12px;">
+  	             <h:outputText style="font-size: 11px;" value="#{empty team.getManager()  ? 'No e-mail found' : team.getManager().getsEmail()}" />
+             </p:column >
+          -->
+		</h:form>
+	</p:layoutUnit>
 		
 		
 	</p:layout>

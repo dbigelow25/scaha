@@ -36,7 +36,7 @@ public class ScheduleList extends ListDataModel<Schedule> implements Serializabl
 	 * @return
 	 * @throws SQLException 
 	 */
-	public static ScheduleList ListFactory(Profile _pro, ScahaDatabase _db, GeneralSeason _gs) throws SQLException {
+	public static ScheduleList ListFactory(Profile _pro, ScahaDatabase _db, GeneralSeason _gs, TeamList _tl) throws SQLException {
 		
 		List<Schedule> data = new ArrayList<Schedule>();
 	
@@ -67,13 +67,18 @@ public class ScheduleList extends ListDataModel<Schedule> implements Serializabl
 			sch.setMaxbyecnt(rs.getInt(i++));
 			sch.setMaxawaycnt(rs.getInt(i++));
 			data.add(sch);
+			sch.setPartlist(ParticipantList.NewListFactory(_pro, _db, sch, _tl));
 			LOGGER.info("Adding schedule " + sch + " to the list...");
+			LOGGER.info("Part List is " + sch.getPartlist().toString());
 		}
 		rs.close();
 		ps.close();
-		return new ScheduleList(data);
-	}
 		
+		ScheduleList sl = new ScheduleList(data);
+		_gs.setSchedList(sl);
+
+		return sl;
+	}
 		
     
 	@Override
@@ -86,9 +91,32 @@ public class ScheduleList extends ListDataModel<Schedule> implements Serializabl
 		return null;
 	}
 	
+	public Schedule getSchedule (int _key) {
+		@SuppressWarnings("unchecked")
+		List<Schedule> results = (List<Schedule>) getWrappedData();  
+	    for(Schedule result : results) {  
+	    	if (result.ID == _key)  return result;
+	    }  
+	      
+	    return null;
+	}
+	
 	@Override
 	public Object getRowKey(Schedule arg0) {
 		// TODO Auto-generated method stub
-		return Integer.toString(arg0.ID);	}
+		return Integer.toString(arg0.ID);	
+	}
 
+	public String toString() {
+		String answer = "";
+		@SuppressWarnings("unchecked")
+		List<Schedule> results = (List<Schedule>) getWrappedData();  
+      for(Schedule result : results) {  
+    	  answer = answer +  "Schedule: " + result + ContextManager.NEW_LINE;
+      }  
+      
+      return answer;
+      
+	}
+	
 }

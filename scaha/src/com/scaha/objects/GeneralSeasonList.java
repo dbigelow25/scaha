@@ -127,6 +127,30 @@ public class GeneralSeasonList extends ListDataModel<GeneralSeason> implements S
 	public void setCurrentSeason(GeneralSeason currentSeason) {
 		CurrentSeason = currentSeason;
 	}
+	
+	public GeneralSeason getGeneralSeason(int _key) {
+		@SuppressWarnings("unchecked")
+		List<GeneralSeason> results = (List<GeneralSeason>) getWrappedData();  
+	    for(GeneralSeason result : results) {  
+	    	if (result.ID == _key)  return result;
+	    }  
+	      
+	    return null;
+	}
+
+	/**
+	 * 
+	 */
+	public String toString() {
+		String answer = "";
+	  @SuppressWarnings("unchecked")
+	  List<GeneralSeason> results = (List<GeneralSeason>) getWrappedData();  
+      for(GeneralSeason result : results) {  
+    	  answer = answer +  "GeneralSeason: " + result + ContextManager.NEW_LINE;
+      }  
+      
+      return answer;
+	}
 
 	
 }

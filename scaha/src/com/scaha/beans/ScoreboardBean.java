@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
@@ -20,11 +21,12 @@ import com.gbli.context.ContextManager;
 import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.GeneralSeasonList;
 import com.scaha.objects.MailableObject;
+import com.scaha.objects.ParticipantList;
 import com.scaha.objects.Schedule;
 import com.scaha.objects.ScheduleList;
 
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class ScoreboardBean implements Serializable,  MailableObject {
 
 	@ManagedProperty(value="#{scahaBean}")
@@ -35,13 +37,15 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	
 	
 	private ScheduleList schedules;
+	private List<Schedule> schedulelist =  null;
 	private GeneralSeasonList seasons = null;
-	
-	private List<SelectItem>schedlist;
-	private List<SelectItem>seasonlist;
-	
-	private Schedule schedule;	
-	private GeneralSeason season;
+
+	private Schedule selectedschedule;	
+	private int selectedscheduleid;
+	private GeneralSeason selectedseason;
+	private int selectedseasonid;
+
+	private ParticipantList partlist = null;
 	
 	//
 	// Class Level Variables
@@ -65,12 +69,11 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		 // Currently Very cludgy.. but over time.. we can generalize on the season key as the way to 
 		 // look at data from past seasons..
 		 //
-		 this.setSchedules(scaha.getScahaschedule());
 		 this.setSeasons(scaha.getScahaSeasonList());
 		 //
 		 // lets refresh all the picklists used in the fiew..
 		 //
-		 refreshSelectedItems();
+		 //refreshScheduleList();
 		 
 		 LOGGER.info(" *************** FINISH :POST INIT FOR SCOREBOARD BEAN *****************");
 	 }
@@ -106,74 +109,57 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	 * Recalc schedule for season..
 	 */
 	public void onSeasonChange() {
-		refreshSelectedItems();
+		LOGGER.info("season change request detected new id is:" + this.selectedseasonid);
+		this.selectedseason = this.seasons.getGeneralSeason(this.selectedseasonid);
+		refreshScheduleList();
 	}
 	
-	private void refreshSelectedItems() {
+	/**
+	 * get participants for a schedule..
+	 */
+	public void onScheduleChange() {
+		
+		this.selectedschedule = this.schedules.getSchedule(this.selectedscheduleid);
+		LOGGER.info("schedule change request detected new id is:" + this.selectedscheduleid + ":" + this.selectedschedule);
+		if (this.selectedschedule != null) {
+			this.partlist = this.selectedschedule.getPartlist();
+			LOGGER.info("here is schedule partlist" + partlist.toString());
+		}
+	}
+	
+	private void refreshScheduleList() {
 		
 		//
 		// ok.. lets do the schedules now..
 		//
-		
-		schedlist = new ArrayList<SelectItem>();
-		LOGGER.info("Refresh.. season is:" + season);
-		
-		if (this.season != null) {
-			SelectItemGroup sgpre = new SelectItemGroup("Pre Season");
-	        SelectItemGroup sgreg  = new SelectItemGroup("Regular Season");
-	        SelectItemGroup sgpst = new SelectItemGroup("Post Season");
-	        SelectItemGroup sgoth = new SelectItemGroup("Other");
-	        
-	        List<SelectItem> lpre = new ArrayList<SelectItem>();
-	        List<SelectItem> lreg = new ArrayList<SelectItem>();
-	        List<SelectItem> lpst = new ArrayList<SelectItem>();
-	        List<SelectItem> loth = new ArrayList<SelectItem>();
-	        
-	        for (Schedule s : this.getSchedules()) {
-	        	
-	        	if (s.getSeasontag().equals(this.season.getTag())) {
-		        	if (s.getDescription().contains("Pre Season")) {
-		        		lpre.add(new SelectItem(s, s.toString()));
-		        	} else if (s.getDescription().contains("Regular")) {
-		        		lreg.add(new SelectItem(s, s.toString()));
-		        	} else if (s.getDescription().contains("Post Season")) {
-		        		lpst.add(new SelectItem(s, s.toString()));
-		        	} else { 
-		        		loth.add(new SelectItem(s, s.toString()));
-		        	}
-	        	}
-	        }
-	        
-	        if (lpre.size() > 0) {
-	        	sgpre.setSelectItems(lpre.toArray(new SelectItem[lpre.size()]));
-	        	schedlist.add(sgpre);
-	        }
-	        
-	        if (lreg.size() > 0) {
-	            sgreg.setSelectItems(lreg.toArray(new SelectItem[lreg.size()]));
-	        	schedlist.add(sgreg);
-	        }
-	        if (lpst.size() > 0) {
-	            sgpst.setSelectItems(lpst.toArray(new SelectItem[lpst.size()]));
-	        }
-	        if (loth.size() > 0) {
-	            sgoth.setSelectItems(loth.toArray(new SelectItem[loth.size()]));
-	        	schedlist.add(sgoth);
-	        }
-	        
+		LOGGER.info("Refreshing Schedule List for season:" + this.selectedseason);
+		this.schedulelist = null;	
+		this.schedules = null;
+		if (this.selectedseason != null) {
+			this.schedules = this.selectedseason.getSchedList();
+			LOGGER.info("season schedule is: " + schedules);
+			if (schedules != null) {
+			  if (this.schedules.getRowCount() > 0) {
+				  LOGGER.info("Refresh.. setting schedule list to:" + this.schedules.getRowCount());
+				  this.schedulelist = this.getScheduleList();
+			  }	else {
+				LOGGER.info("Refresh.. zero list.. leaving null:" + this.schedules.getRowCount());
+			  } 
+			}
 		}
-        //
-		// ok.. lets do the seasons now..
-		//
-        this.seasonlist =  new ArrayList<SelectItem>();
-        
-        for (GeneralSeason s : this.getSeasons()) {
-        	if (s.getMembershipType().equals("SCAHA")) seasonlist.add(new SelectItem(s, s.toString()));
-        }
         
 	}
 	
 	
+	public void refreshSeasonList() {
+
+		LOGGER.info("Getting season List");
+		//
+		// ok.. lets do the seasons now..
+		//
+		this.seasons = scaha.getScahaSeasonList();
+		
+}
 	
 	
 	@Override
@@ -261,70 +247,113 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	public GeneralSeasonList getSeasons() {
 		return seasons;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<GeneralSeason> getSeasonlist() {
+		return (List<GeneralSeason>)seasons.getWrappedData();
+	}
 
 	/**
 	 * @param seasons the seasons to set
 	 */
 	public void setSeasons(GeneralSeasonList seasons) {
 		this.seasons = seasons;
-	}
-
-	/**
-	 * @return the schedlist
-	 */
-	public List<SelectItem> getSchedlist() {
-		return schedlist;
-	}
-
-	/**
-	 * @param schedlist the schedlist to set
-	 */
-	public void setSchedlist(List<SelectItem> schedlist) {
-		this.schedlist = schedlist;
-	}
-
-	/**
-	 * @return the seasonlist
-	 */
-	public List<SelectItem> getSeasonlist() {
-		return seasonlist;
-	}
-
-	/**
-	 * @param seasonlist the seasonlist to set
-	 */
-	public void setSeasonlist(List<SelectItem> seasonlist) {
-		this.seasonlist = seasonlist;
-	}
-
-	/**
-	 * @return the schedule
-	 */
-	public Schedule getSchedule() {
-		return schedule;
-	}
-
-	/**
-	 * @param schedule the schedule to set
-	 */
-	public void setSchedule(Schedule schedule) {
-		this.schedule = schedule;
-	}
-
-	/**
-	 * @return the genseason
-	 */
-	public GeneralSeason getSeason() {
-		return season;
-	}
-
-	/**
-	 * @param genseason the genseason to set
-	 */
-	public void setSeason(GeneralSeason season) {
-		this.season = season;
+		LOGGER.info("Here is our General Season:");
+		LOGGER.info(this.seasons.toString());
 	}
 
 	
+	/**
+	 * @return the selectedseason
+	 */
+	public GeneralSeason getSelectedseason() {
+		return selectedseason;
+	}
+
+	/**
+	 * @param selectedseason the selectedseason to set
+	 */
+	public void setSelectedseason(GeneralSeason selectedseason) {
+		this.selectedseason = selectedseason;
+	}
+
+	/**
+	 * @return the selectedschedule
+	 */
+	public Schedule getSelectedschedule() {
+		return selectedschedule;
+	}
+
+	/**
+	 * @param selectedschedule the selectedschedule to set
+	 */
+	public void setSelectedschedule(Schedule selectedschedule) {
+		this.selectedschedule = selectedschedule;
+	}
+
+	/**
+	 * @return the selectedseasonid
+	 */
+	public int getSelectedseasonid() {
+		return selectedseasonid;
+	}
+
+	/**
+	 * @param selectedseasonid the selectedseasonid to set
+	 */
+	public void setSelectedseasonid(int selectedseasonid) {
+		this.selectedseasonid = selectedseasonid;
+	}
+
+	/**
+	 * @return the partlist
+	 */
+	public ParticipantList getPartlist() {
+		return partlist;
+	}
+
+	/**
+	 * @param partlist the partlist to set
+	 */
+	public void setPartlist(ParticipantList partlist) {
+		this.partlist = partlist;
+	}
+
+	/**
+	 * @return the selectedscheduleid
+	 */
+	public int getSelectedscheduleid() {
+		return selectedscheduleid;
+	}
+
+	/**
+	 * @param selectedscheduleid the selectedscheduleid to set
+	 */
+	public void setSelectedscheduleid(int selectedscheduleid) {
+		this.selectedscheduleid = selectedscheduleid;
+	}
+
+	/**
+	 * @return the schedulelist
+	 */
+	public List<Schedule> getSchedulelist() {
+		return schedulelist;
+	}
+
+	/**
+	 * @param schedulelist the schedulelist to set
+	 */
+	public void setSchedulelist(List<Schedule> schedulelist) {
+		this.schedulelist = schedulelist;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private List<Schedule> getScheduleList() {
+		return (List<Schedule>)schedules.getWrappedData();
+	}
+
+
+	
+
 	
 }

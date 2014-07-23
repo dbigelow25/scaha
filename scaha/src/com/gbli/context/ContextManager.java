@@ -34,7 +34,8 @@ import com.scaha.objects.Profile;
  * 
  */
 public class ContextManager implements ServletContextListener {
-	
+
+	public static String NEW_LINE = System.getProperty("line.separator");
 	//
 	// Static Member Variables
 	//
@@ -45,6 +46,8 @@ public class ContextManager implements ServletContextListener {
 	private static String c_sLoggerContext = null;			// Used to determine logger Name
 	private static Logger c_Logger = null;  				// Used to initialize the logger
 	private static Hashtable<String, DatabasePool> c_hDBPools = new Hashtable<String, DatabasePool>();  // Used to hold a map of database pools
+	
+	
 	
 	/*
 	 * (non-Javadoc)

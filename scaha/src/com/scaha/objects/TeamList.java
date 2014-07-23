@@ -33,9 +33,20 @@ public class TeamList extends ListDataModel<ScahaTeam> implements Serializable, 
         super(data);  
     }  
     
-    
     /**
-	 * This will get all ScahaNews Items and return a newsItemList
+  	 * This will get an empty TeamList
+  	 * @param _db
+  	 * @return
+  	 * @throws SQLException 
+  	 */
+  	public static TeamList ListFactory() throws SQLException {
+  		
+  		List<ScahaTeam> data = new ArrayList<ScahaTeam>();
+  		return new TeamList(data);
+  	}
+  		
+    /**
+	 * This will get all ScahaTeams for a given Club and return a TeamList
 	 * @param _db
 	 * @return
 	 * @throws SQLException 
@@ -125,10 +136,38 @@ public class TeamList extends ListDataModel<ScahaTeam> implements Serializable, 
           
         return null;  
     }  
-  
+ 
+    public ScahaTeam getScahaTeamAt(int rowKey) {  
+          
+        @SuppressWarnings("unchecked")
+		List<ScahaTeam> results = (List<ScahaTeam>) getWrappedData();  
+        for(ScahaTeam result : results) {  
+        	if(result.ID == rowKey) return result;  
+        }  
+          
+        return null;  
+    }  
     @Override  
     public Object getRowKey(ScahaTeam result) {  
         return Integer.toString(result.ID);  
-    }  
+    }
+
+	@SuppressWarnings("unchecked")
+	public void addTeamsToList(TeamList tl) {
+		List<ScahaTeam> data = (List<ScahaTeam>) this.getWrappedData();
+		List<ScahaTeam> newdata = (List<ScahaTeam>) tl.getWrappedData();
+		data.addAll(newdata);
+	}  
+	
+	public String toString() {
+		String answer = "";
+	  @SuppressWarnings("unchecked")
+	  List<ScahaTeam> results = (List<ScahaTeam>) getWrappedData();  
+      for(ScahaTeam result : results) {  
+    	  answer = answer +  "Team: " + result + ContextManager.NEW_LINE;
+      }  
+      
+      return answer;
+	}
 	
 }

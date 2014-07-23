@@ -1,5 +1,6 @@
 package com.scaha.objects;
 
+import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,7 +11,7 @@ import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
 
-public class Schedule extends ScahaObject {
+public class Schedule extends ScahaObject implements Serializable {
 
 	/**
 	 * 
@@ -797,5 +798,9 @@ public class Schedule extends ScahaObject {
 		return this.partlist.getByKey(intValue);
 	}
 	
+	
+	public int getKey() {
+		return ID;
+	}
 }
 

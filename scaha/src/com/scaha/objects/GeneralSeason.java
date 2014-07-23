@@ -35,6 +35,9 @@ public class GeneralSeason extends ScahaObject implements Serializable {
 	private int isCurrent = 0;
 	private String USAYear = null;
 
+	private ScheduleList SchedList = null;
+
+	
 	/** 
 	 * A Generic Constructor - these will mostly be filled by GeneralSeasonList Constructors
 	 * @param _pro
@@ -222,5 +225,25 @@ public class GeneralSeason extends ScahaObject implements Serializable {
 	public String toString() {
 		return (this.DescriptiveContext != null ? this.DescriptiveContext + " for the " : "") + this.getDescription();
 	}
+	
+	public int getKey() {
+		return ID;
+	}
+
+	/**
+	 * @return the schedList
+	 */
+	public ScheduleList getSchedList() {
+		return SchedList;
+	}
+
+	/**
+	 * @param schedList the schedList to set
+	 */
+	public void setSchedList(ScheduleList schedList) {
+		SchedList = schedList;
+	}
+	
+
 
 }

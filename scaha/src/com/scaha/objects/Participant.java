@@ -29,6 +29,11 @@ public class Participant extends ScahaObject implements Serializable {
 		
 	}
 	
+	public Participant(int _id, Profile _pro) {
+		ID = _id;		
+		this.setProfile(_pro);
+	}
+
 	/**
 	 * @return the slotsPlaying
 	 */

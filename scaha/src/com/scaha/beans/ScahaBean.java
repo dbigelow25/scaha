@@ -45,6 +45,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 	// An appliation wide listing of all the clubs.
 	//
 	private ClubList ScahaClubList  = null;
+	private TeamList ScahaTeamList  = null;
 	private GeneralSeasonList ScahaSeasonList = null;
 	private MemberList scahaboardmemberlist = null;
 	private MemberList scahaprogramdirectorlist = null;
@@ -91,8 +92,8 @@ public class ScahaBean implements Serializable,  MailableObject {
 		try {
 			setScahaSeasonList(GeneralSeasonList.NewClubListFactory(this.DefaultProfile, db, "SCAHA"));
 			setScahaClubList(ClubList.NewClubListFactory(this.DefaultProfile, db));
-			setScahaschedule(ScheduleList.ListFactory(this.DefaultProfile, db, this.getScahaSeasonList().getCurrentSeason()));
 			loadTeamLists(db);
+			setScahaschedule(ScheduleList.ListFactory(this.DefaultProfile, db, this.getScahaSeasonList().getCurrentSeason(),this.getScahaTeamList()));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -121,7 +122,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 		
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		try {
-			setScahaschedule(ScheduleList.ListFactory(this.DefaultProfile, db, this.getScahaSeasonList().getCurrentSeason()));
+			setScahaschedule(ScheduleList.ListFactory(this.DefaultProfile, db, this.getScahaSeasonList().getCurrentSeason(), this.getScahaTeamList()));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -236,7 +237,12 @@ public class ScahaBean implements Serializable,  MailableObject {
 	 * 
 	 */
 	private void loadTeamLists(ScahaDatabase _db) throws SQLException {
+	
+		LOGGER.info("loading Team Lists for SCAHA Application");
+		
 		GeneralSeason scahags = this.getScahaSeasonList().getCurrentSeason();
+		this.setScahaTeamList(TeamList.ListFactory());
+		
 		for (Club c : ScahaClubList) {
 			TeamList tl = c.getScahaTeams();
 			if (tl != null) {
@@ -244,8 +250,17 @@ public class ScahaBean implements Serializable,  MailableObject {
 				List<ScahaTeam> lst = (List<ScahaTeam>) tl.getWrappedData();
 				lst.clear();
 			}
-			c.setScahaTeams(TeamList.NewTeamListFactory(this.DefaultProfile, _db, c, scahags, true, false));
+			tl = TeamList.NewTeamListFactory(this.DefaultProfile, _db, c, scahags, true, false);
+			c.setScahaTeams(tl);
+			this.getScahaTeamList().addTeamsToList(tl);
+			
+			//
+			// here we need to add the team to the overall team list of the application.
+			//
+			
 		}
+		
+		LOGGER.info("Combined List is:" + this.getScahaTeamList());
 			
 	}
 
@@ -282,7 +297,21 @@ public class ScahaBean implements Serializable,  MailableObject {
 		ScahaClubList = scahaClubList;
 	}
 	
-	 public long getDate() {
+	 /**
+	 * @return the scahaTeamList
+	 */
+	public TeamList getScahaTeamList() {
+		return ScahaTeamList;
+	}
+
+	/**
+	 * @param scahaTeamList the scahaTeamList to set
+	 */
+	public void setScahaTeamList(TeamList scahaTeamList) {
+		ScahaTeamList = scahaTeamList;
+	}
+
+	public long getDate() {
 	    return System.currentTimeMillis();
 	 }
 

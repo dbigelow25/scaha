@@ -1,6 +1,8 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +27,7 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	
-//
+	//
 	// We need to implement a hashmap so we can directly fetch things we need.
 	//
 	private HashMap<String, Participant> hm = new HashMap<String,Participant>();
@@ -48,8 +50,27 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 	 * @return
 	 * @throws SQLException
 	 */
-	public static ParticipantList NewListFactory (Profile _pro, ScahaDatabase _db, Schedule _sch) throws SQLException {
-		return null;
+	public static ParticipantList NewListFactory (Profile _pro, ScahaDatabase _db, Schedule _sch, TeamList _tl) throws SQLException {
+		
+		List<Participant> data = new ArrayList<Participant>();
+
+		PreparedStatement ps = _db.prepareStatement("call scaha.getParticipantKeysAndRankBySchedule(?)");
+		ps.setInt(1,_sch.ID);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			int i = 1;
+			Participant part = new Participant(rs.getInt(i++),_pro);
+			part.setRank(rs.getInt(i++));
+			part.setTeam(_tl.getScahaTeamAt(rs.getInt(i++)));
+			part.setSchedule(_sch);
+			LOGGER.info("Found new Participant for schedule " + _sch + ". " + part);
+			data.add(part);
+		}
+		rs.close();
+
+		ps.close();
+		return new ParticipantList(data);
+		
 	}
 
 	@Override
@@ -87,5 +108,18 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 		hm.put(_p.ID+"", _p);
 		((ArrayList<Participant>)this.getWrappedData()).add(_p);
 	}
+	
+	public String toString() {
+		String answer = "";
+		@SuppressWarnings("unchecked")
+		List<Participant> results = (List<Participant>) getWrappedData();  
+      for(Participant result : results) {  
+    	  answer = answer +  "Participant: " + result + ContextManager.NEW_LINE;
+      }  
+      
+      return answer;
+      
+	}
+	
 
 }
