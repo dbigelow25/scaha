@@ -1,6 +1,9 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +13,7 @@ import javax.faces.model.ListDataModel;
 
 import org.primefaces.model.SelectableDataModel;
 
+import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
 /**
@@ -33,6 +37,46 @@ public class ScheduleWeekList extends ListDataModel<ScheduleWeek> implements Ser
 	public ScheduleWeekList(List<ScheduleWeek> _lst) {  
 		super(_lst);
     }
+	
+	/**
+	 * Here we have to fetch the a list of participants.. (who in turn will be associated with a given Team
+	 * Which needs to be retrieved as well.
+	 * 
+	 * @param _pro
+	 * @param _db
+	 * @param _sch
+	 * @return
+	 * @throws SQLException
+	 */
+	public static ScheduleWeekList ListFactory (Profile _pro, ScahaDatabase _db, Schedule _sch) throws SQLException {
+		
+		List<ScheduleWeek> data = new ArrayList<ScheduleWeek>();
+
+		PreparedStatement ps = _db.prepareStatement("call scaha.getScheduleWeeks(?,?)");
+		ps.setInt(1,_sch.ID);
+		ps.setString(2,_sch.getScheduleweektag());
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			int i = 1;
+			ScheduleWeek sw = new ScheduleWeek(rs.getInt(i++),_pro);
+			sw.setWeek(rs.getInt(i++));
+			sw.setSName(rs.getString(i++));
+			sw.setName(rs.getString(i++));
+			sw.setTag(rs.getString(i++));
+			sw.setSeasonTag(rs.getString(i++));
+			sw.setFromDate(rs.getString(i++));
+			sw.setToDate(rs.getString(i++));
+			
+			LOGGER.info("Found new Schedule Week for schedule " + _sch + ". " + sw);
+			data.add(sw);
+			sw.setSchedule(_sch);
+		}
+		rs.close();
+
+		ps.close();
+		return new ScheduleWeekList(data);
+		
+	}
 
 	@Override
 	public Schedule getRowData(String arg0) {
@@ -69,4 +113,18 @@ public class ScheduleWeekList extends ListDataModel<ScheduleWeek> implements Ser
 		((ArrayList<ScheduleWeek>)this.getWrappedData()).add(_sw);
 	}
 
+	/**
+	 * 
+	 */
+	public String toString() {
+		
+		String answer = "";
+		@SuppressWarnings("unchecked")
+		List<ScheduleWeek> results = (List<ScheduleWeek>) getWrappedData();  
+		for(ScheduleWeek result : results) {  
+			answer = answer +  "ScheduleWeek: " + result + ContextManager.NEW_LINE;
+		}  
+    	return answer;
+
+	}
 }

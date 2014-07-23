@@ -50,7 +50,7 @@ public class ScahaDatabase extends Database {
 	public static String c_PS_CHECK_FOR_USER = "Call scaha.checkForUser(?)";
 	public static String cs_UPDATE_CLUB_STAFFER = "call scaha.updateClubStaffer(?,?,?,?)";
 	public static String c_GET_TEAM_GAME_COUNT_BY_SCHED = "call scaha.getTeamGameCountsBySchedule(?,?)";
-	public static String c_GET_DATES_TEAM_GAME = "call scaha.getTeamGameCountsBySchedule(?,?)";
+	public static String c_GET_DATES_TEAM_GAME = "call scaha.getDatesTeamNotAvailable(?)";
 	public static String c_GET_AVAILABLE_PARTICIPANTS = "call scaha.getAvailableParticipants(?,?)";
 	public static String c_GET_AVAILABLE_MATCHUPS = "call scaha.getAvailableMatchups(?,?,?,?,?,?,?)";
 	public static String c_GET_AVAILABLE_SLOTIDS = "call scaha.getAvailableSlotIDs(?,?,?)";
@@ -79,7 +79,7 @@ public class ScahaDatabase extends Database {
 	PreparedStatement ps_GetClubOffDates = null;
 	PreparedStatement ps_getHomeAwayBalance = null;
 	PreparedStatement ps_getGameIdForSlot = null;
-	CallableStatement cs_ScheduleGame = null;
+	PreparedStatement cs_ScheduleGame = null;
 
 	public ScahaDatabase(int _iId, String _sDriver, String _sURL, String _sUser, String _sPwd) {
 		super(_iId, _sDriver, _sURL, _sUser, _sPwd);
@@ -99,7 +99,7 @@ public class ScahaDatabase extends Database {
 			ps_GetClubOffDates = this.prepareStatement(c_GET_CLUB_OFF_DATES);			
 			ps_getHomeAwayBalance = this.prepareStatement(c_GET_HOME_AWAY_BALANCE);			
 			ps_getGameIdForSlot = this.prepareStatement(c_GET_GAMEID_FOR_SLOT);			
-			cs_ScheduleGame = this.prepareCall(c_SCHEDULE_GAME);		
+			cs_ScheduleGame = this.prepareStatement(c_SCHEDULE_GAME);		
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -473,7 +473,7 @@ public class ScahaDatabase extends Database {
 		
 		// We will always have at least one iteration.
 		int iCount = 0;
-		int iGames = _sc.getMaxgamecnt();
+		int iGames = _sc.getMingamecnt();
 		int iGamesPerIteration = _sc.getTeamcount() - 1 ;
 		
 		LOGGER.info("genGames: Check for " + _sc + ". iCount=" + iCount + ": iGames=" + iGames + ": Team Count-1=" + iGamesPerIteration);
@@ -733,15 +733,20 @@ public class ScahaDatabase extends Database {
 	}
 
 	public ArrayList<Integer>  getAvailableParticipants(ScheduleWeek sw) throws SQLException {
+
+		LOGGER.info("getAvailableParticipants:for ScheduleWeekId:" + sw.ID + "ScheduleId" + sw.getSchedule().ID);
+		 
+
 		ArrayList<Integer> keys = new ArrayList<Integer>();
 		
 		ps_GetAvailableParticipants.setInt(1, sw.ID);
 		ps_GetAvailableParticipants.setInt(2, sw.getSchedule().ID);
 		ResultSet rs = ps_GetAvailableParticipants.executeQuery();
 		while (rs.next()) {
-			keys.add(Integer.valueOf(getResultSet().getInt(1)));	
+			keys.add(Integer.valueOf(rs.getInt(1)));	
 		}
-		LOGGER.fine("getAvailableParticipants:for seasonweek:all available participants:" + keys);
+		rs.close();
+		LOGGER.info("getAvailableParticipants:for scheduleweek:" + sw.ID  + ". " +   keys);
 		return keys;
 		
 	}
@@ -779,14 +784,14 @@ public class ScahaDatabase extends Database {
 		
 		ScahaTeam tm = _tgi.getTeam();
 		ps_TeamGameCountBySched.setInt(1,tm.ID);
-		ps_TeamGameCountBySched.setInt(1,_se.ID);
+		ps_TeamGameCountBySched.setInt(2,_se.ID);
 		
 		ResultSet rs = ps_TeamGameCountBySched.executeQuery();
 		while (rs.next()) {
-			_tgi.setTotalGames(getResultSet().getInt(1));
-			_tgi.setHomeGames(getResultSet().getInt(2));
-			_tgi.setAwayGames(getResultSet().getInt(3));
-			_tgi.setExGames(getResultSet().getInt(4));
+			_tgi.setTotalGames(rs.getInt(1));
+			_tgi.setHomeGames(rs.getInt(2));
+			_tgi.setAwayGames(rs.getInt(3));
+			_tgi.setExGames(rs.getInt(4));
 		}
 		rs.close();
 		
@@ -818,12 +823,12 @@ public class ScahaDatabase extends Database {
 		ps_GetAvailableSlotIds.setInt(i++, _tm.ID);
 		ResultSet rs = ps_GetAvailableSlotIds.executeQuery();
 		while (rs.next()) {
-			keys.add(Integer.valueOf(getResultSet().getInt(1)));	
+			keys.add(Integer.valueOf(rs.getInt(1)));	
 		}
 		rs.close();
-		LOGGER.info("getAvailableSlotIDs: found  the following slots for " + _tm + ":" + _sw + "[" + keys + "]");
+		LOGGER.info("getAvailableSlotIDs: found  the following slots for " + _tm + ", sw= " + _sw.ID + " [" + keys + "]");
 		if (keys.size() == 0) {
-			LOGGER.info("getAvailableSlotIDs: *** WARNING *** NO AVAILABLE SLOTS for  " + _tm + ":" + _sw);
+			LOGGER.info("getAvailableSlotIDs: *** WARNING *** NO AVAILABLE SLOTS for  " + _tm + ":" + _sw.ID);
 		}
 		return keys;
 	}
@@ -914,8 +919,7 @@ public class ScahaDatabase extends Database {
 		ps_GetSlotDate.setInt(1,_idSlot);
 		ResultSet rs = ps_GetSlotDate.executeQuery();
 		while (rs.next()) {
-			sreturn = getResultSet().getString(1);
-			LOGGER.info("getSlotDate: " + sreturn);
+			sreturn = rs.getString(1);
 		}
 		rs.close();
 		return sreturn;
@@ -924,13 +928,14 @@ public class ScahaDatabase extends Database {
 
 	public boolean checkClubOffDay(Participant _p1, String slotDate) throws SQLException {
 		boolean bok = false;
-		LOGGER.info("CHMO:  TeamID is =" + _p1.getTeam().ID);
+
+		LOGGER.info("Checking club off day (" + slotDate + ") Team=" + _p1.getTeam());
 		ps_GetClubOffDates.setInt(1,_p1.getTeam().ID);
 		ResultSet rs = ps_GetClubOffDates.executeQuery();
 		while (rs.next()) {
 			if (rs.getString(1).equals(slotDate)) {
 				bok = true;
-				LOGGER.info("COG:Participant: " + _p1 + " cannot play on this day ");
+				LOGGER.info("COG:Team " + _p1.getTeam() + " cannot play on this day!");
 				break;
 			}
 				
@@ -1056,6 +1061,7 @@ public class ScahaDatabase extends Database {
 				LOGGER.info("ATTEMPTING TO USE A FILLED SLOT!! SCREATCHING HALT" + _iSlotID);
 				System.exit(0);
 			}
+			rs.close();
 		}
 		int i = 1;
 		LOGGER.info("P" + i + ":idhometeam:" + _pMain.getTeam().ID);
@@ -1080,6 +1086,18 @@ public class ScahaDatabase extends Database {
 					
 	}
 
+	/**
+	 * Lets reset all the games for a given schedule..
+	 * @param sch
+	 * @throws SQLException 
+	 */
+	public void resetGames(Schedule sch) throws SQLException {
+		LOGGER.info("resetGames:" + sch);
+		CallableStatement cs = this.prepareCall("call scaha.resetgames(?)");
+		cs.setInt(1, sch.ID);
+		cs.executeUpdate();
+		cs.close();
+	}
 }
 	
 

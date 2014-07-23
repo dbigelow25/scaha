@@ -25,10 +25,13 @@ import com.scaha.objects.GeneralSeasonList;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Member;
 import com.scaha.objects.MemberList;
+import com.scaha.objects.Participant;
+import com.scaha.objects.ParticipantList;
 import com.scaha.objects.Profile;
 import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.Schedule;
 import com.scaha.objects.ScheduleList;
+import com.scaha.objects.TeamGameInfo;
 import com.scaha.objects.TeamList;
 import com.scaha.objects.YearList;
 
@@ -525,5 +528,103 @@ public class ScahaBean implements Serializable,  MailableObject {
 		}
 		
 		this.setExecutiveboard();
+	}
+	
+	/******************************************************************************
+	 *  Scheduling software method.. 
+	 *  Here we go
+	 */
+	/**
+	 *  
+	 * OK.. this is the meat of it.
+	 * 
+	 * We loop until we are done scheduling everything..
+	 * 
+	 */
+	public void schedule() {
+	
+		
+		// We go until we are finished...
+		boolean keepgoing = true;
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		GeneralSeason gs = this.ScahaSeasonList.getCurrentSeason();
+		//
+		// Step through each schedule for the given season
+		// this needs to be in priority order somehow
+		// TODO order by rank here.. 
+		
+		try {
+			for (Schedule sch: gs.getSchedList()) {
+				if (sch.isLocked()) {
+					LOGGER.info("SCHEDULING: SEASON IS LOCKED.. " + sch);
+					continue;
+				}
+				sch.schedule(false);
+			}
+			
+			
+			for (Schedule sch: gs.getSchedList()) {
+				if (sch.isLocked()) {
+					LOGGER.info("SCHEDULING: with Bounce on  SEASON IS LOCKED.. " + sch);
+					continue;
+				}
+				sch.schedule(true);
+			}
+			
+			
+			//
+			// iok.. lets check overall games - exhibition games for each team in each season..
+			/// we will loop on one season until a good matchup pops out..
+			//
+			
+			while (keepgoing) {
+				keepgoing = false;
+				for (Schedule sch: gs.getSchedList()) {
+					if (sch.isLocked()) {
+						LOGGER.info("SCHEDULING: secondary loop  SEASON IS LOCKED.. " + sch);
+						continue;
+					}
+					sch.schedule(true);
+					ParticipantList parts = sch.getPartlist();
+					for (Participant p : parts) {
+						ScahaTeam tm = p.getTeam();
+						TeamGameInfo tgi = tm.getTeamGameInfo();
+						tgi.refreshInfo(db, sch);
+						LOGGER.info("GAME COUNT CHECK... " + tgi.toString() + " with a min count of:" +  sch.getMingamecnt());
+						// int iagmax = ((tm.getTotalGames() / 2) + 2 + ((tm.getTotalGames() % 2 != 0 ? 1 : 0)));
+						if (tm.isExhibition()) {
+							LOGGER.info("Team Info:" + tm.getTeamname() + " is exhibition.. not too worried");
+						} else if ((tm.getTotalGames() - (sch.isExhibitioncounts() ? 0 : tm.getTeamGameInfo().getExGames())) < sch.getMingamecnt()) { 
+							LOGGER.info("Team Info:" + tm.getTeamname() + "not enough games.. try again...");
+							db.resetGames(sch);
+							keepgoing = true;
+							break;
+						} else if (tm.getTeamGameInfo().getAwayGames() == 0  ) {
+							LOGGER.info("Team Info:" + tm.getTeamname() + "no away games...");
+							db.resetGames(sch);
+							keepgoing = true;
+							break;
+							// we have to bypass carlbad teams.. they have to play all away games until ice is available
+						} else if (tm.getTeamGameInfo().getAwayGames() > sch.getMaxawaycnt() && tm.ID != 462 && tm.ID != 573 ) {
+							LOGGER.info("Team Info:" + tm.getTeamname() + "too many away games...");
+							db.resetGames(sch);
+							keepgoing = true;
+							break;
+						}
+					}	
+					
+					if (keepgoing) {
+						sch.schedule(false);
+						sch.schedule(true);
+	
+					}
+						
+				}
+			}	
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		db.free();
+
 	}
 }

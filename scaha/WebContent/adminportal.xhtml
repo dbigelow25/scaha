@@ -57,7 +57,8 @@
   	            	<p:commandButton id="syncgameMatrix" ajax="true" value="Gen Game Matrix" actionListener="#{scahaBean.syncGameMatrix()}" update="@([id$=dlg])" oncomplete="dlg.show();"/>
   	            	<p:commandButton id="syncslot" ajax="true" value="Gen Slot Matrix" actionListener="#{scahaBean.syncClubSlots()}" update="@([id$=dlg])" oncomplete="dlg.show();"/>
 	            	<br/>
-        		</p:tab>
+   	            	<p:commandButton id="schedule" value="Gen Schedules" actionListener="#{scahaBean.schedule()}" update="@([id$=dlg])" oncomplete="dlg.show();"/>
+	     		</p:tab>
 	            <p:tab id="t2" title="Messaging Center">
 					 <p:tree  id ="mailtree" value="#{mailTreeBean.root}" var="node" style="width:375px;" selectionMode="checkbox" selection="#{mailTreeBean.selectedNodes}">  
  					      	<p:treeNode>  

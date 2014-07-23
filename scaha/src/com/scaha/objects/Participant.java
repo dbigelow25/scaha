@@ -129,7 +129,6 @@ public class Participant extends ScahaObject implements Serializable {
 		try {
 			 Date dateAvail = dateFormat.parse(_sl.actDate + " " + _sl.StartTime); 
 			 if (this.getSlotsPlaying().isEmpty()) {
-			   	LOGGER.info("Team Not playing... so anyslot will do SLOT:" + _sl);
 		    	return true;
 			 }
 			 for (Slot slot: this.getSlotsPlaying()) {
@@ -142,7 +141,8 @@ public class Participant extends ScahaObject implements Serializable {
 			    	return false;
 			    }
 			    if (hours < 8 ) {
-			    	LOGGER.info("I cannot play...not enough time between matchups..  already have a game within 8 hours of start time");
+			    	
+			    	LOGGER.info("I cannot play... da=" + dateAvail + ", dp=" + datePlaying + " not enough time (" + hours + ") between matchups..  already have a game within 8 hours of start time");
 			    	return false;
 			    }
 			    
@@ -155,6 +155,7 @@ public class Participant extends ScahaObject implements Serializable {
 			        long bodiff = dateAvail.getTime() - datebo.getTime();
 			    	long bodhours = Math.abs(bodiff / (1000*60*60));
 					if (bodhours < 72) {
+				    	LOGGER.info("I cannot play..club or team is out of town");
 					   	return false;
 					}
 			    }

@@ -35,6 +35,7 @@ public class Schedule extends ScahaObject implements Serializable {
 	private int rank = 0;
 	private String startdate = null;
 	private String enddate = null;
+	private boolean exhibitioncounts = false;
 	private int mingamecnt = 0;
 	private int maxgamecnt = 0;
 	private int maxbyecnt = 0;
@@ -389,12 +390,10 @@ public class Schedule extends ScahaObject implements Serializable {
 	public void schedule(boolean _bsqueeze) throws SQLException {
 
 		LOGGER.info((_bsqueeze ? "SQUEEZE MODE " : " STANDARD MODE "));
-		
 		LOGGER.info("Scheduling Season " +this);
 
 		// Lets get the connections we need
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-
 		boolean bhome = false;
 		boolean foundmatchup = false;
 		
@@ -471,10 +470,10 @@ public class Schedule extends ScahaObject implements Serializable {
 				// lets loop through all the teams that have to play 
 				//
 				for (Integer key : sw.getAvailToPlayKeys()) {
-
+					LOGGER.info("Schedule: processing:" + key);
 					pMain = partlist.getByKey(key.intValue());
 					tmMain = pMain.getTeam();
-					//clMain = (Club)ContextManager.c_clubs.getChildAtID(tmMain.getIdClub());
+					clMain = tmMain.getTeamClub();
 					LOGGER.info("schedule:Refreshing Main Team:" + pMain.getTeam());
 					tmMain.getTeamGameInfo().refreshInfo(db,this);
 
@@ -548,19 +547,19 @@ public class Schedule extends ScahaObject implements Serializable {
 						clMatch = tmMatch.getTeamClub();
 						tmMatch.getTeamGameInfo().refreshInfo(db,this);
 						
-						LOGGER.info("Scheduler: Match Team .. pulled from the rubble:" + tmMatch);
+						LOGGER.info("Scheduler: Match Team .. pulled from the rubble:" + tmMatch.getTeamname());
 
-						if (!tmMatch.gameCapCheck(this,tmMain) || !tmMain.gameCapCheck(this,tmMatch)) {
-							LOGGER.info("schedule:  Match Team enough games: " + pMain + " " + pMatch + ". Skipping..");
-							sw.getMatchUpKeys().remove(0);
-							continue;
-						}
+//						if (tmMatch.gameCapCheck(this,tmMain) || tmMain.gameCapCheck(this,tmMatch)) {
+//							LOGGER.info("schedule:  Match Team enough games: " + pMain + " " + pMatch + ". Skipping..");
+//							sw.getMatchUpKeys().remove(0);
+//							continue;
+//						}
 
 						//
 						// Are these teams blocked from playing each other?
 						//
-						if (!db.checkclubblock(pMatch, pMain, this)) {
-							LOGGER.info("Block alert" + pMatch + ". Skipping..");
+						if (db.checkclubblock(pMatch, pMain, this)) {
+							LOGGER.info("Block alert " + pMatch + ". Skipping..");
 							sw.getMatchUpKeys().remove(0);
 							continue;
 						}
@@ -742,7 +741,7 @@ public class Schedule extends ScahaObject implements Serializable {
 						LOGGER.info("Scheduler:MAIN Slots Scrubbed are:" + slMainIDs);
 						LOGGER.info("Scheduler:Match Slots Scrubbed are:" + slMatchIDs);
 						
-						if (!tmMatch.gameCapCheck(this,tmMain) || !tmMain.gameCapCheck(this,tmMatch)) {
+						if (tmMatch.gameCapCheck(this,tmMain) || tmMain.gameCapCheck(this,tmMatch)) {
 							LOGGER.info("schedule:  Match Team enough games: " + pMain + " " + pMatch + ". Skipping..");
 							sw.getMatchUpKeys().remove(0);
 							continue;
@@ -781,6 +780,8 @@ public class Schedule extends ScahaObject implements Serializable {
 						sw.addPrcoessListPart(pMain);
 						sw.addPrcoessListPart(pMatch);
 						//sw.resetBumpList();
+						
+						LOGGER.info("ProcessedList is now:" + ContextManager.NEW_LINE + sw.getProcessList());
 						sw.getMatchUpKeys().clear();
 						
 					}
@@ -801,6 +802,18 @@ public class Schedule extends ScahaObject implements Serializable {
 	
 	public int getKey() {
 		return ID;
+	}
+	/**
+	 * @return the exhibitioncounts
+	 */
+	public boolean isExhibitioncounts() {
+		return exhibitioncounts;
+	}
+	/**
+	 * @param exhibitioncounts the exhibitioncounts to set
+	 */
+	public void setExhibitioncounts(boolean exhibitioncounts) {
+		this.exhibitioncounts = exhibitioncounts;
 	}
 }
 

@@ -98,7 +98,6 @@ public class TeamList extends ListDataModel<ScahaTeam> implements Serializable, 
 			tm.setTeamskilllevel(sl);
 			tm.setTeamClub(_cl);
 			data.add(tm);
-			LOGGER.info("TeamListFactory.. adding Team:" + tm);
 		}
 		rs.close();
 			
@@ -109,9 +108,7 @@ public class TeamList extends ListDataModel<ScahaTeam> implements Serializable, 
 		// for any team..
 		if (_badmin) {
 			for (ScahaTeam tm : data) {
-				LOGGER.info("TeamListFactory.. adding Coaches to Team:" + tm);
 				tm.setCoachs(CoachList.NewCoachListFactory(_pro, ps, tm));
-				LOGGER.info("TeamListFactory.. adding Managers to Team:" + tm);
 				tm.setManagers(ManagerList.NewManagerListFactory(_pro, ps2, tm));
 			}
 		}
