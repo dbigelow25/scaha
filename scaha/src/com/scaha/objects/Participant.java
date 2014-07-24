@@ -140,9 +140,9 @@ public class Participant extends ScahaObject implements Serializable {
 			    	LOGGER.info("I cannot play...not enough time between matchups.. needs to be more than:" +(24 * (_se.getTeamcount() * 1.25)));
 			    	return false;
 			    }
-			    if (hours < 8 ) {
+			    if (hours < 7 ) {
 			    	
-			    	LOGGER.info("I cannot play... da=" + dateAvail + ", dp=" + datePlaying + " not enough time (" + hours + ") between matchups..  already have a game within 8 hours of start time");
+			    	LOGGER.info("I cannot play... da=" + dateAvail + ", dp=" + datePlaying + " not enough time (" + hours + ") between matchups..  already have a game within 7 hours of start time");
 			    	return false;
 			    }
 			    

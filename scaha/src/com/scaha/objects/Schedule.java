@@ -40,6 +40,7 @@ public class Schedule extends ScahaObject implements Serializable {
 	private int maxgamecnt = 0;
 	private int maxbyecnt = 0;
 	private int maxawaycnt = 0;
+	private int maxexmatchup = 0;
 	
 
 	/**
@@ -376,6 +377,8 @@ public class Schedule extends ScahaObject implements Serializable {
 			setMaxgamecnt(rs.getInt(i++));
 			setMaxbyecnt(rs.getInt(i++));
 			setMaxawaycnt(rs.getInt(i++));
+			this.setExhibitioncounts((rs.getInt(i++) == 1 ? true : false));
+			this.setMaxexmatchup(rs.getInt(i++));
 		}
 		rs.close();
 	}
@@ -549,12 +552,22 @@ public class Schedule extends ScahaObject implements Serializable {
 						
 						LOGGER.info("Scheduler: Match Team .. pulled from the rubble:" + tmMatch.getTeamname());
 
-//						if (tmMatch.gameCapCheck(this,tmMain) || tmMain.gameCapCheck(this,tmMatch)) {
+//						if (db.checkChickCounts(this,pMain,pMatch) > this.getMaxexmatchup()) {
+//							LOGGER.info("schedule:  Too Many Chick Games in this iteraton already : " + pMain + " " + pMatch + ". ");
+//							db.blockChicks
+//						}
+//						if (tmMatch.gameCapCheck(this,tmMain)) {
 //							LOGGER.info("schedule:  Match Team enough games: " + pMain + " " + pMatch + ". Skipping..");
 //							sw.getMatchUpKeys().remove(0);
 //							continue;
 //						}
-
+//						if (tmMain.gameCapCheck(this,tmMatch)) {
+//							LOGGER.info("schedule:  Main Team enough games II: [" + tmMain.getTotalGames() +"] " + pMain + " "  + ". Skipping..");
+//							LOGGER.info("schedule:  Match Team enough games II: [" + tmMatch.getTotalGames() +"] " + pMatch + " "  + ". Skipping..");
+//							sw.getMatchUpKeys().remove(0);
+//							continue;
+//						}
+//						
 						//
 						// Are these teams blocked from playing each other?
 						//
@@ -742,7 +755,8 @@ public class Schedule extends ScahaObject implements Serializable {
 						LOGGER.info("Scheduler:Match Slots Scrubbed are:" + slMatchIDs);
 						
 						if (tmMatch.gameCapCheck(this,tmMain) || tmMain.gameCapCheck(this,tmMatch)) {
-							LOGGER.info("schedule:  Match Team enough games: " + pMain + " " + pMatch + ". Skipping..");
+							LOGGER.info("schedule:  Main Team enough games III: [" + tmMain.getTotalGames() +"] " + pMain + " "  + ". Skipping..");
+							LOGGER.info("schedule:  Match Team enough games III: [" + tmMatch.getTotalGames() +"] " + pMatch + " "  + ". Skipping..");
 							sw.getMatchUpKeys().remove(0);
 							continue;
 						}
@@ -814,6 +828,18 @@ public class Schedule extends ScahaObject implements Serializable {
 	 */
 	public void setExhibitioncounts(boolean exhibitioncounts) {
 		this.exhibitioncounts = exhibitioncounts;
+	}
+	/**
+	 * @return the maxexmatchup
+	 */
+	public int getMaxexmatchup() {
+		return maxexmatchup;
+	}
+	/**
+	 * @param maxexmatchup the maxexmatchup to set
+	 */
+	public void setMaxexmatchup(int maxexmatchup) {
+		this.maxexmatchup = maxexmatchup;
 	}
 }
 

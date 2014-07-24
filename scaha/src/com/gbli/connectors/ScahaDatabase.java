@@ -1033,6 +1033,10 @@ public class ScahaDatabase extends Database {
 			return _pMatch;
 		} else 	if (!_aMain.isEmpty() && _aMatch.isEmpty()) {
 			return _pMain;
+		} else if (_pMain.getTeam().getTeamGameInfo().getAwayGames() == _se.getMaxawaycnt()) {
+			return _pMain;
+		} else if (_pMatch.getTeam().getTeamGameInfo().getAwayGames() == _se.getMaxawaycnt()) {
+			return _pMatch;
 		} else if (_aMain.size() < 2 && (iMain + iMainHitPoints) < (iMatch  + iMatchHitPoints)) {
 			return _pMain;
 		} else if (_aMatch.size() < 2 && (iMatch + iMatchHitPoints) < (iMain + iMainHitPoints)) {

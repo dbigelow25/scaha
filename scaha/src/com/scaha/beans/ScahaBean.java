@@ -576,7 +576,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 			// iok.. lets check overall games - exhibition games for each team in each season..
 			/// we will loop on one season until a good matchup pops out..
 			//
-			
+			boolean loopalot = true;
 			while (keepgoing) {
 				keepgoing = false;
 				for (Schedule sch: gs.getSchedList()) {
@@ -596,19 +596,25 @@ public class ScahaBean implements Serializable,  MailableObject {
 							LOGGER.info("Team Info:" + tm.getTeamname() + " is exhibition.. not too worried");
 						} else if ((tm.getTotalGames() - (sch.isExhibitioncounts() ? 0 : tm.getTeamGameInfo().getExGames())) < sch.getMingamecnt()) { 
 							LOGGER.info("Team Info:" + tm.getTeamname() + "not enough games.. try again...");
-							db.resetGames(sch);
-							keepgoing = true;
+							if (loopalot) {
+								db.resetGames(sch);
+								keepgoing = true;
+							}
 							break;
 						} else if (tm.getTeamGameInfo().getAwayGames() == 0  ) {
 							LOGGER.info("Team Info:" + tm.getTeamname() + "no away games...");
-							db.resetGames(sch);
-							keepgoing = true;
+							if (loopalot) {
+								db.resetGames(sch);
+								keepgoing = true;
+							}
 							break;
 							// we have to bypass carlbad teams.. they have to play all away games until ice is available
 						} else if (tm.getTeamGameInfo().getAwayGames() > sch.getMaxawaycnt() && tm.ID != 462 && tm.ID != 573 ) {
 							LOGGER.info("Team Info:" + tm.getTeamname() + "too many away games...");
-							db.resetGames(sch);
-							keepgoing = true;
+							if (loopalot) {
+								db.resetGames(sch);
+								keepgoing = true;
+							}
 							break;
 						}
 					}	
