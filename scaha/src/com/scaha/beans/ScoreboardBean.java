@@ -12,9 +12,11 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.mail.internet.InternetAddress;
 
+import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.GeneralSeasonList;
+import com.scaha.objects.LiveGameList;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.ParticipantList;
 import com.scaha.objects.Schedule;
@@ -41,6 +43,7 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	private int selectedseasonid;
 
 	private ParticipantList partlist = null;
+	private LiveGameList livegamelist = null;
 	
 	//
 	// Class Level Variables
@@ -119,7 +122,7 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		this.partlist = null;
 		if (this.selectedschedule != null) {
 			this.partlist = this.selectedschedule.getPartlist();
-			LOGGER.info("here is schedule partlist" + partlist.toString());
+			this.setLivegamelist(this.selectedschedule.getLivegamelist());
 		}
 	}
 	
@@ -132,6 +135,7 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		this.schedulelist = null;	
 		this.schedules = null;
 		this.partlist = null;
+		this.setLivegamelist(null);
 		if (this.selectedseason != null) {
 			this.schedules = this.selectedseason.getSchedList();
 			LOGGER.info("season schedule is: " + schedules);
@@ -347,6 +351,20 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	@SuppressWarnings("unchecked")
 	private List<Schedule> getScheduleList() {
 		return (List<Schedule>)schedules.getWrappedData();
+	}
+
+	/**
+	 * @return the livegamelist
+	 */
+	public LiveGameList getLivegamelist() {
+		return livegamelist;
+	}
+
+	/**
+	 * @param livegamelist the livegamelist to set
+	 */
+	public void setLivegamelist(LiveGameList livegamelist) {
+		this.livegamelist = livegamelist;
 	}
 
 

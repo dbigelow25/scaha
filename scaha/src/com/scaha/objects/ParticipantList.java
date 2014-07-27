@@ -22,7 +22,7 @@ import com.gbli.context.ContextManager;
 * @author David
 *
 */
-public class ParticipantList extends ListDataModel<Participant> implements Serializable, SelectableDataModel<Schedule> {
+public class ParticipantList extends ListDataModel<Participant> implements Serializable, SelectableDataModel<Participant> {
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
@@ -65,10 +65,14 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 			Participant part = new Participant(rs.getInt(i++),_pro);
 			part.setRank(rs.getInt(i++));
 			part.setTeam(_tl.getScahaTeamAt(rs.getInt(i++)));
+			part.setGamesplayed(rs.getInt(i++));
 			part.setWins(rs.getInt(i++));
 			part.setLoses(rs.getInt(i++));
 			part.setTies(rs.getInt(i++));
 			part.setPoints(rs.getInt(i++));
+			part.setGf(rs.getInt(i++));
+			part.setGa(rs.getInt(i++));
+			part.setGd(part.getGf()- part.getGa());
 			part.setSchedule(_sch);
 			part.setPlace(y++);
 			LOGGER.info("Found new Participant for schedule " + _sch + ". " + part);
@@ -81,19 +85,6 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 		return new ParticipantList(data,hm);
 		
 	}
-
-	@Override
-	public Schedule getRowData(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object getRowKey(Schedule arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 
 
 	@SuppressWarnings("unchecked")
@@ -131,6 +122,24 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
       return answer;
       
 	}
-	
+
+    @Override  
+    public Participant getRowData(String rowKey) {  
+        //In a real app, a more efficient way like a query by rowKey should be implemented to deal with huge data  
+          
+        @SuppressWarnings("unchecked")
+		List<Participant> results = (List<Participant>) getWrappedData();  
+        for(Participant result : results) {  
+        	if(Integer.toString(result.ID).equals(rowKey)) return result;  
+        }  
+          
+        return null;  
+    }  
+    
+    @Override  
+    public Object getRowKey(Participant result) {  
+        return Integer.toString(result.ID);  
+    }
+
 
 }

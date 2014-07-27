@@ -17,39 +17,7 @@
 </h:head>
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
 <ui:define name="content">
-
-	<p:layout id="layout" style="min-height:2000px;overflow:hidden !important;">
-	
-	<!-- <p:layoutUnit id="header" position="north" >
-		
-		<div id="outer" style="width:100%">  
-    		<div id="centerit">
-			<p:carousel value="#{scahaBean.getScahaClubList()}" headerText="Highlighted Games" var="club" rows="10" circular= "true" autoPlayInterval="5000">
-    	   	 <h:panelGrid columns="3" style="width:100px;height:75px;" cellpadding="1" headerText="SCAHA Scoreboard">
-      				<p:graphicImage id="logoimageaw" value="#{clubBean.getClubLogoByParmId()}"  width="20px" height = "20px" >
-	            		<f:param name="target" value="#{club.getClubID()}" />
-					</p:graphicImage> 
-    	           <h:outputText style="text-align:center;" value=" AT " />
-      				<p:graphicImage id="logoimagehm" value="#{clubBean.getClubLogoByParmId()}"  width="20px" height = "20px" >
-	            		<f:param name="target" value="#{club.getClubID()}" />
-					</p:graphicImage> 
-    	           <h:outputText value=" - " />
-    	           <h:outputText value=" 10:OO PM " />
-    	           <h:outputText value=" - " />
-       	 	</h:panelGrid>
-   		</p:carousel>
-   		</div>
-   		</div>
-		</p:layoutUnit>
-		
-		 -->
- 		<p:layoutUnit id="left" position="west" size="220" resizable="false" closable="false" collapsible="false" >
-			<h:form id="rosterform">		
-				<p:calendar id="inline" value="#{calendarView.date1}" mode="inline" />
-			 </h:form>
-		</p:layoutUnit>
-		
-		<p:layoutUnit id="center" position="center" >
+<p:separator />
 		<h:form id="scheduleform">
 				<p:selectOneMenu styleClass="ddlistbox" id="myseasons" value="#{scoreboardBean.selectedseasonid}" >
        	   			<f:selectItem style="font-size:10pt;" itemLabel="View a Season..." itemValue="0" />
@@ -61,47 +29,84 @@
          			<f:selectItem style="font-size:10pt;" itemLabel="View a Schedule..." itemValue="0" />
           			<f:selectItems  value="#{scoreboardBean.getSchedulelist()}" var="schedule" itemLabel="#{schedule.getDescription()}" itemValue="#{schedule.getKey()}" />
           			<p:ajax listener="#{scoreboardBean.onScheduleChange()}" process="@this" update="@this @form :scheduleform:testContainer testContainer"/>
-        		</p:selectOneMenu>				
+        		</p:selectOneMenu>	
+        					
 			  <p:outputPanel id="testContainer">
 			
 				<p:dataTable  id= "parts" var="part" value="#{scoreboardBean.getPartlist()}">
-  		          <p:column  styleClass="mtrxColumn" width="5%" headerText=" " style="font-size: 12px;">
-   	    	         <h:outputText style="font-size: 12px;" value="#{part.getPlace()}" />
+  		          <p:column  styleClass="mtrxColumn" width="5%" headerText=" " style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{part.getPlace()}" />
          	   	  </p:column >
-    		      <p:column headerText="Team Name " style="font-size: 12px;">
-   	    	         <h:outputText style="font-size: 12px;" value="#{part.getTeam().getTeamname()} " />
+    		      <p:column headerText="Team Name " style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{part.getTeam().getTeamname()} " />
 	         	  </p:column >
-    	          <p:column  styleClass="mtrxColumn" headerText="Wins " style="font-size: 12px;">
-   	    	         <h:outputText style="font-size: 12px;" value="#{part.getWins()} " />
+    	          <p:column  styleClass="mtrxColumn" headerText="Games " style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{part.getGamesplayed()} " />
 	         	   </p:column >
-    	          <p:column  styleClass="mtrxColumn" headerText="Loses " style="font-size: 12px;">
-   	    	         <h:outputText style="font-size: 12px;" value="#{part.getLoses()} " />
+    	          <p:column  styleClass="mtrxColumn" headerText="Wins " style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{part.getWins()} " />
 	         	   </p:column >
-    	          <p:column  styleClass="mtrxColumn" headerText="Ties" style="font-size: 12px;">
-   	    	         <h:outputText style="font-size: 12px;" value="#{part.getTies()} " />
+    	          <p:column  styleClass="mtrxColumn" headerText="Loses " style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{part.getLoses()} " />
 	         	   </p:column >
-     	          <p:column  styleClass="mtrxtotColumn" headerText="Points" style="font-size: 12px;">
-   	    	         <h:outputText style="font-size: 12px;" value="#{part.getPoints()} " />
+    	          <p:column  styleClass="mtrxColumn" headerText="Ties" style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{part.getTies()} " />
+	         	   </p:column >
+     	          <p:column  styleClass="mtrxtotColumn" headerText="Points" style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{part.getPoints()} " />
+	         	   </p:column >
+	         	    <p:column  styleClass="mtrxtotColumn" headerText="GF" style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{part.getGf()} " />
+	         	   </p:column >
+	         	    <p:column  styleClass="mtrxtotColumn" headerText="GA" style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{part.getGa()} " />
+	         	   </p:column >
+	         	    <p:column  styleClass="mtrxtotColumn" headerText="GD" style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{part.getGd()} " />
 	         	   </p:column >
 				</p:dataTable>
+				<p:separator />
+				TEST DATA TEST DATA TEST DATA TEST DATA TEST DATA TEST DATA TEST DATA TEST DATA
+				<p:separator />
+				<p:dataTable  id= "games" var="game" value="#{scoreboardBean.getLivegamelist()}">
+  		          <p:column  styleClass="mtrxColumn" width="7%" headerText="Game #" style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{game.getGameId()}" />
+         	   	  </p:column >
+   				 <p:column  width="7%" headerText="Type " style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{game.getTypetag()}" />
+         	   	  </p:column >
+  		          <p:column  width="7%" headerText="Status " style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{game.getStatetag()}" />
+         	   	  </p:column >
+				  <p:column headerText="Home Team" style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{game.getHometeam().getTeamname()} " />
+	         	  </p:column >
+    		      <p:column styleClass="mtrxColumn" headerText="Score" style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{game.getHomescore()} " />
+	         	  </p:column >
+    		      <p:column headerText="Away Team" style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{game.getAwayteam().getTeamname()} " />
+	         	  </p:column >
+    		      <p:column styleClass="mtrxColumn" headerText="Score" style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{game.getAwayscore()} " />
+	         	  </p:column >
+    	          <p:column  headerText="Venue" style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{game.getVenuetag()} " />
+	         	   </p:column >
+    	          <p:column  headerText="Rink" style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{game.getSheetname()} " />
+	         	   </p:column >
+    	          <p:column  headerText="Start Date" style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{game.getStartdate()} " />
+	         	   </p:column >
+    	          <p:column  headerText="Start Time" style="font-size: 10px;">
+   	    	         <h:outputText style="font-size: 10px;" value="#{game.getStarttime()} " />
+	         	   </p:column >
+ 				 
+  		      </p:dataTable>
         		</p:outputPanel>
-        	 	   
-          <!-- 
-            <p:column headerText="e-mail" style="font-size: 12px;">
-   	             <h:outputText style="font-size: 11px;" value="#{empty team.getHeadCoach()  ? 'No e-mail found' : team.getHeadCoach().getsEmail()}" />
-            </p:column >
-            <p:column headerText="Manager" style="font-size: 12px;">
-    	         <h:outputText style="font-size: 12px;" value="#{empty team.getManager()  ? 'No Manager Set' : team.getManager().getsFirstName()} #{empty team.getManager() ? '' : team.getManager().getsLastName()}" />
-            </p:column >
-            <p:column headerText="e-mail" style="font-size: 12px;">
-  	             <h:outputText style="font-size: 11px;" value="#{empty team.getManager()  ? 'No e-mail found' : team.getManager().getsEmail()}" />
-             </p:column >
-          -->
+    
 		</h:form>
-	</p:layoutUnit>
-		
-		
-	</p:layout>
 </ui:define>
 </ui:composition>
 </f:view>

@@ -64,6 +64,8 @@ public class ScahaDatabase extends Database {
 	public static String c_GET_HOME_AWAY_BALANCE = "call scaha.getHomeAwayBalance(?,?,?)";
 	public static String c_GET_GAMEID_FOR_SLOT = "call scaha.getGameIDForSlot(?)";
 	public static String c_SCHEDULE_GAME = "call scaha.scheduleGameForSeason(?,?,?,?,?,?,?,?)";
+	public static String c_SYS_CONTROL = "call scaha.getSysControlRequest(?)";
+	
 	
 	PreparedStatement ps_TeamGameCountBySched = null;
 	PreparedStatement ps_DatesTeamGone = null;
@@ -80,6 +82,7 @@ public class ScahaDatabase extends Database {
 	PreparedStatement ps_getHomeAwayBalance = null;
 	PreparedStatement ps_getGameIdForSlot = null;
 	PreparedStatement cs_ScheduleGame = null;
+	PreparedStatement ps_sysControRequest = null;
 
 	public ScahaDatabase(int _iId, String _sDriver, String _sURL, String _sUser, String _sPwd) {
 		super(_iId, _sDriver, _sURL, _sUser, _sPwd);
@@ -99,7 +102,8 @@ public class ScahaDatabase extends Database {
 			ps_GetClubOffDates = this.prepareStatement(c_GET_CLUB_OFF_DATES);			
 			ps_getHomeAwayBalance = this.prepareStatement(c_GET_HOME_AWAY_BALANCE);			
 			ps_getGameIdForSlot = this.prepareStatement(c_GET_GAMEID_FOR_SLOT);			
-			cs_ScheduleGame = this.prepareStatement(c_SCHEDULE_GAME);		
+			cs_ScheduleGame = this.prepareStatement(c_SCHEDULE_GAME);	
+			ps_sysControRequest = this.prepareStatement(c_SYS_CONTROL);	
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -126,6 +130,7 @@ public class ScahaDatabase extends Database {
 			ps_getHomeAwayBalance = this.prepareStatement(c_GET_HOME_AWAY_BALANCE);			
 			ps_getGameIdForSlot = this.prepareStatement(c_GET_GAMEID_FOR_SLOT);			
 			cs_ScheduleGame = this.prepareCall(c_SCHEDULE_GAME);		
+			ps_sysControRequest = this.prepareStatement(c_SYS_CONTROL);	
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -983,13 +988,13 @@ public class ScahaDatabase extends Database {
 		Club clMain = _pMain.getTeam().getTeamClub();
 		Club clMatch = _pMatch.getTeam().getTeamClub();
 		
-		if (clMain.getSname().equals("DRAGONS") 
-				|| clMain.getSname().equals("BLAZE")
+		if (clMain.getTag().equals("DRAGONS") 
+				|| clMain.getTag().equals("BLAZE")
 				) {
 			iMainHitPoints = 1;
 		}
-		if (clMatch.getSname().equals("DRAGONS") 
-				| clMatch.getSname().equals("BLAZE")
+		if (clMatch.getTag().equals("DRAGONS") 
+				| clMatch.getTag().equals("BLAZE")
 				) {
 			iMatchHitPoints = 1;
 		}
@@ -1022,10 +1027,10 @@ public class ScahaDatabase extends Database {
 		// Bakersfield effect
 		//
 		
-		if (_pMain.getTeam().ID == 76 && iMain > 7 && !_aMatch.isEmpty()) {
+		if (_pMain.getTeam().ID == 746 && iMain > 7 && !_aMatch.isEmpty()) {
 			return _pMatch;
 		}
-		if (_pMatch.getTeam().ID == 76 && iMatch > 7 && !_aMain.isEmpty()) {
+		if (_pMatch.getTeam().ID == 746 && iMatch > 7 && !_aMain.isEmpty()) {
 			return _pMain;
 		}
 		
@@ -1101,6 +1106,21 @@ public class ScahaDatabase extends Database {
 		cs.setInt(1, sch.ID);
 		cs.executeUpdate();
 		cs.close();
+	}
+	
+	public boolean stopScheduleEngine() throws SQLException {
+		
+		//
+		// Asumme schedule goes deep until returns a true
+		boolean b = false;
+		
+		ps_sysControRequest.setString(1,"STOPSCHEDULE");
+		ResultSet rs = ps_sysControRequest.executeQuery();
+		if (rs.next()) {
+			b = (rs.getInt(1) == 1 ? true : false);
+		}
+		
+		return b;
 	}
 }
 	

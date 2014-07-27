@@ -17,10 +17,14 @@ public class Participant extends ScahaObject implements Serializable {
 	private Schedule schedule = null;
 	private int Rank = 0;
 	private int place = 0;
+	private int gamesplayed = 0;
 	private int wins = 0;
 	private int loses = 0;
 	private int ties = 0;
 	private int points = 0;
+	private int gf = 0;
+	private int ga = 0;
+	private int gd = 0;
 	
 	private Vector<Slot> SlotsAvail = new Vector<Slot>();
 	private Vector<Slot> SlotsPlaying = new Vector<Slot>();
@@ -250,5 +254,61 @@ public class Participant extends ScahaObject implements Serializable {
 	 */
 	public void setPoints(int points) {
 		this.points = points;
+	}
+
+	/**
+	 * @return the gf
+	 */
+	public int getGf() {
+		return gf;
+	}
+
+	/**
+	 * @param gf the gf to set
+	 */
+	public void setGf(int gf) {
+		this.gf = gf;
+	}
+
+	/**
+	 * @return the ga
+	 */
+	public int getGa() {
+		return ga;
+	}
+
+	/**
+	 * @param ga the ga to set
+	 */
+	public void setGa(int ga) {
+		this.ga = ga;
+	}
+
+	/**
+	 * @return the gd
+	 */
+	public int getGd() {
+		return gd;
+	}
+
+	/**
+	 * @param gd the gd to set
+	 */
+	public void setGd(int gd) {
+		this.gd = gd;
+	}
+
+	/**
+	 * @return the gamesplayed
+	 */
+	public int getGamesplayed() {
+		return gamesplayed;
+	}
+
+	/**
+	 * @param gamesplayed the gamesplayed to set
+	 */
+	public void setGamesplayed(int gamesplayed) {
+		this.gamesplayed = gamesplayed;
 	}
 }

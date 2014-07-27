@@ -21,6 +21,7 @@ public class Schedule extends ScahaObject implements Serializable {
 	
 	private ParticipantList partlist = null;
 	private ScheduleWeekList swlist = null;
+	private LiveGameList livegamelist = null;
 
 	
 	private String scheduleweektag = null;
@@ -770,7 +771,9 @@ public class Schedule extends ScahaObject implements Serializable {
 							LOGGER.info("schedule:Closing the squeeze now...");
 							squeezeit = false;
 						} else if (tmMatch.isOutOfTown(sw) && tmMain.isOutOfTown(sw)) {
-							LOGGER.info(" Both Teams are out of town.. schedule them now.:" + pMatch +":" + pMain);
+							LOGGER.info(" Both Teams are out of town.. whoops them now.:" + pMatch +":" + pMain);
+							sw.getMatchUpKeys().remove(0);
+							continue;
 						}
 
 
@@ -840,6 +843,18 @@ public class Schedule extends ScahaObject implements Serializable {
 	 */
 	public void setMaxexmatchup(int maxexmatchup) {
 		this.maxexmatchup = maxexmatchup;
+	}
+	/**
+	 * @return the livegamelist
+	 */
+	public LiveGameList getLivegamelist() {
+		return livegamelist;
+	}
+	/**
+	 * @param livegamelist the livegamelist to set
+	 */
+	public void setLivegamelist(LiveGameList livegamelist) {
+		this.livegamelist = livegamelist;
 	}
 }
 

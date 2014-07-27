@@ -548,6 +548,8 @@ public class ScahaBean implements Serializable,  MailableObject {
 		boolean keepgoing = true;
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		GeneralSeason gs = this.ScahaSeasonList.getCurrentSeason();
+		
+		this.refreshScheduleList();
 		//
 		// Step through each schedule for the given season
 		// this needs to be in priority order somehow
@@ -564,6 +566,10 @@ public class ScahaBean implements Serializable,  MailableObject {
 			
 			
 			for (Schedule sch: gs.getSchedList()) {
+				if (db.stopScheduleEngine()) {
+					LOGGER.info("SCHEDULING: Control Software asked to Bail .. " + sch);
+					continue;
+				}
 				if (sch.isLocked()) {
 					LOGGER.info("SCHEDULING: with Bounce on  SEASON IS LOCKED.. " + sch);
 					continue;
@@ -571,12 +577,16 @@ public class ScahaBean implements Serializable,  MailableObject {
 				sch.schedule(true);
 			}
 			
+			if (db.stopScheduleEngine()) {
+				LOGGER.info("SCHEDULING: Control Software asked to Bail .. " );
+				keepgoing = false;
+			}
 			
 			//
 			// iok.. lets check overall games - exhibition games for each team in each season..
 			/// we will loop on one season until a good matchup pops out..
 			//
-			boolean loopalot = true;
+			boolean loopalot = !db.stopScheduleEngine();
 			while (keepgoing) {
 				keepgoing = false;
 				for (Schedule sch: gs.getSchedList()) {
@@ -584,7 +594,13 @@ public class ScahaBean implements Serializable,  MailableObject {
 						LOGGER.info("SCHEDULING: secondary loop  SEASON IS LOCKED.. " + sch);
 						continue;
 					}
+					
 					sch.schedule(true);
+					
+					if (db.stopScheduleEngine()) {
+						LOGGER.info("SCHEDULING: Control Software asked to Bail .. " + sch);
+						break;
+					}
 					ParticipantList parts = sch.getPartlist();
 					for (Participant p : parts) {
 						ScahaTeam tm = p.getTeam();
@@ -609,7 +625,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 							}
 							break;
 							// we have to bypass carlbad teams.. they have to play all away games until ice is available
-						} else if (tm.getTeamGameInfo().getAwayGames() > sch.getMaxawaycnt() && tm.ID != 462 && tm.ID != 573 ) {
+						} else if (tm.getTeamGameInfo().getAwayGames() > sch.getMaxawaycnt() && tm.ID != 462 && tm.ID != 573 && tm.ID != 539 ) {
 							LOGGER.info("Team Info:" + tm.getTeamname() + "too many away games...");
 							if (loopalot) {
 								db.resetGames(sch);
@@ -621,8 +637,11 @@ public class ScahaBean implements Serializable,  MailableObject {
 					
 					if (keepgoing) {
 						sch.schedule(false);
-						sch.schedule(true);
-	
+						if (db.stopScheduleEngine()) {
+							LOGGER.info("SCHEDULING: Control Software asked to Bail .. " + sch);
+						} else {
+							sch.schedule(true);
+						}
 					}
 						
 				}
