@@ -15,6 +15,11 @@
         <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
      </f:facet>
 </h:head>
+
+
+<f:metadata>
+	<f:event type="preRenderView" listener="#{profileBean.verifyHasRoles('C-REG;C-ICE;C-PRES')}" />
+</f:metadata>
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
 <ui:define name="content">
 <p:separator />
