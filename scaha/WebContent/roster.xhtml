@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<f:metadata>
+<f:event type="preRenderView" listener="#{profileBean.verifyUserLogin()}" />
+</f:metadata>
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:define name="content">
+	
+	<h:form>
+			<p:panel id ="panel" header="Rosters">
+				<h:panelGrid columns="2" cellpadding="5">
+					<h:column>
+						<p:selectOneMenu value="#{rosterBean.selectedseason}" >
+					    	<f:selectItem itemLabel="Select Season..." itemValue="0"/>
+					    	<f:selectItems value="#{rosterBean.getSeasons()}" var="season" itemLabel="#{sesaon.getSesonname()}" itemValue="#{season.getSeasonid()}"/>
+					    	<p:ajax listener="#{rosterBean.onSeasonChange()}" process="@this" update="@form"/>
+					    </p:selectOneMenu>
+					</h:column>
+					<h:column>
+						<p:selectOneMenu value="#{rosterBean.selecteddivision}" >
+					    	<f:selectItem itemLabel="Select Division..." itemValue="0"/>
+					    	<f:selectItems value="#{rosterBean.getDivisions()}" var="division" itemLabel="#{division.getDivisionname()}" itemValue="#{division.getDivisionid()}"/>
+					    	<p:ajax listener="#{rosterBean.onDivisionChange()}" process="@this" update="@form"/>
+					    </p:selectOneMenu>
+					</h:column>
+					<h:column>
+						<p:selectOneMenu value="#{rosterBean.selectedteam}" >
+					    	<f:selectItem itemLabel="Select Team..." itemValue="0"/>
+					    	<f:selectItems value="#{rosterBean.getTeams()}" var="team" itemLabel="#{team.getTeamname()}" itemValue="#{division.getDivisionid()}"/>
+					    	<p:ajax listener="#{rosterBean.onTeamChange()}" process="@this" update="@form"/>
+					    </p:selectOneMenu>
+					</h:column>
+				</h:panelGrid>
+				<br></br>
+				<p:dataTable id="playersearchresult" var="rosteredit" value="#{rosterBean.getPlayers()}" >
+                
+            	<p:column headerText="#" style="width:25px;">  
+	               <h:outputText value="#{rosteredit.jerseynumber}" />  
+	            </p:column>  
+		        <p:column headerText="Last Name">  
+		        	<h:outputText value="#{rosteredit.getLastname()}" />  
+		        </p:column>
+		        <p:column headerText="First Name">  
+		        	<h:outputText value="#{rosteredit.getFirstname()}" />  
+		        </p:column>
+			          
+			 </p:dataTable>
+			 <p:dataTable id="coachesresult" var="rosteredit" value="#{managerBean.getCoaches()}" >
+                <p:column style="width:25px;">  
+	                   	<h:outputText value="#{rosteredit.jerseynumber}" />  
+	            </p:column>  
+		        <p:column>  
+		        	<h:outputText value="#{rosteredit.getLastname()}" />  
+		        </p:column>
+		        <p:column>  
+		        	<h:outputText value="#{rosteredit.getFirstname()}" />  
+		        </p:column>
+			 </p:dataTable> 
+			</p:panel>
+			<p:separator id="customSeparator" style="width:800px;height:2px" />    
+	</h:form>
+	</ui:define>
+</ui:composition>
+</html>
