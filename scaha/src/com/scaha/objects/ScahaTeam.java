@@ -462,6 +462,13 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 		return false;
 	}
 	
+	/**
+	 * Return true if the gameCap Has been reached..
+	 * 
+	 * @param _se
+	 * @param _op
+	 * @return
+	 */
 	public boolean gameCapCheck(Schedule _se, ScahaTeam _op) {
 
 		int imytot = this.getTeamGameInfo().getHomeGames() + this.getTeamGameInfo().getAwayGames();
@@ -475,35 +482,29 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 		// then if my opponent is at the game cap .. but I am not one away.. then we have to play..
 		//
 		
-		if (this.ID  == 76 && imytot == 17) {
-			return false;
-		}
-		if (_op.ID == 76 && ioptot == 17) {
-			return false;
-		}
 		if (_se.getTeamcount() % 2 != 0) {
 			if (imytot == igamecap + 1) {
-				LOGGER.info("gamecap:  I (" + this +  ") ODD I at my limit..");
-				return false;
+				LOGGER.info("gamecap alert:  I (" + this +  ") ODD I at my limit..");
+				return true;
 				
 			}
 			if (imytot == igamecap && ioptot > igamecap) {
-				LOGGER.info("gamecap:  I (" + this +  ") ODD am at my game cap.. my opponent is over it..");
-				return false;
+				LOGGER.info("gamecap alert:  I (" + this +  ") ODD am at my game cap.. my opponent is over it..");
+				return true;
 			}
 			if (imytot == igamecap && ioptot == igamecap) {
-				LOGGER.info("gamecap:  I (" + this +  ") ODD am at game cap.. and my opponent is as well");
-				return false;
+				LOGGER.info("gamecap alert:  I (" + this +  ") ODD am at game cap.. and my opponent is as well");
+				return true;
 			}
-			return true;
+			return false;
 		}
 		// if either are at game cap here.. return 	
 		if (_se.getTeamcount() % 2 == 0) {
 			if (imytot == igamecap) {
-				LOGGER.info("gamecap:  I (" + this +  ") EVEN - I AM AT MY GAME CAP...");
-				return false;
+				LOGGER.info("gamecap alert:  I (" + this +  ") EVEN - I AM AT MY GAME CAP...");
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 }

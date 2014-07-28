@@ -22,7 +22,7 @@ import com.gbli.context.ContextManager;
 * @author David
 *
 */
-public class ParticipantList extends ListDataModel<Participant> implements Serializable, SelectableDataModel<Schedule> {
+public class ParticipantList extends ListDataModel<Participant> implements Serializable, SelectableDataModel<Participant> {
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
@@ -32,12 +32,13 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 	//
 	private HashMap<String, Participant> hm = new HashMap<String,Participant>();
 	
-	public ParticipantList(List<Participant> _lst) {  
+	public ParticipantList(List<Participant> _lst,HashMap<String, Participant> _hm ) {  
 		super(_lst);
+		hm = _hm;
    }
 	
 	public static ParticipantList NewListFactory() {
-		return new ParticipantList(new ArrayList<Participant>());
+		return new ParticipantList(new ArrayList<Participant>(),new HashMap<String,Participant>());
 	}
 
 	/**
@@ -53,7 +54,8 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 	public static ParticipantList NewListFactory (Profile _pro, ScahaDatabase _db, Schedule _sch, TeamList _tl) throws SQLException {
 		
 		List<Participant> data = new ArrayList<Participant>();
-
+		HashMap<String, Participant> hm = new HashMap<String,Participant>();
+		
 		PreparedStatement ps = _db.prepareStatement("call scaha.getParticipantsBySchedule(?)");
 		ps.setInt(1,_sch.ID);
 		ResultSet rs = ps.executeQuery();
@@ -63,34 +65,28 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 			Participant part = new Participant(rs.getInt(i++),_pro);
 			part.setRank(rs.getInt(i++));
 			part.setTeam(_tl.getScahaTeamAt(rs.getInt(i++)));
+			part.setGames(rs.getInt(i++));
+			part.setExgames(rs.getInt(i++));
+			part.setGamesplayed(rs.getInt(i++));
 			part.setWins(rs.getInt(i++));
 			part.setLoses(rs.getInt(i++));
 			part.setTies(rs.getInt(i++));
 			part.setPoints(rs.getInt(i++));
+			part.setGf(rs.getInt(i++));
+			part.setGa(rs.getInt(i++));
+			part.setGd(part.getGf()- part.getGa());
 			part.setSchedule(_sch);
 			part.setPlace(y++);
 			LOGGER.info("Found new Participant for schedule " + _sch + ". " + part);
 			data.add(part);
+			hm.put(part.ID+"", part);
+			part.setSchedule(_sch);
 		}
 		rs.close();
-
 		ps.close();
-		return new ParticipantList(data);
+		return new ParticipantList(data,hm);
 		
 	}
-
-	@Override
-	public Schedule getRowData(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object getRowKey(Schedule arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 
 
 	@SuppressWarnings("unchecked")
@@ -105,14 +101,16 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 	@SuppressWarnings("unchecked")
 	public void reset() {
 		// TODO Auto-generated method stub
+		LOGGER.info("resetting Participant List..");
 		((ArrayList<Participant>)this.getWrappedData()).clear();
 		hm.clear();
 	}  
 	
 	@SuppressWarnings("unchecked")
 	public void add(Participant _p) {
-		hm.put(_p.ID+"", _p);
+		LOGGER.info("Adding Participant to List:" + _p);
 		((ArrayList<Participant>)this.getWrappedData()).add(_p);
+		hm.put(_p.ID+"", _p);
 	}
 	
 	public String toString() {
@@ -126,6 +124,24 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
       return answer;
       
 	}
-	
+
+    @Override  
+    public Participant getRowData(String rowKey) {  
+        //In a real app, a more efficient way like a query by rowKey should be implemented to deal with huge data  
+          
+        @SuppressWarnings("unchecked")
+		List<Participant> results = (List<Participant>) getWrappedData();  
+        for(Participant result : results) {  
+        	if(Integer.toString(result.ID).equals(rowKey)) return result;  
+        }  
+          
+        return null;  
+    }  
+    
+    @Override  
+    public Object getRowKey(Participant result) {  
+        return Integer.toString(result.ID);  
+    }
+
 
 }

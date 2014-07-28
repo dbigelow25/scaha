@@ -29,6 +29,16 @@ public class ScheduleWeek extends ScahaObject implements Serializable {
 	String Tag = null;
 	String SeasonTag = null;
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "ScheduleWeek [SName=" + SName + ", Name=" + Name + ", Week="
+				+ Week + ", FromDate=" + FromDate + ", ToDate=" + ToDate
+				+ ", Tag=" + Tag + ", SeasonTag=" + SeasonTag + "]";
+	}
+
 	private Schedule Schedule = null;
 	private boolean ScheduleComplete = false;
 	
@@ -48,6 +58,11 @@ public class ScheduleWeek extends ScahaObject implements Serializable {
 	ArrayList<Integer> MatchUpKeys = new ArrayList<Integer>();
 
 	
+	public ScheduleWeek(int _id, Profile _pro) {
+		this.ID = _id;
+		this.setProfile(_pro);
+	}
+
 	/**
 	 * @return the scheduleComplete
 	 */
@@ -186,6 +201,13 @@ public class ScheduleWeek extends ScahaObject implements Serializable {
 
 	public void addPrcoessListPart(Participant _p) {
 		pProc.add(_p);
+	}
+	
+	public ParticipantList getProcessList() {
+		return pProc;
+	}
+	public ParticipantList getBumpList() {
+		return pBump;
 	}
 
 	/**

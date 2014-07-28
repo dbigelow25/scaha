@@ -17,10 +17,16 @@ public class Participant extends ScahaObject implements Serializable {
 	private Schedule schedule = null;
 	private int Rank = 0;
 	private int place = 0;
+	private int games = 0;
+	private int exgames = 0;
+	private int gamesplayed = 0;
 	private int wins = 0;
 	private int loses = 0;
 	private int ties = 0;
 	private int points = 0;
+	private int gf = 0;
+	private int ga = 0;
+	private int gd = 0;
 	
 	private Vector<Slot> SlotsAvail = new Vector<Slot>();
 	private Vector<Slot> SlotsPlaying = new Vector<Slot>();
@@ -129,7 +135,6 @@ public class Participant extends ScahaObject implements Serializable {
 		try {
 			 Date dateAvail = dateFormat.parse(_sl.actDate + " " + _sl.StartTime); 
 			 if (this.getSlotsPlaying().isEmpty()) {
-			   	LOGGER.info("Team Not playing... so anyslot will do SLOT:" + _sl);
 		    	return true;
 			 }
 			 for (Slot slot: this.getSlotsPlaying()) {
@@ -141,8 +146,9 @@ public class Participant extends ScahaObject implements Serializable {
 			    	LOGGER.info("I cannot play...not enough time between matchups.. needs to be more than:" +(24 * (_se.getTeamcount() * 1.25)));
 			    	return false;
 			    }
-			    if (hours < 8 ) {
-			    	LOGGER.info("I cannot play...not enough time between matchups..  already have a game within 8 hours of start time");
+			    if (hours < 7 ) {
+			    	
+			    	LOGGER.info("I cannot play... da=" + dateAvail + ", dp=" + datePlaying + " not enough time (" + hours + ") between matchups..  already have a game within 7 hours of start time");
 			    	return false;
 			    }
 			    
@@ -155,6 +161,7 @@ public class Participant extends ScahaObject implements Serializable {
 			        long bodiff = dateAvail.getTime() - datebo.getTime();
 			    	long bodhours = Math.abs(bodiff / (1000*60*60));
 					if (bodhours < 72) {
+				    	LOGGER.info("I cannot play..club or team is out of town");
 					   	return false;
 					}
 			    }
@@ -249,5 +256,93 @@ public class Participant extends ScahaObject implements Serializable {
 	 */
 	public void setPoints(int points) {
 		this.points = points;
+	}
+
+	/**
+	 * @return the gf
+	 */
+	public int getGf() {
+		return gf;
+	}
+
+	/**
+	 * @param gf the gf to set
+	 */
+	public void setGf(int gf) {
+		this.gf = gf;
+	}
+
+	/**
+	 * @return the ga
+	 */
+	public int getGa() {
+		return ga;
+	}
+
+	/**
+	 * @param ga the ga to set
+	 */
+	public void setGa(int ga) {
+		this.ga = ga;
+	}
+
+	/**
+	 * @return the gd
+	 */
+	public int getGd() {
+		return gd;
+	}
+
+	/**
+	 * @param gd the gd to set
+	 */
+	public void setGd(int gd) {
+		this.gd = gd;
+	}
+
+	/**
+	 * @return the gamesplayed
+	 */
+	public int getGamesplayed() {
+		return gamesplayed;
+	}
+
+	/**
+	 * @param gamesplayed the gamesplayed to set
+	 */
+	public void setGamesplayed(int gamesplayed) {
+		this.gamesplayed = gamesplayed;
+	}
+	
+	public int getKey() {
+		return ID;
+	}
+
+	/**
+	 * @return the games
+	 */
+	public int getGames() {
+		return games;
+	}
+
+	/**
+	 * @param games the games to set
+	 */
+	public void setGames(int games) {
+		this.games = games;
+	}
+
+	/**
+	 * @return the exgames
+	 */
+	public int getExgames() {
+		return exgames;
+	}
+
+	/**
+	 * @param exgames the exgames to set
+	 */
+	public void setExgames(int exgames) {
+		this.exgames = exgames;
 	}
 }

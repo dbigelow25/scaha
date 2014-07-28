@@ -2,6 +2,8 @@ package com.scaha.beans;
 
 import java.io.Serializable;
 import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +24,18 @@ import com.scaha.objects.ClubAdminList;
 import com.scaha.objects.ClubList;
 import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.GeneralSeasonList;
+import com.scaha.objects.LiveGame;
+import com.scaha.objects.LiveGameList;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Member;
 import com.scaha.objects.MemberList;
+import com.scaha.objects.Participant;
+import com.scaha.objects.ParticipantList;
 import com.scaha.objects.Profile;
 import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.Schedule;
 import com.scaha.objects.ScheduleList;
+import com.scaha.objects.TeamGameInfo;
 import com.scaha.objects.TeamList;
 import com.scaha.objects.YearList;
 
@@ -46,6 +53,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 	//
 	private ClubList ScahaClubList  = null;
 	private TeamList ScahaTeamList  = null;
+	private LiveGameList ScahaLiveGameList = null;
 	private GeneralSeasonList ScahaSeasonList = null;
 	private MemberList scahaboardmemberlist = null;
 	private MemberList scahaprogramdirectorlist = null;
@@ -94,6 +102,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 			setScahaClubList(ClubList.NewClubListFactory(this.DefaultProfile, db));
 			loadTeamLists(db);
 			setScahaschedule(ScheduleList.ListFactory(this.DefaultProfile, db, this.getScahaSeasonList().getCurrentSeason(),this.getScahaTeamList()));
+			setScahaLiveGameList(LiveGameList.NewListFactory(this.DefaultProfile,db,this.getScahaSeasonList().getCurrentSeason(), this.getScahaTeamList(), this.getScahaschedule()));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -101,7 +110,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 		db.free();
 		 
 	 }
-	
+
 	public void refreshClubList() {
 
 		this.resetClubLists();
@@ -110,6 +119,20 @@ public class ScahaBean implements Serializable,  MailableObject {
 		try {
 			setScahaClubList(ClubList.NewClubListFactory(this.DefaultProfile, db));
 			loadTeamLists(db);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.free();
+	}
+	
+	public void refreshLiveGameList() {
+
+		this.resetLiveGameList();
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		try {
+			setScahaLiveGameList(LiveGameList.NewListFactory(this.DefaultProfile,db,this.getScahaSeasonList().getCurrentSeason(), this.getScahaTeamList(), this.getScahaschedule()));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -139,17 +162,20 @@ public class ScahaBean implements Serializable,  MailableObject {
 	 */
 	public void testDB(int _isec) {
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-		
 		try {
-		    Thread.sleep(1000*_isec);
-		} catch(InterruptedException ex) {
-		    Thread.currentThread().interrupt();
+		PreparedStatement ps = db.prepareStatement("call scaha.getLiveGamesBySeason(?)");
+		ps.setString(1,"SCAHA-1415");
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			LOGGER.info("found row");
+		}
+		db.free();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
 		}
 		
-		db.free();
-		
-		
 	}
+	
 	@SuppressWarnings("unchecked")
 	private void resetClubLists() {
 		if (this.ScahaClubList != null) {
@@ -171,6 +197,13 @@ public class ScahaBean implements Serializable,  MailableObject {
 			
 	}
 	
+	@SuppressWarnings("unchecked")
+	private void resetLiveGameList() {
+		if (this.ScahaLiveGameList != null) {
+			List<LiveGame> list = (List<LiveGame>) this.ScahaLiveGameList.getWrappedData();
+			list.clear();
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	public void syncClubSlots() {
@@ -525,5 +558,142 @@ public class ScahaBean implements Serializable,  MailableObject {
 		}
 		
 		this.setExecutiveboard();
+	}
+	
+	/******************************************************************************
+	 *  Scheduling software method.. 
+	 *  Here we go
+	 */
+	/**
+	 *  
+	 * OK.. this is the meat of it.
+	 * 
+	 * We loop until we are done scheduling everything..
+	 * 
+	 */
+	public void schedule() {
+	
+		
+		// We go until we are finished...
+		boolean keepgoing = true;
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		GeneralSeason gs = this.ScahaSeasonList.getCurrentSeason();
+		
+		this.refreshScheduleList();
+		//
+		// Step through each schedule for the given season
+		// this needs to be in priority order somehow
+		// TODO order by rank here.. 
+		
+		try {
+			for (Schedule sch: gs.getSchedList()) {
+				if (sch.isLocked()) {
+					LOGGER.info("SCHEDULING: SEASON IS LOCKED.. " + sch);
+					continue;
+				}
+				sch.schedule(false);
+			}
+			
+			
+			for (Schedule sch: gs.getSchedList()) {
+				if (db.stopScheduleEngine()) {
+					LOGGER.info("SCHEDULING: Control Software asked to Bail .. " + sch);
+					continue;
+				}
+				if (sch.isLocked()) {
+					LOGGER.info("SCHEDULING: with Bounce on  SEASON IS LOCKED.. " + sch);
+					continue;
+				}
+				sch.schedule(true);
+			}
+			
+			if (db.stopScheduleEngine()) {
+				LOGGER.info("SCHEDULING: Control Software asked to Bail .. " );
+				keepgoing = false;
+			}
+			
+			//
+			// iok.. lets check overall games - exhibition games for each team in each season..
+			/// we will loop on one season until a good matchup pops out..
+			//
+			boolean loopalot = !db.stopScheduleEngine();
+			while (keepgoing) {
+				keepgoing = false;
+				for (Schedule sch: gs.getSchedList()) {
+					if (sch.isLocked()) {
+						LOGGER.info("SCHEDULING: secondary loop  SEASON IS LOCKED.. " + sch);
+						continue;
+					}
+					
+					sch.schedule(true);
+					
+					if (db.stopScheduleEngine()) {
+						LOGGER.info("SCHEDULING: Control Software asked to Bail .. " + sch);
+						break;
+					}
+					ParticipantList parts = sch.getPartlist();
+					for (Participant p : parts) {
+						ScahaTeam tm = p.getTeam();
+						TeamGameInfo tgi = tm.getTeamGameInfo();
+						tgi.refreshInfo(db, sch);
+						LOGGER.info("GAME COUNT CHECK... " + tgi.toString() + " with a min count of:" +  sch.getMingamecnt());
+						// int iagmax = ((tm.getTotalGames() / 2) + 2 + ((tm.getTotalGames() % 2 != 0 ? 1 : 0)));
+						if (tm.isExhibition()) {
+							LOGGER.info("Team Info:" + tm.getTeamname() + " is exhibition.. not too worried");
+						} else if ((tm.getTotalGames() - (sch.isExhibitioncounts() ? 0 : tm.getTeamGameInfo().getExGames())) < sch.getMingamecnt()) { 
+							LOGGER.info("Team Info:" + tm.getTeamname() + "not enough games.. try again...");
+							if (loopalot) {
+								db.resetGames(sch);
+								keepgoing = true;
+							}
+							break;
+						} else if (tm.getTeamGameInfo().getAwayGames() == 0  ) {
+							LOGGER.info("Team Info:" + tm.getTeamname() + "no away games...");
+							if (loopalot) {
+								db.resetGames(sch);
+								keepgoing = true;
+							}
+							break;
+							// we have to bypass carlbad teams.. they have to play all away games until ice is available
+						} else if (tm.getTeamGameInfo().getAwayGames() > sch.getMaxawaycnt() && tm.ID != 462 && tm.ID != 573 && tm.ID != 539 ) {
+							LOGGER.info("Team Info:" + tm.getTeamname() + "too many away games...");
+							if (loopalot) {
+								db.resetGames(sch);
+								keepgoing = true;
+							}
+							break;
+						}
+					}	
+					
+					if (keepgoing) {
+						sch.schedule(false);
+						if (db.stopScheduleEngine()) {
+							LOGGER.info("SCHEDULING: Control Software asked to Bail .. " + sch);
+						} else {
+							sch.schedule(true);
+						}
+					}
+						
+				}
+			}	
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		db.free();
+
+	}
+
+	/**
+	 * @return the scahaLiveGameList
+	 */
+	public LiveGameList getScahaLiveGameList() {
+		return ScahaLiveGameList;
+	}
+
+	/**
+	 * @param scahaLiveGameList the scahaLiveGameList to set
+	 */
+	public void setScahaLiveGameList(LiveGameList scahaLiveGameList) {
+		ScahaLiveGameList = scahaLiveGameList;
 	}
 }

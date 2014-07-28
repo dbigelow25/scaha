@@ -66,10 +66,14 @@ public class ScheduleList extends ListDataModel<Schedule> implements Serializabl
 			sch.setMaxgamecnt(rs.getInt(i++));
 			sch.setMaxbyecnt(rs.getInt(i++));
 			sch.setMaxawaycnt(rs.getInt(i++));
+			sch.setExhibitioncounts((rs.getInt(i++) == 1 ? true : false));
+			sch.setMaxexmatchup(rs.getInt(i++));
 			data.add(sch);
 			sch.setPartlist(ParticipantList.NewListFactory(_pro, _db, sch, _tl));
+			LOGGER.info("Part List is " + ContextManager.NEW_LINE  + sch.getPartlist().toString());
+			sch.setSwlist(ScheduleWeekList.ListFactory(_pro, _db, sch));
+			LOGGER.info("ScheduleWeekList is " + ContextManager.NEW_LINE  + sch.getSwlist().toString());
 			LOGGER.info("Adding schedule " + sch + " to the list...");
-			LOGGER.info("Part List is " + sch.getPartlist().toString());
 		}
 		rs.close();
 		ps.close();
