@@ -126,6 +126,11 @@ ul.ui-menu-child {
 	color: #FFFFFF;
 }
 
+.doubleice {
+	background-color:#FE2E2E;
+	color: #FFFFFF;
+}
+
 $( "#accordion" ).accordion({
             heightStyle: "content",
             autoHeight: false,

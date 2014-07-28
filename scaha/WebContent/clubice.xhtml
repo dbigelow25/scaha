@@ -46,7 +46,7 @@
  			id="icemap" 
  			var="myrow" 
  			value="#{iceBean.mydata}" 
- 			rowStyleClass="#{myrow.get(3) == 0 ? 'openice' : null}">
+ 			rowStyleClass="#{myrow.get(3) == 0 ? 'openice' : null} #{myrow.get(13) == 'S' ? 'doubleice' : null} ">
 
 			<p:column styleClass="mtrxColumn">
            		<f:facet name="header">
