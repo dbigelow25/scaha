@@ -65,6 +65,8 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 			Participant part = new Participant(rs.getInt(i++),_pro);
 			part.setRank(rs.getInt(i++));
 			part.setTeam(_tl.getScahaTeamAt(rs.getInt(i++)));
+			part.setGames(rs.getInt(i++));
+			part.setExgames(rs.getInt(i++));
 			part.setGamesplayed(rs.getInt(i++));
 			part.setWins(rs.getInt(i++));
 			part.setLoses(rs.getInt(i++));

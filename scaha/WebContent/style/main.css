@@ -2,6 +2,8 @@
 
 img { border-style: none; }
 
+
+
 #centerit {
     width: 50%;
     margin: 0 auto;
@@ -117,6 +119,11 @@ ul.ui-menu-child {
     vertical-align: center; 
 	border-style:none;
 	border-width:0px;
+}
+
+.openice {
+	background-color:#0174DF;
+	color: #FFFFFF;
 }
 
 $( "#accordion" ).accordion({

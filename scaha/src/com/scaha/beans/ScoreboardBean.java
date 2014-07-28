@@ -18,7 +18,9 @@ import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.GeneralSeasonList;
 import com.scaha.objects.LiveGameList;
 import com.scaha.objects.MailableObject;
+import com.scaha.objects.Participant;
 import com.scaha.objects.ParticipantList;
+import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.Schedule;
 import com.scaha.objects.ScheduleList;
 
@@ -35,12 +37,16 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	
 	private ScheduleList schedules;
 	private List<Schedule> schedulelist =  null;
+	private List<Participant> partpicklist =  null;
+	
 	private GeneralSeasonList seasons = null;
 
 	private Schedule selectedschedule;	
 	private int selectedscheduleid;
 	private GeneralSeason selectedseason;
 	private int selectedseasonid;
+	private Participant selectedpart;
+	private int selectedpartid;
 
 	private ParticipantList partlist = null;
 	private LiveGameList livegamelist = null;
@@ -68,10 +74,9 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		 // look at data from past seasons..
 		 //
 		 this.setSeasons(scaha.getScahaSeasonList());
-		 //
-		 // lets refresh all the picklists used in the fiew..
-		 //
-		 //refreshScheduleList();
+		 this.selectedseason = scaha.getScahaSeasonList().getCurrentSeason();
+		 this.selectedseasonid = selectedseason.ID;
+		 this.refreshScheduleList();
 		 
 		 LOGGER.info(" *************** FINISH :POST INIT FOR SCOREBOARD BEAN *****************");
 	 }
@@ -122,6 +127,21 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		this.partlist = null;
 		if (this.selectedschedule != null) {
 			this.partlist = this.selectedschedule.getPartlist();
+			this.partpicklist = this.getParticipantpicklist();
+			this.setLivegamelist(scaha.getScahaLiveGameList().NewList(scaha.getDefaultProfile(),selectedschedule));
+		}
+	}
+	
+	/**
+	 * get participants for a schedule..
+	 */
+	public void onPartChange() {
+		
+		this.selectedpart = this.getPartlist().getByKey(this.selectedpartid);
+		LOGGER.info("participant change request detected new id is:" + this.selectedpartid + ":" + this.selectedpart + " for sched:" + this.selectedschedule);
+		if (this.selectedpart != null) {
+			this.setLivegamelist(this.selectedschedule.getLivegamelist().NewList(scaha.getDefaultProfile(), selectedschedule, selectedpart.getTeam()));
+		} else {
 			this.setLivegamelist(this.selectedschedule.getLivegamelist());
 		}
 	}
@@ -136,12 +156,12 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		this.schedules = null;
 		this.partlist = null;
 		this.setLivegamelist(null);
+		this.partpicklist = null;
 		if (this.selectedseason != null) {
 			this.schedules = this.selectedseason.getSchedList();
 			LOGGER.info("season schedule is: " + schedules);
 			if (schedules != null) {
 			  if (this.schedules.getRowCount() > 0) {
-				  LOGGER.info("Refresh.. setting schedule list to:" + this.schedules.getRowCount());
 				  this.schedulelist = this.getScheduleList();
 			  }	else {
 				LOGGER.info("Refresh.. zero list.. leaving null:" + this.schedules.getRowCount());
@@ -352,6 +372,11 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	private List<Schedule> getScheduleList() {
 		return (List<Schedule>)schedules.getWrappedData();
 	}
+	
+	@SuppressWarnings("unchecked")
+	private List<Participant> getParticipantpicklist() {
+		return (List<Participant>)partlist.getWrappedData();
+	}
 
 	/**
 	 * @return the livegamelist
@@ -365,6 +390,48 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	 */
 	public void setLivegamelist(LiveGameList livegamelist) {
 		this.livegamelist = livegamelist;
+	}
+
+	/**
+	 * @return the partpicklist
+	 */
+	public List<Participant> getPartpicklist() {
+		return partpicklist;
+	}
+
+	/**
+	 * @param partpicklist the partpicklist to set
+	 */
+	public void setPartpicklist(List<Participant> partpicklist) {
+		this.partpicklist = partpicklist;
+	}
+
+	/**
+	 * @return the selectedpart
+	 */
+	public Participant getSelectedpart() {
+		return selectedpart;
+	}
+
+	/**
+	 * @param selectedpart the selectedpart to set
+	 */
+	public void setSelectedpart(Participant selectedpart) {
+		this.selectedpart = selectedpart;
+	}
+
+	/**
+	 * @return the selectedpartid
+	 */
+	public int getSelectedpartid() {
+		return selectedpartid;
+	}
+
+	/**
+	 * @param selectedpartid the selectedpartid to set
+	 */
+	public void setSelectedpartid(int selectedpartid) {
+		this.selectedpartid = selectedpartid;
 	}
 
 

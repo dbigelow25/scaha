@@ -87,7 +87,10 @@
 							value="Approve Exhibition Req" 
 							url="approveexhibitiongames.xhtml"
 							rendered="#{profileBean.isSuperUser()}" />
-						
+						<p:menuitem style="font-size: 10pt;width:225px;"
+							value="Review Club Ice"
+							url="clubice.xhtml"
+							rendered="#{profileBean.hasRoleList('C-REG;C-ICE;C-PRES')}" />
 						<p:menuitem style="font-size: 10pt;width:225px;" 
 							value="Manage Your Teams"
 							url="addteams.xhtml"

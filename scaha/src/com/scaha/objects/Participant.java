@@ -17,6 +17,8 @@ public class Participant extends ScahaObject implements Serializable {
 	private Schedule schedule = null;
 	private int Rank = 0;
 	private int place = 0;
+	private int games = 0;
+	private int exgames = 0;
 	private int gamesplayed = 0;
 	private int wins = 0;
 	private int loses = 0;
@@ -310,5 +312,37 @@ public class Participant extends ScahaObject implements Serializable {
 	 */
 	public void setGamesplayed(int gamesplayed) {
 		this.gamesplayed = gamesplayed;
+	}
+	
+	public int getKey() {
+		return ID;
+	}
+
+	/**
+	 * @return the games
+	 */
+	public int getGames() {
+		return games;
+	}
+
+	/**
+	 * @param games the games to set
+	 */
+	public void setGames(int games) {
+		this.games = games;
+	}
+
+	/**
+	 * @return the exgames
+	 */
+	public int getExgames() {
+		return exgames;
+	}
+
+	/**
+	 * @param exgames the exgames to set
+	 */
+	public void setExgames(int exgames) {
+		this.exgames = exgames;
 	}
 }

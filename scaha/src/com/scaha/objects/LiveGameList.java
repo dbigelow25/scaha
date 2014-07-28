@@ -41,28 +41,19 @@ public class LiveGameList extends ListDataModel<LiveGame> implements Serializabl
 		return new LiveGameList(new ArrayList<LiveGame>(),new HashMap<String,LiveGame>());
 	}
 
-	/**
-	 * Here we have to fetch the a list of participants.. (who in turn will be associated with a given Team
-	 * Which needs to be retrieved as well.
-	 * 
-	 * @param _pro
-	 * @param _db
-	 * @param _sch
-	 * @return
-	 * @throws SQLException
-	 */
-	public static LiveGameList NewListFactory (Profile _pro, ScahaDatabase _db, Schedule _sch, TeamList _tl) throws SQLException {
-		
+	
+	public static LiveGameList NewListFactory(Profile _pro, ScahaDatabase _db, GeneralSeason currentSeason,TeamList _tl, ScheduleList _schl) throws SQLException {
 		List<LiveGame> data = new ArrayList<LiveGame>();
 		HashMap<String, LiveGame> hm = new HashMap<String,LiveGame>();
-		
-		PreparedStatement ps = _db.prepareStatement("call scaha.getLiveGamesBySchedule(?)");
-		ps.setInt(1,_sch.ID);
+		LOGGER.info("NewList is looking for LiveGames that match " + currentSeason.getTag());
+		PreparedStatement ps = _db.prepareStatement("call scaha.getLiveGamesBySeason(?)");
+		ps.setString(1,currentSeason.getTag());
 		ResultSet rs = ps.executeQuery();
-		int y = 1;
 		while (rs.next()) {
 			int i = 1;
-			LiveGame live = new LiveGame(rs.getInt(i++),_pro,_sch);
+			LOGGER.info("Found a row..");
+			LiveGame live = new LiveGame(rs.getInt(i++),_pro);
+			LOGGER.info("Found a live.." + live);
 			live.setTypetag(rs.getString(i++));
 			live.setStatetag(rs.getString(i++));
 			live.setHometeam(_tl.getScahaTeamAt(rs.getInt(i++)));
@@ -75,13 +66,67 @@ public class LiveGameList extends ListDataModel<LiveGame> implements Serializabl
 			live.setSheetname(rs.getString(i++));
 			live.setStartdate(rs.getString(i++));
 			live.setStarttime(rs.getString(i++));
+			live.setScheduleidstub(rs.getInt(i++));
+			live.setSched(_schl.getRowData(live.getScheduleidstub()+""));
 			data.add(live);
 			hm.put(live.ID+"", live);
+			LOGGER.info("Found a match " + live);
 		}
 		rs.close();
 		ps.close();
+		LOGGER.info("NewList is done looking for LiveGames that match " + currentSeason + ". datalen=" + data.size());
 		return new LiveGameList(data,hm);
 		
+	}
+
+	
+	/** 
+	 * Here we get all the games for a particular Season and team...
+	 * @param _pro
+	 * @param _tm
+	 * @return
+	 */
+	public LiveGameList NewList (Profile _pro, Schedule _sch, ScahaTeam _tm) {
+		
+		LOGGER.info("NewList is looking for LiveGames that match " + _sch + ", tm=" + _tm);
+		List<LiveGame> data = new ArrayList<LiveGame>();
+		HashMap<String, LiveGame> hm = new HashMap<String,LiveGame>();
+		@SuppressWarnings("unchecked")
+		List<LiveGame> results = (List<LiveGame>) getWrappedData();
+		for (LiveGame live : results) {
+			if ((live.getHometeam().ID == _tm.ID ||
+				live.getAwayteam().ID == _tm.ID) && live.getSched().ID == _sch.ID) {
+				LOGGER.info("Found a match " + live);
+				data.add(live);
+				hm.put(live.ID+"", live);
+			}
+		}
+		LOGGER.info("NewList completed for LiveGames.." + data.size());
+		return new LiveGameList(data,hm);
+	}
+	
+	/** 
+	 * Here we get all the games for a particular Season and team...
+	 * @param _pro
+	 * @param _tm
+	 * @return
+	 */
+	public LiveGameList NewList (Profile _pro, Schedule _sch) {
+
+		List<LiveGame> data = new ArrayList<LiveGame>();
+		HashMap<String, LiveGame> hm = new HashMap<String,LiveGame>();
+		LOGGER.info("NewList is looking for LiveGames that match " + _sch);
+			
+		for (LiveGame live : this) {
+			if (live.getSched().ID == _sch.ID) {
+				data.add(live);
+				LOGGER.info("Found a match " + live);
+				hm.put(live.ID+"", live);
+			}
+		}
+		LOGGER.info("NewList completed for LiveGames for a schedule.." + data.size());
+		_sch.setLivegamelist(new LiveGameList(data,hm));
+		return  _sch.getLivegamelist();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -122,28 +167,17 @@ public class LiveGameList extends ListDataModel<LiveGame> implements Serializabl
 
     @Override  
     public LiveGame getRowData(String rowKey) {  
-        @SuppressWarnings("unchecked")
-		List<LiveGame> results = (List<LiveGame>) getWrappedData();  
-        for(LiveGame result : results) {  
-        	if(Integer.toString(result.ID).equals(rowKey)) return result;  
-        }  
-        return null;  
+    	return this.hm.get(rowKey);
     }  
  
     public LiveGame getLiveGameAtAt(int rowKey) {  
-          
-        @SuppressWarnings("unchecked")
-		List<LiveGame> results = (List<LiveGame>) getWrappedData();  
-        for(LiveGame result : results) {  
-        	if(result.ID == rowKey) return result;  
-        }  
-          
-        return null;  
+    	return this.hm.get(rowKey+"");
     }  
     @Override  
     public Object getRowKey(LiveGame result) {  
         return Integer.toString(result.ID);  
     }
+
 
 
 }

@@ -2,6 +2,8 @@ package com.scaha.beans;
 
 import java.io.Serializable;
 import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,8 @@ import com.scaha.objects.ClubAdminList;
 import com.scaha.objects.ClubList;
 import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.GeneralSeasonList;
+import com.scaha.objects.LiveGame;
+import com.scaha.objects.LiveGameList;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Member;
 import com.scaha.objects.MemberList;
@@ -49,6 +53,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 	//
 	private ClubList ScahaClubList  = null;
 	private TeamList ScahaTeamList  = null;
+	private LiveGameList ScahaLiveGameList = null;
 	private GeneralSeasonList ScahaSeasonList = null;
 	private MemberList scahaboardmemberlist = null;
 	private MemberList scahaprogramdirectorlist = null;
@@ -97,6 +102,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 			setScahaClubList(ClubList.NewClubListFactory(this.DefaultProfile, db));
 			loadTeamLists(db);
 			setScahaschedule(ScheduleList.ListFactory(this.DefaultProfile, db, this.getScahaSeasonList().getCurrentSeason(),this.getScahaTeamList()));
+			setScahaLiveGameList(LiveGameList.NewListFactory(this.DefaultProfile,db,this.getScahaSeasonList().getCurrentSeason(), this.getScahaTeamList(), this.getScahaschedule()));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -104,7 +110,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 		db.free();
 		 
 	 }
-	
+
 	public void refreshClubList() {
 
 		this.resetClubLists();
@@ -113,6 +119,20 @@ public class ScahaBean implements Serializable,  MailableObject {
 		try {
 			setScahaClubList(ClubList.NewClubListFactory(this.DefaultProfile, db));
 			loadTeamLists(db);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.free();
+	}
+	
+	public void refreshLiveGameList() {
+
+		this.resetLiveGameList();
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		try {
+			setScahaLiveGameList(LiveGameList.NewListFactory(this.DefaultProfile,db,this.getScahaSeasonList().getCurrentSeason(), this.getScahaTeamList(), this.getScahaschedule()));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -142,17 +162,20 @@ public class ScahaBean implements Serializable,  MailableObject {
 	 */
 	public void testDB(int _isec) {
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-		
 		try {
-		    Thread.sleep(1000*_isec);
-		} catch(InterruptedException ex) {
-		    Thread.currentThread().interrupt();
+		PreparedStatement ps = db.prepareStatement("call scaha.getLiveGamesBySeason(?)");
+		ps.setString(1,"SCAHA-1415");
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			LOGGER.info("found row");
+		}
+		db.free();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
 		}
 		
-		db.free();
-		
-		
 	}
+	
 	@SuppressWarnings("unchecked")
 	private void resetClubLists() {
 		if (this.ScahaClubList != null) {
@@ -174,6 +197,13 @@ public class ScahaBean implements Serializable,  MailableObject {
 			
 	}
 	
+	@SuppressWarnings("unchecked")
+	private void resetLiveGameList() {
+		if (this.ScahaLiveGameList != null) {
+			List<LiveGame> list = (List<LiveGame>) this.ScahaLiveGameList.getWrappedData();
+			list.clear();
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	public void syncClubSlots() {
@@ -651,5 +681,19 @@ public class ScahaBean implements Serializable,  MailableObject {
 		}
 		db.free();
 
+	}
+
+	/**
+	 * @return the scahaLiveGameList
+	 */
+	public LiveGameList getScahaLiveGameList() {
+		return ScahaLiveGameList;
+	}
+
+	/**
+	 * @param scahaLiveGameList the scahaLiveGameList to set
+	 */
+	public void setScahaLiveGameList(LiveGameList scahaLiveGameList) {
+		ScahaLiveGameList = scahaLiveGameList;
 	}
 }

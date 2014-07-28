@@ -27,11 +27,18 @@ public class LiveGame extends ScahaObject implements Serializable {
 	private String venuetag = null;
 	private String sheetname = null;
 	
+	private int scheduleidstub = 0;
+	
 	public LiveGame(int _id, Profile _pro, Schedule _sc) {
 		ID = _id;		
 		this.setProfile(_pro);
+		this.setSched(_sc);
 	}
 
+	public LiveGame(int _id, Profile _pro) {
+		ID = _id;		
+		this.setProfile(_pro);
+	}
 	/**
 	 * @return the sched
 	 */
@@ -248,6 +255,20 @@ public class LiveGame extends ScahaObject implements Serializable {
 
 	public String toString() {
 		return this.getHometeamname() + "vs" + this.getAwayteamname() + " @ " + this.venuetag + " " + this.startdate + ":" + this.starttime;
+	}
+
+	/**
+	 * @return the scheduleidstub
+	 */
+	public int getScheduleidstub() {
+		return scheduleidstub;
+	}
+
+	/**
+	 * @param scheduleidstub the scheduleidstub to set
+	 */
+	public void setScheduleidstub(int scheduleidstub) {
+		this.scheduleidstub = scheduleidstub;
 	}
 
 }
