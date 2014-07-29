@@ -35,6 +35,7 @@ public class rosterBean implements Serializable{
 	private List<RosterEdit> coaches = null;
 	private List<Season> seasons = null;
 	private List<Division> divisions = null;
+	private List<Team> teams = null;
 	
 	//bean level properties used by multiple methods
 	private String selectedseason = null;
@@ -114,6 +115,13 @@ public class rosterBean implements Serializable{
     	divisions=list;
     }
     
+    public List<Team> getTeams(){
+    	return teams;
+    }
+    
+    public void setTeams(List<Team> list){
+    	teams=list;
+    }
     
     public void onSeasonChange(){
     	//need to load divisions available for the selected season
@@ -200,11 +208,11 @@ public class rosterBean implements Serializable{
     		db.free();
     	}
 		
-    	setDivisions(templist);
+    	setTeams(templist);
     	
 	}
     
-	public void getRoster(){
+	public void onTeamChange(){
 		List<RosterEdit> templist = new ArrayList<RosterEdit>();
 		List<RosterEdit> templist2 = new ArrayList<RosterEdit>();
 		
@@ -263,7 +271,7 @@ public class rosterBean implements Serializable{
 					String playerid = rs.getString("idroster");
 					String fname = rs.getString("fname");
 					String lname = rs.getString("lname");
-					String jerseynumber = rs.getString("jerseynumber");
+					String jerseynumber = rs.getString("teamrole");
 					
 					
 					RosterEdit player = new RosterEdit();
