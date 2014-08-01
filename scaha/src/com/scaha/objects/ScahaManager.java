@@ -31,6 +31,7 @@ public class ScahaManager extends Person {
 	// Lets hold the playerID here.. and allow the super to hold the person...
 	//
 	protected int ID = -1;
+	protected Boolean ismanager = null;
 	
 	/**
 	 * A basic constructor that glues a person to a player given the relationship.
@@ -56,6 +57,14 @@ public class ScahaManager extends Person {
 	
 	public int getID() {
 		return ID;
+	} 
+	
+	public Boolean getIsmanager(){
+		return ismanager;
+	}
+	
+	public void setIsmanager(Boolean value){
+		ismanager = value;
 	}
 	
 	public void update(ScahaDatabase _db) throws SQLException {
@@ -98,7 +107,7 @@ public class ScahaManager extends Person {
 	public Integer getManagerteamid(Integer _profileid){
 		
 		ScahaDatabase db = (ScahaDatabase)ContextManager.getDatabase("ScahaDatabase");
-		
+		this.setIsmanager(false);
 		Integer teamid = 0;
 		//
 		// If this comes back true.. we have a good result set to play with and fill out the profile
@@ -112,6 +121,9 @@ public class ScahaManager extends Person {
 				while (rs.next()) {
 					teamid = rs.getInt("idteam");
 					LOGGER.info("We have results for teamid:" + teamid);
+					if (teamid>0){
+						this.setIsmanager(true);
+					}
 				}
 				rs.close();
 			}

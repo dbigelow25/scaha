@@ -80,7 +80,7 @@
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Manager Portal" 
 							url="managerportal.xhtml"
-							rendered="#{profileBean.isSuperUser()}" />
+							rendered="#{profileBean.getProfile().getScahamanager().getIsmanager()}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Approve Tourney Req" 
 							url="approvetournaments.xhtml"

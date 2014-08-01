@@ -570,7 +570,7 @@ public class managerBean implements Serializable, MailableObject {
 		try{
 			Vector<Integer> v = new Vector<Integer>();
 			v.add(this.getProfid());
-			db.getData("CALL scaha.getClubforPerson(?)", v);
+			db.getData("CALL scaha.getclubformanager(?)", v);
 		    ResultSet rs = db.getResultSet();
 			while (rs.next()) {
 				this.idclub = rs.getInt("idclub");
@@ -732,7 +732,7 @@ public class managerBean implements Serializable, MailableObject {
 					String playerid = rs.getString("idroster");
 					String fname = rs.getString("fname");
 					String lname = rs.getString("lname");
-					String jerseynumber = rs.getString("jerseynumber");
+					String jerseynumber = rs.getString("teamrole");
 					
 					
 					RosterEdit player = new RosterEdit();
@@ -821,7 +821,7 @@ public class managerBean implements Serializable, MailableObject {
   		    rs.close();
   		    db.cleanup();
   		    
-			to = "lahockeyfan2@yahoo.com";
+			//to = "lahockeyfan2@yahoo.com";
 		    this.setToMailAddress(to);
 		    this.setPreApprovedCC("");
 		    this.setSubject(this.tournamentname + " Added for " + this.teamname);
@@ -1123,7 +1123,7 @@ public class managerBean implements Serializable, MailableObject {
   		    rs.close();
   		    db.cleanup();
   		    
-			to = "lahockeyfan2@yahoo.com";
+			//to = "lahockeyfan2@yahoo.com";
 		    this.setToMailAddress(to);
 		    this.setPreApprovedCC("");
 		    this.setSubject("Tournament Game Added vs " + this.opponent);
@@ -1245,7 +1245,7 @@ public class managerBean implements Serializable, MailableObject {
   		    rs.close();
   		    db.cleanup();
   		    
-			to = "lahockeyfan2@yahoo.com";
+			//to = "lahockeyfan2@yahoo.com";
 		    this.setToMailAddress(to);
 		    this.setPreApprovedCC("");
 		    this.setSubject("Exhibition game Added vs " + this.opponent);
