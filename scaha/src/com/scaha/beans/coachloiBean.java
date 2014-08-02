@@ -1002,25 +1002,23 @@ public class coachloiBean implements Serializable, MailableObject {
 	    			}
 					rs.close();
 	    		    
-	    			//need to check if scaha registrar has received an email today
-	    		    //set value to 0 and then check if the current date is less than 8/1/2014 if it is then we want
-	    		    //to check if an email has been sent today, if = or > than 8/1/2014 then always send email to scaha
-	    		    //registrar
+					//scaha registrar only wants 1 a day for the entire a year
+					//previously it was until 8/1 so this is a change and why you will see commented out code.
 	    		    Integer emailsenttoday = 0;
-	    		    Date curdate = new Date();
+	    		    /*Date curdate = new Date();
 	    		    Calendar cal = Calendar.getInstance();
 	    		    cal.set(2014, Calendar.AUGUST, 1); //Year, month and day of month
 	    		    Date targetdate = cal.getTime();
-	    		    if (curdate.compareTo(targetdate)<0){
-	    		    	cs = db.prepareCall("CALL scaha.HasReceivedEmail()");
-		    		    rs = cs.executeQuery();
-		    		    if (rs != null){
-		    				while (rs.next()) {
-		    					emailsenttoday = rs.getInt("emailcount");
-		    				}
-		    			}
-		    		    rs.close();
-	    		    }
+	    		    if (curdate.compareTo(targetdate)<0){*/
+    		        cs = db.prepareCall("CALL scaha.HasReceivedEmail()");
+	    		    rs = cs.executeQuery();
+	    		    if (rs != null){
+	    				while (rs.next()) {
+	    					emailsenttoday = rs.getInt("emailcount");
+	    				}
+	    			}
+	    		    rs.close();
+	    		    //}
 	    		    
 	    			if (emailsenttoday.equals(0)){
 		    		    cs = db.prepareCall("CALL scaha.getSCAHARegistrarEmail()");
