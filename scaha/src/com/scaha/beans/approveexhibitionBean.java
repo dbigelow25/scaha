@@ -45,17 +45,25 @@ public class approveexhibitionBean implements Serializable, MailableObject {
 
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
-
+	
 	@ManagedProperty(value="#{scahaBean}")
     private ScahaBean scaha;
 	@ManagedProperty(value="#{profileBean}")
 	private ProfileBean pb;
 
+	private static String mail_exhibitiongame_body = Utils.getMailTemplateFromFile("/mail/exhibitiongame.html");
 	transient private ResultSet rs = null;
 	//lists for generated datamodels
 	private List<ExhibitionGame> exhibitiongames = null;
 	
-	
+	//properties for emailing approval/decline of exhibition games
+	private String gamedate=null;
+	private String gametime=null;
+	private String opponent=null;
+	private String tourneygamelocation=null;
+	private String exhibitiongamelocation=null;
+	private String teamname = null;	
+	private String status = null;
 	//datamodels for all of the lists on the page
 	private ExhibitionGameDataModel ExhibitionGameDataModel = null;
     
@@ -67,7 +75,7 @@ public class approveexhibitionBean implements Serializable, MailableObject {
 	private String to = null;
 	private String subject = null;
 	private String cc = null;
-	private static String mail_tournament_body = Utils.getMailTemplateFromFile("/mail/exhibitionapproval.html");
+	
 	private String todaysdate = null;
 		
 	
@@ -76,13 +84,69 @@ public class approveexhibitionBean implements Serializable, MailableObject {
 		
 		//Load Exhibition Games
         getExhibitionGames();
-        
+        setTodaysDate();
     }
 	
     public approveexhibitionBean() {  
         
     }  
     
+    public String getStatus(){
+    	return status;
+    }
+    
+    public void setStatus(String gdate){
+    	status=gdate;
+    }
+    
+    
+    public String getGamedate(){
+    	return gamedate;
+    }
+    
+    public void setGamedate(String gdate){
+    	gamedate=gdate;
+    }
+    
+    public String getGametime(){
+    	return gametime;
+    }
+    
+    public void setGametime(String gdate){
+    	gametime=gdate;
+    }
+    
+    public String getOpponent(){
+    	return opponent;
+    }
+    
+    public void setOpponent(String gdate){
+    	opponent=gdate;
+    }
+    
+    public String getTourneygamelocation(){
+    	return this.tourneygamelocation;
+    }
+    
+    public void setTourneygamelocation(String name){
+    	this.tourneygamelocation=name;
+    }
+    
+    public String getExhibitiongamelocation(){
+    	return this.exhibitiongamelocation;
+    }
+    
+    public void setExhibitiongamelocation(String name){
+    	this.exhibitiongamelocation=name;
+    }
+    
+    public String getTeamname(){
+    	return teamname;
+    }
+    
+    public void setTeamname(String name){
+    	teamname=name;
+    }
     
     
     public String getTodaysdate(){
@@ -106,20 +170,16 @@ public class approveexhibitionBean implements Serializable, MailableObject {
 		// TODO Auto-generated method stub
 		List<String> myTokens = new ArrayList<String>();
 		String result = "";
-		/*myTokens.add("REQUESTINGTEAM:" + this.teamname);
-		myTokens.add("REQUESTDATE:" + this.todaysdate);
-		myTokens.add("TOURNAMENTNAME:" + this.tournamentname);
-		myTokens.add("LEVELPLAYED:" + this.levelplayed);
-		myTokens.add("STARTDATE:" + this.startdate);
-		myTokens.add("ENDDATE:" + this.enddate);
-		myTokens.add("CONTACT:" + this.contact);
-		myTokens.add("PHONE:" + this.phone);
-		myTokens.add("SANCTION:" + this.sanction);
-		myTokens.add("LOCATION:" + this.location);
-		myTokens.add("WEBSITE:" + this.website);
-		myTokens.add("STATUS:" + "Pending");
-			*/
-		result = Utils.mergeTokens(approveexhibitionBean.mail_tournament_body,myTokens);
+		
+		myTokens.add("REQUESTINGTEAM: " + this.teamname);
+		myTokens.add("REQUESTDATE: " + this.todaysdate);
+		myTokens.add("GAMEDATE: " + this.gamedate);
+		myTokens.add("GAMETIME: " + this.gametime);
+		myTokens.add("OPPONENT: " + this.opponent);
+		myTokens.add("LOCATION: " + this.exhibitiongamelocation);
+		myTokens.add("STATUS: " + this.status);
+		
+		result = Utils.mergeTokens(approveexhibitionBean.mail_exhibitiongame_body,myTokens);
 		
 		return result;
 	}
@@ -269,6 +329,12 @@ public class approveexhibitionBean implements Serializable, MailableObject {
 		
 	public void approveExhibitionGame(ExhibitionGame tournament){
 		Integer gameid = tournament.getIdgame();
+		this.setTeamname(tournament.getRequestingteam());
+		this.setGamedate(tournament.getDate());
+		this.setGametime(tournament.getTime());
+		this.setOpponent(tournament.getOpponent());
+		this.setExhibitiongamelocation(tournament.getLocation());
+		this.setStatus("Approved");
 		
 		//need to add logic to set tournament as approved
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
@@ -283,10 +349,37 @@ public class approveexhibitionBean implements Serializable, MailableObject {
     		    cs.setInt("gameid", gameid);
     		    cs.executeQuery();
     		    db.commit();
-    			db.cleanup();
- 				
+    			
     		    FacesContext context = FacesContext.getCurrentInstance();  
                 context.addMessage(null, new FacesMessage("Successful", "You have approved the exhibition game"));
+                
+                //need to send email with approval
+                //need to add email to manager and scaha statistician
+    			//add statistician email
+                to = this.pb.getProfile().getUserName();
+    			
+                //add manageremail
+                cs = db.prepareCall("CALL scaha.getTeamManageremail(?)");
+    		    cs.setInt("gameid", gameid);
+    		    rs = cs.executeQuery();
+    		    if (rs != null){
+    				
+    				while (rs.next()) {
+    					to = to + ',' + rs.getString("altemail");;
+    				}
+    		    }
+      			rs.close();
+    		    
+      			
+    			to = "lahockeyfan2@yahoo.com";
+    		    this.setToMailAddress(to);
+    		    this.setPreApprovedCC("");
+    		    this.setSubject(tournament.getTournamentname() + " Approved for " + tournament.getRequestingteam());
+    		    
+    			SendMailSSL mail = new SendMailSSL(this);
+    			LOGGER.info("Finished creating mail object for " + tournament.getTournamentname() + " Approved for " + tournament.getRequestingteam());
+    			mail.sendMail();
+    			db.cleanup();
 			} else {
 		
 			}
@@ -308,6 +401,12 @@ public class approveexhibitionBean implements Serializable, MailableObject {
 	
 	public void declineExhibitionGame(ExhibitionGame tournament){
 		Integer gameid = tournament.getIdgame();
+		this.setTeamname(tournament.getRequestingteam());
+		this.setGamedate(tournament.getDate());
+		this.setGametime(tournament.getTime());
+		this.setOpponent(tournament.getOpponent());
+		this.setExhibitiongamelocation(tournament.getLocation());
+		this.setStatus("Declined");
 		
 		//need to add logic to set tournament as approved
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
@@ -322,10 +421,38 @@ public class approveexhibitionBean implements Serializable, MailableObject {
     		    cs.setInt("gameid", gameid);
     		    cs.executeQuery();
     		    db.commit();
-    			db.cleanup();
+    			
  				
     		    FacesContext context = FacesContext.getCurrentInstance();  
                 context.addMessage(null, new FacesMessage("Successful", "You have declined the exhibition game"));
+                
+                //need to send email with decline
+                //need to add email to manager and scaha statistician
+    			//add statistician email
+                to = this.pb.getProfile().getUserName();
+    			
+                //add manageremail
+                cs = db.prepareCall("CALL scaha.getTeamManageremail(?)");
+    		    cs.setInt("gameid", gameid);
+    		    rs = cs.executeQuery();
+    		    if (rs != null){
+    				
+    				while (rs.next()) {
+    					to = to + ',' + rs.getString("altemail");;
+    				}
+    		    }
+      			rs.close();
+    		    
+      			
+    			to = "lahockeyfan2@yahoo.com";
+    		    this.setToMailAddress(to);
+    		    this.setPreApprovedCC("");
+    		    this.setSubject(tournament.getTournamentname() + " Declined for " + tournament.getRequestingteam());
+    		    
+    			SendMailSSL mail = new SendMailSSL(this);
+    			LOGGER.info("Finished creating mail object for " + tournament.getTournamentname() + " Declined for " + tournament.getRequestingteam());
+    			mail.sendMail();
+    			db.cleanup();
 			} else {
 		
 			}
@@ -356,6 +483,14 @@ public class approveexhibitionBean implements Serializable, MailableObject {
 	public InternetAddress[] getPreApprovedICC() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private void setTodaysDate(){
+		//need to set todays date for email
+		DateFormat dateFormat = new SimpleDateFormat("MM/dd/YYYY");
+		Date date = new Date();
+		this.setTodaysdate(dateFormat.format(date).toString());
+		
 	}
 }
 

@@ -165,6 +165,10 @@ public class rosterBean implements Serializable{
     	}
 		
     	setDivisions(templist);
+    	this.setCoaches(null);
+    	this.setPlayers(null);
+    	this.selecteddivision=null;
+    	this.selectedteam=null;
     	
 	}
     
@@ -209,7 +213,9 @@ public class rosterBean implements Serializable{
     	}
 		
     	setTeams(templist);
-    	
+    	this.setCoaches(null);
+    	this.setPlayers(null);
+    	this.selectedteam=null;
 	}
     
 	public void onTeamChange(){

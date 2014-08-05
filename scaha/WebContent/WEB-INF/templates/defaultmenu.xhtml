@@ -83,6 +83,11 @@
 							url="adminportal.xhtml"
 							rendered="#{profileBean.isSuperUser()}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
+							value="Player History" 
+							url="viewplayerspenaltyhistory.xhtml"
+							rendered="#{profileBean.isSuperUser()}" />
+						
+						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Manager Portal" 
 							url="managerportal.xhtml"
 							rendered="#{profileBean.getProfile().getScahamanager().getIsmanager()}" />

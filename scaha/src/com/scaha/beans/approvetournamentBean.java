@@ -300,7 +300,7 @@ public class approvetournamentBean implements Serializable, MailableObject {
                 //add manageremail
     			to = to + ',' + tournament.getEmail();
       			
-    			to = "lahockeyfan2@yahoo.com";
+    			//to = "lahockeyfan2@yahoo.com";
     		    this.setToMailAddress(to);
     		    this.setPreApprovedCC("");
     		    this.setSubject(tournament.getTournamentname() + " Approved for " + tournament.getRequestingteam());
@@ -360,7 +360,7 @@ public class approvetournamentBean implements Serializable, MailableObject {
                 //add manageremail
     			to = to + ',' + tournament.getEmail();
       			
-    			to = "lahockeyfan2@yahoo.com";
+    			//to = "lahockeyfan2@yahoo.com";
     		    this.setToMailAddress(to);
     		    this.setPreApprovedCC("");
     		    this.setSubject(tournament.getTournamentname() + " Declined for " + tournament.getRequestingteam());
