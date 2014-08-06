@@ -1,0 +1,343 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui" 
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+<f:view contentType="text/html">
+
+
+<f:metadata>
+	<f:event type="preRenderView" listener="#{profileBean.verifyHasRoles('C-REG')}" />
+</f:metadata>
+
+<h:head>
+	 <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+     </f:facet>
+</h:head>
+<h:body >	
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+<ui:define name="content">
+	<p:layout id="mylayout" style="height:825px;">
+
+		<p:layoutUnit id="header" position="north" header = "SCAHA GAMESHEET INFORMATION">
+		    HERE IS WHERE ALL THE GAME INFORMATION GOES
+		</p:layoutUnit>
+ 		<p:layoutUnit id="left" position="west" size="250" resizable="false" closable="false" collapsible="false" header=" Home Team Roster" >
+			<h:form id="roster-home-form">		
+			<p:dataTable id="playersearchresult" var="rosteredit" value="#{managerBean.getRostereditdatamodel()}" selection="#{managerBean.selectedplayer}"  editable="true" editMode="cell">
+            	<p:column headerText="#" style="width:25px;">  
+	               <p:cellEditor>  
+	                   	<f:facet name="output"><h:outputText value="#{rosteredit.jerseynumber}" /></f:facet>  
+	                   	<f:facet name="input"><p:inputText id="jerseyInput" value="#{rosteredit.jerseynumber}" style="width:25px"/></f:facet>  
+	               </p:cellEditor>
+		        </p:column>  
+		        <p:column headerText="Last Name">  
+		        	<h:outputText value="#{rosteredit.getLastname()}" />  
+		        </p:column>
+		        <p:column headerText="First Name">  
+		        	<h:outputText value="#{rosteredit.getFirstname()}" />  
+		        </p:column>
+			          
+			 </p:dataTable>
+			 <p:dataTable id="coachesresult" var="rosteredit" value="#{managerBean.getRostercoachdatamodel()}" >
+			     <f:facet name="header">
+                  	<p:row>
+            			<p:column colspan="7">Coaching Information</p:column>
+       				</p:row>
+                 </f:facet>
+                <p:column style="width:25px;">  
+	                   	<h:outputText value="#{rosteredit.jerseynumber}" />  
+	            </p:column>  
+		        <p:column>  
+		        	<h:outputText value="#{rosteredit.getLastname()}" />  
+		        </p:column>
+		        <p:column>  
+		        	<h:outputText value="#{rosteredit.getFirstname()}" />  
+		        </p:column>
+			 </p:dataTable> 
+					<p:panelGrid columns="2">
+				     <f:facet name="header">
+    	              	<p:row>
+        	    			<p:column colspan="2">Home Manager</p:column>
+       					</p:row>
+                	 </f:facet>
+			 		<h:outputText value="Name" /> 
+			 		<h:outputText value="Joe Smith" /> 
+			 		<h:outputText value="Contact" /> 
+			 		<h:outputText value="xxx-xxx-xxxx" /> 
+				</p:panelGrid>			 
+
+			 </h:form>
+		</p:layoutUnit>
+		<p:layoutUnit id="right" position="east" size="250" resizable="false" closable="false" collapsible="false" header=" Visiting Team Roster" >
+			<h:form id="roster-away-form">		
+			<p:dataTable id="playersearchresult" var="rosteredit" value="#{managerBean.getRostereditdatamodel()}" selection="#{managerBean.selectedplayer}"  editable="true" editMode="cell">
+                
+            	<p:column headerText="#" style="width:25px;">  
+	               <p:cellEditor>  
+	                   	<f:facet name="output"><h:outputText value="#{rosteredit.jerseynumber}" /></f:facet>  
+	                   	<f:facet name="input"><p:inputText id="jerseyInput" value="#{rosteredit.jerseynumber}" style="width:25px"/></f:facet>  
+	               </p:cellEditor>
+		        </p:column>  
+		        <p:column headerText="Last Name">  
+		        	<h:outputText value="#{rosteredit.getLastname()}" />  
+		        </p:column>
+		        <p:column headerText="First Name">  
+		        	<h:outputText value="#{rosteredit.getFirstname()}" />  
+		        </p:column>
+			          
+			 </p:dataTable>
+			 <p:dataTable id="coachesresult" var="rosteredit" value="#{managerBean.getRostercoachdatamodel()}" >
+			     <f:facet name="header">
+                  	<p:row>
+            			<p:column colspan="7">Coaching Information</p:column>
+       				</p:row>
+                 </f:facet>
+                <p:column style="width:25px;">  
+	                   	<h:outputText value="#{rosteredit.jerseynumber}" />  
+	            </p:column>  
+		        <p:column>  
+		        	<h:outputText value="#{rosteredit.getLastname()}" />  
+		        </p:column>
+		        <p:column>  
+		        	<h:outputText value="#{rosteredit.getFirstname()}" />  
+		        </p:column>
+			 </p:dataTable> 
+				<p:panelGrid columns="2">
+				     <f:facet name="header">
+    	              	<p:row>
+        	    			<p:column colspan="2">Visiting Manager</p:column>
+       					</p:row>
+                	 </f:facet>
+			 		<h:outputText value="Name" /> 
+			 		<h:outputText value="Joe Smith" /> 
+			 		<h:outputText value="Contact" /> 
+			 		<h:outputText value="xxx-xxx-xxxx" /> 
+				</p:panelGrid>			 
+			 </h:form>
+		</p:layoutUnit>
+		<p:layoutUnit id="center" position="center"  header="Game Information"  >
+			<h:form id="scahagameform">
+				<p:panelGrid columns="2">
+				<p:panelGrid columns="2">
+			 		<p:graphicImage width="50" height="50" id="homelogo" value="#{clubBean.getClubLogoByParmId()}"  >
+						<f:param name="target" value="1" />
+					</p:graphicImage>
+					<h:outputText value="5" /> 
+				</p:panelGrid>
+				<p:panelGrid columns="2">
+   			 		<p:graphicImage width="50" height="50" id="vistorlogo" value="#{clubBean.getClubLogoByParmId()}"  >
+						<f:param name="target" value="2" />
+					</p:graphicImage>
+					<h:outputText value="5" /> 
+				</p:panelGrid>
+    			<p:dataTable id="homescoring" var="rosteredit" value="#{managerBean.getRostereditdatamodel()}" selection="#{managerBean.selectedplayer}">
+                 <f:facet name="header">
+                  	<p:row>
+            			<p:column colspan="7">Home Scoring Detail</p:column>
+       				</p:row>
+                 </f:facet>
+            	<p:column headerText="No" style="width:25px;">  
+		        </p:column>  
+		        <p:column headerText="S/P" style="width:30px;">  
+		        </p:column>
+		        <p:column headerText="Per" style="width:30px;">  
+		        </p:column>
+		        <p:column headerText="Time" style="width:30px;">  
+		        </p:column>
+		        <p:column headerText="G" style="width:30px;">  
+		        </p:column>
+		        <p:column headerText="A" style="width:30px;">  
+		        </p:column>
+		        <p:column headerText="A" style="width:30px;">  
+		        </p:column>
+			          
+			 </p:dataTable>
+    			<p:dataTable id="awayscoring" var="rosteredit" value="#{managerBean.getRostereditdatamodel()}" selection="#{managerBean.selectedplayer}">
+                 <f:facet name="header">
+                  	<p:row>
+            			<p:column colspan="7">Visitor Scoring Detail</p:column>
+       				</p:row>
+                 </f:facet>
+            	<p:column headerText="No" style="width:25px;">  
+		        </p:column>  
+		        <p:column headerText="S/P">  
+		        </p:column>
+		        <p:column headerText="Per">  
+		        </p:column>
+		        <p:column headerText="Time">  
+		        </p:column>
+		        <p:column headerText="G">  
+		        </p:column>
+		        <p:column headerText="A">  
+		        </p:column>
+		        <p:column headerText="A">  
+		        </p:column>
+			          
+			 </p:dataTable>
+   			</p:panelGrid>
+     			
+			<p:panelGrid columns="2" style="width:100%">
+			    <f:facet name="header">
+					GoalTenders Records        					
+				</f:facet>
+    			<p:panelGrid id = "home-goalie" style="width:100%">
+   				 <f:facet name="header">
+			        <p:row>
+            		<p:column>No#</p:column>
+            		<p:column>1st</p:column>
+            		<p:column>2nd</p:column>
+            		<p:column>3rd</p:column>
+            		<p:column>OT</p:column>
+            		<p:column styleClass="mtrxtotColumn" >Total</p:column>
+			        </p:row>
+ 
+    			</f:facet>
+    			<p:row>
+     		        <p:column rowspan="2">#33</p:column>
+       				<p:column >3</p:column>
+   					<p:column >3</p:column>
+   					<p:column >3</p:column>
+   					<p:column >3</p:column>
+   					<p:column styleClass="mtrxtotColumn">12</p:column>
+				</p:row>
+				<p:row>
+       				<p:column >5</p:column>
+   					<p:column >5</p:column>
+   					<p:column >5</p:column>
+   					<p:column >5</p:column>
+   					<p:column styleClass="mtrxtotColumn" >20</p:column>
+   				 </p:row>               
+    			<p:row>
+     		        <p:column rowspan="2">#01</p:column>
+       				<p:column >3</p:column>
+   					<p:column >3</p:column>
+   					<p:column >3</p:column>
+   					<p:column >3</p:column>
+   					<p:column styleClass="mtrxtotColumn" >12</p:column>
+   				 </p:row>               
+   				 <p:row>
+     		     	<p:column >5</p:column>
+   					<p:column >5</p:column>
+   					<p:column >5</p:column>
+   					<p:column >5</p:column>
+   					<p:column styleClass="mtrxtotColumn" >20</p:column>
+   				 </p:row>               
+   				 
+               </p:panelGrid>
+    			<p:panelGrid id = "visiting-goalie" style="width:100%">
+   				 <f:facet name="header">
+			        <p:row>
+            		<p:column>No#</p:column>
+            		<p:column>1st</p:column>
+            		<p:column>2nd</p:column>
+            		<p:column>3rd</p:column>
+            		<p:column>OT</p:column>
+            		<p:column styleClass="mtrxtotColumn">Total</p:column>
+			        </p:row>
+ 
+    			</f:facet>
+    			<p:row>
+     		        <p:column rowspan="2">#33</p:column>
+       				<p:column >3</p:column>
+   					<p:column >3</p:column>
+   					<p:column >3</p:column>
+   					<p:column >3</p:column>
+   					<p:column styleClass="mtrxtotColumn">12</p:column>
+				</p:row>
+				
+				<p:row>
+       				<p:column >5</p:column>
+   					<p:column >5</p:column>
+   					<p:column >5</p:column>
+   					<p:column >5</p:column>
+   					<p:column styleClass="mtrxtotColumn">20</p:column>
+   				 </p:row>               
+    			<p:row>
+     		        <p:column rowspan="2">#01</p:column>
+       				<p:column >3</p:column>
+   					<p:column >3</p:column>
+   					<p:column >3</p:column>
+   					<p:column >3</p:column>
+   					<p:column styleClass="mtrxtotColumn">12</p:column>
+   				 </p:row>               
+   				 <p:row>
+     		     	<p:column >5</p:column>
+   					<p:column >5</p:column>
+   					<p:column >5</p:column>
+   					<p:column >5</p:column>
+   					<p:column styleClass="mtrxtotColumn">20</p:column>
+   				 </p:row>               
+               </p:panelGrid>
+               </p:panelGrid>
+		     	<p:panel header="Summary Notes" width="100%">
+					<p:editor  id="editor" value="Notes Go here" rendered="true"/>
+				</p:panel>
+               
+    		</h:form>
+    	</p:layoutUnit>
+		<p:layoutUnit id="footer" position="south"  header = "PENALTY INFORMATION FOR GAME" >
+		
+		    <h:form id="scahagame-penalties">
+			  <div style="float:left;">
+			  	<p:dataTable id="homescoring" var="rosteredit" value="#{managerBean.getRostereditdatamodel()}" selection="#{managerBean.selectedplayer}">
+                 <f:facet name="header">
+                  	<p:row>
+            			<p:column colspan="7">PENALTIES - HOME</p:column>
+       				</p:row>
+                 </f:facet>
+            	<p:column headerText="PER">  
+		        </p:column>  
+		        <p:column headerText="PLYR">  
+		        </p:column>
+		        <p:column headerText="PENALTY" width="40%">  
+		        </p:column>
+		        <p:column headerText="Min" style="width:30px;">  
+		        </p:column>
+		        <p:column headerText="Off" style="width:30px;">  
+		        </p:column>
+		        <p:column headerText="Start" style="width:30px;">  
+		        </p:column>
+		        <p:column headerText="On" style="width:30px;">  
+		        </p:column>
+			 </p:dataTable>
+ 			</div>
+ 			<div style="float:right;">
+   			 <p:dataTable id="visit-pen" var="rosteredit" value="#{managerBean.getRostereditdatamodel()}" selection="#{managerBean.selectedplayer}">
+                 <f:facet name="header">
+                  	<p:row>
+            			<p:column colspan="7">PENALTIES - VISITOR</p:column>
+       				</p:row>
+                 </f:facet>
+            	<p:column headerText="PER">  
+		        </p:column>  
+		        <p:column headerText="PLYR">  
+		        </p:column>
+		        <p:column headerText="PENALTY" width="40%">  
+		        </p:column>
+		        <p:column headerText="Min" style="width:30px;">  
+		        </p:column>
+		        <p:column headerText="Off" style="width:30px;">  
+		        </p:column>
+		        <p:column headerText="Start" style="width:30px;">  
+		        </p:column>
+		        <p:column headerText="On" style="width:30px;">  
+		        </p:column>
+			 </p:dataTable>
+			 </div>
+   			</h:form>
+		</p:layoutUnit>
+		
+	</p:layout>
+</ui:define>
+</ui:composition>
+</h:body>
+</f:view>
+</html>

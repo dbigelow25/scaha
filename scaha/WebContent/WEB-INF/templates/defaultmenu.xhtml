@@ -64,7 +64,7 @@
 					<p:spacer width="2px" />
 					<p:commandButton value="Schedule"
 						actionListener="#{scoreboardBean.buildIt}"
-						ajax="false"
+						ajax="false"  tabindex="7"
 						/> 
 				</p:toolbarGroup>
 				<p:toolbarGroup align="left" rendered="#{not empty profileBean.getProfile()}">
@@ -227,7 +227,7 @@
 						value="#{profileBean.password}"></h:inputSecret>
 					<p:separator />
 					<p:commandButton value="login"
-						actionListener="#{profileBean.login}" ajax="false" />
+						actionListener="#{profileBean.login}" ajax="false" tabindex="1" />
 					<br />
 				</p:toolbarGroup>
 			</p:toolbar>

@@ -22,9 +22,6 @@ ul.ui-menu-child {
 .ui-layout-unit {
     	  border: none
 }
-.ui-panelgrid tr, .ui-panelgrid td {
-   	border: none;
-}
 
 .ui-datatable-odd {
 	background: none repeat scroll 0 0 #F2F5F9;
