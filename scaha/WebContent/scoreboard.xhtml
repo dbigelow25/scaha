@@ -84,7 +84,16 @@
 				<p:separator />
 			    <p:outputPanel id="testContainer2">
 				<div class="NewsTitle">Schedule:</div>	
-				<p:dataTable  id= "games" var="game" value="#{scoreboardBean.getLivegamelist()}">
+				 <p:contextMenu for="games">  
+       				 <p:menuitem value="Edit Game" update="" icon="ui-icon-edit" actionListener="#{scoreboardBean.editLiveGame()}"/>  
+    			</p:contextMenu>  
+				<p:dataTable  
+					id= "games" 
+					var="game" 
+					value="#{scoreboardBean.getLivegamelist()}"
+					selection="#{scoreboardBean.selectedlivegame}" 
+ 					selectionMode="single" 
+					>
   		          <p:column  styleClass="mtrxColumn" width="7%" headerText="Game #" style="font-size: 10px;">
    	    	         <h:outputText style="font-size: 10px;" value="#{game.getGameId()}" />
          	   	  </p:column >

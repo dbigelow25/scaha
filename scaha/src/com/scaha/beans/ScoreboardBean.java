@@ -8,14 +8,19 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.mail.internet.InternetAddress;
+
+import org.primefaces.event.SelectEvent;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.GeneralSeasonList;
+import com.scaha.objects.LiveGame;
 import com.scaha.objects.LiveGameList;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Participant;
@@ -25,7 +30,7 @@ import com.scaha.objects.Schedule;
 import com.scaha.objects.ScheduleList;
 
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class ScoreboardBean implements Serializable,  MailableObject {
 
 	@ManagedProperty(value="#{scahaBean}")
@@ -51,6 +56,8 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	private ParticipantList partlist = null;
 	private LiveGameList livegamelist = null;
 	
+	private LiveGame selectedlivegame = null;
+
 	//
 	// Class Level Variables
 	private static final long serialVersionUID = 2L;
@@ -434,8 +441,36 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		this.selectedpartid = selectedpartid;
 	}
 
+	/**
+	 * @return the selectedlivegame
+	 */
+	public LiveGame getSelectedlivegame() {
+		return selectedlivegame;
+	}
 
-	
+	/**
+	 * @param selectedlivegame the selectedlivegame to set
+	 */
+	public void setSelectedlivegame(LiveGame selectedlivegame) {
+		this.selectedlivegame = selectedlivegame;
+	}
+
+
+	 public void editLiveGame() {  
+		 
+		 this.selectedlivegame = this.getLivegamelist().getByKey(this.selectedlivegame.ID);
+		 
+		 LOGGER.info("!!!!! Real Selected Game is" + selectedlivegame);
+		  
+	     ExternalContext context = FacesContext.getCurrentInstance().getExternalContext(); 
+	     try {
+	    	 context.redirect("gamesheetcentral.xhtml");
+	     } catch (IOException e) {
+	    	 // TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	     
+	 } 
 
 	
 }

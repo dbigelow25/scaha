@@ -27,7 +27,7 @@
 	<p:layout id="mylayout" style="height:825px;">
 
 		<p:layoutUnit id="header" position="north" header = "SCAHA GAMESHEET INFORMATION">
-		    HERE IS WHERE ALL THE GAME INFORMATION GOES
+		    #{gamesheetBean.livegame.toString()}
 		</p:layoutUnit>
  		<p:layoutUnit id="left" position="west" size="250" resizable="false" closable="false" collapsible="false" header=" Home Team Roster" >
 			<h:form id="roster-home-form">		
@@ -127,14 +127,14 @@
 			<h:form id="scahagameform">
 				<p:panelGrid columns="2">
 				<p:panelGrid columns="2">
-			 		<p:graphicImage width="50" height="50" id="homelogo" value="#{clubBean.getClubLogoByParmId()}"  >
-						<f:param name="target" value="1" />
+			 		<p:graphicImage width="50" height="50" id="homelogo" value="#{scahaBean.getClubLogoByParmId()}"  >
+						<f:param name="target" value="#{gamesheetBean.getHomeClubId()}" />
 					</p:graphicImage>
 					<h:outputText value="5" /> 
 				</p:panelGrid>
 				<p:panelGrid columns="2">
-   			 		<p:graphicImage width="50" height="50" id="vistorlogo" value="#{clubBean.getClubLogoByParmId()}"  >
-						<f:param name="target" value="2" />
+   			 		<p:graphicImage width="50" height="50" id="vistorlogo" value="#{scahaBean.getClubLogoByParmId()}"  >
+						<f:param name="target" value="#{gamesheetBean.getAwayClubId()}" />
 					</p:graphicImage>
 					<h:outputText value="5" /> 
 				</p:panelGrid>

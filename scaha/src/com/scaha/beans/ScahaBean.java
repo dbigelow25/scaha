@@ -1,5 +1,10 @@
 package com.scaha.beans;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -14,7 +19,13 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
+import javax.imageio.ImageIO;
 import javax.mail.internet.InternetAddress;
+
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
@@ -695,5 +706,79 @@ public class ScahaBean implements Serializable,  MailableObject {
 	 */
 	public void setScahaLiveGameList(LiveGameList scahaLiveGameList) {
 		ScahaLiveGameList = scahaLiveGameList;
+	}
+	
+	public StreamedContent getClubLogoByParmId() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		String get = context.getExternalContext().getRequestParameterMap().get("target");
+	    if (get == null) {
+    		return new DefaultStreamedContent();
+	    } else if (get.length() == 0) {
+    		return new DefaultStreamedContent();
+	    }
+    	int id = Integer.parseInt(get);
+	    Club myclub  = this.findClubByID(id);
+	    if (myclub == null) {
+			LOGGER.info("*** Could not find club... for id LOGO ID IS (" + get + ") ");
+    		return new DefaultStreamedContent();
+	    }
+	    
+	    LOGGER.info("*** club is...("+ myclub + ") for id LOGO ID IS (" + get + ") ");
+		return getClubLogo(myclub);
+	}
+	
+	public StreamedContent getClubLogo(Club _cl) {
+		 
+		boolean bstream = true;
+		FacesContext context = FacesContext.getCurrentInstance();
+		
+		LOGGER.info("getClub Logo Club is" + _cl);
+		if (_cl == null) {
+			bstream = false;
+		} else 	if (_cl.getLogo() == null) {
+			LOGGER.info("getClub for " + _cl + " get Logo returned null...");
+			bstream = false;
+		} else if (_cl.getLogo().getMmObject() == null) {
+			LOGGER.info("getClub for " + _cl + " not mm object.. its null...");
+			bstream = false;
+		} else { 
+			
+			//
+			// we are good
+		}
+		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+		    // So, we're rendering the HTML. Return a stub StreamedContent so that it will generate right URL.
+			LOGGER.info("we are just rendering an empty response.. ");
+			return  new DefaultStreamedContent();
+			
+		} else {
+
+			if (bstream) {
+				LOGGER.info("We are going for " + _cl + "'s logo vis getSteamedContent()");
+				return _cl.getLogo().getStreamedContent();
+			}
+            
+			try {
+
+			LOGGER.info("we cannot stream.. so lets stream a default image.... ");
+
+			//
+			// ok.. through some text up as a defaul ..
+			//
+				BufferedImage bufferedImg = new BufferedImage(100, 25, BufferedImage.TYPE_INT_RGB);  
+	            Graphics2D g2 = bufferedImg.createGraphics();  
+	            g2.drawString("NO IMG", 10, 10);  
+	            ByteArrayOutputStream os = new ByteArrayOutputStream();  
+				ImageIO.write(bufferedImg, "png", os);
+				return new DefaultStreamedContent(new ByteArrayInputStream(os.toByteArray()), "image/png");
+
+            } catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}  
+            
+			return new DefaultStreamedContent();
+
+		}
 	}
 }
