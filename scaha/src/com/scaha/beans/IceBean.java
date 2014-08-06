@@ -18,6 +18,7 @@ import com.gbli.common.ReturnDataRow;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Profile;
+import com.scaha.objects.Role;
 
 @ManagedBean
 @RequestScoped
@@ -54,8 +55,12 @@ public class IceBean implements Serializable  {
 			}
 			rs.close();	
 			ps.close();
-			ps = db.prepareStatement("call scaha.getSlotReportByClub(?)");
-			ps.setInt(1,idclub);
+			if (pb.hasRoleList("S-ICE")) {
+				ps = db.prepareStatement("call scaha.getSlotReportMaster()");
+			} else {
+				ps = db.prepareStatement("call scaha.getSlotReportByClub(?)");
+				ps.setInt(1,idclub);
+			}
 			rs = ps.executeQuery();
 			setMydata(ReturnDataResultSet.NewReturnDataResultSetFactory(rs));
 			rs.close();

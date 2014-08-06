@@ -27,6 +27,9 @@
 			  We assembled this to allow your club to quickly review ice assignments and to make sure there 
 			  are no errors.
 			  <p/>
+			  Blue means open ice (for now) - It is not available until all schedules are complete. <br/>
+			  Red means that slot is tied to a double header game and has to stay put.
+			  <p/>
 			  Thanks - the iScaha Development Team
 			  
   		</div>
@@ -46,25 +49,21 @@
  			id="icemap" 
  			var="myrow" 
  			value="#{iceBean.mydata}" 
- 			rowStyleClass="#{myrow.get(3) == 0 ? 'openice' : null} #{myrow.get(13) == 'S' ? 'doubleice' : null} ">
+ 			rowStyleClass="#{myrow.get(4) == 0 ? 'openice' : null} #{myrow.get(14) == 'S' ? 'doubleice' : null} ">
 
+
+			<p:column  id="gamerow" width="7%" styleClass="mtrxColumn">
+           		<f:facet name="header">
+            		<h:outputText value="Club" />
+		        </f:facet>
+	            <h:outputText value="#{myrow.get(0)}" />  
+	             <p:draggable for="gamerow" revert="true" helper="clone"/>
+	        </p:column>  
 			<p:column styleClass="mtrxColumn">
            		<f:facet name="header">
             		<h:outputText value="A/S" />
 		        </f:facet>
-	            <h:outputText value="#{myrow.get(13)}" />  
-	        </p:column>  
- 			<p:column  width="5%" styleClass="mtrxColumn">
-           		<f:facet name="header">
-            		<h:outputText value="#{iceBean.mydata.rheader.get(0)}" />
-		        </f:facet>
-	            <h:outputText value="#{myrow.get(0)}" />  
-	        </p:column>  
- 			<p:column styleClass="mtrxColumn">
-           		<f:facet name="header">
-            		<h:outputText value="#{iceBean.mydata.rheader.get(1)}" />
-		        </f:facet>
-	            <h:outputText value="#{myrow.get(1)}" />  
+	            <h:outputText value="#{myrow.get(14)}" />  
 	        </p:column>  
  			<p:column styleClass="mtrxColumn">
            		<f:facet name="header">
@@ -72,13 +71,13 @@
 		        </f:facet>
 	            <h:outputText value="#{myrow.get(2)}" />  
 	        </p:column>  
-			<p:column styleClass="mtrxColumn">
+ 			<p:column styleClass="mtrxColumn">
            		<f:facet name="header">
             		<h:outputText value="#{iceBean.mydata.rheader.get(3)}" />
 		        </f:facet>
 	            <h:outputText value="#{myrow.get(3)}" />  
 	        </p:column>  
- 			<p:column styleClass="mtrxColumn">
+			<p:column styleClass="mtrxColumn">
            		<f:facet name="header">
             		<h:outputText value="#{iceBean.mydata.rheader.get(4)}" />
 		        </f:facet>
@@ -108,11 +107,17 @@
 		        </f:facet>
 	            <h:outputText value="#{myrow.get(8)}" />  
 	        </p:column>  
+ 			<p:column styleClass="mtrxColumn">
+           		<f:facet name="header">
+            		<h:outputText value="#{iceBean.mydata.rheader.get(9)}" />
+		        </f:facet>
+	            <h:outputText value="#{myrow.get(9)}" />  
+	        </p:column>  
   			<p:column styleClass="mtrxColumn">
            		<f:facet name="header">
-            		<h:outputText value="#{iceBean.mydata.rheader.get(10)}" />
+            		<h:outputText value="#{iceBean.mydata.rheader.get(11)}" />
 		        </f:facet>
-	            <h:outputText value="#{myrow.get(10)} - #{myrow.get(11)}" />  
+	            <h:outputText value="#{myrow.get(11)} - #{myrow.get(12)}" />  
 	        </p:column> 
        		<p:columnGroup type="footer">
             <p:row>
