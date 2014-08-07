@@ -374,7 +374,7 @@ public class approveexhibitionBean implements Serializable, MailableObject {
     			to = "lahockeyfan2@yahoo.com";
     		    this.setToMailAddress(to);
     		    this.setPreApprovedCC("");
-    		    this.setSubject(tournament.getTournamentname() + " Approved for " + tournament.getRequestingteam());
+    		    this.setSubject("Exhibition Game Approved for " + tournament.getRequestingteam());
     		    
     			SendMailSSL mail = new SendMailSSL(this);
     			LOGGER.info("Finished creating mail object for " + tournament.getTournamentname() + " Approved for " + tournament.getRequestingteam());
@@ -447,7 +447,7 @@ public class approveexhibitionBean implements Serializable, MailableObject {
     			to = "lahockeyfan2@yahoo.com";
     		    this.setToMailAddress(to);
     		    this.setPreApprovedCC("");
-    		    this.setSubject(tournament.getTournamentname() + " Declined for " + tournament.getRequestingteam());
+    		    this.setSubject("Exhibition Game Declined for " + tournament.getRequestingteam());
     		    
     			SendMailSSL mail = new SendMailSSL(this);
     			LOGGER.info("Finished creating mail object for " + tournament.getTournamentname() + " Declined for " + tournament.getRequestingteam());
