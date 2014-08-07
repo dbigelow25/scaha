@@ -52,6 +52,15 @@ public class LiveGameRosterSpotList extends ListDataModel<LiveGameRosterSpot> im
 		while (rs.next()) {
 			int i = 1;
 			LiveGameRosterSpot spot = new LiveGameRosterSpot(rs.getInt(i++),_pro);
+			spot.setIdRoster(spot.ID);
+			spot.setIdPerson(rs.getInt(i++));
+			spot.setRostertype(rs.getString(i++));
+			spot.setJerseynumber(rs.getString(i++));
+			spot.setLname(rs.getString(i++));
+			spot.setFname(rs.getString(i++));
+			spot.setMia((rs.getInt(i++) == 1 ? true : false));
+			spot.setTeam((_strHomeAway.equals("H") ? _lg.getHometeam() : _lg.getAwayteam()));
+			spot.setLivegame(_lg);
 			data.add(spot);
 			hm.put(spot.ID+"", spot);
 			LOGGER.info("Found a match " + spot);

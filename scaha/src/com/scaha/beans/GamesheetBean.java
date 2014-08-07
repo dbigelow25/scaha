@@ -1,6 +1,7 @@
 package com.scaha.beans;
 
 import java.io.Serializable;
+import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
@@ -182,7 +183,7 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		LiveGameRosterSpotList list = null;
 		try {
-			list = LiveGameRosterSpotList.NewListFactory(pb.getProfile(), db, this.getLivegame(), scaha.getScahaTeamList(), "HOME");
+			list = LiveGameRosterSpotList.NewListFactory(pb.getProfile(), db, this.getLivegame(), scaha.getScahaTeamList(), "H");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -198,7 +199,7 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		LiveGameRosterSpotList list = null;
 		try {
-			list = LiveGameRosterSpotList.NewListFactory(pb.getProfile(), db, this.getLivegame(), scaha.getScahaTeamList(), "AWAY");
+			list = LiveGameRosterSpotList.NewListFactory(pb.getProfile(), db, this.getLivegame(), scaha.getScahaTeamList(), "A");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -208,18 +209,51 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		
 		return list;
 	}
-	
+
+	/**
+	 * For the selected Player.. we need to toggle his MIA...
+	 * Then refresh the list
+	 */
+	public void toggleMIA(String _ha) {
+		
+		LiveGameRosterSpot spot = null;
+		
+		if (_ha.equals("H")) {
+			spot = this.getHometeam().getByKey(this.selectedhomerosterspot.ID);
+		} else {
+			spot = this.getAwayteam().getByKey(this.selectedawayrosterspot.ID);
+		}
+		
+		LOGGER.info("toggling MIA for " + spot);
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		try {
+			CallableStatement pc = db.prepareCall("call scaha.toggleMIA(?,?,?)");
+			pc.setInt(1,this.livegame.ID);
+			pc.setInt(2, spot.ID);
+			pc.setInt(3, (spot.isMia() ? 1 : 0));
+			pc.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		db.free();
+		
+		spot.setMia(!spot.isMia());
+//		if (_ha.equals("H")) {
+//			refreshHomeRoster();
+//		} else {
+//			refreshAwayRoster();
+//		}
+		
+	}
 	
 	public String getHomeClubId() {
-		LOGGER.info("HERE IS HOME TEAM:" + this.getLivegame().getHometeam());
-		LOGGER.info("HERE IS HOME Club:" + this.getLivegame().getHometeam().getTeamClub());
 		return this.getLivegame().getHometeam().getTeamClub().ID+"";
 	}
 
 	public String getAwayClubId() {
 		
-		LOGGER.info("HERE IS AWAY TEAM:" + this.getLivegame().getAwayteam());
-		LOGGER.info("HERE IS AWAY Club:" + this.getLivegame().getAwayteam().getTeamClub());
 		return this.getLivegame().getAwayteam().getTeamClub().ID+"";
 	}
 
