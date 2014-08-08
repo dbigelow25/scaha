@@ -1,8 +1,11 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
+import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.util.logging.Logger;
 
+import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
 public class Scoring extends ScahaObject implements Serializable {
@@ -30,6 +33,8 @@ public class Scoring extends ScahaObject implements Serializable {
 	public Scoring(int _id, Profile _pro, LiveGame _lg, ScahaTeam _tm) {
 		ID = _id;	
 		this.setProfile(_pro);
+		this.livegame = _lg;
+		this.team = _tm;
 	}
 
 	public Scoring(int _id, Profile _pro) {
@@ -77,6 +82,11 @@ public class Scoring extends ScahaObject implements Serializable {
 	 */
 	public void setLgrosterspotgoal(LiveGameRosterSpot lgrosterspotgoal) {
 		this.lgrosterspotgoal = lgrosterspotgoal;
+		if (this.lgrosterspotgoal != null) {
+			this.idrostergoal = lgrosterspotgoal.ID;
+		} else {
+			this.idrostergoal = 0;
+		}
 	}
 
 	/**
@@ -91,6 +101,11 @@ public class Scoring extends ScahaObject implements Serializable {
 	 */
 	public void setLgrosterspota1(LiveGameRosterSpot lgrosterspota1) {
 		this.lgrosterspota1 = lgrosterspota1;
+		if (this.lgrosterspota1 != null) {
+			this.idrostera1 = lgrosterspota1.ID;
+		} else {
+			this.idrostera1 = 0;
+		}
 	}
 
 	/**
@@ -105,6 +120,11 @@ public class Scoring extends ScahaObject implements Serializable {
 	 */
 	public void setLgrosterspota2(LiveGameRosterSpot lgrosterspota2) {
 		this.lgrosterspota2 = lgrosterspota2;
+		if (this.lgrosterspota2 != null) {
+			this.idrostera2 = lgrosterspota2.ID;
+		} else {
+			this.idrostera2 = 0;
+		}
 	}
 
 	/**
@@ -210,6 +230,62 @@ public class Scoring extends ScahaObject implements Serializable {
 	
 	public int getCount() {
 		return this.count;
+	}
+
+	public void delete(ScahaDatabase db) throws SQLException {
+
+		CallableStatement cs = db.prepareCall("call scaha.deleteScoring(?)");
+		cs.setInt(1, this.ID);
+		cs.execute();
+		cs.close();
+		
+	}
+	
+	public void update(ScahaDatabase db) throws SQLException {
+		// 
+		// is it an object that is not in the database yet..
+		//
+		
+		CallableStatement cs = db.prepareCall("call scaha.updateScoring(?,?,?,?,?,?,?,?,?,?,?)");
+		
+		LOGGER.info("HERE IS THE Starting Scoring ID:" + this.ID);
+
+		int i = 1;
+		cs.registerOutParameter(1, java.sql.Types.INTEGER);
+		LOGGER.info("A");
+		cs.setInt(i++, this.ID);
+		LOGGER.info("B");
+		cs.setInt(i++, this.getLivegame().ID);
+		LOGGER.info("C");
+		cs.setInt(i++, this.getTeam().ID);
+		LOGGER.info("D");
+		cs.setInt(i++, this.idrostergoal);
+		LOGGER.info("E");
+		cs.setInt(i++, this.idrostera1);
+		LOGGER.info("F");
+		cs.setInt(i++, this.idrostera2);
+		LOGGER.info("G");
+		cs.setString(i++, this.goaltype);
+		LOGGER.info("H");
+		cs.setInt(i++, this.period);
+		LOGGER.info("E");
+		cs.setString(i++, this.timescored);
+		LOGGER.info("J");
+		cs.setInt(i++,1);
+		LOGGER.info("K");
+		cs.setString(i++,null);
+		LOGGER.info("L");
+		cs.execute();
+		
+		//
+		// Update the new ID from the database...
+		//
+		this.ID = cs.getInt(1);
+		cs.close();
+
+		LOGGER.info("HERE IS THE new Scoring ID:" + this.ID);
+
+		
 	}
 
 

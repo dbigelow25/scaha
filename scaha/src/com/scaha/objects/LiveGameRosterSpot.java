@@ -173,5 +173,9 @@ public class LiveGameRosterSpot extends ScahaObject implements Serializable {
 				+ "]";
 	}
 	
+	public int getKey() {
+		return ID;
+	}
+	
 
 }
