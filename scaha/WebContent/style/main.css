@@ -23,6 +23,9 @@ ul.ui-menu-child {
     	  border: none
 }
 
+.ui-panelgrid td {
+   	border: none;
+}
 .ui-datatable-odd {
 	background: none repeat scroll 0 0 #F2F5F9;
 }
@@ -126,6 +129,16 @@ ul.ui-menu-child {
 .doubleice {
 	background-color:#FE2E2E;
 	color: #FFFFFF;
+}
+
+.rostermia {
+	background-color:#EEEEEE;
+	color: #FE2E2E;
+	text-decoration: line-through;
+}
+
+.alignTop {
+	vertical-align: top;
 }
 
 $( "#accordion" ).accordion({

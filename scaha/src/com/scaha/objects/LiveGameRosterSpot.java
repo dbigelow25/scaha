@@ -3,6 +3,7 @@ package com.scaha.objects;
 import java.io.Serializable;
 import java.util.logging.Logger;
 
+import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
 public class LiveGameRosterSpot extends ScahaObject implements Serializable {
@@ -18,6 +19,7 @@ public class LiveGameRosterSpot extends ScahaObject implements Serializable {
 	private String jerseynumber = "";
 	private String fname = "";
 	private String lname = "";
+	private String rostertype = "";
 	
 	public LiveGameRosterSpot(int _id, Profile _pro, Schedule _sc) {
 		ID = _id;		
@@ -145,5 +147,35 @@ public class LiveGameRosterSpot extends ScahaObject implements Serializable {
 		this.idPerson = idPerson;
 	}
 
+	/**
+	 * @return the rostertype
+	 */
+	public String getRostertype() {
+		return rostertype;
+	}
+
+	/**
+	 * @param rostertype the rostertype to set
+	 */
+	public void setRostertype(String rostertype) {
+		this.rostertype = rostertype;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "LiveGameRosterSpot [team=" + team + ", livegame=" + livegame
+				+ ", mia=" + mia + ", idRoster=" + idRoster + ", idPerson="
+				+ idPerson + ", jerseynumber=" + jerseynumber + ", fname="
+				+ fname + ", lname=" + lname + ", rostertype=" + rostertype
+				+ "]";
+	}
+	
+	public int getKey() {
+		return ID;
+	}
+	
 
 }
