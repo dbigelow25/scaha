@@ -25,16 +25,21 @@
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
 <ui:define name="content">
 	<h:form id="form1">	
-	<p:layout id="mylayout" style="height:825px;">
+	<p:layout id="mylayout" style="height:850px;">
 
 		<p:layoutUnit id="header" position="north" header = "SCAHA GAMESHEET INFORMATION">
 		    #{gamesheetBean.livegame.toString()}
 		</p:layoutUnit>
- 		<p:layoutUnit id="left" position="west" size="250" resizable="false" closable="false" collapsible="false" header="#{gamesheetBean.livegame.hometeam.getTeamname()}" >
+ 		<p:layoutUnit id="left" position="west" size="225" resizable="false" closable="false" collapsible="false" header="#{gamesheetBean.livegame.hometeam.getTeamname()}" >
 			 <p:contextMenu id="homemenu" for="homeroster">  
-    			 <p:menuitem value="Toggle MIA" update="homeside" icon="ui-icon-edit" actionListener="#{gamesheetBean.toggleMIA('H')}"/>  
+    			 <p:menuitem value="Toggle MIA" update=":form1:homeside" icon="ui-icon-edit" actionListener="#{gamesheetBean.toggleMIA('H')}"/>  
     		</p:contextMenu>  	
     		<p:panel id = "homeside">
+    		<!-- actionListener="" ajax="true" update="" -->
+			<p:commandButton id="homegoals" value="G"  ajax="true" update=":form1:homescoringtbl" oncomplete="PF('scorehomedlg').show();"/>
+			<p:commandButton id="homesaves" value="S"  oncomplete="PF('savesdlg').show();"/>
+			<p:commandButton id="homepens" value="P"  oncomplete="PF('pensdlg').show();"/>
+			
 			<p:dataTable 
 				id="homeroster" 
 				var="spot" 
@@ -79,11 +84,15 @@
 				</p:panelGrid>
 				</p:panel>
 		</p:layoutUnit>
-		<p:layoutUnit id="right" position="east" size="250" resizable="false" closable="false" collapsible="false" header="#{gamesheetBean.livegame.awayteam.getTeamname()}" >
+		<p:layoutUnit id="right" position="east" size="225" resizable="false" closable="false" collapsible="false" header="#{gamesheetBean.livegame.awayteam.getTeamname()}" >
 			 <p:contextMenu id="awaymenu" for="awayroster">  
     			 <p:menuitem value="Toggle MIA" update="awayside" icon="ui-icon-edit" actionListener="#{gamesheetBean.toggleMIA('A')}"/>  
     		</p:contextMenu>  	
 			<p:panel id = "awayside">
+				<!-- actionListener="" ajax="true" update="" -->
+				<p:commandButton id="awaygoals" value="G" ajax="true" update=":form1:awayscoringtbl" oncomplete="PF('scoreawaydlg').show();"/>
+				<p:commandButton id="awaysaves" value="S"  oncomplete="PF('savesdlg').show();"/>
+				<p:commandButton id="awaypens" value="P"  oncomplete="PF('pensdlg').show();"/>
 			<p:dataTable 
 				id="awayroster" 
 				var="spot" 
@@ -130,79 +139,65 @@
 		</p:layoutUnit>
 		<p:layoutUnit id="center" position="center"  header="Game Information"  >
 				<p:panelGrid columns="2">
-				<p:panelGrid columns="3">
+				<p:panelGrid columns="2">
 					<h:outputText value="#{gamesheetBean.livegame.hometeam.getTeamname()}" /> 
 					<h:outputText value="Home Score" />
-					<h:outputText value="Actions" />
 			 		<p:graphicImage width="50" height="50" id="homelogo" value="#{scahaBean.getClubLogoByParmId()}"  >
 						<f:param name="target" value="#{gamesheetBean.getHomeClubId()}" />
 					</p:graphicImage>
-					<h:outputText value="5" /> 
-					<p:panel>
-					<p:commandButton id="homegoals" value="goals"  oncomplete="PF('goalsdlg').show();"/><br/>
-					<p:commandButton id="homesaves" value="saves"  oncomplete="PF('savesdlg').show();"/><br/>
-					<p:commandButton id="homepens" value="penalties"  oncomplete="PF('pensdlg').show();"/>
-					</p:panel>
+					<h:outputText value="#{gamesheetBean.getDerivedHomeScore()}" /> 
 				</p:panelGrid>
-				<p:panelGrid columns="3">
+				<p:panelGrid columns="2">
 					<h:outputText value="#{gamesheetBean.livegame.awayteam.getTeamname()}" />
 					<h:outputText value="Away Score" />
-					<h:outputText value="Actions" />
    			 		<p:graphicImage width="50" height="50" id="vistorlogo" value="#{scahaBean.getClubLogoByParmId()}"  >
 						<f:param name="target" value="#{gamesheetBean.getAwayClubId()}" />
 					</p:graphicImage>
-					<h:outputText value="5" /> 
-					<p:panel>
-					<!-- actionListener="" ajax="true" update="" -->
-					<p:commandButton id="awaygoals" value="goals"  oncomplete="PF('goalsdlg').show();"/><br/>
-					<p:commandButton id="awaysaves" value="saves"  oncomplete="PF('savesdlg').show();"/><br/>
-					<p:commandButton id="awaypens" value="penalties"  oncomplete="PF('pensdlg').show();"/>
-					</p:panel>
+					<h:outputText value="#{gamesheetBean.getDerivedAwayScore()}" /> 
 				</p:panelGrid>
-    			<p:dataTable id="homescoring" var="rosteredit" value="#{managerBean.getRostereditdatamodel()}" selection="#{managerBean.selectedplayer}">
+    			<p:dataTable id="homescoring" var="score" value="#{gamesheetBean.getHomescoring()}">
                  <f:facet name="header">
                   	<p:row>
             			<p:column colspan="7">Home Scoring Detail</p:column>
        				</p:row>
                  </f:facet>
-            	<p:column headerText="No" style="width:25px;">  
+            	<p:column headerText="No" style="width:25px;"> 	<h:outputText value="#{score.count}" /> 
 		        </p:column>  
-		        <p:column headerText="S/P" style="width:30px;">  
+		        <p:column headerText="S/P" style="width:30px;"> <h:outputText value="#{score.goaltype}" /> 
 		        </p:column>
-		        <p:column headerText="Per" style="width:30px;">  
+		        <p:column headerText="Per" style="width:30px;">  <h:outputText value="#{score.period}" /> 
 		        </p:column>
-		        <p:column headerText="Time" style="width:30px;">  
+		        <p:column headerText="Time" style="width:30px;"> <h:outputText value="#{score.timescored}" />  
 		        </p:column>
-		        <p:column headerText="G" style="width:30px;">  
+		        <p:column headerText="G" style="width:30px;"> <h:outputText value="#{score.lgrosterspotgoal.jerseynumber}" />   
 		        </p:column>
-		        <p:column headerText="A" style="width:30px;">  
+		        <p:column headerText="A" style="width:30px;">   <h:outputText value="#{score.lgrosterspota1.jerseynumber}" />  
 		        </p:column>
-		        <p:column headerText="A" style="width:30px;">  
+		        <p:column headerText="A" style="width:30px;">   <h:outputText value="#{score.lgrosterspota2.jerseynumber}" />  
 		        </p:column>
 			          
 			 </p:dataTable>
-    			<p:dataTable id="awayscoring" var="rosteredit" value="#{managerBean.getRostereditdatamodel()}" selection="#{managerBean.selectedplayer}">
+    			<p:dataTable id="awayscoring" var="score" value="#{gamesheetBean.getAwayscoring()}">
                  <f:facet name="header">
                   	<p:row>
-            			<p:column colspan="7">Visitor Scoring Detail</p:column>
+            			<p:column colspan="7">Home Scoring Detail</p:column>
        				</p:row>
                  </f:facet>
-            	<p:column headerText="No" style="width:25px;">  
+            	<p:column headerText="No" style="width:25px;"> 	<h:outputText value="#{score.count}" /> 
 		        </p:column>  
-		        <p:column headerText="S/P">  
+		        <p:column headerText="S/P" style="width:30px;"> <h:outputText value="#{score.goaltype}" /> 
 		        </p:column>
-		        <p:column headerText="Per">  
+		        <p:column headerText="Per" style="width:30px;">  <h:outputText value="#{score.period}" /> 
 		        </p:column>
-		        <p:column headerText="Time">  
+		        <p:column headerText="Time" style="width:30px;"> <h:outputText value="#{score.timescored}" />  
 		        </p:column>
-		        <p:column headerText="G">  
+		        <p:column headerText="G" style="width:30px;"> <h:outputText value="#{score.lgrosterspotgoal.jerseynumber}" />   
 		        </p:column>
-		        <p:column headerText="A">  
+		        <p:column headerText="A" style="width:30px;">   <h:outputText value="#{score.lgrosterspota1.jerseynumber}" />  
 		        </p:column>
-		        <p:column headerText="A">  
+		        <p:column headerText="A" style="width:30px;">   <h:outputText value="#{score.lgrosterspota2.jerseynumber}" />  
 		        </p:column>
-			          
-			 </p:dataTable>
+		        </p:dataTable>
    			</p:panelGrid>
      			
 			<p:panelGrid columns="2" style="width:100%">
@@ -353,8 +348,85 @@
 		
 	</p:layout>
 	
-	<p:dialog id="goalsdialog"  header="Goals" widgetVar="goalsdlg" modal="false" >
-		<div align="center"><p:commandButton value="Close" oncomplete="goalsdlg.hide()" /></div>    
+	<p:dialog id="scorehomedialog"  header="Goal Management for Home Team" widgetVar="scorehomedlg" modal="false" width="750" height="400">
+		
+				<p:dataTable 
+				id="homescoringtbl" 
+				var="score" 
+				value="#{gamesheetBean.getHomescoring()}"
+				editable="true" 
+				selectionMode="single" 
+				selection="#{gamesheetBean.selectedhomescore}" 
+				>
+                 <f:facet name="header">
+                  	<p:row>
+            			<p:column colspan="7">Home Scoring Detail</p:column>
+       				</p:row>
+                 </f:facet>
+                 
+                <p:ajax event="rowEdit" listener="#{gamesheetBean.onHomeScoreEdit}"  update=":form1:homescoringtbl" /> 
+	   			<p:ajax event="rowEditCancel" listener="#{gamesheetBean.onHomeScoreCancel}" update=":form1:homescoringtbl" /> 
+	   	 	<p:column headerText="Edit" style="width:5%">
+            	<p:rowEditor /> 
+         	</p:column> 
+            	<p:column headerText="No" style="width:25px;"> 	<h:outputText value="#{score.count}" /> 
+		        </p:column>  
+		        <p:column headerText="S/P" style="width:30px;"> <h:outputText value="#{score.goaltype}" /> 
+		        </p:column>
+		        <p:column headerText="Per" style="width:30px;">  <h:outputText value="#{score.period}" /> 
+		        </p:column>
+		        <p:column headerText="Time" style="width:30px;"> <h:outputText value="#{score.timescored}" />  
+		        </p:column>
+		        <p:column headerText="G" style="width:30px;"> <h:outputText value="#{score.lgrosterspotgoal.jerseynumber} - #{score.lgrosterspotgoal.lname}" />   
+		        </p:column>
+		        <p:column headerText="A" style="width:30px;">   <h:outputText value="#{score.lgrosterspota1.jerseynumber} - #{score.lgrosterspota1.lname}" />  
+		        </p:column>
+		        <p:column headerText="A" style="width:30px;">   <h:outputText value="#{score.lgrosterspota2.jerseynumber} - #{score.lgrosterspota2.lname}" />  
+		        </p:column>
+			          
+			 </p:dataTable>
+	
+		<div align="center"><p:commandButton value="Close" oncomplete="scorehomedlg.hide()" /></div>    
+	</p:dialog>
+	
+	<p:dialog id="scoreawaydialog"  header="Goal Management for Away Team" widgetVar="scoreawaydlg" modal="false" width="750" height="400">
+			<p:dataTable 
+				id="awayscoringtbl" 
+				var="score" 
+				value="#{gamesheetBean.getAwayscoring()}"
+				selectionMode="single" 
+				selection="#{gamesheetBean.selectedawayscore}" 
+				>
+                 <f:facet name="header">
+                  	<p:row>
+            			<p:column colspan="7">Away Scoring Detail</p:column>
+       				</p:row>
+                 </f:facet>
+             
+                <p:ajax event="rowEdit" listener="#{gamesheetBean.onAwayScoreEdit}"  update=":form1:awayscoringtbl" /> 
+	   			<p:ajax event="rowEditCancel" listener="#{gamesheetBean.onAwayScoreCancel}" update=":form1:awayscoringtbl" /> 
+	   	 		<p:column headerText="Edit" style="width:5%">
+	            	<p:rowEditor /> 
+    	     	</p:column> 
+    	 		<p:column headerText="Remove" style="width:5%">
+    	     	</p:column> 
+            	<p:column headerText="No" style="width:25px;"> 	<h:outputText value="#{score.count}" /> 
+		        </p:column>  
+		        <p:column headerText="S/P" style="width:30px;"> <h:outputText value="#{score.goaltype}" /> 
+		        </p:column>
+		        <p:column headerText="Per" style="width:30px;">  <h:outputText value="#{score.period}" /> 
+		        </p:column>
+		        <p:column headerText="Time" style="width:30px;"> <h:outputText value="#{score.timescored}" />  
+		        </p:column>
+		        <p:column headerText="G" style="width:30px;"> <h:outputText value="#{score.lgrosterspotgoal.jerseynumber} - #{score.lgrosterspotgoal.lname}" />   
+		        </p:column>
+		        <p:column headerText="A" style="width:30px;">   <h:outputText value="#{score.lgrosterspota1.jerseynumber} - #{score.lgrosterspota1.lname}" />  
+		        </p:column>
+		        <p:column headerText="A" style="width:30px;">   <h:outputText value="#{score.lgrosterspota2.jerseynumber} - #{score.lgrosterspota2.lname}" />  
+		        </p:column>
+			 </p:dataTable>
+		
+		<div align="center"><p:commandButton value="Close" oncomplete="scoreawaydlg.hide()" /></div>    
 	</p:dialog>
 	<p:dialog id="savesdialog"  header="Shots and Saves" widgetVar="savesdlg" modal="false" >
 		<div align="center"><p:commandButton value="Close" oncomplete="savesdlg.hide()" /></div>    

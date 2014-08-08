@@ -6,17 +6,26 @@ import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.mail.internet.InternetAddress;
+
+import org.primefaces.event.RowEditEvent;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
+import com.scaha.objects.Division;
 import com.scaha.objects.LiveGame;
 import com.scaha.objects.LiveGameRosterSpot;
 import com.scaha.objects.LiveGameRosterSpotList;
 import com.scaha.objects.MailableObject;
+import com.scaha.objects.ScahaTeam;
+import com.scaha.objects.Scoring;
+import com.scaha.objects.ScoringList;
+import com.scaha.objects.SkillLevel;
 
 @ManagedBean
 @ViewScoped
@@ -34,12 +43,20 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	private LiveGame livegame = null;
 	private LiveGameRosterSpot selectedhomerosterspot;	
 	private LiveGameRosterSpot selectedawayrosterspot;	
-
+	
+	private Scoring selectedhomescore = null;
+	private Scoring selectedawayscore = null;
+	
 	private LiveGameRosterSpotList awayteam = null;
 	private LiveGameRosterSpotList hometeam = null;
 	
+	private ScoringList awayscoring = null;
+	private ScoringList homescoring = null;
+	
 	//
 	// Class Level Variables
+	//
+	
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	
@@ -57,14 +74,13 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		 LOGGER.info("/// here is selected live game.." + this.getLivegame());
 		 this.setHometeam(this.refreshHomeRoster());
 		 this.setAwayteam(this.refreshAwayRoster());
-		 
+		 this.setAwayscoring(this.refreshAwayScoring());
+		 this.setHomescoring(this.refreshHomeScoring());
 	
 		 LOGGER.info(" *************** FINISH :POST INIT FOR GAMESHEET BEAN *****************");
 	 }
 	
 	
-	
-
 	/**
 	 * @return the selectedhomerosterspot
 	 */
@@ -107,6 +123,50 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		this.awayteam = awayteam;
 	}
 
+	public void onHomeScoreCancel(RowEditEvent event) { 
+		Scoring score = (Scoring) event.getObject();
+		LOGGER.info("Cencelling Edited Score:" + score);
+	}
+
+	public void onHomeScoreEdit(RowEditEvent event) { 
+	
+		//
+		// lets assemble the object .. we can only change three things right now..
+		// 1) Team Name
+		//
+		// These changs below can only happen when there are NO Players assigned to the team
+		
+		// 2) Team Division
+		// 3) Team Skill Level
+		
+		Scoring score = (Scoring) event.getObject();
+		LOGGER.info("HERE IS MY Edited Score:" + score);
+		
+		
+	} 
+	       
+	public void onAwayScoreCancel(RowEditEvent event) { 
+		Scoring score = (Scoring) event.getObject();
+		LOGGER.info("Cencelling Edited Score:" + score);
+	}
+	
+	public void onAwayScoreEdit(RowEditEvent event) { 
+		
+		//
+		// lets assemble the object .. we can only change three things right now..
+		// 1) Team Name
+		//
+		// These changs below can only happen when there are NO Players assigned to the team
+		
+		// 2) Team Division
+		// 3) Team Skill Level
+		
+		Scoring score = (Scoring) event.getObject();
+		LOGGER.info("HERE IS MY Edited Score:" + score);
+		
+		
+	} 
+	       
 	/**
 	 * @return the hometeam
 	 */
@@ -210,6 +270,38 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		return list;
 	}
 
+
+
+	private ScoringList refreshHomeScoring() {
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		ScoringList list = null;
+		try {
+			list = ScoringList.NewListFactory(pb.getProfile(), db, this.getLivegame(), this.getLivegame().getHometeam(), this.getHometeam());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		db.free();
+		
+		return list;
+	}
+
+	private ScoringList refreshAwayScoring() {
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		ScoringList list = null;
+		try {
+			list = ScoringList.NewListFactory(pb.getProfile(), db, this.getLivegame(), this.getLivegame().getAwayteam(), this.getAwayteam());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		db.free();
+		
+		return list;
+	}
 	/**
 	 * For the selected Player.. we need to toggle his MIA...
 	 * Then refresh the list
@@ -291,6 +383,71 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	public InternetAddress[] getPreApprovedICC() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/**
+	 * @return the awayscoring
+	 */
+	public ScoringList getAwayscoring() {
+		return awayscoring;
+	}
+
+	/**
+	 * @param awayscoring the awayscoring to set
+	 */
+	public void setAwayscoring(ScoringList awayscoring) {
+		this.awayscoring = awayscoring;
+	}
+
+	/**
+	 * @return the homescoring
+	 */
+	public ScoringList getHomescoring() {
+		return homescoring;
+	}
+	
+	public int getDerivedHomeScore() {
+		return this.homescoring.getRowCount();
+	}
+
+	public int getDerivedAwayScore() {
+		return this.awayscoring.getRowCount();
+	}
+
+	
+	/**
+	 * @param homescoring the homescoring to set
+	 */
+	public void setHomescoring(ScoringList homescoring) {
+		this.homescoring = homescoring;
+	}
+
+	/**
+	 * @return the selectedhomescore
+	 */
+	public Scoring getSelectedhomescore() {
+		return selectedhomescore;
+	}
+
+	/**
+	 * @param selectedhomescore the selectedhomescore to set
+	 */
+	public void setSelectedhomescore(Scoring selectedhomescore) {
+		this.selectedhomescore = selectedhomescore;
+	}
+
+	/**
+	 * @return the selectedawayscore
+	 */
+	public Scoring getSelectedawayscore() {
+		return selectedawayscore;
+	}
+
+	/**
+	 * @param selectedawayscore the selectedawayscore to set
+	 */
+	public void setSelectedawayscore(Scoring selectedawayscore) {
+		this.selectedawayscore = selectedawayscore;
 	}
 	
 	

@@ -29,8 +29,7 @@
            			<f:selectItems value="#{scoreboardBean.getSeasonlist()}"  var="season"  itemLabel="#{season.getDescription()}" itemValue="#{season.getKey()}"/>
            			<p:ajax listener="#{scoreboardBean.onSeasonChange()}" process="@this" update="myschedules myteams testContainer testContainer2 "/>
        			</p:selectOneMenu>
-       							
- 				<p:selectOneMenu styleClass="ddlistbox"  id="myschedules" value="#{scoreboardBean.selectedscheduleid}" >
+  				<p:selectOneMenu styleClass="ddlistbox"  id="myschedules" value="#{scoreboardBean.selectedscheduleid}" >
          			<f:selectItem style="font-size:10pt;" itemLabel="Select a Schedule..." itemValue="0" />
           			<f:selectItems  value="#{scoreboardBean.getSchedulelist()}" var="schedule" itemLabel="#{schedule.getDescription()}" itemValue="#{schedule.getKey()}" />
           			<p:ajax listener="#{scoreboardBean.onScheduleChange()}" process="@this" update="@this myteams testContainer testContainer2"/>
