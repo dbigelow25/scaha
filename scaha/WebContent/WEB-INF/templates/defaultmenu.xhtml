@@ -58,6 +58,8 @@
 							url="roster.xhtml" />
 						<p:menuitem style="font-size: 10pt;"
 							value="Scholar Athlete Program" url="scholarathlete.xhtml" />
+						<p:menuitem style="font-size: 10pt;" value="Select Camp"
+							url="selectcamp.xhtml" />
 						<p:menuitem style="font-size: 10pt;" value="Suspensions"
 							url="suspensions.xhtml" />	
 					</p:menuButton>
@@ -82,11 +84,12 @@
 							value="Admin Portal" 
 							url="adminportal.xhtml"
 							rendered="#{profileBean.isSuperUser()}" />
+						<p:separator />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Player History" 
 							url="viewplayerspenaltyhistory.xhtml"
 							rendered="#{profileBean.isSuperUser()}" />
-						
+						<p:separator />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Manager Portal" 
 							url="managerportal.xhtml"
@@ -99,6 +102,7 @@
 							value="Approve Exhibition Req" 
 							url="approveexhibitiongames.xhtml"
 							rendered="#{profileBean.isSuperUser()}" />
+						<p:separator />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Review Club Ice"
 							url="clubice.xhtml"
@@ -135,6 +139,7 @@
 							value="View Releases Status"
 							url="clubviewrelease.xhtml"
 							rendered="#{profileBean.hasRoleList('C-REG')}" />
+						<p:separator />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="View Safesport List"
 							url="registrarviewsafesport.xhtml"

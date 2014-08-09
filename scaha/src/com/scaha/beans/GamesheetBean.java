@@ -3,14 +3,12 @@ package com.scaha.beans;
 import java.io.Serializable;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.mail.internet.InternetAddress;
@@ -54,18 +52,6 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	
 	private ScoringList awayscoring = null;
 	private ScoringList homescoring = null;
-	
-	private List<LiveGameRosterSpot> scoringpicklist = null;
-	private ScahaTeam scoringteam = null;
-	private LiveGameRosterSpotList scoringroster = null;
-	private int selectedgoalroseterid = 0;
-	private int selecteda1roseterid = 0;
-	private int selecteda2roseterid = 0;
-	
-	private int goalperiod = 0;
-	private String goaltype = null;
-	private String goalmin = null;
-	private String goalsec = null;
 	
 	//
 	// Class Level Variables
@@ -252,7 +238,6 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		this.livegame = livegame;
 	}
 
-	@SuppressWarnings("unchecked")
 	public LiveGameRosterSpotList refreshHomeRoster() {
 		
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
@@ -316,23 +301,6 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		db.free();
 		
 		return list;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void setScoringData(String _ha, Scoring _sc) {
-		LOGGER.info("Setting Scoring Picklist to" + _ha);
-		if (_ha.equals("H")) { 
-			this.scoringteam = this.livegame.getHometeam();
-			this.scoringroster = this.getHometeam();
-			this.scoringpicklist = (List<LiveGameRosterSpot>) this.getHometeam().getWrappedData();
-		} else {
-			this.scoringteam = this.livegame.getAwayteam();
-			this.scoringroster = this.getAwayteam();
-			this.scoringpicklist = (List<LiveGameRosterSpot>) this.getAwayteam().getWrappedData();
-		}
-		
-		
-		
 	}
 	/**
 	 * For the selected Player.. we need to toggle his MIA...
@@ -481,197 +449,9 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	public void setSelectedawayscore(Scoring selectedawayscore) {
 		this.selectedawayscore = selectedawayscore;
 	}
-
 	
-	public void deleteGoal(String _ha) {
-		
-		Scoring sc = null;
-		if (_ha.equals("H")) {
-			sc = this.getHomescoring().getByKey(selectedhomescore.ID);
-		} else {
-			sc = this.getAwayscoring().getByKey(selectedawayscore.ID);
-		}
-		LOGGER.info("we need to delete: " + sc);
-		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-		
-		try {
-			sc.delete(db);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		db.free();
-		this.setAwayscoring(this.refreshAwayScoring());
-		this.setHomescoring(this.refreshHomeScoring());
-		
-	}
 	
-	public void saveGoal() {
-		
-		LOGGER.info("HERE IS WHERE WE save a GOAL for " + this.scoringteam.getTeamname());
-		
-		Scoring score = new Scoring(0,pb.getProfile(),this.livegame,this.scoringteam);
-		score.setPeriod(this.getGoalperiod());
-		score.setGoaltype(this.getGoaltype());
-		score.setTimescored("00:" + this.getGoalmin() + ":" + this.getGoalsec());
-		score.setLgrosterspotgoal(this.scoringroster.getByKey(this.selectedgoalroseterid));
-		score.setLgrosterspota1(this.scoringroster.getByKey(this.selecteda1roseterid));
-		score.setLgrosterspota2(this.scoringroster.getByKey(this.selecteda2roseterid));
-		
-		LOGGER.info("creating score for " + score);
-		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-		
-		try {
-			score.update(db);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		db.free();
-		this.setAwayscoring(this.refreshAwayScoring());
-		this.setHomescoring(this.refreshHomeScoring());
-		
-	}
-
-	/**
-	 * @return the goalperiod
-	 */
-	public int getGoalperiod() {
-		return goalperiod;
-	}
-
-	/**
-	 * @param goalperiod the goalperiod to set
-	 */
-	public void setGoalperiod(int goalperiod) {
-		this.goalperiod = goalperiod;
-	}
-
-	/**
-	 * @return the goaltype
-	 */
-	public String getGoaltype() {
-		return goaltype;
-	}
-
-	/**
-	 * @param goaltype the goaltype to set
-	 */
-	public void setGoaltype(String goaltype) {
-		this.goaltype = goaltype;
-	}
-
-	/**
-	 * @return the goalmin
-	 */
-	public String getGoalmin() {
-		return goalmin;
-	}
-
-	/**
-	 * @param goalmin the goalmin to set
-	 */
-	public void setGoalmin(String goalmin) {
-		this.goalmin = goalmin;
-	}
-
-	/**
-	 * @return the goalsec
-	 */
-	public String getGoalsec() {
-		return goalsec;
-	}
-
-	/**
-	 * @param goalsec the goalsec to set
-	 */
-	public void setGoalsec(String goalsec) {
-		this.goalsec = goalsec;
-	}
-
-	/**
-	 * @return the selectedgoalroseterid
-	 */
-	public int getSelectedgoalroseterid() {
-		return selectedgoalroseterid;
-	}
-
-	/**
-	 * @param selectedgoalroseterid the selectedgoalroseterid to set
-	 */
-	public void setSelectedgoalroseterid(int selectedgoalroseterid) {
-		this.selectedgoalroseterid = selectedgoalroseterid;
-	}
-
-	/**
-	 * @return the selecteda1roseterid
-	 */
-	public int getSelecteda1roseterid() {
-		return selecteda1roseterid;
-	}
-
-	/**
-	 * @param selecteda1roseterid the selecteda1roseterid to set
-	 */
-	public void setSelecteda1roseterid(int selecteda1roseterid) {
-		this.selecteda1roseterid = selecteda1roseterid;
-	}
-
-	/**
-	 * @return the selecteda2roseterid
-	 */
-	public int getSelecteda2roseterid() {
-		return selecteda2roseterid;
-	}
-
-	/**
-	 * @param selecteda2roseterid the selecteda2roseterid to set
-	 */
-	public void setSelecteda2roseterid(int selecteda2roseterid) {
-		this.selecteda2roseterid = selecteda2roseterid;
-	}
-
-	/**
-	 * @return the scoringpicklist
-	 */
-	public List<LiveGameRosterSpot> getScoringpicklist() {
-		return scoringpicklist;
-	}
-
-	/**
-	 * @param scoringpicklist the scoringpicklist to set
-	 */
-	public void setScoringpicklist(List<LiveGameRosterSpot> scoringpicklist) {
-		this.scoringpicklist = scoringpicklist;
-	}
-
-	/**
-	 * @return the scoringteam
-	 */
-	public ScahaTeam getScoringteam() {
-		return scoringteam;
-	}
-
-	/**
-	 * @param scoringteam the scoringteam to set
-	 */
-	public void setScoringteam(ScahaTeam scoringteam) {
-		this.scoringteam = scoringteam;
-	}
-
-	/**
-	 * @return the scoringroster
-	 */
-	public LiveGameRosterSpotList getScoringroster() {
-		return scoringroster;
-	}
-
-	/**
-	 * @param scoringroster the scoringroster to set
-	 */
-	public void setScoringroster(LiveGameRosterSpotList scoringroster) {
-		this.scoringroster = scoringroster;
-	}
+	
 
 	
 }
