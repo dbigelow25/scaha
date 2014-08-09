@@ -52,39 +52,10 @@ public class Player extends ScahaObject implements Serializable {
 	private String email1 = null;
 	private String email2 = null;
 	private String notes = null;
-	private String division = null;
-	private String teamid = null;
-	private String rostertype = null;
 	
 	public Player (){ 
 		
 	}
-	
-	public String getRostertype(){
-		return rostertype;
-	}
-	
-	public void setRostertype(String value){
-		rostertype=value;
-	}
-	
-	
-	public String getDivision(){
-		return division;
-	}
-	
-	public void setDivision(String value){
-		division=value;
-	}
-	
-	public String getTeamid(){
-		return teamid;
-	}
-	
-	public void setTeamid(String value){
-		teamid=value;
-	}
-	
 	
 	public String getNotes(){
 		return notes;
