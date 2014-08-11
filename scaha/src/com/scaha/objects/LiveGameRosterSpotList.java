@@ -61,6 +61,21 @@ public class LiveGameRosterSpotList extends ListDataModel<LiveGameRosterSpot> im
 			spot.setMia((rs.getInt(i++) == 1 ? true : false));
 			spot.setTeam((_strHomeAway.equals("H") ? _lg.getHometeam() : _lg.getAwayteam()));
 			spot.setLivegame(_lg);
+			if (spot.getRostertype().equals("Player")) {
+				spot.setTag("PL");
+			} else if (spot.getRostertype().equals("Head Coach")) {
+				spot.setTag("HC");
+			} else if (spot.getRostertype().equals("Assistant Coach")) {
+				spot.setTag("AC");
+			} else if (spot.getRostertype().equals("Student Coach")) {
+				spot.setTag("SC");
+			} else if (spot.getRostertype().equals("Manager")) {
+				spot.setTag("MN");
+			} else if (spot.getRostertype().equals("Assistant Coach/Manager")) {
+				spot.setTag("AC/MN");
+			} else {
+				spot.setTag("UN");
+			}
 			data.add(spot);
 			hm.put(spot.ID+"", spot);
 			LOGGER.info("Found a match " + spot);

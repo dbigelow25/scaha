@@ -21,6 +21,8 @@ public class LiveGameRosterSpot extends ScahaObject implements Serializable {
 	private String lname = "";
 	private String rostertype = "";
 	
+	private String tag = "";
+	
 	public LiveGameRosterSpot(int _id, Profile _pro, Schedule _sc) {
 		ID = _id;		
 		this.setProfile(_pro);
@@ -171,6 +173,24 @@ public class LiveGameRosterSpot extends ScahaObject implements Serializable {
 				+ idPerson + ", jerseynumber=" + jerseynumber + ", fname="
 				+ fname + ", lname=" + lname + ", rostertype=" + rostertype
 				+ "]";
+	}
+	
+	public int getKey() {
+		return ID;
+	}
+
+	/**
+	 * @return the tag
+	 */
+	public String getTag() {
+		return tag;
+	}
+
+	/**
+	 * @param tag the tag to set
+	 */
+	public void setTag(String tag) {
+		this.tag = tag;
 	}
 	
 
