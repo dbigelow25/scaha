@@ -658,7 +658,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 								keepgoing = true;
 							}
 							break;
-						} else if (tm.getTeamGameInfo().getAwayGames() == 0  ) {
+						} else if (tm.getTeamGameInfo().getAwayGames() < 0  ) {
 							LOGGER.info("Team Info:" + tm.getTeamname() + "no away games...");
 							if (loopalot) {
 								db.resetGames(sch);
