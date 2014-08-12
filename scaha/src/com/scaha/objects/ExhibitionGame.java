@@ -24,10 +24,20 @@ public class ExhibitionGame extends ScahaObject implements Serializable {
 	private Boolean rendered = null;
 	private String requestingteam = null;
 	private String manageremail = null;
+	private Boolean scoresheetrendered = null;
 	
 	public ExhibitionGame (){ 
 		
 	}
+	
+	public Boolean getScoresheetrendered(){
+    	return scoresheetrendered;
+    }
+    
+    public void setScoresheetrendered(Boolean fname){
+    	scoresheetrendered=fname;
+    }
+	
 	
 	public Boolean getRendered(){
     	return rendered;
