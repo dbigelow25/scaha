@@ -32,6 +32,8 @@ import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.Scoring;
 import com.scaha.objects.ScoringList;
 import com.scaha.objects.SkillLevel;
+import com.scaha.objects.Sog;
+import com.scaha.objects.SogList;
 
 @ManagedBean
 @ViewScoped
@@ -54,9 +56,11 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	private Scoring selectedawayscore = null;
 	private Scoring currentscore =null;
 	private Penalty currentpenalty = null;
+	private Sog currentsog = null;
 	private Penalty selectedhomepenalty = null;
 	private Penalty selectedawaypenalty = null;
-	
+	private Sog selectedhomesog = null;
+	private Sog selectedawaysog = null;
 	
 	private LiveGameRosterSpotList awayteam = null;
 	private LiveGameRosterSpotList hometeam = null;
@@ -65,7 +69,9 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	private ScoringList homescoring = null;
 	private PenaltyList homepenalties = null;
 	private PenaltyList awaypenalties = null;
-	
+	private SogList awaysogs = null;
+	private SogList homesogs = null;
+			
 	
 	private List<LiveGameRosterSpot> scoringpicklist = null;
 	private ScahaTeam scoringteam = null;
@@ -74,22 +80,37 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	private int selecteda1roseterid = 0;
 	private int selecteda2roseterid = 0;
 	private int selectedpenrosterid = 0;
+	private int selectedsogrosterid = 0;
 	
 	private List<LiveGameRosterSpot> penpicklist = null;
 	private ScahaTeam penteam = null;
 	private LiveGameRosterSpotList penroster = null;
+	
+	private List<LiveGameRosterSpot> sogpicklist = null;
+	private ScahaTeam sogteam = null;
+	private LiveGameRosterSpotList sogroster = null;
 	
 	private int goalperiod = 0;
 	private String goaltype = null;
 	private String goalmin = null;
 	private String goalsec = null;
 	
-	
 	private int penperiod = 0;
 	private String pentype = null;
 	private String penminutes = null;
 	private String penmin = null;
 	private String pensec = null;
+	
+	private int sogshots1 = 0;
+	private int sogshots2 = 0;
+	private int sogshots3 = 0;
+	private int sogshots4 = 0;
+	private int sogshots5 = 0;
+	private int sogshots6 = 0;
+	private int sogshots7 = 0;
+	private int sogshots8 = 0;
+	private int sogshots9 = 0;
+
 	//
 	// Class Level Variables
 	//
@@ -116,6 +137,8 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		 this.setHomescoring(this.refreshHomeScoring());
 		 this.setHomepenalties(this.refreshHomePenalty());
 		 this.setAwaypenalties(this.refreshAwayPenalty());
+		 this.setHomesogs(this.refreshHomeSog());
+		 this.setAwaysogs(this.refreshAwaySog());
 		 
 
 		 this.penalties.put("Charging","Charging");
@@ -193,50 +216,7 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		this.awayteam = awayteam;
 	}
 
-	public void onHomeScoreCancel(RowEditEvent event) { 
-		Scoring score = (Scoring) event.getObject();
-		LOGGER.info("Cencelling Edited Score:" + score);
-	}
 
-	public void onHomeScoreEdit(RowEditEvent event) { 
-	
-		//
-		// lets assemble the object .. we can only change three things right now..
-		// 1) Team Name
-		//
-		// These changs below can only happen when there are NO Players assigned to the team
-		
-		// 2) Team Division
-		// 3) Team Skill Level
-		
-		Scoring score = (Scoring) event.getObject();
-		LOGGER.info("HERE IS MY Edited Score:" + score);
-		
-		
-	} 
-	       
-	public void onAwayScoreCancel(RowEditEvent event) { 
-		Scoring score = (Scoring) event.getObject();
-		LOGGER.info("Cencelling Edited Score:" + score);
-	}
-	
-	public void onAwayScoreEdit(RowEditEvent event) { 
-		
-		//
-		// lets assemble the object .. we can only change three things right now..
-		// 1) Team Name
-		//
-		// These changs below can only happen when there are NO Players assigned to the team
-		
-		// 2) Team Division
-		// 3) Team Skill Level
-		
-		Scoring score = (Scoring) event.getObject();
-		LOGGER.info("HERE IS MY Edited Score:" + score);
-		
-		
-	} 
-	       
 	/**
 	 * @return the hometeam
 	 */
@@ -337,6 +317,39 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		
 		db.free();
 		
+		return list;
+	}
+	
+	
+public SogList refreshHomeSog() {
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		SogList list = null;
+		try {
+			list = SogList.NewListFactory(pb.getProfile(), db, this.getLivegame(), this.getLivegame().getHometeam(), this.getHometeam());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		db.free();
+		
+		return list;
+	}
+
+
+	public SogList refreshAwaySog() {
+
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		SogList list = null;
+		try {
+			list = SogList.NewListFactory(pb.getProfile(), db, this.getLivegame(), this.getLivegame().getAwayteam(), this.getAwayteam());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		db.free();
 		return list;
 	}
 
@@ -519,6 +532,69 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		this.selectedpenrosterid = currentpenalty.getIdroster();
 		
 	}
+	
+	@SuppressWarnings("unchecked")
+	public void editSog(String _ha) {
+		
+		if (_ha.equals("H")) { 
+			this.sogteam = this.livegame.getHometeam();
+			this.sogroster = this.getHometeam();
+			this.sogpicklist = (List<LiveGameRosterSpot>) this.getHometeam().getWrappedData();
+			this.currentsog = this.homesogs.getByKey(this.selectedhomesog.ID);
+		} else {
+			this.sogteam = this.livegame.getHometeam();
+			this.sogroster = this.getHometeam();
+			this.sogpicklist = (List<LiveGameRosterSpot>) this.getAwayteam().getWrappedData();
+			this.currentsog = this.awaysogs.getByKey(this.selectedawaysog.ID);
+		}
+		
+		//
+		// reinitialize the info
+		//
+		this.sogshots1 = currentsog.getShots1();
+		this.sogshots2 = currentsog.getShots2();
+		this.sogshots3 = currentsog.getShots3();
+		this.sogshots4 = currentsog.getShots4();
+		this.sogshots5 = currentsog.getShots5();
+		this.sogshots6 = currentsog.getShots6();
+		this.sogshots7 = currentsog.getShots7();
+		this.sogshots8 = currentsog.getShots8();
+		this.sogshots9 = currentsog.getShots9();
+		this.selectedsogrosterid = currentsog.getIdroster();
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void newSog(String _ha) {
+		
+		if (_ha.equals("H")) { 
+			this.sogteam = this.livegame.getHometeam();
+			this.sogroster = this.getHometeam();
+			this.sogpicklist = (List<LiveGameRosterSpot>) this.getHometeam().getWrappedData();
+			this.currentsog = new Sog(0,pb.getProfile(),this.livegame,this.sogteam);
+		} else {
+			this.sogteam = this.livegame.getAwayteam();
+			this.sogroster = this.getAwayteam();
+			this.sogpicklist = (List<LiveGameRosterSpot>) this.getAwayteam().getWrappedData();
+			this.currentsog = new Sog(0,pb.getProfile(),this.livegame,this.sogteam);
+		}
+		
+		//
+		// reinitialize the info
+		//
+		this.sogshots1 = 0;
+		this.sogshots2 = 0;
+		this.sogshots3 = 0;
+		this.sogshots4 = 0;
+		this.sogshots5 = 0;
+		this.sogshots6 = 0;
+		this.sogshots7 = 0;
+		this.sogshots8 = 0;
+		this.sogshots9 = 0;
+		this.selectedsogrosterid = 0;
+		
+	}
+	
 	
 	/**
 	 * For the selected Player.. we need to toggle his MIA...
@@ -715,7 +791,60 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		
 	}
 	
+	public void deleteSog(String _ha) {
+		
+		Sog sog = null;
+		if (_ha.equals("H")) {
+			sog = this.getHomesogs().getByKey(this.selectedhomesog.ID);
+		} else {
+			sog = this.getAwaysogs().getByKey(this.selectedawaysog.ID);
+		}
+		LOGGER.info("we need to delete: " + sog);
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try {
+			sog.delete(db);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.free();
+		this.setHomesogs(this.refreshHomeSog());
+		this.setAwaysogs(this.refreshAwaySog());
+		
+	}
 	
+	public void saveSog() {
+		
+		LOGGER.info("HERE IS WHERE WE save a SOG for " + this.sogteam.getTeamname());
+		
+		Sog sog = this.currentsog;
+		
+		sog.setShots1(this.getSogshots1());
+		sog.setShots2(this.getSogshots2());
+		sog.setShots3(this.getSogshots3());
+		sog.setShots4(this.getSogshots4());
+		sog.setShots5(this.getSogshots5());
+		sog.setShots6(this.getSogshots6());
+		sog.setShots7(this.getSogshots7());
+		sog.setShots8(this.getSogshots8());
+		sog.setShots9(this.getSogshots9());
+		sog.setRosterspot(this.sogroster.getByKey(this.selectedsogrosterid));
+			
+		LOGGER.info("updating score for " + sog);
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try {
+			sog.update(db);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.free();
+		this.setHomesogs(this.refreshHomeSog());
+		this.setAwaysogs(this.refreshAwaySog());
+		
+	}
 	public void saveGoal() {
 		
 		LOGGER.info("HERE IS WHERE WE save a GOAL for " + this.scoringteam.getTeamname());
@@ -1138,7 +1267,260 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		this.penalties = penalties;
 	}
 
-	
+	/**
+	 * @return the selectedhomesog
+	 */
+	public Sog getSelectedhomesog() {
+		return selectedhomesog;
+	}
 
+	/**
+	 * @param selectedhomesog the selectedhomesog to set
+	 */
+	public void setSelectedhomesog(Sog selectedhomesog) {
+		this.selectedhomesog = selectedhomesog;
+	}
+
+	/**
+	 * @return the selectedawaysog
+	 */
+	public Sog getSelectedawaysog() {
+		return selectedawaysog;
+	}
+
+	/**
+	 * @param selectedawaysog the selectedawaysog to set
+	 */
+	public void setSelectedawaysog(Sog selectedawaysog) {
+		this.selectedawaysog = selectedawaysog;
+	}
+
+	/**
+	 * @return the selectedsogrosterid
+	 */
+	public int getSelectedsogrosterid() {
+		return selectedsogrosterid;
+	}
+
+	/**
+	 * @param selectedsogrosterid the selectedsogrosterid to set
+	 */
+	public void setSelectedsogrosterid(int selectedsogrosterid) {
+		this.selectedsogrosterid = selectedsogrosterid;
+	}
+
+	/**
+	 * @return the sogpicklist
+	 */
+	public List<LiveGameRosterSpot> getSogpicklist() {
+		return sogpicklist;
+	}
+
+	/**
+	 * @param sogpicklist the sogpicklist to set
+	 */
+	public void setSogpicklist(List<LiveGameRosterSpot> sogpicklist) {
+		this.sogpicklist = sogpicklist;
+	}
+
+	/**
+	 * @return the sogteam
+	 */
+	public ScahaTeam getSogteam() {
+		return sogteam;
+	}
+
+	/**
+	 * @param sogteam the sogteam to set
+	 */
+	public void setSogteam(ScahaTeam sogteam) {
+		this.sogteam = sogteam;
+	}
+
+	/**
+	 * @return the sogroster
+	 */
+	public LiveGameRosterSpotList getSogroster() {
+		return sogroster;
+	}
+
+	/**
+	 * @param sogroster the sogroster to set
+	 */
+	public void setSogroster(LiveGameRosterSpotList sogroster) {
+		this.sogroster = sogroster;
+	}
+
+
+
+	/**
+	 * @return the awaysogs
+	 */
+	public SogList getAwaysogs() {
+		return awaysogs;
+	}
+
+	/**
+	 * @param awaysogs the awaysogs to set
+	 */
+	public void setAwaysogs(SogList awaysogs) {
+		this.awaysogs = awaysogs;
+	}
+
+	/**
+	 * @return the homesogs
+	 */
+	public SogList getHomesogs() {
+		return homesogs;
+	}
+
+	/**
+	 * @param homesogs the homesogs to set
+	 */
+	public void setHomesogs(SogList homesogs) {
+		this.homesogs = homesogs;
+	}
+
+	/**
+	 * @return the currentsog
+	 */
+	public Sog getCurrentsog() {
+		return currentsog;
+	}
+
+	/**
+	 * @param currentsog the currentsog to set
+	 */
+	public void setCurrentsog(Sog curentsog) {
+		this.currentsog = curentsog;
+	}
+
+	/**
+	 * @return the sogshots1
+	 */
+	public int getSogshots1() {
+		return sogshots1;
+	}
+
+	/**
+	 * @param sogshots1 the sogshots1 to set
+	 */
+	public void setSogshots1(int sogshots1) {
+		this.sogshots1 = sogshots1;
+	}
+
+	/**
+	 * @return the sogshots2
+	 */
+	public int getSogshots2() {
+		return sogshots2;
+	}
+
+	/**
+	 * @param sogshots2 the sogshots2 to set
+	 */
+	public void setSogshots2(int sogshots2) {
+		this.sogshots2 = sogshots2;
+	}
+
+	/**
+	 * @return the sogshots3
+	 */
+	public int getSogshots3() {
+		return sogshots3;
+	}
+
+	/**
+	 * @param sogshots3 the sogshots3 to set
+	 */
+	public void setSogshots3(int sogshots3) {
+		this.sogshots3 = sogshots3;
+	}
+
+	/**
+	 * @return the sogshots4
+	 */
+	public int getSogshots4() {
+		return sogshots4;
+	}
+
+	/**
+	 * @param sogshots4 the sogshots4 to set
+	 */
+	public void setSogshots4(int sogshots4) {
+		this.sogshots4 = sogshots4;
+	}
+
+	/**
+	 * @return the sogshots5
+	 */
+	public int getSogshots5() {
+		return sogshots5;
+	}
+
+	/**
+	 * @param sogshots5 the sogshots5 to set
+	 */
+	public void setSogshots5(int sogshots5) {
+		this.sogshots5 = sogshots5;
+	}
+
+	/**
+	 * @return the sogshots6
+	 */
+	public int getSogshots6() {
+		return sogshots6;
+	}
+
+	/**
+	 * @param sogshots6 the sogshots6 to set
+	 */
+	public void setSogshots6(int sogshots6) {
+		this.sogshots6 = sogshots6;
+	}
+
+	/**
+	 * @return the sogshots7
+	 */
+	public int getSogshots7() {
+		return sogshots7;
+	}
+
+	/**
+	 * @param sogshots7 the sogshots7 to set
+	 */
+	public void setSogshots7(int sogshots7) {
+		this.sogshots7 = sogshots7;
+	}
+
+	/**
+	 * @return the sogshots8
+	 */
+	public int getSogshots8() {
+		return sogshots8;
+	}
+
+	/**
+	 * @param sogshots8 the sogshots8 to set
+	 */
+	public void setSogshots8(int sogshots8) {
+		this.sogshots8 = sogshots8;
+	}
+
+	/**
+	 * @return the sogshots9
+	 */
+	public int getSogshots9() {
+		return sogshots9;
+	}
+
+	/**
+	 * @param sogshots9 the sogshots9 to set
+	 */
+	public void setSogshots9(int sogshots9) {
+		this.sogshots9 = sogshots9;
+	}
+
+	
 	
 }

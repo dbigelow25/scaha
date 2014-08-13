@@ -92,7 +92,17 @@
    			 	<p:menuitem value="Edit Penalty" icon="ui-icon-edit"  update=":form1:penaltygrid" actionListener="#{gamesheetBean.editPenalty('A')}" oncomplete="PF('pensdlg').show();"/>  
     		 	<p:menuitem value="Delete Penalty" update="@form,:form1:penaltyguts" icon="ui-icon-delete" actionListener="#{gamesheetBean.deletePenalty('A')}"/>  
     		</p:contextMenu>  
-				<p:panelGrid id="guts" columns="2" columnClasses="alignTop,alignTop">
+    		<!-- Here is the SOG information... -->
+    		<p:contextMenu id="homegoaliemenu" for="homegoalie">  
+   			 	<p:menuitem value="Edit Goalie SOG"  icon="ui-icon-edit"  update=":form1:goaliegrid" actionListener="#{gamesheetBean.editSog('H')}" oncomplete="PF('sogdlg').show();"/>  
+    		 	<p:menuitem value="Delete Goalie SOG" update="@form,:form1:goalieguts" icon="ui-icon-delete" actionListener="#{gamesheetBean.deleteSog('H')}"/>  
+    		</p:contextMenu>  
+			<p:contextMenu id="awaygoaliemenu" for="awaygoalie">  
+   			 	<p:menuitem value="Edit Goalie SOG"  icon="ui-icon-edit"  update=":form1:goaliegrid" actionListener="#{gamesheetBean.editSog('A')}" oncomplete="PF('sogdlg').show();"/>  
+    		 	<p:menuitem value="Delete Goalie SOG" update="@form,:form1:goalieguts" icon="ui-icon-delete" actionListener="#{gamesheetBean.deleteSog('A')}"/>  
+    		</p:contextMenu>  
+
+			<p:panelGrid id="guts" columns="2" columnClasses="alignTop,alignTop">
 				<p:panelGrid columns="2">
 					<h:outputText value="#{gamesheetBean.livegame.hometeam.getTeamname()}" /> 
 					<h:outputText value="" />
@@ -139,7 +149,7 @@
 		        </p:column>
 			          
 			 </p:dataTable>
-    			<p:dataTable 
+    		 <p:dataTable 
     				id="awayscoring" 
     				var="score" 
     				value="#{gamesheetBean.getAwayscoring()}"
@@ -170,100 +180,40 @@
 		        </p:dataTable>
    			</p:panelGrid>
      			
-			<p:panelGrid columns="2" style="width:100%">
+			<p:panelGrid id="goalieguts" columns="2" style="width:100%">
 			    <f:facet name="header">
-					<p:commandButton id="homesaves" value="Home Goalies"  oncomplete="PF('savesdlg').show();"/>
-					 Goaltenders Records        					
-					<p:commandButton id="awaysaves" value="Away Goalies"  oncomplete="PF('savesdlg').show();"/>
-				</f:facet>
-    			<p:panelGrid id = "homegoalie" style="width:100%">
-   				 <f:facet name="header">
-			        <p:row>
-            		<p:column>No#</p:column>
-            		<p:column>1st</p:column>
-            		<p:column>2nd</p:column>
-            		<p:column>3rd</p:column>
-            		<p:column>OT</p:column>
-            		<p:column styleClass="mtrxtotColumn" >Total</p:column>
-			        </p:row>
- 
-    			</f:facet>
-    			<p:row>
-     		        <p:column rowspan="2">#33</p:column>
-       				<p:column >3</p:column>
-   					<p:column >3</p:column>
-   					<p:column >3</p:column>
-   					<p:column >3</p:column>
-   					<p:column styleClass="mtrxtotColumn">12</p:column>
-				</p:row>
-				<p:row>
-       				<p:column >5</p:column>
-   					<p:column >5</p:column>
-   					<p:column >5</p:column>
-   					<p:column >5</p:column>
-   					<p:column styleClass="mtrxtotColumn" >20</p:column>
-   				 </p:row>               
-    			<p:row>
-     		        <p:column rowspan="2">#01</p:column>
-       				<p:column >3</p:column>
-   					<p:column >3</p:column>
-   					<p:column >3</p:column>
-   					<p:column >3</p:column>
-   					<p:column styleClass="mtrxtotColumn" >12</p:column>
-   				 </p:row>               
-   				 <p:row>
-     		     	<p:column >5</p:column>
-   					<p:column >5</p:column>
-   					<p:column >5</p:column>
-   					<p:column >5</p:column>
-   					<p:column styleClass="mtrxtotColumn" >20</p:column>
-   				 </p:row>               
-   				 
-               </p:panelGrid>
-    			<p:panelGrid id = "awaygoalie" style="width:100%">
-   				 <f:facet name="header">
-			        <p:row>
-            		<p:column>No#</p:column>
-            		<p:column>1st</p:column>
-            		<p:column>2nd</p:column>
-            		<p:column>3rd</p:column>
-            		<p:column>OT</p:column>
-            		<p:column styleClass="mtrxtotColumn">Total</p:column>
-			        </p:row>
- 
-    			</f:facet>
-    			<p:row>
-     		        <p:column rowspan="2">#33</p:column>
-       				<p:column >3</p:column>
-   					<p:column >3</p:column>
-   					<p:column >3</p:column>
-   					<p:column >3</p:column>
-   					<p:column styleClass="mtrxtotColumn">12</p:column>
-				</p:row>
-				
-				<p:row>
-       				<p:column >5</p:column>
-   					<p:column >5</p:column>
-   					<p:column >5</p:column>
-   					<p:column >5</p:column>
-   					<p:column styleClass="mtrxtotColumn">20</p:column>
-   				 </p:row>               
-    			<p:row>
-     		        <p:column rowspan="2">#01</p:column>
-       				<p:column >3</p:column>
-   					<p:column >3</p:column>
-   					<p:column >3</p:column>
-   					<p:column >3</p:column>
-   					<p:column styleClass="mtrxtotColumn">12</p:column>
-   				 </p:row>               
-   				 <p:row>
-     		     	<p:column >5</p:column>
-   					<p:column >5</p:column>
-   					<p:column >5</p:column>
-   					<p:column >5</p:column>
-   					<p:column styleClass="mtrxtotColumn">20</p:column>
-   				 </p:row>               
-               </p:panelGrid>
+				<p:commandButton id="homesaves" value="Sog"  ajax="true" update=":form1:goaliegrid" actionListener="#{gamesheetBean.newSog('H')}" oncomplete="PF('sogdlg').show();"/>
+				 Shots Of Goal      					
+				<p:commandButton id="awaysaves" value="Sog"  ajax="true" update=":form1:goaliegrid" actionListener="#{gamesheetBean.newSog('A')}" oncomplete="PF('sogdlg').show();"/>
+  				</f:facet>
+				<p:dataTable 
+    				id="homegoalie" 
+    				var="sog" 
+    				value="#{gamesheetBean.getHomesogs()}"
+   					selection="#{gamesheetBean.selectedhomesog}"
+ 					selectionMode="single" 
+ 				>
+  				 <p:column headerText="No"><h:outputText value="#{sog.rosterspot.jerseynumber}" /></p:column>
+     				<p:column headerText="1st"><h:outputText value="#{sog.shots1}" /></p:column>
+   					<p:column headerText="2nd"><h:outputText value="#{sog.shots2}" /></p:column>
+   					<p:column headerText="3rd"><h:outputText value="#{sog.shots3}" /></p:column>
+   					<p:column headerText="OT"><h:outputText value="#{sog.getOTShots()}" /></p:column>
+   					<p:column headerText="Tot" styleClass="mtrxtotColumn"><h:outputText value="#{sog.getTotalShots()}" /></p:column>
+  				 </p:dataTable>
+    			<p:dataTable 
+    				id="awaygoalie" 
+    				var="sog" 
+    				value="#{gamesheetBean.getAwaysogs()}"
+   					selection="#{gamesheetBean.selectedawaysog}"
+ 					selectionMode="single" 
+ 				>
+  				 <p:column headerText="No"><h:outputText value="#{sog.rosterspot.jerseynumber}" /></p:column>
+     				<p:column headerText="1st"><h:outputText value="#{sog.shots1}" /></p:column>
+   					<p:column headerText="2nd"><h:outputText value="#{sog.shots2}" /></p:column>
+   					<p:column headerText="3rd"><h:outputText value="#{sog.shots3}" /></p:column>
+   					<p:column headerText="OT"><h:outputText value="#{sog.getOTShots()}" /></p:column>
+   					<p:column headerText="Tot" styleClass="mtrxtotColumn"><h:outputText value="#{sog.getTotalShots()}" /></p:column>
+  				 </p:dataTable>
                </p:panelGrid>
                <p:panelGrid id="penaltyguts" columns="2" style="width:100%">
 			 	<p:dataTable 
@@ -368,9 +318,35 @@
 	
 	</p:dialog>
 	
-	<p:dialog id="savesdialog"  header="Shots and Saves" widgetVar="savesdlg" modal="false" >
-		<div align="center"><p:commandButton value="Close" oncomplete="savesdlg.hide()" /></div>    
-	</p:dialog>
+	<p:dialog id="sogdialog"  header="Shots and Saves" widgetVar="sogdlg" modal="false" >
+	 <h:panelGrid id="goaliegrid" columns="2" style="margin-bottom:5px" cellpadding="2">
+			<p:outputLabel for="sogperson" value="Goalie" />
+			<p:selectOneMenu styleClass="ddlistbox" id="sogperson" value="#{gamesheetBean.selectedsogrosterid}" >
+      			<f:selectItem style="font-size:10pt;" itemLabel="Goalie..." itemValue="0" />
+       			<f:selectItems value="#{gamesheetBean.sogpicklist}"  var="roster"  itemLabel="#{roster.jerseynumber} - #{roster.lname}" itemValue="#{roster.getKey()}"/>
+       		</p:selectOneMenu>
+        	<p:outputLabel for="shots1" value="Shots Per 1:" />
+			<p:inputText id="shots1" value = "#{gamesheetBean.sogshots1}"   maxlength="2" size="3"/> 
+        	<p:outputLabel for="shots2" value="Shots Per 2:" />
+			<p:inputText id="shots2" value = "#{gamesheetBean.sogshots2}"   maxlength="2" size="3"/> 
+        	<p:outputLabel for="shots3" value="Shots Per 3:" />
+			<p:inputText id="shots3" value = "#{gamesheetBean.sogshots3}"   maxlength="2" size="3"/> 
+        	<p:outputLabel for="shots4" value="Shots Per 4:" />
+			<p:inputText id="shots4" value = "#{gamesheetBean.sogshots4}"   maxlength="2" size="3"/> 
+        	<p:outputLabel for="shots5" value="Shots Per 5:" />
+			<p:inputText id="shots5" value = "#{gamesheetBean.sogshots5}"   maxlength="2" size="3"/> 
+        	<p:outputLabel for="shots6" value="Shots Per 6:" />
+			<p:inputText id="shots6" value = "#{gamesheetBean.sogshots6}"   maxlength="2" size="3"/> 
+        	<p:outputLabel for="shots7" value="Shots Per 7:" />
+			<p:inputText id="shots7" value = "#{gamesheetBean.sogshots7}"   maxlength="2" size="3"/> 
+        	<p:outputLabel for="shots8" value="Shots Per 8:" />
+			<p:inputText id="shots8" value = "#{gamesheetBean.sogshots8}"   maxlength="2" size="3"/> 
+        	<p:outputLabel for="shots9" value="Shots Per 9:" />
+			<p:inputText id="shots9" value = "#{gamesheetBean.sogshots9}"   maxlength="2" size="3"/> 
+	    </h:panelGrid>
+	    <p:separator />
+		<p:commandButton id="cmdsogsave" ajax="true" value="Save" actionListener="#{gamesheetBean.saveSog()}" update="@form,:form1:goalieguts"  oncomplete="sogdlg.hide()" />
+	   	</p:dialog>
 	
 	<p:dialog id="pensdialog"  header="Penalties" widgetVar="pensdlg" modal="false" >
 		 <h:panelGrid id="penaltygrid" columns="2" style="margin-bottom:5px" cellpadding="2">
