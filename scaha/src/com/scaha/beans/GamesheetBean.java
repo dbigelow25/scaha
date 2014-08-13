@@ -3,7 +3,9 @@ package com.scaha.beans;
 import java.io.Serializable;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -24,6 +26,8 @@ import com.scaha.objects.LiveGame;
 import com.scaha.objects.LiveGameRosterSpot;
 import com.scaha.objects.LiveGameRosterSpotList;
 import com.scaha.objects.MailableObject;
+import com.scaha.objects.Penalty;
+import com.scaha.objects.PenaltyList;
 import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.Scoring;
 import com.scaha.objects.ScoringList;
@@ -49,12 +53,19 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	private Scoring selectedhomescore = null;
 	private Scoring selectedawayscore = null;
 	private Scoring currentscore =null;
+	private Penalty currentpenalty = null;
+	private Penalty selectedhomepenalty = null;
+	private Penalty selectedawaypenalty = null;
+	
 	
 	private LiveGameRosterSpotList awayteam = null;
 	private LiveGameRosterSpotList hometeam = null;
 	
 	private ScoringList awayscoring = null;
 	private ScoringList homescoring = null;
+	private PenaltyList homepenalties = null;
+	private PenaltyList awaypenalties = null;
+	
 	
 	private List<LiveGameRosterSpot> scoringpicklist = null;
 	private ScahaTeam scoringteam = null;
@@ -62,18 +73,30 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	private int selectedgoalroseterid = 0;
 	private int selecteda1roseterid = 0;
 	private int selecteda2roseterid = 0;
+	private int selectedpenrosterid = 0;
+	
+	private List<LiveGameRosterSpot> penpicklist = null;
+	private ScahaTeam penteam = null;
+	private LiveGameRosterSpotList penroster = null;
 	
 	private int goalperiod = 0;
 	private String goaltype = null;
 	private String goalmin = null;
 	private String goalsec = null;
 	
+	
+	private int penperiod = 0;
+	private String pentype = null;
+	private String penminutes = null;
+	private String penmin = null;
+	private String pensec = null;
 	//
 	// Class Level Variables
 	//
 	
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	private Map<String, String> penalties = new HashMap<String, String>();
 	
 	//
 	// lets go get it!
@@ -91,7 +114,39 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		 this.setAwayteam(this.refreshAwayRoster());
 		 this.setAwayscoring(this.refreshAwayScoring());
 		 this.setHomescoring(this.refreshHomeScoring());
-	
+		 this.setHomepenalties(this.refreshHomePenalty());
+		 this.setAwaypenalties(this.refreshAwayPenalty());
+		 
+
+		 this.penalties.put("Charging","Charging");
+		 this.penalties.put("Clipping","Clipping");
+		 this.penalties.put("Closing hand on puck","Closing hand on puck");
+		 this.penalties.put("Cross-checking","Cross-checking");
+		 this.penalties.put("Diving", "Diving");
+		 this.penalties.put("Delay of game","Delay of game");
+		 this.penalties.put("Elbowing","Elbowing" );
+		 this.penalties.put("Goalkeeper interference","Goalkeeper interference");
+		 this.penalties.put("High-sticking","High-sticking");
+		 this.penalties.put("Holding", "Holding");
+		 this.penalties.put("Holding the stick","Holding the stick");
+		 this.penalties.put("Hooking", "Hooking");
+		 this.penalties.put("Illegal equipment", "Illegal equipment");
+		 this.penalties.put("Illegal stick", "Illegal stick");
+		 this.penalties.put("Instigator", "Instigator");
+		 this.penalties.put("Interference", "Interference");
+		 this.penalties.put("Kneeing", "Kneeing");
+		 this.penalties.put("Leaving penalty bench too early", "Leaving penalty bench too early");
+		 this.penalties.put("Roughing", "Roughing");
+		 this.penalties.put("Slashing", "Slashing");
+		 this.penalties.put("Throwing stick","Throwing stick");
+		 this.penalties.put("Tripping","Tripping");
+		 this.penalties.put("Unsportsmanlike conduct", "Unsportsmanlike conduct");
+		 this.penalties.put("Boarding", "Boarding");
+		 this.penalties.put("Butt-ending", "Butt-ending");
+		 this.penalties.put("Checking from behind", "Checking from behind");
+		 this.penalties.put("Fighting", "Fighting");
+		 this.penalties.put("Head-butting", "Head-butting");
+		 this.penalties.put("Check to the Head","Check to the Head");
 		 LOGGER.info(" *************** FINISH :POST INIT FOR GAMESHEET BEAN *****************");
 	 }
 	
@@ -318,6 +373,36 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		return list;
 	}
 	
+	private PenaltyList refreshHomePenalty() {
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		PenaltyList list = null;
+		try {
+			list = PenaltyList.NewListFactory(pb.getProfile(), db, this.getLivegame(), this.getLivegame().getHometeam(), this.getHometeam());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		db.free();
+		
+		return list;
+	}
+	
+	private PenaltyList refreshAwayPenalty() {
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		PenaltyList list = null;
+		try {
+			list = PenaltyList.NewListFactory(pb.getProfile(), db, this.getLivegame(), this.getLivegame().getAwayteam(), this.getAwayteam());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		db.free();
+		
+		return list;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void newGoal(String _ha) {
 		
@@ -348,6 +433,33 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	}
 	
 	@SuppressWarnings("unchecked")
+	public void newPenalty(String _ha) {
+		
+		if (_ha.equals("H")) { 
+			this.penteam = this.livegame.getHometeam();
+			this.penroster = this.getHometeam();
+			this.penpicklist = (List<LiveGameRosterSpot>) this.getHometeam().getWrappedData();
+			this.currentpenalty = new Penalty(0,pb.getProfile(),this.livegame,this.penteam);
+		} else {
+			this.penteam = this.livegame.getAwayteam();
+			this.penroster = this.getAwayteam();
+			this.penpicklist = (List<LiveGameRosterSpot>) this.getAwayteam().getWrappedData();
+			this.currentpenalty = new Penalty(0,pb.getProfile(),this.livegame,this.penteam);
+		}
+		
+		//
+		// reinitialize the info
+		//
+		this.penperiod = 0;
+		this.penminutes = null;
+		this.penmin = null;
+		this.pensec = null;
+		this.pentype = null;
+		this.selectedpenrosterid = 0;
+		
+	}
+	
+	@SuppressWarnings("unchecked")
 	public void editGoal(String _ha) {
 		
 		if (_ha.equals("H")) { 
@@ -370,13 +482,41 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		
 		this.goalperiod = currentscore.getPeriod();
 		String[] ms = currentscore.getTimescored().split(":");
-		LOGGER.info("MS:" + ms.length + ":" + ms[0] + ":" + ms[1]);
 		this.goalmin = ms[0];
 		this.goalsec = ms[1];
 		this.goaltype = currentscore.getGoaltype();
 		this.selectedgoalroseterid = currentscore.getIdrostergoal();
 		this.selecteda1roseterid = currentscore.getIdrostera1();
 		this.selecteda2roseterid = currentscore.getIdrostera2();
+		
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public void editPenalty(String _ha) {
+		
+		if (_ha.equals("H")) { 
+			this.penteam = this.livegame.getHometeam();
+			this.penroster = this.getHometeam();
+			this.penpicklist = (List<LiveGameRosterSpot>) this.getHometeam().getWrappedData();
+			this.currentpenalty = this.homepenalties.getByKey(this.selectedhomepenalty.ID);
+		} else {
+			this.penteam = this.livegame.getAwayteam();
+			this.penroster = this.getAwayteam();
+			this.penpicklist = (List<LiveGameRosterSpot>) this.getAwayteam().getWrappedData();
+			this.currentpenalty = this.awaypenalties.getByKey(this.selectedawaypenalty.ID);
+		}
+		
+		//
+		// reinitialize the info
+		//
+		this.penperiod = currentpenalty.getPeriod();
+		this.penminutes = currentpenalty.getMinutes();
+		String[] ms = currentpenalty.getTimeofpenalty().split(":");
+		this.penmin = ms[0];
+		this.pensec = ms[1];
+		this.pentype = currentpenalty.getPenaltytype();
+		this.selectedpenrosterid = currentpenalty.getIdroster();
 		
 	}
 	
@@ -552,6 +692,29 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		
 	}
 	
+	public void deletePenalty(String _ha) {
+		
+		Penalty pen = null;
+		if (_ha.equals("H")) {
+			pen = this.getHomepenalties().getByKey(this.selectedhomepenalty.ID);
+		} else {
+			pen = this.getAwaypenalties().getByKey(this.selectedawaypenalty.ID);
+		}
+		LOGGER.info("we need to delete: " + pen);
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try {
+			pen.delete(db);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.free();
+		this.setAwaypenalties(this.refreshAwayPenalty());
+		this.setHomepenalties(this.refreshHomePenalty());
+		
+	}
+	
 	
 	public void saveGoal() {
 		
@@ -578,6 +741,33 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		db.free();
 		this.setAwayscoring(this.refreshAwayScoring());
 		this.setHomescoring(this.refreshHomeScoring());
+		
+	}
+
+	public void savePenalty() {
+		
+		LOGGER.info("HERE IS WHERE WE save a Penalty for " + this.penteam.getTeamname());
+		
+		Penalty pen = this.currentpenalty;
+		
+		pen.setPeriod(this.getPenperiod());
+		pen.setPenaltytype(this.getPentype());
+		pen.setTimeofpenalty(("00:" + this.getPenmin() + ":" + this.getPensec()));
+		pen.setMinutes(this.getPenminutes());
+		pen.setRosterspot(this.penroster.getByKey(this.selectedpenrosterid));
+		
+		LOGGER.info("updating score for " + pen);
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try {
+			pen.update(db);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.free();
+		this.setAwaypenalties(this.refreshAwayPenalty());
+		this.setHomepenalties(this.refreshHomePenalty());
 		
 	}
 
@@ -734,6 +924,221 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	public void setCurrentscore(Scoring currentscore) {
 		this.currentscore = currentscore;
 	}
+
+
+
+	/**
+	 * @return the awaypenalties
+	 */
+	public PenaltyList getAwaypenalties() {
+		return awaypenalties;
+	}
+
+	/**
+	 * @param awaypenalties the awaypenalties to set
+	 */
+	public void setAwaypenalties(PenaltyList awaypenalties) {
+		this.awaypenalties = awaypenalties;
+	}
+
+	/**
+	 * @return the homepenalties
+	 */
+	public PenaltyList getHomepenalties() {
+		return homepenalties;
+	}
+
+	/**
+	 * @param homepenalties the homepenalties to set
+	 */
+	public void setHomepenalties(PenaltyList homepenalties) {
+		this.homepenalties = homepenalties;
+	}
+
+	/**
+	 * @return the penperiod
+	 */
+	public int getPenperiod() {
+		return penperiod;
+	}
+
+	/**
+	 * @param penperiod the penperiod to set
+	 */
+	public void setPenperiod(int penperiod) {
+		this.penperiod = penperiod;
+	}
+
+	/**
+	 * @return the pentype
+	 */
+	public String getPentype() {
+		return pentype;
+	}
+
+	/**
+	 * @param pentype the pentype to set
+	 */
+	public void setPentype(String pentype) {
+		this.pentype = pentype;
+	}
+
+	/**
+	 * @return the penminutes
+	 */
+	public String getPenminutes() {
+		return penminutes;
+	}
+
+	/**
+	 * @param penminutes the penminutes to set
+	 */
+	public void setPenminutes(String penminutes) {
+		this.penminutes = penminutes;
+	}
+
+	
+	/**
+	 * @return the selectedpenrosterid
+	 */
+	public int getSelectedpenrosterid() {
+		return selectedpenrosterid;
+	}
+
+	/**
+	 * @param selectedpenrosterid the selectedpenrosterid to set
+	 */
+	public void setSelectedpenrosterid(int selectedpenrosterid) {
+		this.selectedpenrosterid = selectedpenrosterid;
+	}
+
+	/**
+	 * @return the penroster
+	 */
+	public LiveGameRosterSpotList getPenroster() {
+		return penroster;
+	}
+
+	/**
+	 * @param penroster the penroster to set
+	 */
+	public void setPenroster(LiveGameRosterSpotList penroster) {
+		this.penroster = penroster;
+	}
+
+	/**
+	 * @return the penteam
+	 */
+	public ScahaTeam getPenteam() {
+		return penteam;
+	}
+
+	/**
+	 * @param penteam the penteam to set
+	 */
+	public void setPenteam(ScahaTeam penteam) {
+		this.penteam = penteam;
+	}
+
+	/**
+	 * @return the penpicklist
+	 */
+	public List<LiveGameRosterSpot> getPenpicklist() {
+		return penpicklist;
+	}
+
+	/**
+	 * @param penpicklist the penpicklist to set
+	 */
+	public void setPenpicklist(List<LiveGameRosterSpot> penpicklist) {
+		this.penpicklist = penpicklist;
+	}
+
+	/**
+	 * @return the penmin
+	 */
+	public String getPenmin() {
+		return penmin;
+	}
+
+	/**
+	 * @param penmin the penmin to set
+	 */
+	public void setPenmin(String penmin) {
+		this.penmin = penmin;
+	}
+
+	/**
+	 * @return the pensec
+	 */
+	public String getPensec() {
+		return pensec;
+	}
+
+	/**
+	 * @param pensec the pensec to set
+	 */
+	public void setPensec(String pensec) {
+		this.pensec = pensec;
+	}
+
+	/**
+	 * @return the currentpenalty
+	 */
+	public Penalty getCurrentpenalty() {
+		return currentpenalty;
+	}
+
+	/**
+	 * @param currentpenalty the currentpenalty to set
+	 */
+	public void setCurrentpenalty(Penalty currentpenalty) {
+		this.currentpenalty = currentpenalty;
+	}
+
+	/**
+	 * @return the selectedhomepenalty
+	 */
+	public Penalty getSelectedhomepenalty() {
+		return selectedhomepenalty;
+	}
+
+	/**
+	 * @param selectedhomepenalty the selectedhomepenalty to set
+	 */
+	public void setSelectedhomepenalty(Penalty selectedhomepenalty) {
+		this.selectedhomepenalty = selectedhomepenalty;
+	}
+
+	/**
+	 * @return the selectedawaypenalty
+	 */
+	public Penalty getSelectedawaypenalty() {
+		return selectedawaypenalty;
+	}
+
+	/**
+	 * @param selectedawaypenalty the selectedawaypenalty to set
+	 */
+	public void setSelectedawaypenalty(Penalty selectedawaypenalty) {
+		this.selectedawaypenalty = selectedawaypenalty;
+	}
+
+	/**
+	 * @return the penalties
+	 */
+	public Map<String, String> getPenalties() {
+		return penalties;
+	}
+
+	/**
+	 * @param penalties the penalties to set
+	 */
+	public void setPenalties(Map<String, String> penalties) {
+		this.penalties = penalties;
+	}
+
+	
 
 	
 }

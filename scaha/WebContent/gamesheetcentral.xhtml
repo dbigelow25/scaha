@@ -84,6 +84,14 @@
    			 	<p:menuitem value="Edit Goal" icon="ui-icon-edit"  update=":form1:scoringgrid" actionListener="#{gamesheetBean.editGoal('A')}" oncomplete="PF('scoredlg').show();"/>  
     		 	<p:menuitem value="Delete Goal" update=":form1:guts" icon="ui-icon-delete" actionListener="#{gamesheetBean.deleteGoal('A')}"/>  
     		</p:contextMenu>  
+    			<p:contextMenu id="homepenaltymenu" for="homepenalties">  
+   			 	<p:menuitem value="Edit Penalty"  icon="ui-icon-edit"  update=":form1:penaltygrid" actionListener="#{gamesheetBean.editPenalty('H')}" oncomplete="PF('pensdlg').show();"/>  
+    		 	<p:menuitem value="Delete Penalty" update="@form,:form1:penaltyguts" icon="ui-icon-delete" actionListener="#{gamesheetBean.deletePenalty('H')}"/>  
+    		</p:contextMenu>  
+    		 <p:contextMenu id="awaypenaltymenu" for="awaypenalties">  
+   			 	<p:menuitem value="Edit Penalty" icon="ui-icon-edit"  update=":form1:penaltygrid" actionListener="#{gamesheetBean.editPenalty('A')}" oncomplete="PF('pensdlg').show();"/>  
+    		 	<p:menuitem value="Delete Penalty" update="@form,:form1:penaltyguts" icon="ui-icon-delete" actionListener="#{gamesheetBean.deletePenalty('A')}"/>  
+    		</p:contextMenu>  
 				<p:panelGrid id="guts" columns="2" columnClasses="alignTop,alignTop">
 				<p:panelGrid columns="2">
 					<h:outputText value="#{gamesheetBean.livegame.hometeam.getTeamname()}" /> 
@@ -257,44 +265,58 @@
    				 </p:row>               
                </p:panelGrid>
                </p:panelGrid>
-               <p:panelGrid columns="2" style="width:100%">
-			 	<p:dataTable id="homepenalties" var="rosteredit" value="#{managerBean.getRostereditdatamodel()}" selection="#{managerBean.selectedplayer}">
+               <p:panelGrid id="penaltyguts" columns="2" style="width:100%">
+			 	<p:dataTable 
+			 		id="homepenalties" 
+			 		var="pen" 
+    				value="#{gamesheetBean.homepenalties}"
+   					selection="#{gamesheetBean.selectedhomepenalty}"
+ 					selectionMode="single" 
+ 					>
                  <f:facet name="header">
                   	<p:row>
             			<p:column colspan="5">PENALTIES - HOME
-            			<p:commandButton id="homepens" value="P"  oncomplete="PF('pensdlg').show();"/>
+            			<p:commandButton id="homepens" value="P" ajax="true" update=":form1:penaltygrid" actionListener="#{gamesheetBean.newPenalty('H')}" oncomplete="PF('pensdlg').show();"/>
 						</p:column>
        				</p:row>
                  </f:facet>
-				<p:column headerText="Per">  
+		        <p:column headerText="Per" style="width:30px;">  <h:outputText value="#{pen.period}" /> 
+		        </p:column>
+		 		<p:column headerText="Plyr"><h:outputText value="#{pen.rosterspot.jerseynumber}" />    
 		        </p:column>  
-		        <p:column headerText="Plyr">  
+		        <p:column headerText="Penalty" width="40%"> <h:outputText value="#{pen.penaltytype}" /> 
 		        </p:column>
-		        <p:column headerText="Penalty" width="40%">  
+		        <p:column headerText="Min" style="width:30px;"> <h:outputText value="#{pen.minutes}" />   
 		        </p:column>
-		        <p:column headerText="Min" style="width:30px;">  
+		        <p:column headerText="Time" style="width:30px;"> <h:outputText value="#{pen.timeofpenalty}" />  
 		        </p:column>
-		        <p:column headerText="Time" style="width:30px;">  
-		        </p:column>
+		     
 			 </p:dataTable>
-    			  			 <p:dataTable id="awaypentalties" var="rosteredit" value="#{managerBean.getRostereditdatamodel()}" selection="#{managerBean.selectedplayer}">
+    		 <p:dataTable 
+			 		id="awaypenalties" 
+			 		var="pen" 
+    				value="#{gamesheetBean.awaypenalties}"
+   					selection="#{gamesheetBean.selectedawaypenalty}"
+ 					selectionMode="single" 
+ 					>
                  <f:facet name="header">
                   	<p:row>
-            			<p:column colspan="5">PENALTIES - VISITOR  
-            				<p:commandButton id="awaypens" value="P"  oncomplete="PF('pensdlg').show();"/>
+            			<p:column colspan="5">PENALTIES - AWAY
+            			<p:commandButton id="awaypens" value="P" ajax="true" update=":form1:penaltygrid" actionListener="#{gamesheetBean.newPenalty('A')}" oncomplete="PF('pensdlg').show();"/>
 						</p:column>
        				</p:row>
                  </f:facet>
-            	<p:column headerText="Per">  
+		        <p:column headerText="Per" style="width:30px;">  <h:outputText value="#{pen.period}" /> 
+		        </p:column>
+		 		<p:column headerText="Plyr"><h:outputText value="#{pen.rosterspot.jerseynumber}" />    
 		        </p:column>  
-		        <p:column headerText="Plyr">  
+		        <p:column headerText="Penalty" width="40%"> <h:outputText value="#{pen.penaltytype}" /> 
 		        </p:column>
-		        <p:column headerText="Penalty" width="40%">  
+		        <p:column headerText="Min" style="width:30px;"> <h:outputText value="#{pen.minutes}" />   
 		        </p:column>
-		        <p:column headerText="Min" style="width:30px;">  
+		        <p:column headerText="Time" style="width:30px;"> <h:outputText value="#{pen.timeofpenalty}" />  
 		        </p:column>
-		        <p:column headerText="Time" style="width:30px;">  
-		        </p:column>
+		     
 			 </p:dataTable>
               </p:panelGrid>
 		     <p:panel header="Summary Notes" width="100%">
@@ -342,15 +364,53 @@
        		</p:selectOneMenu>
 	    </h:panelGrid>
 	    <p:separator />
-		<p:commandButton id="cmdhomescore" ajax="true" value="Save" actionListener="#{gamesheetBean.saveGoal()}" update="@form,:form1:guts"/>
+		<p:commandButton id="cmdhomescore" ajax="true" value="Save" actionListener="#{gamesheetBean.saveGoal()}" update="@form,:form1:guts" oncomplete="scoredlg.hide()"/>
 	
 	</p:dialog>
 	
 	<p:dialog id="savesdialog"  header="Shots and Saves" widgetVar="savesdlg" modal="false" >
 		<div align="center"><p:commandButton value="Close" oncomplete="savesdlg.hide()" /></div>    
 	</p:dialog>
+	
 	<p:dialog id="pensdialog"  header="Penalties" widgetVar="pensdlg" modal="false" >
-		<div align="center"><p:commandButton value="Close" oncomplete="pensdlg.hide()" /></div>    
+		 <h:panelGrid id="penaltygrid" columns="2" style="margin-bottom:5px" cellpadding="2">
+			<p:outputLabel for="penperson" value="Player" />
+			<p:selectOneMenu styleClass="ddlistbox" id="penperson" value="#{gamesheetBean.selectedpenrosterid}" >
+      			<f:selectItem style="font-size:10pt;" itemLabel="Culprit..." itemValue="0" />
+       			<f:selectItems value="#{gamesheetBean.penpicklist}"  var="roster"  itemLabel="#{roster.jerseynumber} - #{roster.lname}" itemValue="#{roster.getKey()}"/>
+       		</p:selectOneMenu>
+        	<p:outputLabel for="penperiod" value="Period:" />
+       		<p:selectOneMenu id="penperiod" value="#{gamesheetBean.penperiod}">
+           		<f:selectItem itemLabel="Select One" itemValue="" />
+           		<f:selectItem itemLabel="1st " itemValue="1" />
+           		<f:selectItem itemLabel="2nd" itemValue="2" />
+           		<f:selectItem itemLabel="3rd" itemValue="3" />
+       		    <f:selectItem itemLabel="OT" itemValue="4" />
+	        </p:selectOneMenu>
+	        <p:outputLabel for="top" value="Time of Penalty" />
+			<p:panel id="top">
+				<p:inputMask id="pmin" value = "#{gamesheetBean.penmin}"  mask="99" maxlength="2" size="3"/> 
+				<h:outputText value=":" />
+				<p:inputMask id="psec" value = "#{gamesheetBean.pensec}" mask="99" maxlength="2" size="3"/>
+			</p:panel>	        
+        	<p:outputLabel for="pentype" value="Penalty" />
+       		<p:selectOneMenu id="pentype" value="#{gamesheetBean.pentype}" effect="fold">
+    	         <f:selectItem itemLabel="Infraction..." itemValue="" />
+	            <f:selectItems value="#{gamesheetBean.penalties}" />
+            </p:selectOneMenu>
+        	<p:outputLabel for="minutes" value="Minutes:" />
+       		<p:selectOneMenu id="minutes" value="#{gamesheetBean.penminutes}">
+           		<f:selectItem itemValue="2m" itemLabel="2 Minutes" />
+           		<f:selectItem itemValue="4m" itemLabel="4 Minutes" />
+           		<f:selectItem itemValue="5m" itemLabel="5 Minute Major" />
+       		    <f:selectItem itemValue="10m" itemLabel="10 Mis Conduct" />
+       		    <f:selectItem itemValue="gmc" itemLabel="Game Misconduct" />
+       		    <f:selectItem itemValue="pen shot" itemLabel="Penalty Shot" />
+	        </p:selectOneMenu>
+	    </h:panelGrid>
+	    <p:separator />
+		<p:commandButton id="cmdpenaltysave" ajax="true" value="Save" actionListener="#{gamesheetBean.savePenalty()}" update="@form,:form1:penaltyguts"  oncomplete="pensdlg.hide()" />
+	   
 	</p:dialog>
 	</h:form>
 </ui:define>

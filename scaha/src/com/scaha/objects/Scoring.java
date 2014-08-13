@@ -254,29 +254,17 @@ public class Scoring extends ScahaObject implements Serializable {
 
 		int i = 1;
 		cs.registerOutParameter(1, java.sql.Types.INTEGER);
-		LOGGER.info("A");
 		cs.setInt(i++, this.ID);
-		LOGGER.info("B");
 		cs.setInt(i++, this.getLivegame().ID);
-		LOGGER.info("C");
 		cs.setInt(i++, this.getTeam().ID);
-		LOGGER.info("D");
 		cs.setInt(i++, this.idrostergoal);
-		LOGGER.info("E");
 		cs.setInt(i++, this.idrostera1);
-		LOGGER.info("F");
 		cs.setInt(i++, this.idrostera2);
-		LOGGER.info("G");
 		cs.setString(i++, this.goaltype);
-		LOGGER.info("H");
 		cs.setInt(i++, this.period);
-		LOGGER.info("E");
 		cs.setString(i++, this.timescored);
-		LOGGER.info("J");
 		cs.setInt(i++,1);
-		LOGGER.info("K");
 		cs.setString(i++,null);
-		LOGGER.info("L");
 		cs.execute();
 		
 		//

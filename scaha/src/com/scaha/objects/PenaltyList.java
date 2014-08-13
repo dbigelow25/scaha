@@ -57,7 +57,8 @@ public class PenaltyList extends ListDataModel<Penalty> implements Serializable,
 			pen.setIdroster(rs.getInt(i++));
 			pen.setRosterspot(_rsl.getByKey(pen.getIdroster()));
 			pen.setPeriod(rs.getInt(i++));
-			pen.setPenalty(rs.getString(i++));
+			pen.setPenaltytype(rs.getString(i++));
+			pen.setMinutes(rs.getString(i++));
 			String rawtime = rs.getString(i++);
 			int left = rawtime.indexOf(":");
 			pen.setTimeofpenalty(rawtime.substring(left+1));

@@ -17,10 +17,13 @@ public class Penalty extends ScahaObject implements Serializable {
 	private LiveGame livegame = null;
 	private LiveGameRosterSpot rosterspot = null;
 	private int idroster = 0;
-	private String penalty = null;
+	private String penaltytype = null;
 	private int count = 0;
 	private int period = 0;
 	private String timeofpenalty = null;
+	private String minutes = null;
+	
+	
 	/**
 	 * @return the timeofpenalty
 	 */
@@ -35,8 +38,6 @@ public class Penalty extends ScahaObject implements Serializable {
 		this.timeofpenalty = timeofpenalty;
 	}
 
-	private int minutes = 0;
-	
 	public Penalty(int _id, Profile _pro, LiveGame _lg, ScahaTeam _tm) {
 		ID = _id;	
 		this.setProfile(_pro);
@@ -123,15 +124,25 @@ public class Penalty extends ScahaObject implements Serializable {
 		int i = 1;
 		cs.registerOutParameter(1, java.sql.Types.INTEGER);
 		cs.setInt(i++, this.ID);
+		LOGGER.info("A");
 		cs.setInt(i++, this.idroster);
+		LOGGER.info("B");
 		cs.setInt(i++, this.getLivegame().ID);
+		LOGGER.info("C");
 		cs.setInt(i++, this.getTeam().ID);
+		LOGGER.info("D");
+		cs.setString(i++, this.penaltytype);
+		LOGGER.info("E");
 		cs.setInt(i++, this.period);
-		cs.setString(i++, this.penalty);
-		cs.setInt(i++, this.minutes);
+		LOGGER.info("F");
+		cs.setString(i++, this.minutes);
+		LOGGER.info("G");
 		cs.setString(i++, this.timeofpenalty);
+		LOGGER.info("H");
 		cs.setInt(i++,1);
+		LOGGER.info("I");
 		cs.setString(i++,null);
+		LOGGER.info("J");
 		cs.execute();
 		
 		//
@@ -148,14 +159,14 @@ public class Penalty extends ScahaObject implements Serializable {
 	/**
 	 * @return the minutes
 	 */
-	public int getMinutes() {
+	public String getMinutes() {
 		return minutes;
 	}
 
 	/**
 	 * @param minutes the minutes to set
 	 */
-	public void setMinutes(int minutes) {
+	public void setMinutes(String minutes) {
 		this.minutes = minutes;
 	}
 
@@ -190,18 +201,19 @@ public class Penalty extends ScahaObject implements Serializable {
 		this.idroster = idroster;
 	}
 
+	
 	/**
-	 * @return the penalty
+	 * @return the penaltytype
 	 */
-	public String getPenalty() {
-		return penalty;
+	public String getPenaltytype() {
+		return penaltytype;
 	}
 
 	/**
-	 * @param penalty the penalty to set
+	 * @param penaltytype the penaltytype to set
 	 */
-	public void setPenalty(String penalty) {
-		this.penalty = penalty;
+	public void setPenaltytype(String penaltytype) {
+		this.penaltytype = penaltytype;
 	}
 
 
