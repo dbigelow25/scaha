@@ -22,11 +22,31 @@ public class TournamentGame extends ScahaObject implements Serializable {
 	private String tournamentname = null;
 	private String status = null;
 	private Boolean rendered = null;
+	private Boolean scoresheetrendered = null;
+	private String requestingteam = null;
+	
 	
 	public TournamentGame (){ 
 		
 	}
 	
+	public String getRequestingteam(){
+    	return requestingteam;
+    }
+    
+    public void setRequestingteam(String fname){
+    	requestingteam=fname;
+    }
+	
+	
+	public Boolean getScoresheetrendered(){
+    	return scoresheetrendered;
+    }
+    
+    public void setScoresheetrendered(Boolean fname){
+    	scoresheetrendered=fname;
+    }
+	    
 	public Boolean getRendered(){
     	return rendered;
     }
