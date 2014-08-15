@@ -241,6 +241,7 @@ public class rosterBean implements Serializable{
 			db.cleanup();
     		
     		//next get player roster
+			/*
 			cs = db.prepareCall("CALL scaha.getRosterPlayersByTeamID(?)");
 			cs.setInt("teamid", this.selectedteam);
 		    rs = cs.executeQuery();
@@ -292,7 +293,7 @@ public class rosterBean implements Serializable{
 				LOGGER.info("We have results for team roster");
 			}
 			rs.close();
-			
+			*/
 			db.cleanup();
     		
     	} catch (SQLException e) {

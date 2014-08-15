@@ -215,7 +215,10 @@ public class ProfileBean implements Serializable,  MailableObject  {
  	}
     
     public void verifyHasRoles(String _str){
- 		FacesContext context = FacesContext.getCurrentInstance();
+ 		
+    	
+    	
+    	FacesContext context = FacesContext.getCurrentInstance();
  		try{
  			if(pro == null){
  				this.origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
@@ -248,8 +251,17 @@ public class ProfileBean implements Serializable,  MailableObject  {
     	if (pro == null) return false;
     	String[] roles = _strRoles.split(";");
     	for (String role : roles) {
-    		for (Role myrole : pro.getRoles()) {
-    			if (myrole.getName() != null && myrole.getName().equals(role)) return true;
+    		if (!role.equals("T-MAN")){
+	    		for (Role myrole : pro.getRoles()) {
+	    			if (myrole.getName() != null && myrole.getName().equals(role)) return true;
+	    		}
+    		} else {
+    			if (this.getProfile().getScahamanager().getIsmanager()){
+    				return true;
+    			}
+    			else {
+    				return false;
+    			}
     		}
     	}
     	return false;

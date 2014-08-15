@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.primefaces.event.FileUploadEvent;
@@ -17,6 +19,7 @@ public class FileUploadController extends ScahaObject implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	private HttpServletRequest servletRequest;
 	
 	public FileUploadController (){ 
 		
@@ -35,7 +38,7 @@ public class FileUploadController extends ScahaObject implements Serializable {
         
         try {
         	String sAbsolutePath = ContextManager.getRealPath();
-        	String destPath = sAbsolutePath + "\\Scoresheet\\" + scoresheet.getGametype() + "\\" + scoresheet.getIdgame() + prefix + "." + suffix;
+        	String destPath = "\\var\\scaha\\scoresheets\\" + scoresheet.getGametype() + "_" + scoresheet.getIdgame() + prefix + "." + suffix;
         	
             File destFile = new File(destPath);
         	stream = event.getFile().getInputstream();
@@ -55,3 +58,4 @@ public class FileUploadController extends ScahaObject implements Serializable {
     }	
 		
 }
+	

@@ -78,19 +78,13 @@
 				            <h:outputText value="#{TempGame.getDate()}" />  
 				        </p:column>  
 				        <p:column headerText="Visiting Team">  
-				        	<p:graphicImage id="logoimageAway#{TempGame.getIdgame()}" width="30" height="30" value="#{clubBean.getClubLogoByParmId()}"  >
-			            		<f:param name="target" value="1" />
-					 		</p:graphicImage> 
-				            <h:outputText value="#{TempGame.getVisitor()}" />  
+				        	<h:outputText value="#{TempGame.getVisitor()}" />  
 				        </p:column>
 				        <p:column headerText="Score">  
 				        	<h:outputText value="#{TempGame.getAwayscore()}" />  
 				        </p:column>
 				        <p:column headerText="Home Team">  
-				        	<p:graphicImage id="logoimageHome#{TempGame.getIdgame()}" width="30" height="30" value="#{clubBean.getClubLogoByParmId()}"  >
-				            		<f:param name="target" value="2" />
-						 	</p:graphicImage> 
-				            <h:outputText value="#{TempGame.getHome()}" />  
+				        	<h:outputText value="#{TempGame.getHome()}" />  
 				        </p:column>
 				        <p:column headerText="Score">  
 				        	<!-- need to add image object here -->
@@ -104,8 +98,8 @@
 				        </p:column>
 				        <p:column headerText="">
 				        	<p:splitButton id="game" icon="ui-icon-folder-open"  >
-						        <p:menuitem value="Add Details" action="#{managerBean.editGame(TempGame)}" />
-						        <p:menuitem value="Add Scoresheet" action="#{playerreleaseBean.startTemporaryRelease(testgame)}" />
+						        <p:menuitem value="Add Details" action="#{managerBean.editLiveGame(TempGame)}" />
+						        <p:menuitem value="Manage Scoresheet(s)" immediate="true" action="#{managerBean.uploadSCAHAScoresheet(TempGame)}" ajax="false" />
 						    </p:splitButton>
 				        </p:column>  
 				    </p:dataTable>

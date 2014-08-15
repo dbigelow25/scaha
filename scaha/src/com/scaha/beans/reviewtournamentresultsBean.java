@@ -204,8 +204,69 @@ public class reviewtournamentresultsBean implements Serializable{
 		tournamentgames = tgames;
 	}
 	
-	
+	public void editGameDetail(TournamentGame tournament){
+		String gameid = tournament.getIdgame().toString();
+		FacesContext context = FacesContext.getCurrentInstance();
 		
+		try{
+			context.getExternalContext().redirect("editstattournamentgameform.xhtml?teamid=0&gameid=" + gameid);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void deleteTournamentGame(TournamentGame tourn){
+		//need to set to void
+    	Integer gameid = tourn.getIdgame();
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
 
+			if (db.setAutoCommit(false)) {
+			
+				//Need to provide info to the stored procedure to save or update
+ 				LOGGER.info("remove tournament game from list");
+ 				CallableStatement cs = db.prepareCall("CALL scaha.deleteTeamTournamentGame(?)");
+    		    cs.setInt("gameid", gameid);
+    		    cs.executeQuery();
+    		    db.commit();
+    			db.cleanup();
+ 				
+    		    FacesContext context = FacesContext.getCurrentInstance();  
+                context.addMessage(null, new FacesMessage("Successful", "You have deleted the tournament game"));
+			} else {
+		
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("ERROR IN Deleting the Tournament");
+			e.printStackTrace();
+			db.rollback();
+		} finally {
+			//
+			// always clean up after yourself..
+			//
+			db.free();
+		}
+		
+		//now we need to reload the data object for the loi list
+		getTournamentGames();
+	}
+		
+	public void uploadTournamentScoresheet(TournamentGame game){
+		String gameid = game.getIdgame().toString();
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		
+		try{
+			context.getExternalContext().redirect("managetournamentgamescoresheet.xhtml?id=" + gameid + "&teamid=0");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }
 

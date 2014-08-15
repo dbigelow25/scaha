@@ -53,6 +53,7 @@ public class scoresheetBean implements Serializable {
 	private String gamedate = null;
 	private String opponent = null;
 	private String gametime = null;
+	private String isscaha = null;
 	
 	//datamodels for all of the lists on the page
 	private ScoresheetDataModel ScoresheetDataModel = null;
@@ -78,16 +79,36 @@ public class scoresheetBean implements Serializable {
 	    {
 	  		this.teamid = Integer.parseInt(hsr.getParameter("teamid").toString());
 	    }
-        
+	  	
+	  	this.isscaha="no";
+	  	if(hsr.getParameter("scaha") != null)
+	    {
+	  		this.isscaha = hsr.getParameter("scaha").toString();
+	    }
+	  	
+	  	
 	  	
 	  	this.fileuploadcontroller = new FileUploadController();
-	  	getNonScahaGame();
+	  	if (this.isscaha.equals("yes")){
+	  		getScahaGame();
+	  	}else{
+	  		getNonScahaGame();
+	  	}
 	  	getGameScoresheets();
 	}
 	
     public scoresheetBean() {  
         
     }  
+    
+    public String getIsscaha(){
+    	return isscaha;
+    }
+    
+    public void setIsscaha(String gdate){
+    	isscaha=gdate;
+    }
+    
     
     public String getOpponent(){
     	return opponent;
@@ -409,6 +430,47 @@ public class scoresheetBean implements Serializable {
     	try{
     		//first get team name
     		CallableStatement cs = db.prepareCall("CALL scaha.getTournamentGameForTeam(?,?)");
+			cs.setInt("teamid", this.teamid);
+			cs.setInt("gameid", this.idgame);
+			rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					this.gamedate = rs.getString("gamedate");
+    				this.gametime = rs.getString("gametime");
+    				this.opponent = rs.getString("opponent");
+    				this.gametype = rs.getString("gametype");
+    				
+    			}
+				LOGGER.info("We have results for tourney game by team:" + this.idgame);
+			}
+			
+			rs.close();
+			db.cleanup();
+    		
+			LOGGER.info("loaded detail for non scaha game:" + this.idgame);
+    		
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN getting non scaha game for team" + this.idgame);
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+		
+    }
+	
+	public void getScahaGame() {  
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	
+    	try{
+    		//first get team name
+    		CallableStatement cs = db.prepareCall("CALL scaha.getSCAHAGameForTeam(?,?)");
 			cs.setInt("teamid", this.teamid);
 			cs.setInt("gameid", this.idgame);
 			rs = cs.executeQuery();

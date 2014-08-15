@@ -18,6 +18,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.mail.internet.InternetAddress;
 
@@ -27,6 +28,7 @@ import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.ExhibitionGame;
 import com.scaha.objects.ExhibitionGameDataModel;
+import com.scaha.objects.LiveGame;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.RosterEdit;
 import com.scaha.objects.RosterEditDataModel;
@@ -50,6 +52,9 @@ public class managerBean implements Serializable, MailableObject {
     private ScahaBean scaha;
 	@ManagedProperty(value="#{profileBean}")
 	private ProfileBean pb;
+	@ManagedProperty(value="#{scoreboardBean}")
+	private ScoreboardBean sb;
+	
 
 	transient private ResultSet rs = null;
 	//lists for generated datamodels
@@ -59,6 +64,7 @@ public class managerBean implements Serializable, MailableObject {
 	private List<TournamentGame> tournamentgames = null;
 	private List<Tournament> tournaments = null;
 	private List<ExhibitionGame> exhibitiongames = null;
+	
     
 	//bean level properties used by multiple methods
 	private Integer teamid = null;
@@ -123,7 +129,7 @@ public class managerBean implements Serializable, MailableObject {
         idclub = 1;  
         
         this.setProfid(pb.getProfile().ID);
-        
+        this.setPb(pb);
         getClubID();
         //isClubHighSchool();
     	setTodaysDate();
@@ -489,42 +495,65 @@ public class managerBean implements Serializable, MailableObject {
     //retrieves list of existing teams for the club
     public void loadScahaGames(){
     	List<TempGame> tempresult = new ArrayList<TempGame>();
-    	//dummy data until schedule is built
-		/*TempGame ogame = new TempGame();
-		ogame.setIdgame(1);
-		ogame.setDate("Sat Sep 2nd, 2014");
-		ogame.setTime("12:00 PM");
-		ogame.setVisitor("Jr Ducks");
-		ogame.setHome("Jr Kings");
-		ogame.setLocation("Toyota Sports Center");
-		ogame.setAwayscore("");
-		ogame.setHomescore("");
-		tempresult.add(ogame);
+    	
+    	/*ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	
+    	try{
+    		//first get team name
+    		CallableStatement cs = db.prepareCall("CALL scaha.getSCAHAGamesForHomeTeam(?)");
+			cs.setInt("teamid", this.teamid);
+			rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					String idgame = rs.getString("idlivegame");
+    				String hometeam = rs.getString("hometeam");
+    				String awayteam = rs.getString("awayteam");
+    				String homescore = rs.getString("homescore");
+    				String awayscore = rs.getString("awayscore");
+    				String dates = rs.getString("date");
+    				String time = rs.getString("time");
+    				String location = rs.getString("location");
+    				String status = rs.getString("status");
+    				
+    				TempGame ogame = new TempGame();
+    				ogame.setIdgame(Integer.parseInt(idgame));
+    				ogame.setDate(dates);
+    				ogame.setTime(time);
+    				ogame.setVisitor(awayteam);
+    				ogame.setHome(hometeam);
+    				ogame.setLocation(location);
+    				ogame.setAwayscore(homescore);
+    				ogame.setHomescore(awayscore);
+    				tempresult.add(ogame);
+    				
+				}
+				LOGGER.info("We have results for tourney list by team:" + this.teamid);
+			}
+			
+			
+			rs.close();
+			db.cleanup();
+    		
+			LOGGER.info("manager has added tournament:" + this.tournamentname);
+    		//need to add email sent to scaha statistician and manager
+			
+			
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN getting tournament list for team" + this.teamid);
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
 		
-		ogame = new TempGame();
-		ogame.setIdgame(2);
-		ogame.setDate("Sun Sep 3rd, 2014");
-		ogame.setTime("9:00 AM");
-		ogame.setVisitor("Jr Gulls");
-		ogame.setHome("Jr Kings");
-		ogame.setLocation("Toyota Sports Center");
-		ogame.setAwayscore("");
-		ogame.setHomescore("");
-		tempresult.add(ogame);
-		
-		ogame = new TempGame();
-		ogame.setIdgame(3);
-		ogame.setDate("Sun Sep 3rd, 2014");
-		ogame.setTime("1:00 PM");
-		ogame.setVisitor("Jr Flyers");
-		ogame.setHome("Wave (Ontario)");
-		ogame.setLocation("East West Ice Palace");
-		ogame.setAwayscore("");
-		ogame.setHomescore("");
-		tempresult.add(ogame);
-		*/
-		setGames(tempresult);
-    	TempGameDataModel = new TempGameDataModel(games);
+    	setGames(tempresult);
+    	TempGameDataModel = new TempGameDataModel(games);*/
     }
 
     public TempGameDataModel getTempGamedatamodel(){
@@ -655,6 +684,17 @@ public class managerBean implements Serializable, MailableObject {
 		this.pb = pb;
 	}
 
+	
+	public ScoreboardBean getSb() {
+		return sb;
+	}
+
+	/**
+	 * @param pb the pb to set
+	 */
+	public void setSb(ScoreboardBean pb) {
+		this.sb = pb;
+	}
 	
 	public RosterEditDataModel getRostereditdatamodel(){
     	return RosterEditDataModel;
@@ -1396,6 +1436,19 @@ public class managerBean implements Serializable, MailableObject {
 		}
 	}
 	
+	public void uploadSCAHAScoresheet(TempGame game){
+		String gameid = game.getIdgame().toString();
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		
+		try{
+			context.getExternalContext().redirect("managegamescoresheet.xhtml?scaha=yes&id=" + gameid + "&teamid=" + this.teamid);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void uploadTournamentScoresheet(TournamentGame game){
 		String gameid = game.getIdgame().toString();
 		
@@ -1515,5 +1568,28 @@ public class managerBean implements Serializable, MailableObject {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public void editLiveGame(TempGame game) {  
+		
+		Integer gameid = game.getIdgame();
+		
+		LiveGame lg = new LiveGame(gameid,this.getPb().getProfile());
+		lg.setAwayscore(0);
+		lg.setHomescore(0);
+		lg.setHometeamname(teamname);
+		lg.setAwayteamname(teamname);
+		sb.setSelectedlivegame(lg);
+		
+		 //LOGGER.info("!!!!! Real Selected Game is" + selectedlivegame);
+		  
+	     ExternalContext context = FacesContext.getCurrentInstance().getExternalContext(); 
+	     try {
+	    	 context.redirect("gamesheetcentral.xhtml");
+	     } catch (IOException e) {
+	    	 // TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	     
+	 }
 }
 
