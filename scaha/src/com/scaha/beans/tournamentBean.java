@@ -99,9 +99,7 @@ public class tournamentBean implements Serializable {
     		this.idteamtournament = Integer.parseInt(hsr.getParameter("tournamentid").toString());
         }
         
-        teamid = 131;
-        
-        getTournament();
+    	getTournament();
         
         
 	}
