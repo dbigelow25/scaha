@@ -903,6 +903,8 @@ public class managerBean implements Serializable, MailableObject {
     		db.free();
     	}
 		
+    	//now update the alerts
+    	setAlerts();
 	}
 	
 	public void getTournament() {  
@@ -985,6 +987,7 @@ public class managerBean implements Serializable, MailableObject {
 	        
 	        String newvalue = oldValue;
 	        getRoster();
+	        setAlerts();
 	}
 	
 	public void deleteTournament(Tournament tourn){
@@ -1022,8 +1025,9 @@ public class managerBean implements Serializable, MailableObject {
 			db.free();
 		}
 		
-		//now we need to reload the data object for the loi list
+		//now we need to reload the data object for the tournament list and the alerts
 		getTournament();
+		setAlerts();
 	}
 	
 	public void editTournamentDetail(Tournament tournament){
@@ -1202,6 +1206,9 @@ public class managerBean implements Serializable, MailableObject {
     		//
     		db.free();
     	}
+    	
+    	//need to update the alerts
+    	setAlerts();
 	}
 	
 	public void deleteTournamentGame(TournamentGame tourn){
@@ -1239,8 +1246,9 @@ public class managerBean implements Serializable, MailableObject {
 			db.free();
 		}
 		
-		//now we need to reload the data object for the loi list
+		//now we need to reload the data object for the tourney games list and the alerts
 		getTournamentGames();
+		setAlerts();
 	}
 
 	public void editGameDetail(TournamentGame tournament){
@@ -1312,7 +1320,7 @@ public class managerBean implements Serializable, MailableObject {
 			
 			getExhibitionGames();
 			
-			//need to add email to manager and scaha statistician
+			
 			
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
@@ -1326,7 +1334,8 @@ public class managerBean implements Serializable, MailableObject {
     		db.free();
     	}
     	
-    	
+    	//need to update the alerts now
+    	setAlerts();
 	}
 	
 	public void getExhibitionGames() {  

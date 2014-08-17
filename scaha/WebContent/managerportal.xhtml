@@ -156,7 +156,7 @@
 								<p:inputText id="Website" style="width:200px;" value="#{managerBean.website}" required="false"/>
 							</h:column>
 							<h:column >
-								<p:commandButton id="submittournament" update="tournaments,:tournamentgameform:gametournament,tournamentmessages,tourneyname,levelplaying,startdate,enddate,contact,contactphone,sanctionnumber,location,Website" value="Add Tournament" ajax="true" actionListener="#{managerBean.addTournament()}" />
+								<p:commandButton id="submittournament" update=":scahagameform:scahagamesmessages,tournaments,:tournamentgameform:gametournament,tournamentmessages,tourneyname,levelplaying,startdate,enddate,contact,contactphone,sanctionnumber,location,Website" value="Add Tournament" ajax="true" actionListener="#{managerBean.addTournament()}" />
 							</h:column>
 							<h:column >
 								<p:commandButton id="closeaddtourney" value="Close" ajax="true" onclick="tpoverlay.hide();" />
@@ -187,7 +187,7 @@
 				        	<p:splitButton id="tournyoptions#{tournament.idtournament}" icon="ui-icon-folder-open"  >
 						        <p:menuitem value="Edit Tournament Detail" immediate="true" rendered="#{tournament.rendered}" action="#{managerBean.editTournamentDetail(tournament)}" />
 						        <p:menuitem value="View Tournament Detail" immediate="true" action="#{managerBean.viewTournamentDetail(tournament)}"/>
-						        <p:menuitem value="Delete Tournament" immediate="true" rendered="#{tournament.rendered}" action="#{managerBean.deleteTournament(tournament)}" update="@form"/>
+						        <p:menuitem value="Delete Tournament" immediate="true" rendered="#{tournament.rendered}" action="#{managerBean.deleteTournament(tournament)}" update=":scahagameform:scahagamesmessages,@form"/>
 						    </p:splitButton>
 						</p:column>  
 				    </p:dataTable>
@@ -299,7 +299,7 @@
 								<p:inputText id="exhibitiongamelocation" style="width:200px;" value="#{managerBean.exhibitiongamelocation}" required="true" requiredMessage="Location of game is required."/>
 							</h:column>
 							<h:column>
-								<p:commandButton id="submitexhibitiongame" update="exhibitiongamemessages,exhibitiongames,exgamedate,exgametime,exopponent,exhibitiongamelocation" value="Add Exhibition Game" ajax="true" actionListener="#{managerBean.addExhibitionGame()}" />	
+								<p:commandButton id="submitexhibitiongame" update=":scahagameform:scahagamesmessages,exhibitiongamemessages,exhibitiongames,exgamedate,exgametime,exopponent,exhibitiongamelocation" value="Add Exhibition Game" ajax="true" actionListener="#{managerBean.addExhibitionGame()}" />	
 							</h:column>
 							<h:column >
 								<p:commandButton id="closeaddexhibition" value="Close" ajax="true" onclick="exgoverlay.hide();" />
