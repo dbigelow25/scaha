@@ -29,7 +29,7 @@
  	                
     	        <p:column style="font-size: 12px;" headerText="Date">
     	            <p:spacer width="10px" />
-    	            <h:outputLink id="fpasslink" value="downloads/meetingminutes/#{minute.getFilename()}" rendered="#{not empty minute.getFilename()}">
+    	            <h:outputLink id="fpasslink" value="downloads/meetingminutes/#{minute.getFilename()}" target="_blank" rendered="#{not empty minute.getFilename()}">
 					<h:outputText
 						style="font-weight: normal;font-size: 9pt;font-family: Verdana;"
 						value="#{minute.getMeetingdate()}" />

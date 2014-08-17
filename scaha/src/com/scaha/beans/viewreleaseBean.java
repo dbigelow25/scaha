@@ -17,6 +17,8 @@ import javax.faces.context.FacesContext;
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
+import com.gbli.common.SendMailSSL;
+import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.MailableObject;
@@ -30,6 +32,8 @@ public class viewreleaseBean implements Serializable, MailableObject {
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	private static String mail_permreg_body = Utils.getMailTemplateFromFile("/mail/permanentreleasenotes.html");
+	
 	transient private ResultSet rs = null;
 	private String type = null;
 	private String firstname = null;
@@ -58,6 +62,7 @@ public class viewreleaseBean implements Serializable, MailableObject {
 	private Boolean displaytemporary = null;
 	private Integer releaseid = null;
 	private String selectedstatus = null;
+	private String selectedstatuslabel = null;
 	
 	
 	@PostConstruct
@@ -75,6 +80,14 @@ public class viewreleaseBean implements Serializable, MailableObject {
 
     	//doing anything else right here
     }  
+	
+	public String getSelectedstatuslabel(){
+		return selectedstatuslabel;
+	}
+	
+	public void setSelectedstatuslabel(String value){
+		selectedstatuslabel=value;
+	}
 	
 	public String getType() {
 		// TODO Auto-generated method stub
@@ -267,14 +280,24 @@ public class viewreleaseBean implements Serializable, MailableObject {
     	subject = ssubject;
     }
     
-	public String getTextBody() {
+    public String getTextBody() {
 		// TODO Auto-generated method stub
-		return textbody;
+		List<String> myTokens = new ArrayList<String>();
+		myTokens.add("FIRSTNAME:" + this.firstname);
+		myTokens.add("LASTNAME:" + this.lastname);
+		myTokens.add("RELEASINGCLUB: " + this.releasingclubdivision);
+		myTokens.add("ACCEPTINGCLUB: " + this.acceptingclub);
+		myTokens.add("DIVISION: " + this.division);
+		myTokens.add("SKILLLEVEL: " + this.skilllevel);
+		myTokens.add("RELEASESTATUS: " + this.selectedstatuslabel);
+		myTokens.add("STATUSNOTES: " + this.note);
+		
+		String result = null;
+		result = Utils.mergeTokens(viewreleaseBean.mail_permreg_body,myTokens);
+		
+		return result;
 	}
-	
-	public void setTextBody(String stextbody){
-		textbody = stextbody;
-	}
+    
 	
 	public String getPreApprovedCC() {
 		// TODO Auto-generated method stub
@@ -472,7 +495,28 @@ public class viewreleaseBean implements Serializable, MailableObject {
     			cs.setInt("status", Integer.parseInt(this.selectedstatus));
     			cs.setString("notes", this.note);
     			
-    			cs.executeQuery();
+    			rs = cs.executeQuery();
+    			
+				while (rs.next()) {
+					this.releasingclubdivision = rs.getString("releasingclubdivision");
+    				this.acceptingclub = rs.getString("acceptingclub");
+					this.division = rs.getString("division");
+					this.skilllevel = rs.getString("skilllevel");
+					this.selectedstatuslabel = rs.getString("statuslabel");
+					
+					if (this.acceptingclub==null){
+						this.acceptingclub=" ";
+					}
+					
+					if (this.division==null){
+						this.division=" ";
+					}
+					
+					if (this.skilllevel==null){
+						this.skilllevel=" ";
+					}
+				}
+				rs.close();
     			db.commit();
     			db.cleanup();
     			
@@ -507,12 +551,22 @@ public class viewreleaseBean implements Serializable, MailableObject {
     			}
     		    rs.close();
     		    
-    		    //and now the family email
-    		    to = to + ',' + this.getParentemail();
+    		    
+    		    
+    		    //and now the family email if the release was approved
+    		    if (this.selectedstatus.equals("2")){
+    		    	to = to + ',' + this.getParentemail();
+    		    }
+    		    
+    		    
     		    
     		    this.setToMailAddress(to);
-    		    this.setTextBody("Player " + this.firstname + " " + this.lastname + " Notes From SCAHA");
-    		    this.setSubject(this.firstname + " " + this.lastname + " Released Notes from SCAHA");
+    		    this.setSubject(this.firstname + " " + this.lastname + " Release Status from SCAHA");
+    		    
+    		    SendMailSSL mail = new SendMailSSL(this);
+				LOGGER.info("Finished creating mail object for Release Status");
+				mail.sendMail();
+				
     		    
 				FacesContext context = FacesContext.getCurrentInstance();
     		    Application app = context.getApplication();
