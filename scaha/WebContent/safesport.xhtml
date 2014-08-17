@@ -17,9 +17,10 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	<ui:define name="content">
+		<h:form id="form">
 		<p:panel header="Safe Sport Page" footer="brought to you by iScaha">
 		
-					<p class="normal">Hello Safesport Coordinators!
+		<!-- 			<p class="normal">Hello Safesport Coordinators!
 		<br /><br />Many of you may have received the document attached from USA Hockey yesterday.  it is helpful information for those of you who have not yet completed the Safesport training online.  Please remember that the role of Safesport Coordinator for your club includes the following requirements:
 		</p>
 		<ul>
@@ -33,8 +34,18 @@
 		 <br /><br />
 		Thank you all for your volunteer service, see you soon!<br />
 		Jaime Campbell<br />
-		SCAHA Director of Safesport</p>
+		SCAHA Director of Safesport</p> -->
+			<div class="NewsText"><h:outputText value="#{safesportBean.getBody()}" escape="false" /></div>
 		</p:panel>
+		<p:panel header="Edit The Safesport Content" widgetVar="panelwv#" rendered="#{profileBean.hasRoleList('S-SAFE')}" toggleable="true">	
+   			
+   			<p:editor  id="editor" widgetVar="edit" value="#{safesportBean.body}" rendered="true"/>
+			<p:separator />
+  			<p:commandButton value="Update Safesport" id="update" ajax="false" action="#{safesportBean.updateSafesport()}" update="@form"/>
+			
+		  
+		</p:panel>
+		</h:form>
 	</ui:define>
 </ui:composition>
 </html>

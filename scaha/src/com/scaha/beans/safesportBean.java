@@ -33,7 +33,7 @@ public class safesportBean implements Serializable  {
 	private PlayerDataModel playerlist = null;
 	private PlayerDataModel personlist = null;
 	
-    
+    //these are for viewing the safesport lsit.
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	private String searchcriteria = "";			// Start out with no search criteria
@@ -43,7 +43,9 @@ public class safesportBean implements Serializable  {
 	private String email = null;
 	private Player selectedsearchperson = null;
 	
-
+	//parameter is used for the safesport page for displaying the body content
+	private String body = null;
+	
 	 @PostConstruct
 	 public void init() {
 		 
@@ -59,6 +61,16 @@ public class safesportBean implements Serializable  {
 		 
 		//LoadSelectionToAddList();
 		LoadList();
+		
+		LoadBody();
+	 }
+	 
+	 public String getBody(){
+		 return body;
+	 }
+	 
+	 public void setBody(String value){
+		 body=value;
 	 }
 
 	 public Player getSelectedsearchperson(){
@@ -262,4 +274,49 @@ public void setPersonlist(PlayerDataModel playerlist) {
 		
 		LoadList();
 	}
+	
+	public void LoadBody(){
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+  		 List<Player> templist = new ArrayList<Player>();
+		 
+  		 try {
+  			CallableStatement cs = db.prepareCall("CALL scaha.getSafeSportBody()");
+			ResultSet rs = cs.executeQuery();
+   			
+			while (rs.next()) {
+				this.setBody(rs.getString("body"));
+			}
+			
+			rs.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+  		db.free();
+  		db.cleanup();
+  		
+  	}
+	
+	public void updateSafesport(){
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+  		 List<Player> templist = new ArrayList<Player>();
+		 
+  		 try {
+  			CallableStatement cs = db.prepareCall("CALL scaha.updateSafeSportBody()");
+  			cs.setString("inbody", this.body);
+			ResultSet rs = cs.executeQuery();
+   			
+			while (rs.next()) {
+				this.setBody(rs.getString("body"));
+			}
+			
+			rs.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+  		db.free();
+  		db.cleanup();
+  		
+  	}
 }
