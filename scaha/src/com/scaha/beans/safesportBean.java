@@ -302,7 +302,7 @@ public void setPersonlist(PlayerDataModel playerlist) {
   		 List<Player> templist = new ArrayList<Player>();
 		 
   		 try {
-  			CallableStatement cs = db.prepareCall("CALL scaha.updateSafeSportBody()");
+  			CallableStatement cs = db.prepareCall("CALL scaha.updateSafeSportBody(?)");
   			cs.setString("inbody", this.body);
 			ResultSet rs = cs.executeQuery();
    			
