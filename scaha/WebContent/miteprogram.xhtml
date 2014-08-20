@@ -17,12 +17,24 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	<ui:define name="content">
-		<p:panel header="2014-15 Mite Program" footer="brought to you by iScaha">
+		<!-- <p:panel header="2014-15 Mite Program" footer="brought to you by iScaha">
 			<p>Season Schedule - Coming August 2014.</p>
 			<br></br>
 		    <p>Download the <a href="downloads/Sign-In_Sheet_2014.pdf" target="_blank">Sign-in Sheet</a></p>        
+		</p:panel> -->
+		<h:form id="form">
+		<p:panel header="Mite Program" footer="brought to you by iScaha">
+			<div class="NewsText"><h:outputText value="#{miteBean.getBody()}" escape="false" /></div>
 		</p:panel>
-	
+		<p:panel header="Edit The Manager Content" widgetVar="panelwv#" rendered="#{profileBean.hasRoleList('S-MITE')}" toggleable="true">	
+   			
+   			<p:editor  id="editor" widgetVar="edit" value="#{miteBean.body}" rendered="true"/>
+			<p:separator />
+  			<p:commandButton value="Update Mite Program" id="update" ajax="false" action="#{miteBean.updateMiteprogram()}" update="@form"/>
+			
+		  
+		</p:panel>
+		</h:form>
 	</ui:define>
 </ui:composition>
 </html>
