@@ -129,7 +129,7 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	 public void init() {
 		 
 		 LOGGER.info(" *************** START :POST INIT FOR GAMESHEET  BEAN *****************");
-		 this.setLivegame(sb.getSelectedlivegame());
+		 this.setLivegame(pb.getSelectedlivegame());
 		 LOGGER.info("/// here is selected live game.." + this.getLivegame());
 		 this.setHometeam(this.refreshHomeRoster());
 		 this.setAwayteam(this.refreshAwayRoster());
