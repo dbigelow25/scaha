@@ -849,7 +849,23 @@ public class managerBean implements Serializable, MailableObject {
 			getTournament();
 			
 			//need to add email to manager and scaha statistician
-			to = this.pb.getProfile().getUserName();
+			to = "";
+			cs = db.prepareCall("CALL scaha.getManagersforTeam(?)");
+			cs.setInt("teamid", this.teamid);
+  		    rs = cs.executeQuery();
+  		    if (rs != null){
+  				while (rs.next()) {
+  					if(to.equals("")){
+  						to = rs.getString("altemail");
+  					}else {
+  						to = to + ',' + rs.getString("altemail");
+  					}
+  				}
+  			}
+  		    rs.close();
+  		    
+			
+			
 			
 			cs = db.prepareCall("CALL scaha.getSCAHAStatisticianEmail()");
   		    rs = cs.executeQuery();
@@ -1155,8 +1171,21 @@ public class managerBean implements Serializable, MailableObject {
     		
 			
 			//need to add email to manager and scaha statistician
-			to = this.pb.getProfile().getUserName();
-			
+			to = "";
+			cs = db.prepareCall("CALL scaha.getManagersforTeam(?)");
+			cs.setInt("teamid", this.teamid);
+  		    rs = cs.executeQuery();
+  		    if (rs != null){
+  				while (rs.next()) {
+  					if(to.equals("")){
+  						to = rs.getString("altemail");
+  					}else {
+  						to = to + ',' + rs.getString("altemail");
+  					}
+  				}
+  			}
+  		    rs.close();
+  		    
 			cs = db.prepareCall("CALL scaha.getSCAHAStatisticianEmail()");
   		    rs = cs.executeQuery();
   		    if (rs != null){
@@ -1281,8 +1310,21 @@ public class managerBean implements Serializable, MailableObject {
 			LOGGER.info("manager has added exhibition game:" + this.gamedate);
     		
 			//need to add email to manager and scaha statistician
-			to = this.pb.getProfile().getUserName();
-			
+			to = "";
+			cs = db.prepareCall("CALL scaha.getManagersforTeam(?)");
+			cs.setInt("teamid", this.teamid);
+  		    rs = cs.executeQuery();
+  		    if (rs != null){
+  				while (rs.next()) {
+  					if(to.equals("")){
+  						to = rs.getString("altemail");
+  					}else {
+  						to = to + ',' + rs.getString("altemail");
+  					}
+  				}
+  			}
+  		    rs.close();
+  		    
 			cs = db.prepareCall("CALL scaha.getSCAHAStatisticianEmail()");
   		    rs = cs.executeQuery();
   		    if (rs != null){
@@ -1546,6 +1588,8 @@ public class managerBean implements Serializable, MailableObject {
 		if (ExhibitionGames){
 			context.addMessage("scahagamesmessages", new FacesMessage(FacesMessage.SEVERITY_WARN,"Action Needed!", "You have Exhibition Games needing the scoresheet uploaded."));
 		}
+		
+		context.addMessage("scahagamesmessages", new FacesMessage(FacesMessage.SEVERITY_INFO,"Information", "Team rosters will be displayed as they are received and confirmed by SCAHA Member Services.  Any jersey number changes made previously will be saved."));
 		
 	}
 	
