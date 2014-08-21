@@ -496,7 +496,7 @@ public class managerBean implements Serializable, MailableObject {
     public void loadScahaGames(){
     	List<TempGame> tempresult = new ArrayList<TempGame>();
     	
-    	/*ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	
     	try{
     		//first get team name
@@ -553,7 +553,7 @@ public class managerBean implements Serializable, MailableObject {
     	}
 		
     	setGames(tempresult);
-    	TempGameDataModel = new TempGameDataModel(games);*/
+    	TempGameDataModel = new TempGameDataModel(games);
     }
 
     public TempGameDataModel getTempGamedatamodel(){
@@ -1625,13 +1625,12 @@ public class managerBean implements Serializable, MailableObject {
 	public void editLiveGame(TempGame game) {  
 		
 		Integer gameid = game.getIdgame();
-		
-		LiveGame lg = new LiveGame(gameid,this.getPb().getProfile());
-		lg.setAwayscore(0);
-		lg.setHomescore(0);
-		lg.setHometeamname(teamname);
-		lg.setAwayteamname(teamname);
-		sb.setSelectedlivegame(lg);
+		//locate the livegame in the list.. via the above id vs creating a new one from scratch
+		//it does not have all the internal data that the one in the applevel bean does.
+		// (Scaha Bean)  ScahaBean has a master copy of all games .. that are already pointing to the teams
+		// in memory.. all hooked up..
+		LiveGame lg = scaha.getScahaLiveGameList().getByKey(gameid);
+		pb.setSelectedlivegame(lg);
 		
 		 //LOGGER.info("!!!!! Real Selected Game is" + selectedlivegame);
 		  

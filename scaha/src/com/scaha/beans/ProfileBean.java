@@ -5,6 +5,7 @@ import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.FamilyMemberDataModel;
+import com.scaha.objects.LiveGame;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Person;
 import com.scaha.objects.Profile;
@@ -58,6 +59,7 @@ public class ProfileBean implements Serializable,  MailableObject  {
 	private boolean EditMember = false;
 	private boolean AddMember = false;
 	private Person selectedPerson;
+	private LiveGame selectedlivegame = null;
 	//
 	// Very archaic way to track changes.. 
 	// profiles are tricky because they are rarely changed..
@@ -1113,5 +1115,14 @@ public InternetAddress[] getToMailIAddress() {
 @Override
 public InternetAddress[] getPreApprovedICC() {
 	return null;
+}
+public LiveGame getSelectedlivegame() {
+	return selectedlivegame;
+}
+/**
+ * @param selectedlivegame the selectedlivegame to set
+ */
+public void setSelectedlivegame(LiveGame selectedlivegame) {
+	this.selectedlivegame = selectedlivegame;
 }
 }
