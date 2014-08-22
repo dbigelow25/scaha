@@ -25,11 +25,69 @@
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
 <ui:define name="content">
 	<h:form id="form1">	
-	<p:layout id="mylayout" style="height:850px;">
-		<p:layoutUnit id="header" position="north" header = "SCAHA GAMESHEET INFORMATION">
+	<p:layout id="mylayout" style="height:1050px;">
+		<p:layoutUnit id="header" position="north" header = "SCAHA GAMESHEET INFORMATION for #{gamesheetBean.livegame.toString()}">
 		<div style="float:left;">
+		<ui:fragment id="gameinfo">
+			<ui:fragment id="fview" rendered="#{!gamesheetBean.isEditgame()}">
+			<p:panelGrid columns="6">
+		    <p:outputLabel for="lgtype" value="Game Type:" /><h:outputText id = "lgtype" value= "#{gamesheetBean.lgtype}" />
+		    <p:outputLabel for="lgvenue" value="Venue Is:" /><h:outputText id = "lgvenue" value= "#{gamesheetBean.lgvenue}" />
+		    <p:outputLabel for="lgstartdate" value="Start Date:" /><h:outputText id = "lgstartdate" value= "#{gamesheetBean.lgdate}" />
+		    <p:outputLabel for="lgstate" value="Game State:" /><h:outputText id = "lgstate" value= "#{gamesheetBean.lgstate}" />
+		    <p:outputLabel for="lgsheet" value="Rink Is:"/><h:outputText id = "lgsheet" value= "#{gamesheetBean.lgsheet}" />
+		    <p:outputLabel for="lgstarttime" value="Start Time:" /><h:outputText id = "lgstarttime" value= "#{gamesheetBean.lgtime}" />
+		    <p:outputLabel for="lghteam" value="Home Team:" /><h:outputText id = "lghteam" value= "#{gamesheetBean.lghteam}" />
+		    <p:outputLabel for="lgateam" value="Away Team:" /><h:outputText id = "lgateam" value= "#{gamesheetBean.lgateam}" />
+		    </p:panelGrid>
+			<p:commandButton id="editcmd" value="Edit Game" ajax="true"  update=":form1:gameinfo :form1:gameinfostate" actionListener="#{gamesheetBean.setEditgame(true)}" />
+			</ui:fragment >
+			<ui:fragment id="fedit" rendered="#{gamesheetBean.isEditgame()}">
+			<p:panelGrid columns="6">
+		    <p:outputLabel for="elgtype" value="Game Type:" />
+				<p:selectOneMenu id="elgtype" value="#{gamesheetBean.lgtypeval}" effect="fold">
+    	         <f:selectItem itemLabel="#{gamesheetBean.lgtype}" itemValue="#{gamesheetBean.lgtypeval}" />
+	            <f:selectItems value="#{gamesheetBean.typepick}" />
+            </p:selectOneMenu>
+		    <p:outputLabel for="elgvenue" value="Venue Is:" />
+				<p:selectOneMenu id="elgvenue" value="#{gamesheetBean.lgvenueval}" effect="fold">
+    	         <f:selectItem itemLabel="#{gamesheetBean.lgvenue}" itemValue="#{gamesheetBean.lgvenueval}" />
+	            <f:selectItems value="#{gamesheetBean.venues}" />
+            </p:selectOneMenu>
+		    <p:outputLabel for="elgstartdate" value="Start Date:" /><p:inputMask id = "elgstartdate" value= "#{gamesheetBean.lgdate}" mask="9999/99/99"/>
+		    <p:outputLabel for="elgstate" value="Game State:" />
+		  	<p:selectOneMenu id="elgstate" value="#{gamesheetBean.lgstateval}" effect="fold">
+    	         <f:selectItem itemLabel="#{gamesheetBean.lgstate}" itemValue="#{gamesheetBean.lgstateval}" />
+	            <f:selectItems value="#{gamesheetBean.statepick}" />
+            </p:selectOneMenu>
+		    <p:outputLabel for="elgsheet" value="Rink Is:"/><h:inputText id = "elgsheet" value= "#{gamesheetBean.lgsheet}" />
+		    <p:outputLabel for="elgstarttime" value="Start Time:" /><h:inputText id = "elgstarttime" value= "#{gamesheetBean.lgtime}" maxlength="10"/>
+		    <p:outputLabel for="elghteam" value="Home Team:" />
+		  	<p:selectOneMenu id="elghteam" value="#{gamesheetBean.lghteamval}" effect="fold">
+    	         <f:selectItem itemLabel="#{gamesheetBean.lghteam}" itemValue="#{gamesheetBean.lghteamval}" />
+	            <f:selectItems value="#{gamesheetBean.htpick}" />
+            </p:selectOneMenu>
+		    <p:outputLabel for="elgateam" value="Away Team:" />
+		  	<p:selectOneMenu id="elgateam" value="#{gamesheetBean.lgateamval}" effect="fold">
+    	         <f:selectItem itemLabel="#{gamesheetBean.lgateam}" itemValue="#{gamesheetBean.lgateamval}" />
+	            <f:selectItems value="#{gamesheetBean.atpick}" />
+            </p:selectOneMenu>
+
+		    </p:panelGrid>
+			<p:commandButton id="savecmd" value="Save Game" ajax="true"  update=":form1:gameinfo :form1:gameinfostate" actionListener="#{gamesheetBean.saveScheduleInfo()}" />
+			<p:commandButton id="cancelcmd" value="Cancel" ajax="true"   update=":form1:gameinfo :form1:gameinfostate" actionListener="#{gamesheetBean.cancelScheduleInfoChanges()}" />
+			</ui:fragment>
+			</ui:fragment>
+			</div>
+		<div style="float:right;">
+			<p:panel id="gameinfostate">
+			<p:panelGrid  columns="2" rendered="#{!gamesheetBean.isEditgame()}">
+			<h:outputText value= "Click to mark game has started -->" /><p:commandButton id="inprogcmd" value="Game Inprogress" ajax="true"  update=":form1:gameinfo :form1:gameinfostate" actionListener="#{gamesheetBean.setEditgame(false)}" />
+			<h:outputText value= "Click to mark game is finished -->" /><p:commandButton id="compcmd" value="Game Completed" ajax="true"  update=":form1:gameinfo :form1:gameinfostate" actionListener="#{gamesheetBean.setEditgame(false)}" />
+			<h:outputText value= "Click to mark game stats are complete -->" /><p:commandButton id="reviewcmd" value="Stats Completed" ajax="true"  update=":form1:gameinfo :form1:gameinfostate" actionListener="#{gamesheetBean.setEditgame(false)}" />
+			</p:panelGrid>
+			</p:panel>
 		</div>
-		    #{gamesheetBean.livegame.toString()}
 		</p:layoutUnit>
  		<p:layoutUnit id="left" position="west" size="225" resizable="false" closable="false" collapsible="false" header="#{gamesheetBean.livegame.hometeam.getTeamname()}" >
 			 <p:contextMenu id="homemenu" for="homeroster">  
@@ -270,7 +328,7 @@
 			 </p:dataTable>
               </p:panelGrid>
 		     <p:panel header="Summary Notes" width="100%">
-				<p:editor  id="editor" value="Notes Go here" rendered="true"/>
+				<p:editor  id="editor" value="#{gamesheetBean.livegame.gamenotes}" rendered="true"/>
 			</p:panel>
     	</p:layoutUnit>
 	</p:layout>

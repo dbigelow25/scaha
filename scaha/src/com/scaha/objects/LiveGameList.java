@@ -67,6 +67,7 @@ public class LiveGameList extends ListDataModel<LiveGame> implements Serializabl
 			live.setStartdate(rs.getString(i++));
 			live.setStarttime(rs.getString(i++));
 			live.setScheduleidstub(rs.getInt(i++));
+			live.setGamenotes(rs.getString(i++));
 			live.setSched(_schl.getRowData(live.getScheduleidstub()+""));
 			data.add(live);
 			hm.put(live.ID+"", live);

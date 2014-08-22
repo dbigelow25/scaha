@@ -45,9 +45,6 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	@ManagedProperty(value="#{profileBean}")
 	private ProfileBean pb;
 	
-	@ManagedProperty(value="#{scoreboardBean}")
-	private ScoreboardBean sb;
-	
 	private LiveGame livegame = null;
 	private LiveGameRosterSpot selectedhomerosterspot;	
 	private LiveGameRosterSpot selectedawayrosterspot;	
@@ -118,6 +115,29 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	private Map<String, String> penalties = new HashMap<String, String>();
+	private Map<String, String> venues = new HashMap<String, String>();
+	private Map<String, String> htpick = new HashMap<String, String>();
+	private Map<String, String> atpick = new HashMap<String, String>();
+	private Map<String, String> typepick = new HashMap<String, String>();
+	private Map<String, String> statepick = new HashMap<String, String>();
+	
+	private String lgsheet = null;
+	private String lgvenue = null;
+	private String lgtype = null;
+	private String lgstate = null;
+	private String lgdate = null;
+	private String lgtime = null;
+	private String lgateam = null;
+	private String lghteam = null;
+	
+	private String lgateamval = null;
+	private String lghteamval = null;
+	private String lgvenueval = null;
+	private String lgtypeval = null;
+	private String lgstateval = null;
+
+	
+	private boolean editgame = false;
 	
 	//
 	// lets go get it!
@@ -170,10 +190,78 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		 this.penalties.put("Fighting", "Fighting");
 		 this.penalties.put("Head-butting", "Head-butting");
 		 this.penalties.put("Check to the Head","Check to the Head");
+		 
+		 this.venues.put("The Rinks - Yorba Linda ICE","YLICE");
+		 this.venues.put("The Rinks - Anaheim ICE","AICE");
+		 this.venues.put("The Rinks - Westminster ICE","WICE");
+		 this.venues.put("The Rinks - Lakewood ICE","LAKEWOOD");
+		 this.venues.put("Bakersfield Ice Sports Center","BAKERICE");
+		 this.venues.put("Skating Edge Ice Center","BHSEIC");
+		 this.venues.put("Iceoplex Simi Valley","SIMI");
+		 this.venues.put("Valencia Ice Station","ICESTATION");
+		 this.venues.put("Pickwick Ice Arena","PICKWICK");
+		 this.venues.put("LA Kings Valley Ice Center","VALLEYICE");
+		 this.venues.put("East West Ice Palace","EWICEP");
+		 this.venues.put("Ontario Center Ice Arena","OCIA");
+		 this.venues.put("Channel Islands Ice Center","CIIC");
+		 this.venues.put("LA Kings Icetown Riverside","RIVICE");
+		 this.venues.put("Desert Ice Castle","DICE");
+		 this.venues.put("KHS Ice Arena","KHS");
+		 this.venues.put("Toyota Sports Center","TSC");
+		 this.venues.put("Lake Forest Ice Palace","LFIP");
+		 this.venues.put("Ontario Ice Skating Center","ONTICE");
+		 this.venues.put("Pasadena Skating Center","PISC");
+		 this.venues.put("Iceoplex Escondido","ESICOPLEX");
+		 this.venues.put("Kroc Center Ice Arena","KROC");
+		 this.venues.put("San Diego Ice Arena","SDIA");
+		 this.venues.put("Carlsbad  Ice Arena","CARLSBAD");
+		 
+		 this.htpick.put(this.livegame.getHometeam().getTeamname(), this.livegame.getHometeam().ID+"");
+		 this.htpick.put(this.livegame.getAwayteam().getTeamname(), this.livegame.getAwayteam().ID+"");
+
+		 this.atpick.put(this.livegame.getAwayteam().getTeamname(),this.livegame.getAwayteam().ID+"");
+		 this.atpick.put(this.livegame.getHometeam().getTeamname(),this.livegame.getHometeam().ID+"");
+		 
+		 this.typepick.put("Pre Season","Pre");
+		 this.typepick.put("Exhibition","Exh");
+		 this.typepick.put("Game","Game");
+		 
+		 this.statepick.put("Scheduled","Scheduled");
+		 this.statepick.put("Cancelled","Cancelled");
+		 this.statepick.put("Forfiet","Forfiet");
+		 this.statepick.put("In Progress","InProgress");
+		 this.statepick.put("Completed","Completed");
+		 this.statepick.put("Pending Final Review","InReview");
+		 this.statepick.put("Final","Final");
+
+		 this.setDisplayValues();
+
 		 LOGGER.info(" *************** FINISH :POST INIT FOR GAMESHEET BEAN *****************");
+		 
 	 }
 	
 	
+	 /**
+	  * for the given live game.. lets set up the display values
+	  */
+	private void setDisplayValues() {
+		
+		this.lgdate = this.livegame.getStartdate();
+		this.lgtime = this.livegame.getStarttime();
+		this.lgsheet = this.livegame.getSheetname();
+		this.lgvenue = getStringKeyFromValue(this.venues,this.livegame.getVenuetag());
+		this.lgtype =  getStringKeyFromValue(this.typepick, this.livegame.getTypetag());
+		this.lgstate = getStringKeyFromValue(this.statepick, this.livegame.getStatetag());
+		this.lgstateval =this.livegame.getStatetag();
+		this.lgtypeval = this.livegame.getTypetag();
+		this.lgvenueval =this.livegame.getVenuetag();
+		this.lghteam = this.livegame.getHometeamname();
+		this.lgateam = this.livegame.getAwayteamname();
+		this.lghteamval = this.livegame.getHometeam().ID+"";
+		this.lgateamval = this.livegame.getAwayteam().ID+"";
+		
+	}
+
 	/**
 	 * @return the selectedhomerosterspot
 	 */
@@ -258,20 +346,6 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	 */
 	public void setPb(ProfileBean pb) {
 		this.pb = pb;
-	}
-
-	/**
-	 * @return the sb
-	 */
-	public ScoreboardBean getSb() {
-		return sb;
-	}
-
-	/**
-	 * @param sb the sb to set
-	 */
-	public void setSb(ScoreboardBean sb) {
-		this.sb = sb;
 	}
 
 	/**
@@ -1521,6 +1595,297 @@ public SogList refreshHomeSog() {
 		this.sogshots9 = sogshots9;
 	}
 
+	/**
+	 * @return the venues
+	 */
+	public Map<String, String> getVenues() {
+		return venues;
+	}
+
+	/**
+	 * @param venues the venues to set
+	 */
+	public void setVenues(Map<String, String> venues) {
+		this.venues = venues;
+	}
+
+	/**
+	 * @return the htpick
+	 */
+	public Map<String, String> getHtpick() {
+		return htpick;
+	}
+
+	/**
+	 * @param htpick the htpick to set
+	 */
+	public void setHtpick(Map<String, String> htpick) {
+		this.htpick = htpick;
+	}
+
+	/**
+	 * @return the atpick
+	 */
+	public Map<String, String> getAtpick() {
+		return atpick;
+	}
+
+	/**
+	 * @param atpick the atpick to set
+	 */
+	public void setAtpick(Map<String, String> atpick) {
+		this.atpick = atpick;
+	}
+
+	/**
+	 * @return the typepick
+	 */
+	public Map<String, String> getTypepick() {
+		return typepick;
+	}
+
+	/**
+	 * @param typepick the typepick to set
+	 */
+	public void setTypepick(Map<String, String> typepick) {
+		this.typepick = typepick;
+	}
+
+	/**
+	 * @return the statepick
+	 */
+	public Map<String, String> getStatepick() {
+		return statepick;
+	}
+
+	/**
+	 * @param statepick the statepick to set
+	 */
+	public void setStatepick(Map<String, String> statepick) {
+		this.statepick = statepick;
+	}
+
+	/**
+	 * @return the editgame
+	 */
+	public boolean isEditgame() {
+		return editgame;
+	}
+
+	/**
+	 * @param editgame the editgame to set
+	 */
+	public void setEditgame(boolean editgame) {
+		this.editgame = editgame;
+	}
+
+	/**
+	 * @return the lgsheet
+	 */
+	public String getLgsheet() {
+		return lgsheet;
+	}
+
+	/**
+	 * @param lgsheet the lgsheet to set
+	 */
+	public void setLgsheet(String lgsheet) {
+		this.lgsheet = lgsheet;
+	}
+
+	/**
+	 * @return the lgvenue
+	 */
+	public String getLgvenue() {
+		return lgvenue;
+	}
+
+	/**
+	 * @param lgvenue the lgvenue to set
+	 */
+	public void setLgvenue(String lgvenue) {
+		this.lgvenue = lgvenue;
+	}
+
+	/**
+	 * @return the lgtype
+	 */
+	public String getLgtype() {
+		return lgtype;
+	}
+
+	/**
+	 * @param lgtype the lgtype to set
+	 */
+	public void setLgtype(String lgtype) {
+		this.lgtype = lgtype;
+	}
+
+	/**
+	 * @return the lgdate
+	 */
+	public String getLgdate() {
+		return lgdate;
+	}
+
+	/**
+	 * @param lgdate the lgdate to set
+	 */
+	public void setLgdate(String lgdate) {
+		this.lgdate = lgdate;
+	}
+
+	/**
+	 * @return the lgtime
+	 */
+	public String getLgtime() {
+		return lgtime;
+	}
+
+	/**
+	 * @param lgtime the lgtime to set
+	 */
+	public void setLgtime(String lgtime) {
+		this.lgtime = lgtime;
+	}
+
+	/**
+	 * @return the lgstate
+	 */
+	public String getLgstate() {
+		return lgstate;
+	}
+
+	/**
+	 * @param lgstate the lgstate to set
+	 */
+	public void setLgstate(String lgstate) {
+		this.lgstate = lgstate;
+	}
+
+	/**
+	 * @return the lgvenueval
+	 */
+	public String getLgvenueval() {
+		return lgvenueval;
+	}
+
+	/**
+	 * @param lgvenueval the lgvenueval to set
+	 */
+	public void setLgvenueval(String lgvenueval) {
+		this.lgvenueval = lgvenueval;
+	}
+
+	/**
+	 * @return the lgtypeval
+	 */
+	public String getLgtypeval() {
+		return lgtypeval;
+	}
+
+	/**
+	 * @param lgtypeval the lgtypeval to set
+	 */
+	public void setLgtypeval(String lgtypeval) {
+		this.lgtypeval = lgtypeval;
+	}
+
+	/**
+	 * @return the lghteam
+	 */
+	public String getLghteam() {
+		return lghteam;
+	}
+
+	/**
+	 * @param lghteam the lghteam to set
+	 */
+	public void setLghteam(String lghteam) {
+		this.lghteam = lghteam;
+	}
+
+	/**
+	 * @return the lgateam
+	 */
+	public String getLgateam() {
+		return lgateam;
+	}
+
+	/**
+	 * @param lgateam the lgateam to set
+	 */
+	public void setLgateam(String lgateam) {
+		this.lgateam = lgateam;
+	}
+
 	
+	/**
+	 * @return the lgstateval
+	 */
+	public String getLgstateval() {
+		return lgstateval;
+	}
+
+	/**
+	 * @param lgstateval the lgstateval to set
+	 */
+	public void setLgstateval(String lgstateval) {
+		this.lgstateval = lgstateval;
+	}
+
+	public void saveScheduleInfo() {
+		
+		LOGGER.info(this.lgvenueval + ":" + this.lgvenue);
+		this.setEditgame(false);
+		
+	}
 	
+	public void cancelScheduleInfoChanges() {
+		
+		LOGGER.info(this.lgvenueval + ":" + this.lgvenue);
+		//
+		// reset the display values..
+		//
+		this.setDisplayValues();
+		this.setEditgame(false);
+		
+	}
+
+	/**
+	 * @return the lgateamval
+	 */
+	public String getLgateamval() {
+		return lgateamval;
+	}
+
+	/**
+	 * @param lgateamval the lgateamval to set
+	 */
+	public void setLgateamval(String lgateamval) {
+		this.lgateamval = lgateamval;
+	}
+
+	/**
+	 * @return the lghteamval
+	 */
+	public String getLghteamval() {
+		return lghteamval;
+	}
+
+	/**
+	 * @param lghteamval the lghteamval to set
+	 */
+	public void setLghteamval(String lghteamval) {
+		this.lghteamval = lghteamval;
+	}
+	
+	 public  String getStringKeyFromValue(Map<String, String> hm, String value) {
+	    for (String o : hm.keySet()) {
+	      if (hm.get(o).equals(value)) {
+	        return o;
+	      }
+	    }
+	    return null;
+	  }
 }

@@ -134,6 +134,10 @@ ul.ui-menu-child {
 	text-decoration: line-through;
 }
 
+.ui-panelgrid td {
+    border: none;
+}
+
 $( "#accordion" ).accordion({
             heightStyle: "content",
             autoHeight: false,
