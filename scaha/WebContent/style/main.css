@@ -138,6 +138,10 @@ ul.ui-menu-child {
     border: none;
 }
 
+.panelNoBorder.ui-panel {
+    border: none;
+}
+
 $( "#accordion" ).accordion({
             heightStyle: "content",
             autoHeight: false,

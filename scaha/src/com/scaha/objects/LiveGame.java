@@ -1,8 +1,11 @@
 package com.scaha.objects;
 
 import java.io.Serializable;
+import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.util.logging.Logger;
 
+import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 
 public class LiveGame extends ScahaObject implements Serializable {
@@ -301,6 +304,36 @@ public class LiveGame extends ScahaObject implements Serializable {
 	 */
 	public void setGamenotes(String gamenotes) {
 		this.gamenotes = gamenotes;
+	}
+	
+	/**
+	 * This guy updates a livegame
+	 * @param _db
+	 * @param _trkchanges
+	 * @throws SQLException 
+	 */
+	public void update(ScahaDatabase _db,boolean _trkchanges) throws SQLException {
+
+		CallableStatement ps = _db.prepareCall("call scaha.updateLiveGame(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		
+		int i = 1;
+		ps.setInt(i++,(_trkchanges ? 1 :0));
+		ps.setInt(i++,ID);
+		ps.setInt(i++, this.getHometeam().ID);
+		ps.setInt(i++, this.getAwayteam().ID);
+		ps.setString(i++, this.getTypetag());
+		ps.setString(i++, this.getStatetag());
+		ps.setString(i++, this.getVenuetag());
+		ps.setString(i++, this.getSheetname());
+		ps.setString(i++, this.getStartdate());
+		ps.setString(i++, this.getStarttime());
+		ps.setInt(i++, this.getHomescore());
+		ps.setInt(i++, this.getAwayscore());
+		ps.setString(i++, this.getGamenotes());
+		ps.execute();
+		
+		
+		
 	}
 
 }

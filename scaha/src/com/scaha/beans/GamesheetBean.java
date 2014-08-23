@@ -1,8 +1,12 @@
 package com.scaha.beans;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +23,8 @@ import javax.mail.internet.InternetAddress;
 
 import org.primefaces.event.RowEditEvent;
 
+import com.gbli.common.SendMailSSL;
+import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Division;
@@ -28,6 +34,7 @@ import com.scaha.objects.LiveGameRosterSpotList;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Penalty;
 import com.scaha.objects.PenaltyList;
+import com.scaha.objects.Person;
 import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.Scoring;
 import com.scaha.objects.ScoringList;
@@ -38,6 +45,9 @@ import com.scaha.objects.SogList;
 @ManagedBean
 @ViewScoped
 public class GamesheetBean implements Serializable,  MailableObject {
+	
+	private static String mail_reg_body = Utils.getMailTemplateFromFile("/mail/gamechange.html");
+	
 
 	@ManagedProperty(value="#{scahaBean}")
     private ScahaBean scaha;
@@ -230,8 +240,8 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		 this.statepick.put("Cancelled","Cancelled");
 		 this.statepick.put("Forfiet","Forfiet");
 		 this.statepick.put("In Progress","InProgress");
-		 this.statepick.put("Completed","Completed");
-		 this.statepick.put("Pending Final Review","InReview");
+		 this.statepick.put("Complete","Complete");
+		 this.statepick.put("Stats Review","StatsReview");
 		 this.statepick.put("Final","Final");
 
 		 this.setDisplayValues();
@@ -246,6 +256,8 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	  */
 	private void setDisplayValues() {
 		
+		LOGGER.info("id Live Game is:" + this.livegame.ID);
+
 		this.lgdate = this.livegame.getStartdate();
 		this.lgtime = this.livegame.getStarttime();
 		this.lgsheet = this.livegame.getSheetname();
@@ -719,14 +731,33 @@ public SogList refreshHomeSog() {
 
 	@Override
 	public String getSubject() {
-		// TODO Auto-generated method stub
-		return null;
+		return "SCAHA Game Change Notification for " + this.getLivegame();
 	}
 
 	@Override
 	public String getTextBody() {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> myTokens = new ArrayList<String>();
+		myTokens.add("HOMETEAM|" + this.livegame.getHometeamname());
+		myTokens.add("AWAYTEAM|" + this.livegame.getAwayteamname());
+		
+		myTokens.add("GAMENUMBER|" + this.livegame.ID+"");
+		myTokens.add("OLDTYPE|" + this.livegame.getTypetag());
+		myTokens.add("OLDSTATE|" + this.livegame.getStatetag());
+		myTokens.add("OLDHOMETEAM|" + this.livegame.getHometeamname());
+		myTokens.add("OLDAWAYTEAM|" + this.livegame.getAwayteamname());
+		myTokens.add("OLDVENUE|" + getStringKeyFromValue(this.venues,this.livegame.getVenuetag()));
+		myTokens.add("OLDSHEET|" + this.livegame.getSheetname());
+		myTokens.add("OLDDATE|" + this.livegame.getStartdate());
+		myTokens.add("OLDTIME|" + this.livegame.getStartdate());
+		myTokens.add("NEWTYPE|" + this.lgtypeval);
+		myTokens.add("NEWSTATE|" + this.lgstate);
+		myTokens.add("NEWHOMETEAM|" + this.lghteam);
+		myTokens.add("NEWAWAYTEAM|" + this.lgateam);
+		myTokens.add("NEWVENUE|" + this.lgvenue);
+		myTokens.add("NEWSHEET|" + this.lgsheet);
+		myTokens.add("NEWDATE|" + this.lgdate);
+		myTokens.add("NEWTIME|" + this.lgtime);
+		return Utils.mergeTokens(GamesheetBean.mail_reg_body,myTokens,"\\|");
 	}
 
 	@Override
@@ -743,8 +774,38 @@ public SogList refreshHomeSog() {
 
 	@Override
 	public InternetAddress[] getToMailIAddress() {
-		// TODO Auto-generated method stub
-		return null;
+		//
+		// Here is where we get all the e-mails we need to get
+		//
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		List<InternetAddress> data = new ArrayList<InternetAddress>();
+		
+		LOGGER.info(this.livegame.toString());
+		try {
+			PreparedStatement ps = db.prepareCall("call scaha.getLiveGameEmails(?)");
+			ps.setInt(1, this.livegame.ID);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				data.add(new InternetAddress(rs.getString(2),rs.getString(1)));
+			}
+			rs.close();
+			ps.close();
+			
+			for (InternetAddress ia : data) {
+				LOGGER.info("e-mail:" + ia);
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.free();
+		
+		return data.toArray(new InternetAddress[data.size()]);
 	}
 
 	@Override
@@ -1834,9 +1895,140 @@ public SogList refreshHomeSog() {
 		this.lgstateval = lgstateval;
 	}
 
+	public void setGameStarted() {
+
+		//
+		// we do not save score here..
+		//
+		this.livegame.setAwayscore(getDerivedAwayScore());
+		this.livegame.setHomescore(getDerivedHomeScore());
+		this.livegame.setStatetag("InProgress");
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		try {
+			
+			this.livegame.update(db, false);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.free();
+		
+	}
+
+	public void setGameComplete() {
+
+		//
+		// we do not save score here..
+		//
+		this.livegame.setAwayscore(getDerivedAwayScore());
+		this.livegame.setHomescore(getDerivedHomeScore());
+		this.livegame.setStatetag("Complete");
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		try {
+			
+			this.livegame.update(db, false);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.free();
+		
+	}
+	
+	public void setStatsComplete() {
+
+		//
+		// we do not save score here..
+		//
+		this.livegame.setAwayscore(getDerivedAwayScore());
+		this.livegame.setHomescore(getDerivedHomeScore());
+		this.livegame.setStatetag("StatsReview");
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		try {
+			
+			this.livegame.update(db, false);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.free();
+		
+	}
+	
 	public void saveScheduleInfo() {
 		
-		LOGGER.info(this.lgvenueval + ":" + this.lgvenue);
+		//
+		// Lets set up some changed display values..  temp solution until we save and refresh from object
+		//
+		//
+		this.lgvenue = getStringKeyFromValue(this.venues,this.lgvenueval);
+		this.lgtype =  getStringKeyFromValue(this.typepick, this.lgtypeval);
+		this.lgstate = getStringKeyFromValue(this.statepick, this.lgstateval);
+		this.lghteam = getStringKeyFromValue(this.htpick, this.lghteamval);
+		this.lgateam = getStringKeyFromValue(this.atpick, this.lgateamval);
+		
+		LOGGER.info("Start Date: " + this.lgdate + ", orig value is " + this.livegame.getStartdate());
+		LOGGER.info("Start Time: " + this.lgtime + ", orig value is " + this.livegame.getStarttime());
+		LOGGER.info("Type: " + this.lgtypeval + ":" + this.lgtype + ", orig value is " + this.livegame.getTypetag());
+		LOGGER.info("State: " + this.lgstateval + ":" + this.lgstate + ", orig value is " + this.livegame.getStatetag());
+		LOGGER.info("Venue: " + this.lgvenueval + ":" + this.lgvenue + ", orig value is " + this.livegame.getVenuetag());
+		LOGGER.info("Sheet: " + this.lgsheet +  ", orig value is " + this.livegame.getSheetname());
+		LOGGER.info("Away Team + " + this.lgateamval + ":" + this.lgateam + ", orig value is " + this.livegame.getAwayteam().ID);
+		LOGGER.info("Home Team + " + this.lghteamval + ":" + this.lghteam + ", orig value is " + this.livegame.getHometeam().ID);
+		
+		//
+		// ok.. lets generate the e-mail.. so we can put prior information.. and current information..
+		//
+		LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM GameChange And Send Mail..");
+		LOGGER.info("Sending Registration mail here...");
+		SendMailSSL mail = new SendMailSSL(this);
+		mail.sendMail();
+		
+		//
+		// we do not save score here..
+		//
+		this.livegame.setAwayscore(getDerivedAwayScore());
+		this.livegame.setHomescore(getDerivedHomeScore());
+		
+		//
+		// Lets check to see if home and away teams have been swapped
+		//
+		if (this.livegame.getHometeam().ID != Integer.parseInt(lghteamval)) {
+			ScahaTeam tmp = this.livegame.getHometeam();
+			this.livegame.setHometeam(this.livegame.getAwayteam());
+			this.livegame.setAwayteam(tmp);
+			this.livegame.setHometeamname(this.lghteam);
+			this.livegame.setAwayteamname(this.lgateam);
+		}
+		
+		this.livegame.setStartdate(this.lgdate);
+		this.livegame.setStarttime(this.lgtime);
+		this.livegame.setVenuetag(this.lgvenueval);
+		this.livegame.setSheetname(this.lgsheet);
+		this.livegame.setStatetag(this.lgstateval);
+		this.livegame.setTypetag(this.lgtypeval);
+
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+				
+		try {
+			this.livegame.update(db, true);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		db.free();
+		
+		//
+		// ok.. we should be all good here..
+		//
+		this.setDisplayValues();
 		this.setEditgame(false);
 		
 	}

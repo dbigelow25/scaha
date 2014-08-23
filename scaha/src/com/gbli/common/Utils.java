@@ -1191,7 +1191,21 @@ public class Utils {
 		
 		return _str;
 	}
+
+	public static String mergeTokens(String _str, List<String> _sparms, String _delim) {
+		
+		LOGGER.info("Utilites.. mergingTokens now..");
 	
+		for (String s : _sparms ){
+			
+			String[] parts = s.split(_delim);
+			String stoken = parts[0];
+			String value = parts[1];
+			_str = _str.replace(":"+ stoken + ":",value);
+		}
+		
+		return _str;
+	}
 	private static byte [] createBarCode39 (String _barcodeme) {
 
           Code39Bean bean39 = new Code39Bean();
