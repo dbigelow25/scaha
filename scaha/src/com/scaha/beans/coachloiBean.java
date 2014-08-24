@@ -935,7 +935,15 @@ public class coachloiBean implements Serializable, MailableObject {
 		    		    rs = cs.executeQuery();
 		    			rs.close();
 		    			
-	    			}
+	    			} else {
+	    				cs = db.prepareCall("CALL scaha.updateCoachManager(?,?,?)");
+		    		    cs.setInt("coachid", this.selectedcoach);
+		    		    cs.setString("screenexpires", this.screeningexpires);
+		    		    cs.setInt("insafesport", this.safesport);
+		    		    this.setDisplaysafesport(this.safesport.toString());
+		    		    rs = cs.executeQuery();
+		    			rs.close();
+		    		}
 	    			
 	    			
 	    		    cs = db.prepareCall("CALL scaha.addCoachRoster(?,?,?,?)");
