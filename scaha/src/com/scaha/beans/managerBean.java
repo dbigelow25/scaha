@@ -736,7 +736,7 @@ public class managerBean implements Serializable, MailableObject {
 			db.cleanup();
     		
     		//next get player roster
-			cs = db.prepareCall("CALL scaha.getRosterPlayersByTeamID(?)");
+			cs = db.prepareCall("CALL scaha.getRosterPlayersForManagerByTeamID(?)");
 			cs.setInt("teamid", this.teamid);
 		    rs = cs.executeQuery();
 			
@@ -762,7 +762,7 @@ public class managerBean implements Serializable, MailableObject {
 			}
 			rs.close();
 			
-			cs = db.prepareCall("CALL scaha.getRosterCoachesByTeamID(?)");
+			cs = db.prepareCall("CALL scaha.getRosterCoachesForManagerByTeamID(?)");
 			cs.setInt("teamid", this.teamid);
 		    rs = cs.executeQuery();
 			
