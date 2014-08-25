@@ -14,7 +14,7 @@
 				<p:panel id ="panel" header="#{scoresheetBean.getGamedate()} #{scoresheetBean.getGametime()} vs. #{scoresheetBean.getOpponent()} Scoresheet(s)">
 					<h:form id="fileupload">
 					<p:fileUpload fileUploadListener="#{scoresheetBean.handleFileUpload}" mode="advanced"  
-            			update=":fileresults:scoresheets" label="Select File" dragDropSupport="false" multiple="false" auto="false" sizeLimit="1000000" allowTypes="/(\.|\/)(gif|jpeg|jpg|png|pdf)$/"/>
+            			update=":fileresults:scoresheets" label="Select File" dragDropSupport="false" multiple="false" auto="false" sizeLimit="10000000" allowTypes="/(\.|\/)(gif|jpeg|jpg|png|pdf)$/"/>
             		<br></br>
             		<p:messages id="uploadmessage" showDetail="true" autoUpdate="true" closable="false" />
             		</h:form>
@@ -31,7 +31,7 @@
 				            <h:outputText value="#{scoresheet.getUploaddate()}" />  
 				        </p:column>  
 				        <p:column headerText="Options">  
-				            <p:commandButton id="openscoresheet" icon="ui-icon-extlink" onclick="openscoresheet('#{scoresheet.getGametype()}#{scoresheet.getFilename()}')" ajax="false"/>
+				            <p:commandButton id="openscoresheet" icon="ui-icon-extlink" onclick="openscoresheet('#{scoresheet.getGametype()}_#{scoresheet.getFilename()}')" ajax="false"/>
 							<p:spacer width="2" height="1" />
 							<p:commandButton id="deletescoresheet" icon="ui-icon-trash" action="#{scoresheetBean.deleteScoresheet(scoresheet)}" ajax="true" update="scoresheets"/>
 						</p:column>
