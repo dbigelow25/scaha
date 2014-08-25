@@ -31,6 +31,7 @@ public class LiveGame extends ScahaObject implements Serializable {
 	private String sheetname = null;
 	private int idgame = 0;
 	private String gamenotes = null;
+	private String venueshortname = null;
 	
 	private int scheduleidstub = 0;
 	
@@ -334,6 +335,20 @@ public class LiveGame extends ScahaObject implements Serializable {
 		
 		
 		
+	}
+
+	/**
+	 * @return the venueshortname
+	 */
+	public String getVenueshortname() {
+		return venueshortname;
+	}
+
+	/**
+	 * @param venueshortname the venueshortname to set
+	 */
+	public void setVenueshortname(String venueshortname) {
+		this.venueshortname = venueshortname;
 	}
 
 }

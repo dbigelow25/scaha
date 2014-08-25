@@ -46,6 +46,12 @@ public class LiveGameRosterSpotList extends ListDataModel<LiveGameRosterSpot> im
 		List<LiveGameRosterSpot> data = new ArrayList<LiveGameRosterSpot>();
 		HashMap<String, LiveGameRosterSpot> hm = new HashMap<String,LiveGameRosterSpot>();
 		PreparedStatement ps = _db.prepareStatement("call scaha.getLiveGameRosterSpots(?,?)");
+		
+		//
+		// Do we have a live game?
+		//
+		if (_lg == null) return new LiveGameRosterSpotList(data,hm);
+		
 		ps.setInt(1,_lg.ID);
 		ps.setString(2,_strHomeAway);
 		ResultSet rs = ps.executeQuery();

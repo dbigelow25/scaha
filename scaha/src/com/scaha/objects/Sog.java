@@ -17,6 +17,7 @@ public class Sog extends ScahaObject implements Serializable {
 	private LiveGame livegame = null;
 	private LiveGameRosterSpot rosterspot = null;
 	private int idroster = 0;
+	private String playtime = "";
 	private int shots1 = 0;
 	private int shots2 = 0;
 	private int shots3 = 0;
@@ -84,7 +85,7 @@ public class Sog extends ScahaObject implements Serializable {
 		// is it an object that is not in the database yet..
 		//
 		
-		CallableStatement cs = db.prepareCall("call scaha.updateSog(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		CallableStatement cs = db.prepareCall("call scaha.updateSog(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		
 		LOGGER.info("HERE IS THE Starting Sog ID:" + this.ID);
 
@@ -94,6 +95,7 @@ public class Sog extends ScahaObject implements Serializable {
 		cs.setInt(i++, this.idroster);
 		cs.setInt(i++, this.getLivegame().ID);
 		cs.setInt(i++, this.getTeam().ID);
+		cs.setString(i++, this.getPlaytime());
 		cs.setInt(i++, this.shots1);
 		cs.setInt(i++, this.shots2);
 		cs.setInt(i++, this.shots3);
@@ -311,5 +313,19 @@ public class Sog extends ScahaObject implements Serializable {
 				+ this.shots8
 				+ this.shots9;
 		
+	}
+
+	/**
+	 * @return the playtime
+	 */
+	public String getPlaytime() {
+		return playtime;
+	}
+
+	/**
+	 * @param playtime the playtime to set
+	 */
+	public void setPlaytime(String playtime) {
+		this.playtime = playtime;
 	}
 }

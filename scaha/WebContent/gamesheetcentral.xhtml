@@ -260,7 +260,7 @@
    					selection="#{gamesheetBean.selectedawaysog}"
  					selectionMode="single" 
  				>
-  				 <p:column headerText="No"><h:outputText value="#{sog.rosterspot.jerseynumber}" /></p:column>
+  				   	<p:column headerText="No"><h:outputText value="#{sog.rosterspot.jerseynumber}" /></p:column>
      				<p:column headerText="1st"><h:outputText value="#{sog.shots1}" /></p:column>
    					<p:column headerText="2nd"><h:outputText value="#{sog.shots2}" /></p:column>
    					<p:column headerText="3rd"><h:outputText value="#{sog.shots3}" /></p:column>
@@ -378,6 +378,8 @@
       			<f:selectItem style="font-size:10pt;" itemLabel="Goalie..." itemValue="0" />
        			<f:selectItems value="#{gamesheetBean.sogpicklist}"  var="roster"  itemLabel="#{roster.jerseynumber} - #{roster.lname}" itemValue="#{roster.getKey()}"/>
        		</p:selectOneMenu>
+   			<p:outputLabel for="sogplaytime" value="Total Time Played:" />
+			<p:inputMask id="sogplaytime" value = "#{gamesheetBean.sogplaytime}"   size="10"  mask = "99:99:99"/> 
         	<p:outputLabel for="shots1" value="Shots Per 1:" />
 			<p:inputText id="shots1" value = "#{gamesheetBean.sogshots1}"   maxlength="2" size="3"/> 
         	<p:outputLabel for="shots2" value="Shots Per 2:" />

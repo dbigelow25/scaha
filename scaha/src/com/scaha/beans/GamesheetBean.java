@@ -108,6 +108,7 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	private String penmin = null;
 	private String pensec = null;
 	
+	private String sogplaytime = null;
 	private int sogshots1 = 0;
 	private int sogshots2 = 0;
 	private int sogshots3 = 0;
@@ -637,6 +638,7 @@ public SogList refreshHomeSog() {
 		//
 		// reinitialize the info
 		//
+		this.sogplaytime = currentsog.getPlaytime();
 		this.sogshots1 = currentsog.getShots1();
 		this.sogshots2 = currentsog.getShots2();
 		this.sogshots3 = currentsog.getShots3();
@@ -668,6 +670,7 @@ public SogList refreshHomeSog() {
 		//
 		// reinitialize the info
 		//
+		this.sogplaytime = "";
 		this.sogshots1 = 0;
 		this.sogshots2 = 0;
 		this.sogshots3 = 0;
@@ -737,6 +740,7 @@ public SogList refreshHomeSog() {
 	@Override
 	public String getTextBody() {
 		List<String> myTokens = new ArrayList<String>();
+		myTokens.add("SCHEDULE|" + this.livegame.getSched().getDescription());
 		myTokens.add("HOMETEAM|" + this.livegame.getHometeamname());
 		myTokens.add("AWAYTEAM|" + this.livegame.getAwayteamname());
 		
@@ -955,6 +959,7 @@ public SogList refreshHomeSog() {
 		
 		Sog sog = this.currentsog;
 		
+		
 		sog.setShots1(this.getSogshots1());
 		sog.setShots2(this.getSogshots2());
 		sog.setShots3(this.getSogshots3());
@@ -964,6 +969,7 @@ public SogList refreshHomeSog() {
 		sog.setShots7(this.getSogshots7());
 		sog.setShots8(this.getSogshots8());
 		sog.setShots9(this.getSogshots9());
+		sog.setPlaytime(this.getSogplaytime());
 		sog.setRosterspot(this.sogroster.getByKey(this.selectedsogrosterid));
 			
 		LOGGER.info("updating score for " + sog);
@@ -2080,4 +2086,18 @@ public SogList refreshHomeSog() {
 	    }
 	    return null;
 	  }
+
+	/**
+	 * @return the sogplaytime
+	 */
+	public String getSogplaytime() {
+		return sogplaytime;
+	}
+
+	/**
+	 * @param sogplaytime the sogplaytime to set
+	 */
+	public void setSogplaytime(String sogplaytime) {
+		this.sogplaytime = sogplaytime;
+	}
 }

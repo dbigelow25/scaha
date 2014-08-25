@@ -64,6 +64,7 @@ public class SogList extends ListDataModel<Sog> implements Serializable, Selecta
 			sog.setShots7(rs.getInt(i++));
 			sog.setShots8(rs.getInt(i++));
 			sog.setShots9(rs.getInt(i++));
+			sog.setPlaytime(rs.getString(i++));
 			data.add(sog);
 			hm.put(sog.ID+"", sog);
 			LOGGER.info("Found a match " + sog);
