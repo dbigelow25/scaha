@@ -88,8 +88,10 @@ public class nonscahagameBean implements Serializable {
     	
     	if(hsr.getParameter("teamid") != null)
         {
-    		this.teamid = Integer.parseInt(hsr.getParameter("teamid").toString());
+    		setTeamid(Integer.parseInt(hsr.getParameter("teamid").toString()));
         }
+    	
+    	
     	
     	
     	if(hsr.getParameter("gameid") != null)
@@ -97,7 +99,7 @@ public class nonscahagameBean implements Serializable {
     		this.gameid = Integer.parseInt(hsr.getParameter("gameid").toString());
         }
         
-        teamid = 131;
+        //teamid = 131;
         
         getTournamentGame();
         

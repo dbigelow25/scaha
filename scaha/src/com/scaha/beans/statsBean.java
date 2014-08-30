@@ -1,44 +1,24 @@
 package com.scaha.beans;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.mail.internet.InternetAddress;
 
-import com.gbli.common.SendMailSSL;
+import org.primefaces.model.LazyDataModel;
+
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Division;
-import com.scaha.objects.ExhibitionGame;
-import com.scaha.objects.ExhibitionGameDataModel;
-import com.scaha.objects.LiveGame;
-import com.scaha.objects.MailableObject;
-import com.scaha.objects.RosterEdit;
-import com.scaha.objects.RosterEditDataModel;
+import com.scaha.objects.LazyStatDataModel;
 import com.scaha.objects.Stat;
-import com.scaha.objects.TempGame;
-import com.scaha.objects.TempGameDataModel;
-import com.scaha.objects.Tournament;
-import com.scaha.objects.TournamentDataModel;
-import com.scaha.objects.TournamentGame;
-import com.scaha.objects.TournamentGameDataModel;
 
 //import com.gbli.common.SendMailSSL;
 
@@ -263,7 +243,9 @@ public class statsBean implements Serializable{
     				String playername = rs.getString("playername");
     				String teamname = rs.getString("teamname");
     				String gaa = rs.getString("gaa");
-    				
+    				if (gaa==null){
+    					gaa = "0.00";
+    				}
     				Stat stat = new Stat();
     				stat.setRank(rank.toString());
     				stat.setPlayername(playername);
@@ -439,6 +421,10 @@ public class statsBean implements Serializable{
     				String assists = rs.getString("assists");
     				String points = rs.getString("points");
     				String pims = rs.getString("pims");
+    				if (pims==null){
+    					pims = "0";
+    				}
+    				
     				String gp=rs.getString("gp");
     				
     				Stat stat = new Stat();
@@ -481,11 +467,14 @@ public class statsBean implements Serializable{
     	
     	try{
     		//first get top 5 goal scorers
-    		CallableStatement cs = db.prepareCall("CALL scaha.getGoaliestats(?,?,?)");
+    		CallableStatement cs = db.prepareCall("CALL scaha.getGoaliestats(?,?,?,?,?)");
     		cs.setInt("division", Integer.parseInt(this.selecteddivision));
     		cs.setInt("inyear", Integer.parseInt(this.selectedyear));
     		cs.setString("sorting", sortby);
-			rs = cs.executeQuery();
+    		cs.setInt("ingametype", Integer.parseInt(this.selectedgametype));
+    		cs.setInt("count", Integer.parseInt(this.selectedcount));
+			
+    		rs = cs.executeQuery();
 			Integer count = 1;
 			
 			if (rs != null){
@@ -495,11 +484,35 @@ public class statsBean implements Serializable{
     				String playername = rs.getString("playername");
     				String teamname = rs.getString("teamname");
     				String mins = rs.getString("mins");
+    				if (mins==null){
+    					mins = "0";
+    				}
+    				
     				String shots = rs.getString("shots");
+    				if (shots==null){
+    					shots = "0";
+    				}
+    				
     				String saves = rs.getString("saves");
+    				if (saves==null){
+    					saves = "0";
+    				}
+    				
     				String percentage = rs.getString("percentage");
+    				if (percentage==null){
+    					percentage = "0.000";
+    				}
+    				
     				String gaa=rs.getString("gaa");
+    				if (gaa==null){
+    					gaa = "0.00";
+    				}
+    				
     				String gp=rs.getString("gp");
+    				if (gp==null){
+    					gp = "0";
+    				}
+    				
     				
     				Stat stat = new Stat();
     				stat.setRank(rank.toString());
@@ -529,7 +542,8 @@ public class statsBean implements Serializable{
     		//
     		db.free();
     	}
-			
+		
+    	//LazyStatDataModel temp = new LazyStatDataModel(tempsave); 
     	this.setCompletegoalies(tempsave);
 		
     }

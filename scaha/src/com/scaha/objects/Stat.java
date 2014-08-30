@@ -38,10 +38,20 @@ public class Stat extends ScahaObject implements Serializable {
 	private String mins=null;
 	private String shots=null;
 	private String saves=null;
+	private Integer id = null;
 	
 	public Stat() {
 	
 	}
+	
+	public Integer getId(){
+		return id;
+	}
+	
+	public void setId(Integer value){
+		id=value;
+	}
+	
 	
 	public String getRank(){
 		return rank;
