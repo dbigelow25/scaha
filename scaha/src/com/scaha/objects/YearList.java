@@ -41,18 +41,18 @@ public class YearList extends ListDataModel<Year> implements Serializable, Selec
 
 		List<Year> data = new ArrayList<Year>();
 		
-		PreparedStatement ps = _db.prepareStatement("call scaha.getAllSeasonsByType('SCAHA')");
+		PreparedStatement ps = _db.prepareStatement("call scaha.getmeetingyears()");
 		CallableStatement psminutes = _db.prepareCall("call scaha.getMinutesBySeason(?)");
 		ResultSet rs = ps.executeQuery();
 		ResultSet rs2 = null;
 		while (rs.next()) {
-			String yearname = rs.getString("Description");
-			Integer seasonid = rs.getInt("idmembershipcontrol");
+			String newyear = rs.getString("year");
+			
 			
 			Year year = new Year();
-			year.setYearname(yearname);
+			year.setYearname(newyear + '/' +(Integer.parseInt(newyear)+1) + " Season");
 			
-			psminutes.setInt("seasonid", seasonid);
+			psminutes.setInt("seasonid", Integer.parseInt(newyear));
 			rs2 = psminutes.executeQuery();
 			List<Minute> mdata = new ArrayList<Minute>();
 			
