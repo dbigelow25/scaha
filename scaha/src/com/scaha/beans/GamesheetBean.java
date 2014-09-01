@@ -752,7 +752,7 @@ public SogList refreshHomeSog() {
 		myTokens.add("OLDVENUE|" + getStringKeyFromValue(this.venues,this.livegame.getVenuetag()));
 		myTokens.add("OLDSHEET|" + this.livegame.getSheetname());
 		myTokens.add("OLDDATE|" + this.livegame.getStartdate());
-		myTokens.add("OLDTIME|" + this.livegame.getStartdate());
+		myTokens.add("OLDTIME|" + this.livegame.getStarttime());
 		myTokens.add("NEWTYPE|" + this.lgtypeval);
 		myTokens.add("NEWSTATE|" + this.lgstate);
 		myTokens.add("NEWHOMETEAM|" + this.lghteam);
