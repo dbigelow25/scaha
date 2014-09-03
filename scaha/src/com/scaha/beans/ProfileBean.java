@@ -60,6 +60,7 @@ public class ProfileBean implements Serializable,  MailableObject  {
 	private boolean AddMember = false;
 	private Person selectedPerson;
 	private LiveGame selectedlivegame = null;
+	private String livegameeditreturn = null;
 	//
 	// Very archaic way to track changes.. 
 	// profiles are tricky because they are rarely changed..
@@ -1124,5 +1125,17 @@ public LiveGame getSelectedlivegame() {
  */
 public void setSelectedlivegame(LiveGame selectedlivegame) {
 	this.selectedlivegame = selectedlivegame;
+}
+/**
+ * @return the livegameeditreturn
+ */
+public String getLivegameeditreturn() {
+	return livegameeditreturn;
+}
+/**
+ * @param livegameeditreturn the livegameeditreturn to set
+ */
+public void setLivegameeditreturn(String livegameeditreturn) {
+	this.livegameeditreturn = livegameeditreturn;
 }
 }

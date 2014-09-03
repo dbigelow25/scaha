@@ -460,6 +460,7 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		 
 		 this.selectedlivegame = this.getLivegamelist().getByKey(this.selectedlivegame.ID);
 		 pb.setSelectedlivegame(this.selectedlivegame);
+		 pb.setLivegameeditreturn("scoreboard.xhtml");
 		 
 		 LOGGER.info("!!!!! Real Selected Game is" + selectedlivegame);
 		  

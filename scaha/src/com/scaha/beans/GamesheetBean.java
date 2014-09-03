@@ -1,5 +1,6 @@
 package com.scaha.beans;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.sql.CallableStatement;
@@ -20,6 +21,7 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.mail.internet.InternetAddress;
+import javax.servlet.http.HttpServletRequest;
 
 import org.primefaces.event.RowEditEvent;
 
@@ -171,37 +173,44 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		 this.setHomesogs(this.refreshHomeSog());
 		 this.setAwaysogs(this.refreshAwaySog());
 		 
-
+		 this.penalties.put("15 Team Penalties","15 Team Penalties");
+		 this.penalties.put("2 Majors","2 Majors");
+		 this.penalties.put("3rd Man in","3rd Man in");
+		 this.penalties.put("5 Penalties","5 Penalties");
+		 this.penalties.put("Abuse of Officials", "Abuse of Officials");
+		 this.penalties.put("Attempt to injure","Attempt to injure");
+		 this.penalties.put("Bench","Bench" );
+		 this.penalties.put("Boarding","Boarding");
+		 this.penalties.put("Body Checking","Body Checking");
+		 this.penalties.put("Butt-Ending", "Butt-Ending");
 		 this.penalties.put("Charging","Charging");
-		 this.penalties.put("Clipping","Clipping");
-		 this.penalties.put("Closing hand on puck","Closing hand on puck");
-		 this.penalties.put("Cross-checking","Cross-checking");
-		 this.penalties.put("Diving", "Diving");
-		 this.penalties.put("Delay of game","Delay of game");
-		 this.penalties.put("Elbowing","Elbowing" );
-		 this.penalties.put("Goalkeeper interference","Goalkeeper interference");
-		 this.penalties.put("High-sticking","High-sticking");
-		 this.penalties.put("Holding", "Holding");
-		 this.penalties.put("Holding the stick","Holding the stick");
 		 this.penalties.put("Hooking", "Hooking");
-		 this.penalties.put("Illegal equipment", "Illegal equipment");
-		 this.penalties.put("Illegal stick", "Illegal stick");
-		 this.penalties.put("Instigator", "Instigator");
+		 this.penalties.put("Checking from Behind", "Checking from Behind");
+		 this.penalties.put("Cross-Checking", "Cross-Checking");
+		 this.penalties.put("Delay of Game", "Delay of Game");
+		 this.penalties.put("Elbowing", "Elbowing");
+		 this.penalties.put("Fisticuffs/Fighting", "Fisticuffs/Fighting");
+		 this.penalties.put("Game Misconduct", "Game Misconduct");
+		 this.penalties.put("Head Contact", "Head Contact");
+		 this.penalties.put("High-Sticking", "High-Sticking");
+		 this.penalties.put("Holding","Holding");
+		 this.penalties.put("Holding the Facemask","Holding the Facemask");
+		 this.penalties.put("Hooking", "Hooking");
+		 this.penalties.put("Illegal Equipment", "Illegal Equipment");
 		 this.penalties.put("Interference", "Interference");
+		 this.penalties.put("Kicking", "Kicking");
 		 this.penalties.put("Kneeing", "Kneeing");
-		 this.penalties.put("Leaving penalty bench too early", "Leaving penalty bench too early");
-		 this.penalties.put("Roughing", "Roughing");
-		 this.penalties.put("Slashing", "Slashing");
-		 this.penalties.put("Throwing stick","Throwing stick");
+		 this.penalties.put("Major", "Major");
+		 this.penalties.put("Match Penalty","Match Penalty");
+		 this.penalties.put("Misconduct","Misconduct");
+		 this.penalties.put("Mouthpiece","Mouthpiece");
+		 this.penalties.put("Roughing","Roughing");
+		 this.penalties.put("Slashing","Slashing");
+		 this.penalties.put("Spearing","Spearing");
+		 this.penalties.put("Too Many Men","Too Many Men");
 		 this.penalties.put("Tripping","Tripping");
-		 this.penalties.put("Unsportsmanlike conduct", "Unsportsmanlike conduct");
-		 this.penalties.put("Boarding", "Boarding");
-		 this.penalties.put("Butt-ending", "Butt-ending");
-		 this.penalties.put("Checking from behind", "Checking from behind");
-		 this.penalties.put("Fighting", "Fighting");
-		 this.penalties.put("Head-butting", "Head-butting");
-		 this.penalties.put("Check to the Head","Check to the Head");
-		 
+		 this.penalties.put("Unsportsmanlike","Unsportsmanlike");
+
 		 this.venues.put("The Rinks - Yorba Linda ICE","YLICE");
 		 this.venues.put("The Rinks - Anaheim ICE","AICE");
 		 this.venues.put("The Rinks - Westminster ICE","WICE");
@@ -1967,6 +1976,27 @@ public SogList refreshHomeSog() {
 		
 	}
 	
+	public void setGameFinal() {
+
+		//
+		// we do not save score here..
+		//
+		this.livegame.setAwayscore(getDerivedAwayScore());
+		this.livegame.setHomescore(getDerivedHomeScore());
+		this.livegame.setStatetag("Final");
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		try {
+			
+			this.livegame.update(db, false);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.free();
+		
+	}
 	public void saveScheduleInfo() {
 		
 		//
@@ -2100,4 +2130,15 @@ public SogList refreshHomeSog() {
 	public void setSogplaytime(String sogplaytime) {
 		this.sogplaytime = sogplaytime;
 	}
+	
+    public void gamesheetClose(){
+
+    	FacesContext context = FacesContext.getCurrentInstance();
+		try{
+			context.getExternalContext().redirect(pb.getLivegameeditreturn());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 }

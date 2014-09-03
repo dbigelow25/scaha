@@ -46,6 +46,8 @@
 			<p:commandButton id="inprogcmd" value="Game Started" ajax="true"  update="gameinfo " actionListener="#{gamesheetBean.setGameStarted()}" />
 			<p:commandButton id="compcmd" value=  "Game Complete" ajax="true"  update="gameinfo " actionListener="#{gamesheetBean.setGameComplete()}" />
 			<p:commandButton id="reviewcmd" value="Stats Complete" ajax="true"  update="gameinfo " actionListener="#{gamesheetBean.setStatsComplete()}" />
+			<p:commandButton id="finalcmd" value="Mark Final" ajax="true"  update="gameinfo " actionListener="#{gamesheetBean.setGameFinal()}" />
+			<p:commandButton id="closecmd" value="Close" ajax="false" actionListener="#{gamesheetBean.gamesheetClose()}" />
 			<p:spacer height="30" />
 			</ui:fragment >
 			<ui:fragment id="fedit" rendered="#{gamesheetBean.isEditgame()}">
