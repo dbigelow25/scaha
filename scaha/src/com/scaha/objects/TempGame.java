@@ -22,10 +22,30 @@ public class TempGame extends ScahaObject implements Serializable {
 	private String time = null;
 	private String homescore = null;
 	private String awayscore = null;
+	private String scoresheet = null;
+	private String status = null;
 	
 	public TempGame (){ 
 		
 	}
+	
+	public String getStatus(){
+    	return status;
+    }
+    
+    public void setStatus(String fname){
+    	status=fname;
+    } 
+	
+	
+	public String getScoresheet(){
+    	return scoresheet;
+    }
+    
+    public void setScoresheet(String fname){
+    	scoresheet=fname;
+    } 
+	
 	
 	public String getDate(){
     	return date;

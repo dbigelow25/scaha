@@ -70,7 +70,7 @@
 					<p:spacer width="2px" />
 					<p:menuButton id="menusched" style="width:125px;" value="Schedule Info"
 						type="button">
-						<p:menuitem style="font-size: 12px;" value="Schedeule"
+						<p:menuitem style="font-size: 12px;" value="Schedule"
 							url="scoreboard.xhtml" id="scoreboard" target="_blank"/>
 						<p:menuitem style="font-size: 12px;" value="Download It"
 							url="lahoa.xhtml" />
@@ -106,21 +106,25 @@
 							url="managerportal.xhtml"
 							rendered="#{profileBean.getProfile().getScahamanager().getIsmanager()}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
+							value="Review SCAHA Games" 
+							url="reviewscahagames.xhtml"
+							rendered="#{profileBean.hasRoleList('S-STATS;S-VICE;S-REG')}" />
+						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Approve Tourney Req" 
 							url="approvetournaments.xhtml"
-							rendered="#{profileBean.isSuperUser()}" />
+							rendered="#{profileBean.hasRoleList('S-STATS')}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Approve Exhibition Req" 
 							url="approveexhibitiongames.xhtml"
-							rendered="#{profileBean.isSuperUser()}" />
+							rendered="#{profileBean.hasRoleList('S-STATS')}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Review Exhibition Gms" 
 							url="reviewexhibitiongamesresults.xhtml"
-							rendered="#{profileBean.isSuperUser()}" />
+							rendered="#{profileBean.hasRoleList('S-STATS;S-VICE;S-REG')}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Review Tourny Gms" 
 							url="reviewtournamentgamesresults.xhtml"
-							rendered="#{profileBean.isSuperUser()}" />
+							rendered="#{profileBean.hasRoleList('S-STATS;S-VICE;S-REG')}" />
 						<p:separator />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Review Club Ice"

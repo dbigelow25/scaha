@@ -1631,6 +1631,7 @@ public class managerBean implements Serializable, MailableObject {
 		// in memory.. all hooked up..
 		LiveGame lg = scaha.getScahaLiveGameList().getByKey(gameid);
 		pb.setSelectedlivegame(lg);
+		pb.setLivegameeditreturn("managerportal.xhtml");
 		
 		 //LOGGER.info("!!!!! Real Selected Game is" + selectedlivegame);
 		  

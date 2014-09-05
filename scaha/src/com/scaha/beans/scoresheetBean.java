@@ -54,6 +54,7 @@ public class scoresheetBean implements Serializable {
 	private String opponent = null;
 	private String gametime = null;
 	private String isscaha = null;
+	private String redirect = null;
 	
 	//datamodels for all of the lists on the page
 	private ScoresheetDataModel ScoresheetDataModel = null;
@@ -78,7 +79,10 @@ public class scoresheetBean implements Serializable {
 	  	if(hsr.getParameter("teamid") != null)
 	    {
 	  		this.teamid = Integer.parseInt(hsr.getParameter("teamid").toString());
+	    } else {
+	    	this.teamid = 0;
 	    }
+	  	
 	  	
 	  	this.isscaha="no";
 	  	if(hsr.getParameter("scaha") != null)
@@ -86,6 +90,12 @@ public class scoresheetBean implements Serializable {
 	  		this.isscaha = hsr.getParameter("scaha").toString();
 	    }
 	  	
+	  	if(hsr.getParameter("redirect") != null)
+	    {
+	  		this.redirect = hsr.getParameter("redirect").toString() + ".xhtml";
+	    } else {
+	    	this.redirect = "managerportal.xhtml";
+	    }
 	  	
 	  	
 	  	this.fileuploadcontroller = new FileUploadController();
@@ -100,6 +110,15 @@ public class scoresheetBean implements Serializable {
     public scoresheetBean() {  
         
     }  
+    
+    public String getRedirect(){
+    	return redirect;
+    }
+    
+    public void setRedirect(String gdate){
+    	redirect=gdate;
+    }
+    
     
     public String getIsscaha(){
     	return isscaha;
