@@ -380,7 +380,7 @@
       			<f:selectItem style="font-size:10pt;" itemLabel="Goalie..." itemValue="0" />
        			<f:selectItems value="#{gamesheetBean.sogpicklist}"  var="roster"  itemLabel="#{roster.jerseynumber} - #{roster.lname}" itemValue="#{roster.getKey()}"/>
        		</p:selectOneMenu>
-   			<p:outputLabel for="sogplaytime" value="Total Time Played:" />
+   			<p:outputLabel for="sogplaytime" value="Total Time Played (hh:mm:ss):" />
 			<p:inputMask id="sogplaytime" value = "#{gamesheetBean.sogplaytime}"   size="10"  mask = "99:99:99"/> 
         	<p:outputLabel for="shots1" value="Shots Per 1:" />
 			<p:inputText id="shots1" value = "#{gamesheetBean.sogshots1}"   maxlength="2" size="3"/> 
