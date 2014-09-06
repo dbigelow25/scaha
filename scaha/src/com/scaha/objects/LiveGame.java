@@ -351,4 +351,7 @@ public class LiveGame extends ScahaObject implements Serializable {
 		this.venueshortname = venueshortname;
 	}
 
+	public boolean isCancelled() {
+		return this.getStatetag().equals("Cancelled");
+	}
 }

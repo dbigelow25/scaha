@@ -134,6 +134,12 @@ ul.ui-menu-child {
 	text-decoration: line-through;
 }
 
+.gamecancelled {
+	background-color:#EEEEEE;
+	color: #FE2E2E;
+	text-decoration: line-through;
+}
+
 .ui-panelgrid td {
     border: none;
 }

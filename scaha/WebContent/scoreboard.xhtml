@@ -88,6 +88,7 @@
 					value="#{scoreboardBean.getLivegamelist()}"
 					selection="#{scoreboardBean.selectedlivegame}" 
  					selectionMode="single" 
+ 					rowStyleClass="#{game.isCancelled() ? 'gamecancelled' : null}"
 					>
   		          <p:column  styleClass="mtrxColumn" width="7%" headerText="Game #" style="font-size: 10px;">
    	    	         <h:outputText style="font-size: 10px;" value="#{game.getGameId()}" />

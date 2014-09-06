@@ -36,6 +36,7 @@
  			id="lahoasched" 
  			var="myrow" 
  			value="#{lahoaBean.mydata}" 
+ 			rowStyleClass="#{myrow.get(4) == 'Cancelled' ? 'gamecancelled' : null}"
  			>
 
 			<p:column  id="gamerow" width="7%" styleClass="mtrxColumn">
