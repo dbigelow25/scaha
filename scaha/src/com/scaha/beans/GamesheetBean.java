@@ -1967,28 +1967,7 @@ public SogList refreshHomeSog() {
 		}
 		db.free();
 		
-		//
-		// ok.. now we want to check all penalties from both sides..and report any game misconducts
-		// or matches..
-		//
-		PenaltyPusher pp = new PenaltyPusher();
 		
-		for (Penalty p : this.getAwaypenalties()) {
-			
-			if (p.getPenaltytype().equals("Game Misconduct") || 
-				p.getPenaltytype().equals("Match Penalty")) {
-				pp.setPenalty(p);
-				pp.pushPenalty();
-			}
-		}
-		for (Penalty p : this.getHomepenalties()) {
-			
-			if (p.getPenaltytype().equals("Game Misconduct") || 
-				p.getPenaltytype().equals("Match Penalty")) {
-				pp.setPenalty(p);
-				pp.pushPenalty();
-			}
-		}
 		
 	}
 	
@@ -2012,6 +1991,28 @@ public SogList refreshHomeSog() {
 		}
 		db.free();
 		
+		//
+		// ok.. now we want to check all penalties from both sides..and report any game misconducts
+		// or matches..
+		//
+		PenaltyPusher pp = new PenaltyPusher();
+		
+		for (Penalty p : this.getAwaypenalties()) {
+			
+			if (p.getPenaltytype().equals("Game Misconduct") || 
+				p.getPenaltytype().equals("Match Penalty")) {
+				pp.setPenalty(p);
+				pp.pushPenalty();
+			}
+		}
+		for (Penalty p : this.getHomepenalties()) {
+			
+			if (p.getPenaltytype().equals("Game Misconduct") || 
+				p.getPenaltytype().equals("Match Penalty")) {
+				pp.setPenalty(p);
+				pp.pushPenalty();
+			}
+		}
 	}
 	public void saveScheduleInfo() {
 		
