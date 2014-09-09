@@ -524,8 +524,8 @@ public class managerBean implements Serializable, MailableObject {
     				ogame.setVisitor(awayteam);
     				ogame.setHome(hometeam);
     				ogame.setLocation(location);
-    				ogame.setAwayscore(homescore);
-    				ogame.setHomescore(awayscore);
+    				ogame.setAwayscore(awayscore);
+    				ogame.setHomescore(homescore);
     				tempresult.add(ogame);
     				
 				}
