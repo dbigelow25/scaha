@@ -14,33 +14,25 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.mail.internet.InternetAddress;
-import javax.servlet.http.HttpServletRequest;
-
-import org.primefaces.event.RowEditEvent;
-
 import com.gbli.common.SendMailSSL;
 import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
-import com.scaha.objects.Division;
+import com.gbli.context.PenaltyPusher;
 import com.scaha.objects.LiveGame;
 import com.scaha.objects.LiveGameRosterSpot;
 import com.scaha.objects.LiveGameRosterSpotList;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Penalty;
 import com.scaha.objects.PenaltyList;
-import com.scaha.objects.Person;
 import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.Scoring;
 import com.scaha.objects.ScoringList;
-import com.scaha.objects.SkillLevel;
 import com.scaha.objects.Sog;
 import com.scaha.objects.SogList;
 
@@ -1963,6 +1955,7 @@ public SogList refreshHomeSog() {
 		this.livegame.setHomescore(getDerivedHomeScore());
 		this.livegame.setStatetag("StatsReview");
 		
+		
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		try {
 			
@@ -1973,6 +1966,29 @@ public SogList refreshHomeSog() {
 			e.printStackTrace();
 		}
 		db.free();
+		
+		//
+		// ok.. now we want to check all penalties from both sides..and report any game misconducts
+		// or matches..
+		//
+		PenaltyPusher pp = new PenaltyPusher();
+		
+		for (Penalty p : this.getAwaypenalties()) {
+			
+			if (p.getPenaltytype().equals("Game Misconduct") || 
+				p.getPenaltytype().equals("Match Penalty")) {
+				pp.setPenalty(p);
+				pp.pushPenalty();
+			}
+		}
+		for (Penalty p : this.getHomepenalties()) {
+			
+			if (p.getPenaltytype().equals("Game Misconduct") || 
+				p.getPenaltytype().equals("Match Penalty")) {
+				pp.setPenalty(p);
+				pp.pushPenalty();
+			}
+		}
 		
 	}
 	
@@ -2022,7 +2038,7 @@ public SogList refreshHomeSog() {
 		// ok.. lets generate the e-mail.. so we can put prior information.. and current information..
 		//
 		LOGGER.info("HERE IS WHERE WE SAVE EVERYTHING COLLECTED FROM GameChange And Send Mail..");
-		LOGGER.info("Sending Registration mail here...");
+		LOGGER.info("Sending Game Change mail here...");
 		SendMailSSL mail = new SendMailSSL(this);
 		mail.sendMail();
 		
