@@ -277,6 +277,7 @@
     				value="#{gamesheetBean.homepenalties}"
    					selection="#{gamesheetBean.selectedhomepenalty}"
  					selectionMode="single" 
+ 					rowStyleClass="#{pen.penaltytype} eq 'Game Misconduct'  ? 'gamerpen' : null}"
  					>
                  <f:facet name="header">
                   	<p:row>
@@ -303,6 +304,7 @@
     				value="#{gamesheetBean.awaypenalties}"
    					selection="#{gamesheetBean.selectedawaypenalty}"
  					selectionMode="single" 
+ 					rowStyleClass="#{pen.penaltytype} eq 'Game Misconduct' ? 'gamerpen' : null}"
  					>
                  <f:facet name="header">
                   	<p:row>

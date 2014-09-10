@@ -2002,6 +2002,7 @@ public SogList refreshHomeSog() {
 			if (p.getPenaltytype().equals("Game Misconduct") || 
 				p.getPenaltytype().equals("Match Penalty")) {
 				pp.setPenalty(p);
+				pp.setLivegame(this.livegame);
 				pp.pushPenalty();
 			}
 		}
@@ -2010,6 +2011,7 @@ public SogList refreshHomeSog() {
 			if (p.getPenaltytype().equals("Game Misconduct") || 
 				p.getPenaltytype().equals("Match Penalty")) {
 				pp.setPenalty(p);
+				pp.setLivegame(this.livegame);
 				pp.pushPenalty();
 			}
 		}

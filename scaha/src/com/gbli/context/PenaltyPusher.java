@@ -90,8 +90,6 @@ public class PenaltyPusher  implements Serializable,  MailableObject {
 		//
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		List<InternetAddress> data = new ArrayList<InternetAddress>();
-		
-		LOGGER.info(this.livegame.toString());
 		try {
 			PreparedStatement ps = db.prepareCall("call scaha.getPenaltyPushEmails(?)");
 			ps.setInt(1, this.penalty.ID);
