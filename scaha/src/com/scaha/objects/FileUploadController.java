@@ -30,7 +30,7 @@ public class FileUploadController extends ScahaObject implements Serializable {
 		InputStream stream = null;
         FileOutputStream output = null;
         
-        String prefix = FilenameUtils.getBaseName(event.getFile().getFileName()); 
+        String prefix = FilenameUtils.getBaseName(event.getFile().getFileName().replace("#", "")); 
         String suffix = FilenameUtils.getExtension(event.getFile().getFileName());
         
         scoresheet.setFilename(scoresheet.getIdgame() + prefix + "." + suffix);
