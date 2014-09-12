@@ -47,7 +47,7 @@
 			<p:commandButton rendered = "false" id="compcmd" value=  "Game Complete" ajax="true"  update="gameinfo " actionListener="#{gamesheetBean.setGameComplete()}" />
 			<p:commandButton id="reviewcmd" value="Stats Complete" ajax="true"  update="gameinfo " actionListener="#{gamesheetBean.setStatsComplete()}" />
 			<p:commandButton rendered="#{profileBean.isSuperUser()}" id="finalcmd" value="Mark Final" ajax="true"  update="gameinfo " actionListener="#{gamesheetBean.setGameFinal()}" />
-			<p:commandButton id="closecmd" value="Close" ajax="false" actionListener="#{gamesheetBean.gamesheetClose()}" />
+			<p:commandButton id="closecmd" value="Close" immediate = "true" ajax="false" actionListener="#{gamesheetBean.gamesheetClose()}" />
 			<p:spacer height="30" />
 			</ui:fragment >
 			<ui:fragment id="fedit" rendered="#{gamesheetBean.isEditgame()}">
@@ -150,7 +150,7 @@
     		<!-- Here is the SOG information... -->
     		<p:contextMenu id="homegoaliemenu" for="homegoalie">  
    			 	<p:menuitem value="Edit Goalie SOG"  icon="ui-icon-edit"  update=":form1:goaliegrid" actionListener="#{gamesheetBean.editSog('H')}" oncomplete="PF('sogdlg').show();"/>  
-    		 	<p:menuitem value="Delete Goalie SOG" update="@form,:form1:goalieguts" icon="ui-icon-delete" actionListener="#{gamesheetBean.deleteSog('H')}"/>  
+    		 	<p:menuitem value="Delete Goalie SOG" immediate = "true" update="@form,:form1:goalieguts" icon="ui-icon-delete" actionListener="#{gamesheetBean.deleteSog('H')}"/>  
     		</p:contextMenu>  
 			<p:contextMenu id="awaygoaliemenu" for="awaygoalie">  
    			 	<p:menuitem value="Edit Goalie SOG"  icon="ui-icon-edit"  update=":form1:goaliegrid" actionListener="#{gamesheetBean.editSog('A')}" oncomplete="PF('sogdlg').show();"/>  
@@ -376,6 +376,10 @@
 	</p:dialog>
 	
 	<p:dialog id="sogdialog"  header="Shots and Saves" widgetVar="sogdlg" modal="false" >
+	
+		<div style="height:40px;">
+			<p:messages id="messagessog" showDetail="true"/>
+		</div>
 	 <h:panelGrid id="goaliegrid" columns="2" style="margin-bottom:5px" cellpadding="2">
 			<p:outputLabel for="sogperson" value="Goalie" />
 			<p:selectOneMenu styleClass="ddlistbox" id="sogperson" value="#{gamesheetBean.selectedsogrosterid}" >
@@ -383,7 +387,14 @@
        			<f:selectItems value="#{gamesheetBean.sogpicklist}"  var="roster"  itemLabel="#{roster.jerseynumber} - #{roster.lname}" itemValue="#{roster.getKey()}"/>
        		</p:selectOneMenu>
    			<p:outputLabel for="sogplaytime" value="Total Time Played (hh:mm:ss):" />
-			<p:inputMask id="sogplaytime" value = "#{gamesheetBean.sogplaytime}"   size="10"  mask = "99:99:99"/> 
+			<p:inputMask id="sogplaytime" value = "#{gamesheetBean.sogplaytime}" 
+			 size="10"  mask = "99:99:99"
+			
+			requiredMessage="Please enter the time the goalie played in hours:minutes:seconds format."
+			validatorMessage="Invalid time format.. it needs to be in hours:minutes:seconds format eg. 00:45:00">
+			 <f:validateRegex pattern="[0][012]:[012345][0123456789]:[012345][0123456789]" />
+			 
+			 </p:inputMask> 
         	<p:outputLabel for="shots1" value="Shots Per 1:" />
 			<p:inputText id="shots1" value = "#{gamesheetBean.sogshots1}"   maxlength="2" size="3"/> 
         	<p:outputLabel for="shots2" value="Shots Per 2:" />
@@ -404,7 +415,7 @@
 			<p:inputText id="shots9" value = "#{gamesheetBean.sogshots9}"   maxlength="2" size="3"/> 
 	    </h:panelGrid>
 	    <p:separator />
-		<p:commandButton id="cmdsogsave" ajax="true" value="Save" actionListener="#{gamesheetBean.saveSog()}" update="@form,:form1:goalieguts"  oncomplete="sogdlg.hide()" />
+		<p:commandButton id="cmdsogsave" ajax="true" value="Save" actionListener="#{gamesheetBean.saveSog()}" update="@form,:form1:goalieguts"  oncomplete="if (args &amp;&amp; !args.validationFailed) sogdlg.hide()" />
 	   	</p:dialog>
 	
 	<p:dialog id="pensdialog"  header="Penalties" widgetVar="pensdlg" modal="false" >

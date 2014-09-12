@@ -630,8 +630,8 @@ public SogList refreshHomeSog() {
 			this.sogpicklist = (List<LiveGameRosterSpot>) this.getHometeam().getWrappedData();
 			this.currentsog = this.homesogs.getByKey(this.selectedhomesog.ID);
 		} else {
-			this.sogteam = this.livegame.getHometeam();
-			this.sogroster = this.getHometeam();
+			this.sogteam = this.livegame.getAwayteam();
+			this.sogroster = this.getAwayteam();
 			this.sogpicklist = (List<LiveGameRosterSpot>) this.getAwayteam().getWrappedData();
 			this.currentsog = this.awaysogs.getByKey(this.selectedawaysog.ID);
 		}
@@ -957,7 +957,7 @@ public SogList refreshHomeSog() {
 	public void saveSog() {
 		
 		LOGGER.info("HERE IS WHERE WE save a SOG for " + this.sogteam.getTeamname());
-		
+				
 		Sog sog = this.currentsog;
 		
 		
@@ -973,7 +973,6 @@ public SogList refreshHomeSog() {
 		sog.setPlaytime(this.getSogplaytime());
 		sog.setRosterspot(this.sogroster.getByKey(this.selectedsogrosterid));
 			
-		LOGGER.info("updating score for " + sog);
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 		
 		try {
