@@ -32,7 +32,7 @@
 					<h:column>
 						<p:selectOneMenu value="#{rosterBean.selecteddivision}" id="divisionmenu">
 					    	<f:selectItem itemLabel="Select Division..." itemValue="0"/>
-					    	<f:selectItems value="#{rosterBean.getDivisions()}" var="division" itemLabel="#{division.getDivisionname()}" itemValue="#{division.getIddivision()}"/>
+					    	<f:selectItems value="#{rosterBean.getDivisions()}" var="division" itemLabel="#{division.getDivisionname()}" itemValue="#{division.getTag()}"/>
 					    	<p:ajax listener="#{rosterBean.onDivisionChange()}" process="@this" update="@form"/>
 					    </p:selectOneMenu>
 					</h:column>

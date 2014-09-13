@@ -39,7 +39,7 @@ public class rosterBean implements Serializable{
 	
 	//bean level properties used by multiple methods
 	private String selectedseason = null;
-	private Integer selecteddivision = null;
+	private String selecteddivision = null;
 	private Integer selectedteam = null;
 	private String teamname = null;
 	
@@ -72,11 +72,11 @@ public class rosterBean implements Serializable{
     	selectedseason = value;
     }
     
-    public Integer getSelecteddivision(){
+    public String getSelecteddivision(){
     	return selecteddivision;
     }
     
-    public void setSelecteddivision(Integer value){
+    public void setSelecteddivision(String value){
     	selecteddivision = value;
     }
     
@@ -138,11 +138,11 @@ public class rosterBean implements Serializable{
 			if (rs != null){
 				
 				while (rs.next()) {
-					Integer divisionid = rs.getInt("iddivision");
+					String divisionid = rs.getString("scheduletags");
 					String divisionname = rs.getString("divisionname");
 					
 					Division division = new Division();
-					division.setIddivision(divisionid);
+					division.setTag(divisionid);
 					division.setDivisionname(divisionname);
 					templist.add(division);
 				}
@@ -182,7 +182,7 @@ public class rosterBean implements Serializable{
     		//first get team name
     		CallableStatement cs = db.prepareCall("CALL scaha.getTeamByDivisionSeason(?,?)");
     		cs.setString("seasontag", this.getSelectedseason());
-    		cs.setInt("iddivision", this.getSelecteddivision());
+    		cs.setString("iddivision", this.getSelecteddivision());
 			rs = cs.executeQuery();
 			
 			if (rs != null){
@@ -240,9 +240,7 @@ public class rosterBean implements Serializable{
 			rs.close();
 			db.cleanup();
     		
-    		//next get player roster
-			/*
-			cs = db.prepareCall("CALL scaha.getRosterPlayersByTeamID(?)");
+    		cs = db.prepareCall("CALL scaha.getRosterPlayersForManagerByTeamID(?)");
 			cs.setInt("teamid", this.selectedteam);
 		    rs = cs.executeQuery();
 			
@@ -268,7 +266,7 @@ public class rosterBean implements Serializable{
 			}
 			rs.close();
 			
-			cs = db.prepareCall("CALL scaha.getRosterCoachesByTeamID(?)");
+			cs = db.prepareCall("CALL scaha.getRosterCoachesForManagerByTeamID(?)");
 			cs.setInt("teamid", this.selectedteam);
 		    rs = cs.executeQuery();
 			
@@ -293,7 +291,6 @@ public class rosterBean implements Serializable{
 				LOGGER.info("We have results for team roster");
 			}
 			rs.close();
-			*/
 			db.cleanup();
     		
     	} catch (SQLException e) {
