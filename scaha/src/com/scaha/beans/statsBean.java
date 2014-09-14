@@ -48,6 +48,8 @@ public class statsBean implements Serializable{
 	private String selectedyear = null;
 	private String selectedgametype = null;
 	private String selectedcount = null;
+	private String displaycompletetitle = null;
+	
     @PostConstruct
     public void init() {
 	    this.selectedcount="25";
@@ -67,6 +69,14 @@ public class statsBean implements Serializable{
     public statsBean() {  
         
     }  
+    
+    public String getDisplaycompletetitle(){
+    	return displaycompletetitle;
+    }
+    
+    public void setDisplaycompletetitle(String value){
+    	displaycompletetitle=value;
+    }
     
     public List<Stat> getPlayergoals(){
     	return playergoals;
@@ -398,7 +408,8 @@ public class statsBean implements Serializable{
 	
 	public void loadCompletePlayerStats(String sortby){
 		List<Stat> tempsave = new ArrayList<Stat>();
-    	
+		setDisplaycompletetitle(sortby);
+		
     	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
     	
     	try{

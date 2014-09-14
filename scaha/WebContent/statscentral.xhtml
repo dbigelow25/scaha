@@ -198,7 +198,7 @@
              		<p:dataTable id="detailedplayers" var="stat" rows="10"
                          paginator="true" value="#{statsBean.getCompleteplayers()}" headerText="Points">
 		                <f:facet name="header">
-					        Points
+					        <h:outputText value="#{statsBean.getDisplaycompletetitle()}" />
 					    </f:facet>
 		                <p:column headerText="#" style="width:25px;">  
 			                <h:outputText value="#{stat.getRank()}" />
