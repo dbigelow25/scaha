@@ -42,6 +42,8 @@ public class rosterBean implements Serializable{
 	private String selecteddivision = null;
 	private Integer selectedteam = null;
 	private String teamname = null;
+	private RosterEdit selectedplayer = null;
+    
 	
 	@PostConstruct
     public void init() {
@@ -55,6 +57,15 @@ public class rosterBean implements Serializable{
     public rosterBean() {  
         
     }  
+    
+    public RosterEdit getSelectedplayer(){
+    	return selectedplayer;
+    }
+    
+    public void setSelectedplayer(RosterEdit name){
+    	selectedplayer=name;
+    }
+    
     
     public String getTeamname(){
     	return teamname;

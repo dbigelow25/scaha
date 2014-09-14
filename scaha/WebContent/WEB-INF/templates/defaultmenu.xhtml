@@ -106,6 +106,10 @@
 							url="managerportal.xhtml"
 							rendered="#{profileBean.getProfile().getScahamanager().getIsmanager()}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
+							value="Change Jersey #" 
+							url="updateroster.xhtml"
+							rendered="#{profileBean.hasRoleList('S-STATS')}" />
+						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Review SCAHA Games" 
 							url="reviewscahagames.xhtml"
 							rendered="#{profileBean.hasRoleList('S-STATS;S-VICE;S-REG')}" />
