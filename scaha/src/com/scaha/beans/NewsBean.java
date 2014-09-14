@@ -1,6 +1,7 @@
 package com.scaha.beans;
 
 import java.io.Serializable;
+import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,9 @@ public class NewsBean implements Serializable,  MailableObject  {
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 	private NewsItem currentnewsitem = null;
+	private String title = null;
+	private String newssubject = null;
+	private String newsbody = null;
 	
 	//
 	/**
@@ -138,5 +142,60 @@ public class NewsBean implements Serializable,  MailableObject  {
 	public InternetAddress[] getPreApprovedICC() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public String getTitle(){
+		return title;
+	}
+	
+	public void setTitle(String value){
+		title=value;
+	}
+	
+	public String getNewssubject(){
+		return newssubject;
+	}
+	
+	public void setNewssubject(String value){
+		newssubject=value;
+	}
+	
+	public String getNewsbody(){
+		return newsbody;
+	}
+	
+	public void setNewsbody(String value){
+		newsbody=value;
+	}
+	
+	public void addNewsItem() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		Application app = context.getApplication();
+		ValueExpression expression = app.getExpressionFactory().createValueExpression(context.getELContext(), "#{profileBean}", Object.class );
+		ProfileBean pb = (ProfileBean) expression.getValue( context.getELContext() );
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		try {
+			CallableStatement cs = db.prepareCall("CALL scaha.updateNewsItem(?,?,?,?,?,?,?,?)");
+    		cs.setInt("inout_idNewsItem", 0);
+			cs.setString("in_subject", this.getNewssubject());
+    		cs.setString("in_title", this.getTitle());
+    		cs.setString("in_author", pb.getProfile().getPerson().getsFirstName() + " " + pb.getProfile().getPerson().getsLastName());
+    		cs.setString("in_body", this.getNewsbody());
+    		cs.setInt("in_isactive", 1);
+    		cs.setString("in_updated", null);
+    		cs.setString("in_state", "publish");
+			cs.executeQuery();
+			
+			cs.close();
+			db.cleanup();
+			db.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		db.free();
+		LOGGER.info("added " + this.getNewssubject() + " news item");
+
+		getNewsItemList();
 	}
 }

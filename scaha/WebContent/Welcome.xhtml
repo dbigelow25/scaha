@@ -15,52 +15,28 @@
 
 
 	 <p:panel header="Latest SCAHA News" footer="brought to you by iScaha"> 
-	  <!-- <div class="NewsTitle">Membership Drive by Club!  
-	  <p:progressBar style="width:300px" value="#{memberDriveBean.getProgressValue()}" labelTemplate="{value}%" displayOnly="true"/></div>
-	  <div class="NewsDate">Which SCAHA clubs are getting it done!</div>  
-   	  <div class="NewsText">
-	  <h:outputText  escape="false"  value="The below information is real time stats for all clubs with regards to getting their members registered for this upcoming season.  By the Start of our SCAHA Tryouts
-	  we want this board to be at 100%, so lets go families!!" />
-	  	</div>
- 	 	<p:spacer height="10px" />
-	 	<p:dataTable 
- 			id="memberdrive" 
- 			var="myrow" 
- 			value="#{memberDriveBean.mydata}" 
- 			filteredValue="#{memberDriveBean.filter}">
- 			>
- 			<p:column id="c0" headerText="Club Name" >
-	             <h:outputText value="#{myrow.getByKey('Club Name')}" />  
-	        </p:column>  
- 			<p:column styleClass="mtrxColumn">
-           		<f:facet name="header">
-            		<h:outputText value= "#{memberDriveBean.mydata.rheader.get(1)}"/>
-		        </f:facet>
-	            <h:outputText value="#{myrow.get(1)}" />  
-	        </p:column>  
- 			<p:column styleClass="mtrxColumn">
-           		<f:facet name="header">
-            		<h:outputText value="#{memberDriveBean.mydata.rheader.get(2)}" />
-		        </f:facet>
-	            <h:outputText value="#{myrow.get(2)}" />  
-	        </p:column>  
- 			<p:column styleClass="mtrxtotColumn">
-           		<f:facet name="header">
-            		<h:outputText value="#{memberDriveBean.mydata.rheader.get(3)}" />
-		        </f:facet>
-	            <h:outputText value="#{myrow.get(3)}%" />  
-	        </p:column>  
-			 <p:columnGroup type="footer">
-            <p:row>
-                <p:column footerText="SCAHA Totals:" style="text-align:right"  />
-                <p:column footerText="#{memberDriveBean.getTotRegisters()}" />
-                <p:column footerText="#{memberDriveBean.getTotMembers()}" />
-                <p:column footerText="#{memberDriveBean.getTotPercent()}" />
-            </p:row>
-        </p:columnGroup>	    
-	    </p:dataTable>
-	  -->
-  	  <ui:repeat value="#{newsBean.getNewsItemList()}" var="newsitem">
+	  
+	  <!-- adding a create new news story button only available for super users -->
+	    <p:panel header="Enter News Item.." rendered="#{profileBean.isSuperUser()}">	
+   			<h:form id="form">
+   			<h:panelGrid columns="3" cellpadding="3" id="edit-news-grid">  
+				<p:outputLabel for="title" value="Title:"></p:outputLabel>
+				<p:inputText id="title" style="width:300px;" value="#{newsBean.title}" required="true" />
+				<p:message id="m_title" closable="true" for="title"/>
+				<p:outputLabel for="subject" value="Subject:"></p:outputLabel>
+				<p:inputText id="subject" style="width:300px;" value="#{newsBean.newssubject}" required="true"/>
+				<p:message id="m_subject" closable="true" for="subject"/>
+			</h:panelGrid>
+			<p:separator />
+   			<p:editor  id="neweditor" widgetVar="newnewsbody" value="#{newsBean.newsbody}" rendered="true"/>
+			<p:separator />
+  			<p:commandButton value="Add News Item" id="add" ajax="false" action="#{newsBean.addNewsItem()}" rendered="#{profileBean.isSuperUser()}" oncomplete="newnews.hide();" update="newslist"/>
+			<p:spacer height="10" width="10" />
+		  </h:form>
+		</p:panel>
+	  
+	
+  	  <ui:repeat id="newslist" value="#{newsBean.getNewsItemList()}" var="newsitem">
 		<div class="NewsTitle">#{newsitem.title} 
    		   <p:commandButton rendered="#{profileBean.isSuperUser()}" id="editButton" icon="ui-icon-search"  ajax="true" update="form:editor" onclick="panelwv#{newsitem.getIDStr()}.show();"/>     
    		   </div>
