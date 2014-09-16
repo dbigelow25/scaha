@@ -9,6 +9,7 @@
 >
 <ui:define name="content">
 <h:body>
+<h:form>
 <div id="calendar-div">
     <p:panel header="SCAHA Suspensions" footer="brought to you by iScaha">  
  		<!-- <table id="subpage" style="border-collapse: collapse;">
@@ -18,7 +19,8 @@
 				</td>
 			</tr>
 		</table> -->
- 		<p:dataTable var="suspension" value="#{suspensionBean.getSuspensions()}" paginator="true" rows="10" >
+ 		<p:commandButton  id="addsuspension" value="Add Suspension" icon="ui-icon-search"  ajax="true" onclick="adddialog.show();"/>
+ 		<p:dataTable id="suspensionlist" var="suspension" value="#{suspensionBean.getAllSuspensions()}" paginator="true" rows="10" >
  		    <p:column headerText="Date" style="text-align: center">  
 	            <h:outputText value="#{suspension.getSuspensiondate()}" />  
 	        </p:column> 
@@ -40,10 +42,20 @@
 	        <p:column headerText="Eligibility" style="text-align: center">  
 	            <h:outputText value="#{suspension.getEligibility()}"/>
 	        </p:column>
+	        <p:column headerText="Served" style="text-align: center">  
+	            <h:outputText value="#{suspension.getServed()}"/>
+	        </p:column>
+	        <p:column headerText="">
+	        	<p:splitButton id="susp" icon="ui-icon-folder-open"  >
+			        <p:menuitem value="Mark Served" action="#{suspensionBean.markServed(suspension)}" update="suspensionlist"/>
+			        <p:menuitem value="Manage" immediate="true" action="#{suspensionBean.manageSuspension(suspension)}" ajax="false" />
+			    </p:splitButton>
+	        </p:column> 
 		</p:dataTable>
 		
  	</p:panel>
 </div>
+</h:form>
 </h:body>
 </ui:define>
 </ui:composition>

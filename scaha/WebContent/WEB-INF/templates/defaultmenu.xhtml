@@ -110,6 +110,10 @@
 							url="updateroster.xhtml"
 							rendered="#{profileBean.hasRoleList('S-STATS')}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
+							value="Manage Suspensions" 
+							url="managesuspensions.xhtml"
+							rendered="#{profileBean.hasRoleList('S-STATS;S-VICE')}" />
+						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Review SCAHA Games" 
 							url="reviewscahagames.xhtml"
 							rendered="#{profileBean.hasRoleList('S-STATS;S-VICE;S-REG')}" />

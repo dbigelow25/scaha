@@ -19,6 +19,8 @@ public class Suspension extends ScahaObject implements Serializable {
 	private String games = null;
 	private String eligibility = null;
 	private String suspensiondate = null;
+	private String served = null;
+	
 	
 	public Suspension (){ 
 		
@@ -40,6 +42,15 @@ public class Suspension extends ScahaObject implements Serializable {
 	public void setPlayername(String value){
 		playername=value;
 	}
+	
+	public String getServed(){
+		return served;
+	}
+	
+	public void setServed(String value){
+		served=value;
+	}
+	
 	
 	public String getMatch(){
 		return match;

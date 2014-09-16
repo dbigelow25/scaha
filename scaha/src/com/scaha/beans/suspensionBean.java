@@ -26,6 +26,7 @@ public class suspensionBean implements Serializable {
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 
 	private List<Suspension> suspensions = null;
+	private List<Suspension> allsuspensions = null;
 	transient private ResultSet rs = null;
 	
 	
@@ -34,7 +35,7 @@ public class suspensionBean implements Serializable {
 		
         loadSuspensions();
         
-        
+        loadAllSuspensions();
 	}
 	
     public suspensionBean() {  
@@ -49,6 +50,13 @@ public class suspensionBean implements Serializable {
     	suspensions=list;
     }
     
+    public List<Suspension> getAllSuspensions(){
+    	return allsuspensions;
+    }
+    
+    public void setAllSuspensions(List<Suspension> list){
+    	allsuspensions=list;
+    }
     
     public void closePage(){
     	FacesContext context = FacesContext.getCurrentInstance();
@@ -117,5 +125,94 @@ public class suspensionBean implements Serializable {
 		
     }
 	
+	
+	public void loadAllSuspensions() {  
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		List<Suspension> tempresult = new ArrayList<Suspension>();
+		
+    	try{
+    		//first get team name
+    		CallableStatement cs = db.prepareCall("CALL scaha.getAllSuspensions()");
+			rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					Integer idsuspension = rs.getInt("idsuspensions");
+					String playername = rs.getString("playername");
+					String team = rs.getString("team");
+					String infraction = rs.getString("infraction");
+					String nogames = rs.getString("numberofgames");
+					String eligibility = rs.getString("eligibility");
+					String match = rs.getString("matchpenalty");
+					String suspensiondate = rs.getString("suspensiondate");
+					String served = rs.getString("served");
+					
+					Suspension susp = new Suspension();
+					susp.setIdsuspension(idsuspension);
+					susp.setPlayername(playername);
+					susp.setTeam(team);
+					susp.setInfraction(infraction);
+					susp.setGames(nogames);
+					susp.setEligibility(eligibility);
+					susp.setMatch(match);
+					susp.setSuspensiondate(suspensiondate);
+					susp.setServed(served);
+					
+					tempresult.add(susp);
+    					}
+				LOGGER.info("We have results for suspension list");
+			}
+			
+			
+			rs.close();
+			db.cleanup();
+    		
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN getting suspension list");
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+    	
+    	this.setAllSuspensions(tempresult);
+		
+    }
+	
+	public void markServed(Suspension suspension){
+		Integer suspensionid = suspension.getIdsuspension();
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+    	try{
+    		//first get team name
+    		CallableStatement cs = db.prepareCall("CALL scaha.setSuspensionServed(?)");
+			cs.setInt("suspensionid", suspensionid);
+    		cs.executeQuery();
+			
+			LOGGER.info("set suspension as served for:" + suspensionid.toString());
+						
+			db.commit();
+			db.cleanup();
+    		
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN settings suspension");
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+    	
+    	loadAllSuspensions();
+		
+	}
 }
 
