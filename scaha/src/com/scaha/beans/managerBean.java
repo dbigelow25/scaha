@@ -1589,7 +1589,7 @@ public class managerBean implements Serializable, MailableObject {
 			context.addMessage("scahagamesmessages", new FacesMessage(FacesMessage.SEVERITY_WARN,"Action Needed!", "You have Exhibition Games needing the scoresheet uploaded."));
 		}
 		
-		context.addMessage("scahagamesmessages", new FacesMessage(FacesMessage.SEVERITY_INFO,"Information", "Team rosters will be displayed as they are received and confirmed by SCAHA Member Services.  Any jersey number changes made previously will be saved."));
+
 		
 	}
 	
