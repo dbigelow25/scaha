@@ -198,4 +198,24 @@ public class NewsBean implements Serializable,  MailableObject  {
 
 		getNewsItemList();
 	}
+	
+	public void hideNewsItem(NewsItem current) {
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		try {
+			CallableStatement cs = db.prepareCall("CALL scaha.hideNewsItem(?)");
+    		cs.setInt("inout_idNewsItem", Integer.parseInt(current.getIDStr()));
+			cs.execute();
+			cs.close();
+			db.commit();
+			db.cleanup();
+			db.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		db.free();
+		LOGGER.info("added " + this.getNewssubject() + " news item");
+
+		getNewsItemList();
+	}
 }

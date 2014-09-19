@@ -16,34 +16,19 @@
 
 	 <p:panel header="Latest SCAHA News" footer="brought to you by iScaha"> 
 	  
-	  <!-- adding a create new news story button only available for super users -->
-	    <p:panel header="Enter News Item.." rendered="#{profileBean.isSuperUser()}">	
-   			<h:form id="form">
-   			<h:panelGrid columns="3" cellpadding="3" id="edit-news-grid">  
-				<p:outputLabel for="title" value="Title:"></p:outputLabel>
-				<p:inputText id="title" style="width:300px;" value="#{newsBean.title}" required="true" />
-				<p:message id="m_title" closable="true" for="title"/>
-				<p:outputLabel for="subject" value="Subject:"></p:outputLabel>
-				<p:inputText id="subject" style="width:300px;" value="#{newsBean.newssubject}" required="true"/>
-				<p:message id="m_subject" closable="true" for="subject"/>
-			</h:panelGrid>
-			<p:separator />
-   			<p:editor  id="neweditor" widgetVar="newnewsbody" value="#{newsBean.newsbody}" rendered="true"/>
-			<p:separator />
-  			<p:commandButton value="Add News Item" id="add" ajax="false" action="#{newsBean.addNewsItem()}" rendered="#{profileBean.isSuperUser()}" oncomplete="newnews.hide();" update="newslist"/>
-			<p:spacer height="10" width="10" />
-		  </h:form>
-		</p:panel>
+	  
 	  
 	
   	  <ui:repeat id="newslist" value="#{newsBean.getNewsItemList()}" var="newsitem">
 		<div class="NewsTitle">#{newsitem.title} 
-   		   <p:commandButton rendered="#{profileBean.isSuperUser()}" id="editButton" icon="ui-icon-search"  ajax="true" update="form:editor" onclick="panelwv#{newsitem.getIDStr()}.show();"/>     
+   		   <p:commandButton rendered="#{profileBean.isSuperUser()}" id="editButton" icon="ui-icon-search"  ajax="true" update="form:editor" onclick="panelwv#{newsitem.getIDStr()}.show();"/>
+   		        
    		   </div>
    		<div class="NewsDate">#{newsitem.subject} / Written By: #{newsitem.author} / Published On : #{newsitem.updated}</div>  
    		<div class="NewsText"><h:outputText value="#{newsitem.body}" escape="false" /></div>
 		<p:panel header="Edit The Selected News Item.." widgetVar="panelwv#{newsitem.getIDStr()}" visible="false" rendered="#{profileBean.isSuperUser()}" closable="true" toggleable="true">	
    			<h:form id="form">
+   			<p:commandButton rendered="#{profileBean.isSuperUser()}" id="removeButton" icon="ui-icon-trash"  ajax="false" action="#{newsBean.hideNewsItem(newsitem)}"/>
    			<h:panelGrid columns="3" cellpadding="3" id="edit-pers-grid">  
 				<p:outputLabel for="title" value="Title:"></p:outputLabel>
 				<p:inputText id="title" style="width:300px;" value="#{newsitem.title}" required="true" />
@@ -62,6 +47,24 @@
 		</p:panel>
 		<p class="NewsGap" />    	
 	</ui:repeat>
+	<!-- adding a create new news story button only available for super users -->
+	    <p:panel header="Enter News Item.." rendered="#{profileBean.isSuperUser()}">	
+   			<h:form id="form">
+   			<h:panelGrid columns="3" cellpadding="3" id="edit-news-grid">  
+				<p:outputLabel for="title" value="Title:"></p:outputLabel>
+				<p:inputText id="title" style="width:300px;" value="#{newsBean.title}" required="true" />
+				<p:message id="m_title" closable="true" for="title"/>
+				<p:outputLabel for="subject" value="Subject:"></p:outputLabel>
+				<p:inputText id="subject" style="width:300px;" value="#{newsBean.newssubject}" required="true"/>
+				<p:message id="m_subject" closable="true" for="subject"/>
+			</h:panelGrid>
+			<p:separator />
+   			<p:editor  id="neweditor" widgetVar="newnewsbody" value="#{newsBean.newsbody}" rendered="true"/>
+			<p:separator />
+  			<p:commandButton value="Add News Item" id="add" ajax="false" action="#{newsBean.addNewsItem()}" rendered="#{profileBean.isSuperUser()}" oncomplete="newnews.hide();" update="newslist"/>
+			<p:spacer height="10" width="10" />
+		  </h:form>
+		</p:panel>
 	</p:panel>
 </div>
 </h:body>
