@@ -1,5 +1,6 @@
 package com.scaha.beans;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
@@ -305,13 +306,24 @@ public class suspensionBean implements Serializable {
     	}
     	
     	loadAllSuspensions();
-		this.selectedplayer = null;
-		this.infraction = null;
-		this.match = 0;
-		this.served = 0;
-		this.suspdate = null;
-		this.numberofgames = null;
+		this.setSelectedplayer(null);
+		this.setInfraction("");
+		this.setMatch(0);
+		this.setServed(0);
+		this.setSuspdate("");
+		this.setNumberofgames("");
 		
+	}
+	
+	public void manageSuspension(Suspension suspension){
+		String suspensionid = suspension.getIdsuspension().toString();
+		FacesContext context = FacesContext.getCurrentInstance();
+		try{
+			context.getExternalContext().redirect("editsuspensions.xhtml?suspensionid=" + suspensionid);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
 
