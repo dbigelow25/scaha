@@ -15,6 +15,7 @@ import javax.faces.context.FacesContext;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
+import com.scaha.objects.Result;
 import com.scaha.objects.Suspension;
 
 //import com.gbli.common.SendMailSSL;
@@ -28,6 +29,12 @@ public class suspensionBean implements Serializable {
 	private List<Suspension> suspensions = null;
 	private List<Suspension> allsuspensions = null;
 	transient private ResultSet rs = null;
+	private Result selectedplayer = null;
+	private String numberofgames = null;
+	private String infraction = null;
+	private String suspdate = null;
+	private Integer served = null;
+	private Integer match = null;
 	
 	
 	@PostConstruct
@@ -42,6 +49,57 @@ public class suspensionBean implements Serializable {
         
     }  
     
+    public Integer getMatch(){
+    	return match;
+    }
+    
+    public void setMatch(Integer value){
+    	match = value;
+    }
+    
+    public Integer getServed(){
+    	return served;
+    }
+    
+    public void setServed(Integer value){
+    	served = value;
+    }
+    
+    
+    public String getSuspdate(){
+    	return suspdate;
+    }
+    
+    public void setSuspdate(String value){
+    	suspdate = value;
+    }
+    
+    
+    public String getInfraction(){
+    	return infraction;
+    }
+    
+    public void setInfraction(String value){
+    	infraction = value;
+    }
+    
+    public String getNumberofgames(){
+    	return numberofgames;
+    }
+    
+    public void setNumberofgames(String value){
+    	numberofgames = value;
+    }
+    
+    
+    public Result getSelectedplayer(){
+		return selectedplayer;
+	}
+	
+	public void setSelectedplayer(Result selectedPlayer){
+		selectedplayer = selectedPlayer;
+	}
+	
     public List<Suspension> getSuspensions(){
     	return suspensions;
     }
@@ -212,6 +270,47 @@ public class suspensionBean implements Serializable {
     	}
     	
     	loadAllSuspensions();
+		
+	}
+	
+	public void Addsuspension(){
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+    	try{
+    		//first get team name
+    		CallableStatement cs = db.prepareCall("CALL scaha.addSuspension(?,?,?,?,?,?)");
+			cs.setInt("inpersonid", Integer.parseInt(this.selectedplayer.getIdplayer()));
+			cs.setString("numgames", this.numberofgames);
+			cs.setString("ininfraction", this.infraction);
+			cs.setInt("ismatch", this.match);
+			cs.setInt("served", this.served);
+			cs.setString("susdate", this.suspdate);
+    		cs.executeQuery();
+			
+			LOGGER.info("set suspension for:" + this.selectedplayer.getIdplayer().toString());
+						
+			db.commit();
+			db.cleanup();
+    		
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN settings suspension");
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+    	
+    	loadAllSuspensions();
+		this.selectedplayer = null;
+		this.infraction = null;
+		this.match = 0;
+		this.served = 0;
+		this.suspdate = null;
+		this.numberofgames = null;
 		
 	}
 }

@@ -19,7 +19,7 @@
 				</td>
 			</tr>
 		</table> -->
- 		<p:commandButton  id="addsuspension" value="Add Suspension" icon="ui-icon-search"  ajax="true" onclick="adddialog.show();"/>
+ 		<p:commandButton  id="addsuspension" value="Add Suspension" icon="ui-icon-search"  ajax="true" onclick="msgdlg.show();"/>
  		<p:dataTable id="suspensionlist" var="suspension" value="#{suspensionBean.getAllSuspensions()}" paginator="true" rows="10" >
  		    <p:column headerText="Date" style="text-align: center">  
 	            <h:outputText value="#{suspension.getSuspensiondate()}" />  
@@ -52,8 +52,60 @@
 			    </p:splitButton>
 	        </p:column> 
 		</p:dataTable>
-		
+		<p:dialog id="suspensiondialog"  style="width:450px;" header="Add Suspension Information:" widgetVar="msgdlg" modal="false" >
+			<h:panelGrid columns="2" cellpadding="5">
+				<p:inputText id="searchforplayer" style="width:150px;" value="#{playerhistoryBean.searchcriteria}" required="false" requiredMessage="Enter a minimum of 5 characters to execute search."/>
+				<p:commandButton id="executesearch" value="Search" actionListener="#{playerhistoryBean.playerSearch()}" ajax="true" update="playersearchresult"/>
+			</h:panelGrid>
+			<br></br>	
+			<p:dataTable id="playersearchresult" style="width:400px;" var="result" value="#{playerhistoryBean.listofplayers}" selection="#{suspensionBean.selectedplayer}"  paginator="true" rows="5" >
+		  		<f:facet name="header">  
+		            Select a Player from the List  
+		        </f:facet> 
+				<p:column selectionMode="single" style="width:2%" />
+				<p:column headerText="Player Name">  
+					<h:outputText value="#{result.getPlayername()}" />  
+				</p:column>  
+				<p:column headerText="Date of Birth">  
+					<h:outputText value="#{result.getDob()}" />  
+				</p:column>
+				<p:column headerText="Current Team">  
+					<h:outputText value="#{result.getAddress()}" />  
+				</p:column>
+			</p:dataTable>
+			<br></br>
+			<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" width="100%">
+				<h:column width="10%"># of Games:</h:column>
+				<h:column >
+					<p:inputText id="numbergames" value="#{suspensionBean.numberofgames}" required="false"/>
+				</h:column>
+				<h:column width="10%">Infraction:</h:column>
+				<h:column >
+					<p:inputText id="infraction" value="#{suspensionBean.infraction}" required="false"/>
+				</h:column>
+				<h:column width="10%">Match: </h:column>
+				<h:column >
+					<p:selectOneMenu id="match" value="#{suspensionBean.match}" >
+				    	<f:selectItem itemLabel="No" itemValue="0"/>
+				    	<f:selectItem itemLabel="Yes" itemValue="1"/>
+				    </p:selectOneMenu>
+				</h:column>
+				<h:column width="10%">Served:</h:column>
+				<h:column >
+					<p:selectOneMenu id="served" value="#{suspensionBean.served}" >
+				    	<f:selectItem itemLabel="No" itemValue="0"/>
+				    	<f:selectItem itemLabel="Yes" itemValue="1"/>
+				    </p:selectOneMenu>
+				</h:column>
+				<h:column width="10%">Suspension Date:</h:column>
+				<h:column >
+					<p:inputText id="suspensiondate" value="#{suspensionBean.suspdate}" required="false"/>
+				</h:column>
+			</h:panelGrid>
+			 <div align="center"><p:commandButton value="Add Suspension" oncomplete="msgdlg.hide();" actionListener="#{suspensionBean.Addsuspension()}" ajax="true" update="suspensionlist" />&nbsp;&nbsp;<p:commandButton value="Close" oncomplete="msgdlg.hide();" /></div>    
+		</p:dialog>	
  	</p:panel>
+ 	
 </div>
 </h:form>
 </h:body>
