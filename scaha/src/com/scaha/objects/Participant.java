@@ -27,6 +27,7 @@ public class Participant extends ScahaObject implements Serializable {
 	private int gf = 0;
 	private int ga = 0;
 	private int gd = 0;
+	private boolean hasdropped = false;
 	
 	private Vector<Slot> SlotsAvail = new Vector<Slot>();
 	private Vector<Slot> SlotsPlaying = new Vector<Slot>();
@@ -344,5 +345,13 @@ public class Participant extends ScahaObject implements Serializable {
 	 */
 	public void setExgames(int exgames) {
 		this.exgames = exgames;
+	}
+
+	public boolean isHasdropped() {
+		return hasdropped;
+	}
+
+	public void setHasdropped(boolean hasdropped) {
+		this.hasdropped = hasdropped;
 	}
 }
