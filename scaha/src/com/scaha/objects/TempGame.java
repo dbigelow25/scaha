@@ -23,11 +23,40 @@ public class TempGame extends ScahaObject implements Serializable {
 	private String homescore = null;
 	private String awayscore = null;
 	private String scoresheet = null;
+	private String rinkaddress = null;
+	private String hometeamimage = null;
+	private String awayteamimage = null;
 	private String status = null;
 	
 	public TempGame (){ 
 		
 	}
+	
+	
+	public String getRinkaddress(){
+    	return rinkaddress;
+    }
+    
+    public void setRinkaddress(String fname){
+    	rinkaddress=fname;
+    } 
+	
+    public String getHometeamimage(){
+    	return hometeamimage;
+    }
+    
+    public void setHometeamimage(String fname){
+    	hometeamimage=fname;
+    } 
+	
+    public String getAwayteamimage(){
+    	return awayteamimage;
+    }
+    
+    public void setAwayteamimage(String fname){
+    	awayteamimage=fname;
+    } 
+	
 	
 	public String getStatus(){
     	return status;
