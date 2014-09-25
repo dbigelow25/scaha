@@ -38,7 +38,11 @@
 				<p:separator />   
 			  <p:outputPanel id="testContainer">
 				<div class="NewsTitle">Standings:</div>	
-				<p:dataTable  id= "parts" var="part" value="#{scoreboardBean.getPartlist()}">
+				<p:dataTable  id= "parts" var="part" value="#{scoreboardBean.getPartlist()}"
+				
+				
+				rowStyleClass="#{part.isHasdropped() ? 'rostermia' : null}"
+				>
   		          <p:column  styleClass="mtrxColumn" width="5%" headerText=" " style="font-size: 10px;">
    	    	         <h:outputText style="font-size: 10px;" value="#{part.getPlace()}" />
          	   	  </p:column >
