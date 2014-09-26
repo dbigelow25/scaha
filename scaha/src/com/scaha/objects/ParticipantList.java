@@ -31,14 +31,17 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 	// We need to implement a hashmap so we can directly fetch things we need.
 	//
 	private HashMap<String, Participant> hm = new HashMap<String,Participant>();
-	
-	public ParticipantList(List<Participant> _lst,HashMap<String, Participant> _hm ) {  
+	private Schedule schedule = null;
+	private TeamList teamlist = null;
+	public ParticipantList(List<Participant> _lst,HashMap<String, Participant> _hm, Schedule _sch, TeamList _tl ) {  
 		super(_lst);
 		hm = _hm;
+		schedule = _sch;
+		teamlist = _tl;
    }
 	
 	public static ParticipantList NewListFactory() {
-		return new ParticipantList(new ArrayList<Participant>(),new HashMap<String,Participant>());
+		return new ParticipantList(new ArrayList<Participant>(),new HashMap<String,Participant>(), null, null);
 	}
 
 	/**
@@ -86,10 +89,59 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 		}
 		rs.close();
 		ps.close();
-		return new ParticipantList(data,hm);
+		return new ParticipantList(data,hm,_sch,_tl);
 		
 	}
 
+	/**
+	 * Here we have to fetch the a list of participants.. (who in turn will be associated with a given Team
+	 * Which needs to be retrieved as well.
+	 * 
+	 * @param _pro
+	 * @param _db
+	 * @param _sch
+	 * @return
+	 * @throws SQLException
+	 */
+	public void refreshList (Profile _pro, ScahaDatabase _db) throws SQLException {
+		
+		if (this.teamlist == null || this.schedule == null) {
+			LOGGER.info("**** PARTICIPANT LIST NOT YET INITIALIZED ****");
+			return;
+		}
+		TeamList _tl = this.teamlist;
+		Schedule _sch = this.schedule;
+		
+		PreparedStatement ps = _db.prepareStatement("call scaha.getParticipantsBySchedule(?)");
+		ps.setInt(1,_sch.ID);
+		ResultSet rs = ps.executeQuery();
+		int y = 1;
+		while (rs.next()) {
+			int i = 1;
+			Participant part = this.getByKey(rs.getInt(i++));
+			if (part != null) {
+				part.setRank(rs.getInt(i++));
+				part.setTeam(_tl.getScahaTeamAt(rs.getInt(i++)));
+				part.setGames(rs.getInt(i++));
+				part.setExgames(rs.getInt(i++));
+				part.setGamesplayed(rs.getInt(i++));
+				part.setWins(rs.getInt(i++));
+				part.setLoses(rs.getInt(i++));
+				part.setTies(rs.getInt(i++));
+				part.setPoints(rs.getInt(i++));
+				part.setGf(rs.getInt(i++));
+				part.setGa(rs.getInt(i++));
+				part.setHasdropped((rs.getInt(i++) == 0 ? false : true));
+				part.setGd(part.getGf()- part.getGa());
+				part.setPlace(y++);
+				part.setSchedule(_sch);
+				LOGGER.info("Found Participant for schedule " + _sch + ". " + part);
+			}
+		}
+		rs.close();
+		ps.close();
+		
+	}
 
 	@SuppressWarnings("unchecked")
 	public ArrayList<Participant> getParticipantArray() {
@@ -144,6 +196,14 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
     public Object getRowKey(Participant result) {  
         return Integer.toString(result.ID);  
     }
+
+	public Schedule getSchedule() {
+		return schedule;
+	}
+
+	public void setSchedule(Schedule schedule) {
+		this.schedule = schedule;
+	}
 
 
 }

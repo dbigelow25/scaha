@@ -33,14 +33,16 @@
 				<p:selectOneMenu styleClass="ddlistbox"  id="myteams" value="#{scoreboardBean.selectedpartid}" >
          			<f:selectItem style="font-size:10pt;" itemLabel="Schedule For All Teams..." itemValue="0" />
           			<f:selectItems  value="#{scoreboardBean.getPartpicklist()}" var="part" itemLabel="#{part.getTeam().getTeamname()}" itemValue="#{part.getKey()}" />
-          			<p:ajax listener="#{scoreboardBean.onPartChange()}" process="@this" update="@this testContainer2"/>
+          			<p:ajax listener="#{scoreboardBean.onPartChange()}" process="@this" update="@this testContainer2 testContainer"/>
         		</p:selectOneMenu>	
 				<p:separator />   
+				
 			  <p:outputPanel id="testContainer">
+			  				#{scoreboardBean.refreshScoreboard()}
+			  
 				<div class="NewsTitle">Standings:</div>	
 				<p:dataTable  id= "parts" var="part" value="#{scoreboardBean.getPartlist()}"
-				
-				
+				sortBy="place" 				
 				rowStyleClass="#{part.isHasdropped() ? 'rostermia' : null}"
 				>
   		          <p:column  styleClass="mtrxColumn" width="5%" headerText=" " style="font-size: 10px;">

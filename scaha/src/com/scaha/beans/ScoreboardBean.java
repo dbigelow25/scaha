@@ -2,6 +2,8 @@ package com.scaha.beans;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -88,7 +90,20 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		 LOGGER.info(" *************** FINISH :POST INIT FOR SCOREBOARD BEAN *****************");
 	 }
 	
-	
+	public String refreshScoreboard() {
+		if (this.getPartlist() != null) {
+			
+			try {
+			// Lets get the connections we need
+				ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+				this.getPartlist().refreshList(pb.getProfile(), db);
+				db.free();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+		}
+		return "Date and Time is: "  + (new Date());
+	}
 	
 	/**
 	 * This guy builds up the scoreboard related information..
