@@ -201,6 +201,8 @@ public class mobileBean implements Serializable{
     		db.free();
     	}
 		
+    	this.setWeeklabel("<games><game><id>1</id></game></games>");
+    	
     	setGames(tempresult);
     	TempGameDataModel = new TempGameDataModel(games);
     }

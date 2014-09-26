@@ -9,8 +9,8 @@
      xmlns:c="http://java.sun.com/jsp/jstl/core"
 >
 <ui:composition >
-<ui:define name="content">
-	<games>
+<h:outputText value="#{mobileBean.getWeeklabel()}" />
+	<!-- <games>
 	    <week><h:outputText value="#{mobileBean.getWeeklabel()}" /></week>
 	    <ui:repeat value="#{mobileBean.getGames()}" var="tempgame">
 		    <game>
@@ -28,7 +28,7 @@
 		        <submitstatus><h:outputText value="#{tempgame.getStatus()}" /></submitstatus>
 		    </game>
     	</ui:repeat>
-    </games>
-</ui:define>
+    </games> -->
+
 </ui:composition>
 </html>
