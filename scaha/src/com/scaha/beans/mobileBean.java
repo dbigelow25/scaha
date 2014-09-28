@@ -133,14 +133,25 @@ public class mobileBean implements Serializable{
     	ArrayList<String> awayimages = new ArrayList();
     	
     	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-    	
+    	String weeklabel = "";
     	try{
     		//first get team name
-    		CallableStatement cs = db.prepareCall("CALL scaha.getSCAHAGamesForMobile(?,?)");
+    		CallableStatement cs = db.prepareCall("CALL scaha.getWeekLabel(?)");
+			cs.setInt("weekcount", weekcount);
+			rs = cs.executeQuery();
+			if (rs != null){
+				
+				while (rs.next()) {
+					weeklabel = rs.getString("weeklabel");
+				}
+			}
+    		
+    		cs = db.prepareCall("CALL scaha.getSCAHAGamesForMobile(?,?)");
 			cs.setString("divisionstring", divisionstring + " Regular Season");
 			cs.setInt("weekcount", weekcount);
 			rs = cs.executeQuery();
 			xmlstring = "<games>";
+			xmlstring = xmlstring + "<week>" + weeklabel + "</week>";
 			if (rs != null){
 				
 				while (rs.next()) {
