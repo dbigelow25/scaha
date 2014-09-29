@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
@@ -80,6 +81,7 @@ public class ProfileBean implements Serializable,  MailableObject  {
 	private String  chgGender= null;
 	private String  currentUSAHockeySeason = "Needs call to DB";
 	private String  currentSCAHAHockeySeason = "Needs call to DB";
+	private String ipaddress = null;
 	
 	/**
 	 * 
@@ -128,7 +130,18 @@ public class ProfileBean implements Serializable,  MailableObject  {
     	return pro.getPerson().getsLastName();
     }
 
- 
+    
+    
+    @PostConstruct
+	 public void init() {
+		 
+
+    	HttpServletRequest httpServletRequest = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();  
+		this.setIpaddress(httpServletRequest.getRemoteAddr());  
+	
+		LOGGER.info("***USER IP for: is {" + this.ipaddress + "}");
+
+    }
 
     public void login() {
 
@@ -1137,5 +1150,17 @@ public String getLivegameeditreturn() {
  */
 public void setLivegameeditreturn(String livegameeditreturn) {
 	this.livegameeditreturn = livegameeditreturn;
+}
+/**
+ * @return the ipaddress
+ */
+public String getIpaddress() {
+	return ipaddress;
+}
+/**
+ * @param ipaddress the ipaddress to set
+ */
+public void setIpaddress(String ipaddress) {
+	this.ipaddress = ipaddress;
 }
 }
