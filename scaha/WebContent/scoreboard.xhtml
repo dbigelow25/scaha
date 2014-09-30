@@ -109,13 +109,13 @@
    	    	         <h:outputText style="font-size: 10px;" value="#{game.getHometeam().getTeamname()} " />
 	         	  </p:column >
     		      <p:column styleClass="mtrxColumn" headerText="Score" style="font-size: 10px;">
-   	    	         <h:outputText style="font-size: 10px;" value="#{game.getHomescore()} " />
+   	    	         <h:outputText style="font-size: 10px;" value="#{ (game.statetag == 'Scheduled' ? '--' : game.getHomescore()) } " />
 	         	  </p:column >
     		      <p:column headerText="Away Team" style="font-size: 10px;">
    	    	         <h:outputText style="font-size: 10px;" value="#{game.getAwayteam().getTeamname()} " />
 	         	  </p:column >
     		      <p:column styleClass="mtrxColumn" headerText="Score" style="font-size: 10px;">
-   	    	         <h:outputText style="font-size: 10px;" value="#{game.getAwayscore()} " />
+   	    	         <h:outputText style="font-size: 10px;" value="#{ (game.statetag == 'Scheduled' ? '--' : game.getAwayscore()) } " />
 	         	  </p:column >
     	          <p:column  headerText="Venue" style="font-size: 10px;">
    	    	         <h:outputText style="font-size: 10px;" value="#{game.getVenueshortname()} " />
