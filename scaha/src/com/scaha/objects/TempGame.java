@@ -27,11 +27,20 @@ public class TempGame extends ScahaObject implements Serializable {
 	private String hometeamimage = null;
 	private String awayteamimage = null;
 	private String status = null;
+	private Boolean iscomplete = null;
 	
 	public TempGame (){ 
 		
 	}
 	
+	
+	public Boolean getIscomplete(){
+		return iscomplete;
+	}
+	
+	public void setIscomplete(Boolean value){
+		iscomplete=value;
+	}
 	
 	public String getRinkaddress(){
     	return rinkaddress;
