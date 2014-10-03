@@ -81,14 +81,15 @@
 				        	<h:outputText value="#{TempGame.getVisitor()}" />  
 				        </p:column>
 				        <p:column headerText="Score">  
-				        	<h:outputText value="#{TempGame.getAwayscore()}" />  
+				        	<h:outputText value="#{ (TempGame.status == 'Scheduled' ? '--' : TempGame.getAwayscore()) } " />  
 				        </p:column>
 				        <p:column headerText="Home Team">  
 				        	<h:outputText value="#{TempGame.getHome()}" />  
 				        </p:column>
 				        <p:column headerText="Score">  
 				        	<!-- need to add image object here -->
-				            <h:outputText value="#{TempGame.getHomescore()}" />  
+				            <h:outputText value="#{ (TempGame.status == 'Scheduled' ? '--' : TempGame.getHomescore()) } " />
+				              
 				        </p:column>
 				        <p:column headerText="Time">  
 				            <h:outputText value="#{TempGame.getTime()}" />  
@@ -98,7 +99,7 @@
 				        </p:column>
 				        <p:column headerText="">
 				        	<p:splitButton id="game" icon="ui-icon-folder-open"  >
-						        <p:menuitem value="Add Details" action="#{managerBean.editLiveGame(TempGame)}" rendered="TempGame.getIscomplete())"/>
+						        <p:menuitem value="Add Details" action="#{managerBean.editLiveGame(TempGame)}" immediate="true" rendered="#{TempGame.iscomplete}" />
 						        <p:menuitem value="Manage Scoresheet(s)" immediate="true" action="#{managerBean.uploadSCAHAScoresheet(TempGame)}" ajax="false" />
 						    </p:splitButton>
 				        </p:column>  

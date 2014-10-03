@@ -41,7 +41,7 @@
     		<p:ajax listener="#{scoreboardBean.onPartChange()}" process="@this" update="@this scahagames"/>
       	</p:selectOneMenu> -->	
 		<p:separator />
-		<p:dataTable id="scahagames" var="TempGame" value="#{reviewscahagamesBean.getTempGamedatamodel()}" selection="#{reviewscahagamesBean.selectedgame}" selectionMode="single" paginator="true" rows="10" autoupdate="false">
+		<p:dataTable id="scahagames" var="TempGame" value="#{reviewscahagamesBean.getTempGamedatamodel()}" selection="#{reviewscahagamesBean.selectedgame}" editable="true" editMode="cell" selectionMode="single" paginator="true" rows="10" autoupdate="false">
 	           <f:facet name="header">  
 	        	2014-2015 SCAHA GAMES
 	        </f:facet> 
@@ -51,15 +51,22 @@
 	        <p:column headerText="Visiting Team">  
 	        	<h:outputText value="#{TempGame.getVisitor()}" />  
 	        </p:column>
-	        <p:column headerText="Score">  
-	        	<h:outputText value="#{TempGame.getAwayscore()}" />  
+	        <p:column headerText="Score">
+	        	<p:cellEditor>  
+                   	<f:facet name="output"><h:outputText value="#{TempGame.awayscore}" /></f:facet>  
+                   	<f:facet name="input"><p:inputText id="awayscoreInput" value="#{TempGame.awayscore}" style="width:25px"/></f:facet>  
+               </p:cellEditor>  
+	        	  
 	        </p:column>
 	        <p:column headerText="Home Team">  
 	        	<h:outputText value="#{TempGame.getHome()}" />  
 	        </p:column>
 	        <p:column headerText="Score">  
-	        	<!-- need to add image object here -->
-	            <h:outputText value="#{TempGame.getHomescore()}" />  
+	        	<p:cellEditor>  
+                   	<f:facet name="output"><h:outputText value="#{TempGame.homescore}" /></f:facet>  
+                   	<f:facet name="input"><p:inputText id="homescoreInput" value="#{TempGame.homescore}" style="width:25px"/></f:facet>  
+               </p:cellEditor>  
+	        	  
 	        </p:column>
 	        <p:column headerText="Time">  
 	            <h:outputText value="#{TempGame.getTime()}" />  

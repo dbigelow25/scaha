@@ -21,7 +21,9 @@ public class TempGame extends ScahaObject implements Serializable {
 	private Integer idgame = null;
 	private String time = null;
 	private String homescore = null;
+	private String oldhomescore = null;
 	private String awayscore = null;
+	private String oldawayscore = null;
 	private String scoresheet = null;
 	private String rinkaddress = null;
 	private String hometeamimage = null;
@@ -143,18 +145,108 @@ public class TempGame extends ScahaObject implements Serializable {
     }
     
     public void setHomescore(String fname){
-    	homescore=fname;
+    	if (fname!=this.oldhomescore){
+    		//need to set and execute db call here
+    		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+        	
+        	try{
+        		//first get team name
+        		CallableStatement cs = db.prepareCall("CALL scaha.updateScore(?,?,?)");
+    			cs.setInt("livegameid", this.idgame);
+    			cs.setString("newawayscore", fname);
+    			cs.setString("homeaway", "home");
+    		    cs.executeQuery();
+    			db.commit();
+    		    db.cleanup();
+        		
+        		LOGGER.info("We have updated the home score:" + this.idgame + "home score: " + fname);
+    			
+        		
+        	} catch (SQLException e) {
+        		// TODO Auto-generated catch block
+        		LOGGER.info("ERROR IN updating jersey number");
+        		e.printStackTrace();
+        		db.rollback();
+        	} finally {
+        		//
+        		// always clean up after yourself..
+        		//
+        		db.free();
+        	}
+    		
+    		//finaly set the old name to match what we saved in the db
+    		homescore=fname;
+    		oldhomescore=fname;
+    	}	
+    		
+    	 else {
+    		 homescore=fname;
+    	}
+    	
     } 
 	
+    public String getOldhomescore(){
+    	return oldhomescore;
+    }
+    
+    public void setOldhomescore(String fname){
+    	oldhomescore=fname;
+    } 
+	
+    
     public String getAwayscore(){
     	return awayscore;
     }
     
     public void setAwayscore(String lname){
-    	awayscore=lname;
+    	if (lname!=this.oldawayscore){
+    		//need to set and execute db call here
+    		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+        	
+        	try{
+        		//first get team name
+        		CallableStatement cs = db.prepareCall("CALL scaha.updateScore(?,?,?)");
+    			cs.setInt("livegameid", this.idgame);
+    			cs.setString("newawayscore", lname);
+    			cs.setString("homeaway", "away");
+    		    cs.executeQuery();
+    			db.commit();
+    		    db.cleanup();
+        		
+        		LOGGER.info("We have updated the away score:" + this.idgame + "away score: " + lname);
+    			
+        		
+        	} catch (SQLException e) {
+        		// TODO Auto-generated catch block
+        		LOGGER.info("ERROR IN updating jersey number");
+        		e.printStackTrace();
+        		db.rollback();
+        	} finally {
+        		//
+        		// always clean up after yourself..
+        		//
+        		db.free();
+        	}
+    		
+    		//finaly set the old name to match what we saved in the db
+    		awayscore=lname;
+    		oldawayscore=lname;
+    	}	
+    		
+    	 else {
+    		 awayscore=lname;
+    	}
+    	
     }
     
-		
+    public String getOldawayscore(){
+    	return oldawayscore;
+    }
+    
+    public void setOldawayscore(String lname){
+    	oldawayscore=lname;
+    }
+    	
 	
 		
 }

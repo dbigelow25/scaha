@@ -163,6 +163,8 @@ public class reviewscahagamesBean implements Serializable{
     				ogame.setVisitor(awayteam);
     				ogame.setHome(hometeam);
     				ogame.setLocation(location);
+    				ogame.setOldawayscore(awayscore);
+    				ogame.setOldhomescore(homescore);
     				ogame.setAwayscore(awayscore);
     				ogame.setHomescore(homescore);
     				ogame.setScoresheet(scoresheet);

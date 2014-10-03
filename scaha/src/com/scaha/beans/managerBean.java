@@ -516,9 +516,9 @@ public class managerBean implements Serializable, MailableObject {
     				String time = rs.getString("time");
     				String location = rs.getString("location");
     				String status = rs.getString("status");
-    				Boolean iscomplete = false;
+    				Boolean iscomplete = true;
     				if (status.equals("Final")){
-    					iscomplete=true;
+    					iscomplete=false;
     				}
     				TempGame ogame = new TempGame();
     				ogame.setIdgame(Integer.parseInt(idgame));
@@ -527,9 +527,12 @@ public class managerBean implements Serializable, MailableObject {
     				ogame.setVisitor(awayteam);
     				ogame.setHome(hometeam);
     				ogame.setLocation(location);
+    				ogame.setOldawayscore(awayscore);
+    				ogame.setOldhomescore(homescore);
+    				ogame.setIscomplete(iscomplete);
+    				ogame.setStatus(status);
     				ogame.setAwayscore(awayscore);
     				ogame.setHomescore(homescore);
-    				ogame.setIscomplete(iscomplete);
     				tempresult.add(ogame);
     				
 				}
