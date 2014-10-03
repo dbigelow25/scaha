@@ -17,7 +17,6 @@ import org.primefaces.model.LazyDataModel;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Division;
-import com.scaha.objects.LazyStatDataModel;
 import com.scaha.objects.Stat;
 
 //import com.gbli.common.SendMailSSL;
