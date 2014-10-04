@@ -136,8 +136,13 @@ public class ProfileBean implements Serializable,  MailableObject  {
 	 public void init() {
 		 
 
-    	HttpServletRequest httpServletRequest = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();  
-		this.setIpaddress(httpServletRequest.getRemoteAddr());  
+    	HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+    	String ipAddress = request.getHeader("X-FORWARDED-FOR");
+    	if (ipAddress == null) {
+    	    ipAddress = request.getRemoteAddr();
+    	}
+    	
+    	this.setIpaddress(ipAddress);  
 	
 		LOGGER.info("***USER IP for: is {" + this.ipaddress + "}");
 
