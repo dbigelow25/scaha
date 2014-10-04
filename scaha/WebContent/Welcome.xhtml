@@ -14,9 +14,11 @@
 
 
 
-	 <p:panel header="Latest SCAHA News" footer="brought to you by iScaha"> 
-	  
-	  
+	 <p:panel header="Latest SCAHA News" > 
+	  	<f:facet name="footer">
+	        Copyright 2014.  Website maintained by <a href="mailto:lahockeyfan2@yahoo.com;dbigelow@the-rinks.com?subject=SCAHA Website">Rob Foster/Dave Bigelow</a>
+	        
+	    </f:facet>
 	  
 	
   	  <ui:repeat id="newslist" value="#{newsBean.getNewsItemList()}" var="newsitem">
