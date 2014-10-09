@@ -420,12 +420,7 @@
 	
 	<p:dialog id="pensdialog"  header="Penalties" widgetVar="pensdlg" modal="false" >
 		 <h:panelGrid id="penaltygrid" columns="2" style="margin-bottom:5px" cellpadding="2">
-			<p:outputLabel for="penperson" value="Player" />
-			<p:selectOneMenu styleClass="ddlistbox" id="penperson" value="#{gamesheetBean.selectedpenrosterid}" >
-      			<f:selectItem style="font-size:10pt;" itemLabel="Culprit..." itemValue="0" />
-       			<f:selectItems value="#{gamesheetBean.penpicklist}"  var="roster"  itemLabel="#{roster.jerseynumber} - #{roster.lname}" itemValue="#{roster.getKey()}"/>
-       		</p:selectOneMenu>
-        	<p:outputLabel for="penperiod" value="Period:" />
+			<p:outputLabel for="penperiod" value="Period:" />
        		<p:selectOneMenu id="penperiod" value="#{gamesheetBean.penperiod}">
            		<f:selectItem itemLabel="Select One" itemValue="" />
            		<f:selectItem itemLabel="1st " itemValue="1" />
@@ -433,12 +428,11 @@
            		<f:selectItem itemLabel="3rd" itemValue="3" />
        		    <f:selectItem itemLabel="OT" itemValue="4" />
 	        </p:selectOneMenu>
-	        <p:outputLabel for="top" value="Time of Penalty" />
-			<p:panel id="top">
-				<p:inputMask id="pmin" value = "#{gamesheetBean.penmin}"  mask="99" maxlength="2" size="3"/> 
-				<h:outputText value=":" />
-				<p:inputMask id="psec" value = "#{gamesheetBean.pensec}" mask="99" maxlength="2" size="3"/>
-			</p:panel>	        
+	        <p:outputLabel for="penperson" value="Player" />
+			<p:selectOneMenu styleClass="ddlistbox" id="penperson" value="#{gamesheetBean.selectedpenrosterid}" >
+      			<f:selectItem style="font-size:10pt;" itemLabel="Culprit..." itemValue="0" />
+       			<f:selectItems value="#{gamesheetBean.penpicklist}"  var="roster"  itemLabel="#{roster.jerseynumber} - #{roster.lname}" itemValue="#{roster.getKey()}"/>
+       		</p:selectOneMenu>
         	<p:outputLabel for="pentype" value="Penalty" />
        		<p:selectOneMenu id="pentype" value="#{gamesheetBean.pentype}" effect="fold">
     	         <f:selectItem itemLabel="Infraction..." itemValue="" />
@@ -453,6 +447,13 @@
        		    <f:selectItem itemValue="gmc" itemLabel="Game Misconduct" />
        		    <f:selectItem itemValue="pen shot" itemLabel="Penalty Shot" />
 	        </p:selectOneMenu>
+	        <p:outputLabel for="top" value="Time of Penalty" />
+			<p:panel id="top">
+				<p:inputMask id="pmin" value = "#{gamesheetBean.penmin}"  mask="99" maxlength="2" size="3"/> 
+				<h:outputText value=":" />
+				<p:inputMask id="psec" value = "#{gamesheetBean.pensec}" mask="99" maxlength="2" size="3"/>
+			</p:panel>	        
+        	
 	    </h:panelGrid>
 	    <p:separator />
 		<p:commandButton id="cmdpenaltysave" ajax="true" value="Save" actionListener="#{gamesheetBean.savePenalty()}" update="@form,:form1:penaltyguts"  oncomplete="pensdlg.hide()" />

@@ -111,7 +111,7 @@
 					<p:inputText id="suspensiondate" value="#{suspensionBean.suspdate}" required="false"/>
 				</h:column>
 			</h:panelGrid>
-			 <div align="center"><p:commandButton value="Add Suspension" oncomplete="msgdlg.hide();" actionListener="#{suspensionBean.Addsuspension()}" ajax="true" update="suspensionlist" />&nbsp;&nbsp;<p:commandButton value="Close" oncomplete="msgdlg.hide();" /></div>    
+			 <div align="center"><p:commandButton value="Add Suspension" oncomplete="msgdlg.hide();" actionListener="#{suspensionBean.Addsuspension()}" ajax="true" update="@form" />&nbsp;&nbsp;<p:commandButton value="Close" oncomplete="msgdlg.hide();" /></div>    
 		</p:dialog>	
  	</p:panel>
  	
