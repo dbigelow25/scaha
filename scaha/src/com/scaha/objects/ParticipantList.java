@@ -135,7 +135,7 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 				part.setGd(part.getGf()- part.getGa());
 				part.setPlace(y++);
 				part.setSchedule(_sch);
-				LOGGER.info("Found Participant for schedule " + _sch + ". " + part);
+			//	LOGGER.info("Found Participant for schedule " + _sch + ". " + part);
 			}
 		}
 		rs.close();

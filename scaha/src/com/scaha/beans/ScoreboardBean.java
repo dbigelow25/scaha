@@ -181,7 +181,7 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		this.partpicklist = null;
 		if (this.selectedseason != null) {
 			this.schedules = this.selectedseason.getSchedList();
-			LOGGER.info("season schedule is: " + schedules);
+//			LOGGER.info("season schedule is: " + schedules);
 			if (schedules != null) {
 			  if (this.schedules.getRowCount() > 0) {
 				  this.schedulelist = this.getScheduleList();
