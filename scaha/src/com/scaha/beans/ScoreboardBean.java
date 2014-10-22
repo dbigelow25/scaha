@@ -3,6 +3,7 @@ package com.scaha.beans;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -11,12 +12,9 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.mail.internet.InternetAddress;
-
-import org.primefaces.event.SelectEvent;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
@@ -27,7 +25,6 @@ import com.scaha.objects.LiveGameList;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Participant;
 import com.scaha.objects.ParticipantList;
-import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.Schedule;
 import com.scaha.objects.ScheduleList;
 
@@ -47,6 +44,7 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	private List<Participant> partpicklist =  null;
 	
 	private GeneralSeasonList seasons = null;
+	
 
 	private Schedule selectedschedule;	
 	private int selectedscheduleid;
@@ -148,23 +146,62 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		LOGGER.info("schedule change request detected new id is:" + this.selectedscheduleid + ":" + this.selectedschedule);
 		this.partlist = null;
 		if (this.selectedschedule != null) {
-			this.partlist = this.selectedschedule.getPartlist();
-			this.partpicklist = this.getParticipantpicklist();
-			this.setLivegamelist(scaha.getScahaLiveGameList().NewList(scaha.getDefaultProfile(),selectedschedule));
+			
+			
+			//if historical season lets look up the games and standings for the season.
+			if(this.selectedseason!=scaha.getScahaSeasonList().getCurrentSeason()){
+				ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+				try {
+					//generating historical standings and adding them to the partlist.
+					this.partlist = ParticipantList.NewListFactory(db, selectedscheduleid);
+					this.partpicklist = ParticipantList.getHistoricalParticipantList(db, selectedscheduleid);
+					
+					//generating the historical schedule of games and adding them to the livegamelist
+					this.setLivegamelist(scaha.getScahaLiveGameList().NewListFactory(db, selectedscheduleid));
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} finally{
+					db.free();
+				}
+				
+			}else {
+				this.partlist = this.selectedschedule.getPartlist();
+				this.partpicklist = this.getParticipantpicklist();
+				this.setLivegamelist(scaha.getScahaLiveGameList().NewList(scaha.getDefaultProfile(),selectedschedule));
+				
+			}
 		}
 	}
+	
 	
 	/**
 	 * get participants for a schedule..
 	 */
 	public void onPartChange() {
 		
-		this.selectedpart = this.getPartlist().getByKey(this.selectedpartid);
-		LOGGER.info("participant change request detected new id is:" + this.selectedpartid + ":" + this.selectedpart + " for sched:" + this.selectedschedule);
-		if (this.selectedpart != null) {
-			this.setLivegamelist(this.selectedschedule.getLivegamelist().NewList(scaha.getDefaultProfile(), selectedschedule, selectedpart.getTeam()));
+		if(this.selectedseason!=scaha.getScahaSeasonList().getCurrentSeason()){
+			//need to load historical schedule by team name
+			ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+			try {
+				this.setLivegamelist(scaha.getScahaLiveGameList().NewListFactory(db, selectedscheduleid,this.selectedpartid));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally{
+				db.free();
+			}
+			
 		} else {
-			this.setLivegamelist(this.selectedschedule.getLivegamelist());
+		
+			this.selectedpart = this.getPartlist().getByKey(this.selectedpartid);
+			LOGGER.info("participant change request detected new id is:" + this.selectedpartid + ":" + this.selectedpart + " for sched:" + this.selectedschedule);
+			if (this.selectedpart != null) {
+					this.setLivegamelist(this.selectedschedule.getLivegamelist().NewList(scaha.getDefaultProfile(), selectedschedule, selectedpart.getTeam()));
+				
+			} else {
+				this.setLivegamelist(this.selectedschedule.getLivegamelist());
+			}
 		}
 	}
 	
@@ -180,7 +217,19 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		this.setLivegamelist(null);
 		this.partpicklist = null;
 		if (this.selectedseason != null) {
-			this.schedules = this.selectedseason.getSchedList();
+			if(this.selectedseason!=scaha.getScahaSeasonList().getCurrentSeason()){
+				ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+				try {
+					this.schedules = ScheduleList.ListFactory(pb.getProfile(), db,this.selectedseason,scaha.getScahaTeamList());
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}else {
+				this.schedules = this.selectedseason.getSchedList();
+			}
+			
 			LOGGER.info("season schedule is: " + schedules);
 			if (schedules != null) {
 			  if (this.schedules.getRowCount() > 0) {

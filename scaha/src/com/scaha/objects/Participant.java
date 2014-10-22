@@ -46,6 +46,12 @@ public class Participant extends ScahaObject implements Serializable {
 		this.setProfile(_pro);
 	}
 
+	//use this interface for loading historical standings.
+	public Participant(int _id) {
+		ID = _id;		
+	}
+
+	
 	/**
 	 * @return the slotsPlaying
 	 */

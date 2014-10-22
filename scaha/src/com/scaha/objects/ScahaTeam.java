@@ -47,6 +47,11 @@ public class ScahaTeam extends ScahaObject implements Serializable {
 		this.setRowkey(_id+ "");
 	}
 
+	//use this interface for historical schedule
+	public ScahaTeam (int _id) {
+		this.ID = _id;
+	}
+	
 	/**
 	 * @return the teamClub
 	 */

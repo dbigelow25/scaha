@@ -37,6 +37,10 @@ public class LiveGameList extends ListDataModel<LiveGame> implements Serializabl
 		hm = _hm;
    }
 	
+	public LiveGameList(List<LiveGame> _lst) {  
+		super(_lst);
+	}
+	
 	public static LiveGameList NewListFactory() {
 		return new LiveGameList(new ArrayList<LiveGame>(),new HashMap<String,LiveGame>());
 	}
@@ -81,7 +85,103 @@ public class LiveGameList extends ListDataModel<LiveGame> implements Serializabl
 		
 	}
 
+	//use this method to retrieve historical game schedules and not hte current one which is loaded in memory when application is started.
+	public static LiveGameList NewListFactory(ScahaDatabase _db, Integer selectedschedule) throws SQLException {
+		List<LiveGame> data = new ArrayList<LiveGame>();
+		LOGGER.info("NewList is looking for LiveGames that match " + selectedschedule.toString());
+		PreparedStatement ps = _db.prepareStatement("call scaha.getHistoricalLiveGamesBySeason(?)");
+		ps.setInt(1,selectedschedule);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			int i = 1;
+			LOGGER.info("Found a row..");
+			LiveGame live = new LiveGame(rs.getInt(i++));
+			LOGGER.info("Found a live.." + live);
+			live.setTypetag(rs.getString(i++));
+			live.setStatetag(rs.getString(i++));
+			
+			//need to set scahateam objects
+			ScahaTeam home = new ScahaTeam(rs.getInt(i++));
+			home.setTeamname(rs.getString(i++));
+			live.setHometeam(home);
+			
+			//live.setHometeamname(rs.getString(i++));
+			live.setHomescore(rs.getInt(i++));
+			
+			//need to set scahateam objects
+			ScahaTeam away = new ScahaTeam(rs.getInt(i++));
+			away.setTeamname(rs.getString(i++));
+			
+			live.setAwayteam(away);
+			//live.setAwayteamname(rs.getString(i++));
+			live.setAwayscore(rs.getInt(i++));
+			live.setVenuetag(rs.getString(i++));
+			live.setSheetname(rs.getString(i++));
+			live.setStartdate(rs.getString(i++));
+			live.setStarttime(rs.getString(i++));
+			live.setScheduleidstub(rs.getInt(i++));
+			live.setGamenotes(rs.getString(i++));
+			live.setVenueshortname(rs.getString(i++));
+			live.setSched(null);
+			data.add(live);
+			LOGGER.info("Found a match " + live);
+		}
+		rs.close();
+		ps.close();
+		LOGGER.info("NewList is done looking for LiveGames that match " + selectedschedule + ". datalen=" + data.size());
+		return new LiveGameList(data);
+		
+	}
 	
+	
+	//use this interface to get the historical schedule by team.
+	public static LiveGameList NewListFactory(ScahaDatabase _db, Integer selectedschedule, Integer selectedparticipant) throws SQLException {
+		List<LiveGame> data = new ArrayList<LiveGame>();
+		LOGGER.info("NewList is looking for LiveGames that match " + selectedschedule.toString());
+		PreparedStatement ps = _db.prepareStatement("call scaha.getHistoricalLiveGamesByScheduleAndTeam(?,?)");
+		ps.setInt(1,selectedschedule);
+		ps.setInt(2, selectedparticipant);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			int i = 1;
+			LOGGER.info("Found a row..");
+			LiveGame live = new LiveGame(rs.getInt(i++));
+			LOGGER.info("Found a live.." + live);
+			live.setTypetag(rs.getString(i++));
+			live.setStatetag(rs.getString(i++));
+			
+			//need to set scahateam objects
+			ScahaTeam home = new ScahaTeam(rs.getInt(i++));
+			home.setTeamname(rs.getString(i++));
+			live.setHometeam(home);
+			
+			//live.setHometeamname(rs.getString(i++));
+			live.setHomescore(rs.getInt(i++));
+			
+			//need to set scahateam objects
+			ScahaTeam away = new ScahaTeam(rs.getInt(i++));
+			away.setTeamname(rs.getString(i++));
+			
+			live.setAwayteam(away);
+			//live.setAwayteamname(rs.getString(i++));
+			live.setAwayscore(rs.getInt(i++));
+			live.setVenuetag(rs.getString(i++));
+			live.setSheetname(rs.getString(i++));
+			live.setStartdate(rs.getString(i++));
+			live.setStarttime(rs.getString(i++));
+			live.setScheduleidstub(rs.getInt(i++));
+			live.setGamenotes(rs.getString(i++));
+			live.setVenueshortname(rs.getString(i++));
+			live.setSched(null);
+			data.add(live);
+			LOGGER.info("Found a match " + live);
+		}
+		rs.close();
+		ps.close();
+		LOGGER.info("NewList is done looking for LiveGames that match " + selectedschedule + ". datalen=" + data.size());
+		return new LiveGameList(data);
+		
+	}
 	/** 
 	 * Here we get all the games for a particular Season and team...
 	 * @param _pro

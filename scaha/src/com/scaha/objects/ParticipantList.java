@@ -44,6 +44,7 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 		return new ParticipantList(new ArrayList<Participant>(),new HashMap<String,Participant>(), null, null);
 	}
 
+	
 	/**
 	 * Here we have to fetch the a list of participants.. (who in turn will be associated with a given Team
 	 * Which needs to be retrieved as well.
@@ -93,6 +94,88 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 		
 	}
 
+	
+	// use this interface for gathering the historical standings.
+	public static ParticipantList NewListFactory (ScahaDatabase _db,Integer selectedschedule) throws SQLException {
+		
+		List<Participant> data = new ArrayList<Participant>();
+		
+		PreparedStatement ps = _db.prepareStatement("call scaha.getHistoricalParticipantsBySchedule(?)");
+		ps.setInt(1,selectedschedule);
+		ResultSet rs = ps.executeQuery();
+		int y = 1;
+		while (rs.next()) {
+			int i = 1;
+			Participant part = new Participant(rs.getInt(i++));
+			part.setRank(rs.getInt(i++));
+			
+			//need to set scahateam objects
+			ScahaTeam listteam = new ScahaTeam(rs.getInt(i++));
+			listteam.setTeamname(rs.getString(i++));
+			
+			part.setTeam(listteam);
+			part.setGames(rs.getInt(i++));
+			part.setExgames(rs.getInt(i++));
+			part.setGamesplayed(rs.getInt(i++));
+			part.setWins(rs.getInt(i++));
+			part.setLoses(rs.getInt(i++));
+			part.setTies(rs.getInt(i++));
+			part.setPoints(rs.getInt(i++));
+			part.setGf(rs.getInt(i++));
+			part.setGa(rs.getInt(i++));
+			part.setHasdropped((rs.getInt(i++) == 0 ? false : true));
+			part.setGd(part.getGf()- part.getGa());
+			
+			part.setSchedule(null);
+			part.setPlace(y++);
+			LOGGER.info("Found new Participant for schedule " + selectedschedule + ". " + part);
+			
+			data.add(part);
+			
+		}
+		rs.close();
+		ps.close();
+		
+		return new ParticipantList(data);
+		
+	}
+	
+	public ParticipantList(List<Participant> _lst) {  
+		super(_lst);
+	}
+	
+	
+	
+	//use this interface to get list of historical teams by division
+	public static List<Participant> getHistoricalParticipantList(ScahaDatabase _db,Integer selectedschedule) throws SQLException {
+		List<Participant> data = new ArrayList<Participant>();
+		
+		PreparedStatement ps = _db.prepareStatement("call scaha.getHistoricalParticipantsListBySchedule(?)");
+		ps.setInt(1,selectedschedule);
+		ResultSet rs = ps.executeQuery();
+		int y = 1;
+		while (rs.next()) {
+			int i = 1;
+			Participant part = new Participant(rs.getInt(i++));
+			part.setRank(rs.getInt(i++));
+			
+			//need to set scahateam objects
+			ScahaTeam listteam = new ScahaTeam(rs.getInt(i++));
+			listteam.setTeamname(rs.getString(i++));
+			
+			part.setTeam(listteam);
+			LOGGER.info("Found new Participant list for historical schedule " + selectedschedule + ". " + part);
+			
+			data.add(part);
+			
+		}
+		rs.close();
+		ps.close();
+		
+		return data;
+	}
+	
+	
 	/**
 	 * Here we have to fetch the a list of participants.. (who in turn will be associated with a given Team
 	 * Which needs to be retrieved as well.

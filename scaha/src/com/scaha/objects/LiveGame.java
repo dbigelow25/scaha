@@ -42,6 +42,11 @@ public class LiveGame extends ScahaObject implements Serializable {
 		this.setSched(_sc);
 	}
 
+	//this interface is used for loading up historical schedule
+	public LiveGame(int _id) {
+		ID = _id;
+	}
+	
 	public LiveGame(int _id, Profile _pro) {
 		ID = _id;		
 		idgame = _id;  // nasty kludge
