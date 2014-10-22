@@ -217,7 +217,7 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		this.setLivegamelist(null);
 		this.partpicklist = null;
 		if (this.selectedseason != null) {
-<<<<<<< HEAD
+
 			if(this.selectedseason!=scaha.getScahaSeasonList().getCurrentSeason()){
 				ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 				try {
@@ -232,10 +232,10 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 			}
 			
 			LOGGER.info("season schedule is: " + schedules);
-=======
+
 			this.schedules = this.selectedseason.getSchedList();
 //			LOGGER.info("season schedule is: " + schedules);
->>>>>>> origin/master
+
 			if (schedules != null) {
 			  if (this.schedules.getRowCount() > 0) {
 				  this.schedulelist = this.getScheduleList();
