@@ -298,7 +298,6 @@ public class statsBean implements Serializable{
 			
 			
 			rs.close();
-			db.cleanup();
     		
 			
 			
@@ -306,7 +305,6 @@ public class statsBean implements Serializable{
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN getting leaders list");
     		e.printStackTrace();
-    		db.rollback();
     	} finally {
     		//
     		// always clean up after yourself..
