@@ -17,22 +17,19 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	<ui:define name="content">
-		<p:panel header="SCAHA Select Camp" footer="brought to you by iScaha">
-		
-					<p class="normal">
-						The Southern California Amateur Hockey Association (SCAHA) is conducting the SCAHA Pre-Select Camp 
-						to select players from Southern California, whom are registered with USA Hockey, to attend the 
-						California Amateur Hockey Association (CAHA) Select Camp, to be held in January 2015.  
-						<br></br>
-						<br></br>
-						This year's select camp will be held December 13th and 14th for players
-						with a birth year of 1998, 1999, 2000, or 2001.  Registration for the camp will be available on this site
-						in October.
-						<br></br>
-						<br></br>
-						For any questions or additional information contact Bridget Hopkinson <a href="mailto:cahabridget@aol.com">cahabridget@aol.com</a>.
-					</p>
+		<h:form id="form">
+		<p:panel header="SCAHA Select Camp" footer="">
+			<div class="NewsText"><h:outputText value="#{selectcampBean.getBody()}" escape="false" /></div>
 		</p:panel>
+		<p:panel header="Edit The SCAHA Select Camp Content" widgetVar="panelwv#" rendered="#{profileBean.hasRoleList('S-SCMP')}" toggleable="true">	
+   			
+   			<p:editor  id="editor" widgetVar="edit" value="#{selectcampBean.body}" rendered="true"/>
+			<p:separator />
+  			<p:commandButton value="Update Select Camp" id="update" ajax="false" action="#{selectcampBean.updateSelectcamp()}" update="@form"/>
+			
+		  
+		</p:panel>
+		</h:form>
 	</ui:define>
 </ui:composition>
 </html>
