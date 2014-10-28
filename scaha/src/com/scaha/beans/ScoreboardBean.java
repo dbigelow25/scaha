@@ -90,15 +90,16 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	
 	public String refreshScoreboard() {
 		if (this.getPartlist() != null) {
-			
+			ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 			try {
 			// Lets get the connections we need
-				ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
 				this.getPartlist().refreshList(pb.getProfile(), db);
-				db.free();
 			} catch (SQLException ex) {
 				ex.printStackTrace();
+			} finally {
+				db.free();
 			}
+			  
 		}
 		return "Date and Time is: "  + (new Date());
 	}
@@ -225,6 +226,8 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} finally {
+					db.free();
 				}
 				
 			}else {

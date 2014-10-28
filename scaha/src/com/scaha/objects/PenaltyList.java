@@ -64,7 +64,7 @@ public class PenaltyList extends ListDataModel<Penalty> implements Serializable,
 			pen.setTimeofpenalty(rawtime.substring(left+1));
 			data.add(pen);
 			hm.put(pen.ID+"", pen);
-			LOGGER.info("Found a match " + pen);
+			//LOGGER.info("Found a match " + pen);
 		}
 		rs.close();
 		ps.close();

@@ -84,7 +84,7 @@ public class LiveGameRosterSpotList extends ListDataModel<LiveGameRosterSpot> im
 			}
 			data.add(spot);
 			hm.put(spot.ID+"", spot);
-			LOGGER.info("Found a match " + spot);
+			//LOGGER.info("Found a match " + spot);
 		}
 		rs.close();
 		ps.close();

@@ -67,7 +67,7 @@ public class ScoringList extends ListDataModel<Scoring> implements Serializable,
 			score.setTimescored(rawtime.substring(left+1));
 			data.add(score);
 			hm.put(score.ID+"", score);
-			LOGGER.info("Found a match " + score);
+			//LOGGER.info("Found a match " + score);
 		}
 		rs.close();
 		ps.close();
