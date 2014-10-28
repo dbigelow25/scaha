@@ -122,7 +122,7 @@ public class LiveGameList extends ListDataModel<LiveGame> implements Serializabl
 			live.setVenueshortname(rs.getString(i++));
 			live.setSched(null);
 			data.add(live);
-			LOGGER.info("Found a match " + live);
+		//	LOGGER.info("Found a match " + live);
 		}
 		rs.close();
 		ps.close();
@@ -142,9 +142,9 @@ public class LiveGameList extends ListDataModel<LiveGame> implements Serializabl
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 			int i = 1;
-			LOGGER.info("Found a row..");
+		//	LOGGER.info("Found a row..");
 			LiveGame live = new LiveGame(rs.getInt(i++));
-			LOGGER.info("Found a live.." + live);
+		//	LOGGER.info("Found a live.." + live);
 			live.setTypetag(rs.getString(i++));
 			live.setStatetag(rs.getString(i++));
 			
@@ -172,7 +172,7 @@ public class LiveGameList extends ListDataModel<LiveGame> implements Serializabl
 			live.setVenueshortname(rs.getString(i++));
 			live.setSched(null);
 			data.add(live);
-			LOGGER.info("Found a match " + live);
+		//	LOGGER.info("Found a match " + live);
 		}
 		rs.close();
 		ps.close();
@@ -196,7 +196,7 @@ public class LiveGameList extends ListDataModel<LiveGame> implements Serializabl
 		for (LiveGame live : results) {
 			if ((live.getHometeam().ID == _tm.ID ||
 				live.getAwayteam().ID == _tm.ID) && live.getSched().ID == _sch.ID) {
-				LOGGER.info("Found a match " + live);
+		//		LOGGER.info("Found a match " + live);
 				data.add(live);
 				hm.put(live.ID+"", live);
 			}
@@ -220,7 +220,7 @@ public class LiveGameList extends ListDataModel<LiveGame> implements Serializabl
 		for (LiveGame live : this) {
 			if (live.getSched().ID == _sch.ID) {
 				data.add(live);
-				LOGGER.info("Found a match " + live);
+				//LOGGER.info("Found a match " + live);
 				hm.put(live.ID+"", live);
 			}
 		}

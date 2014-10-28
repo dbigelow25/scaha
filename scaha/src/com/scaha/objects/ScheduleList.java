@@ -39,7 +39,7 @@ public class ScheduleList extends ListDataModel<Schedule> implements Serializabl
 	public static ScheduleList ListFactory(Profile _pro, ScahaDatabase _db, GeneralSeason _gs, TeamList _tl) throws SQLException {
 		
 		List<Schedule> data = new ArrayList<Schedule>();
-	
+		LOGGER.info("Loading Schedules for General Season" + _gs);
 		//
 		// Lets go get all the schedules for a given general season..
 		// 
@@ -70,10 +70,10 @@ public class ScheduleList extends ListDataModel<Schedule> implements Serializabl
 			sch.setMaxexmatchup(rs.getInt(i++));
 			data.add(sch);
 			sch.setPartlist(ParticipantList.NewListFactory(_pro, _db, sch, _tl));
-			LOGGER.info("Part List is " + ContextManager.NEW_LINE  + sch.getPartlist().toString());
+			//LOGGER.info("Part List is " + ContextManager.NEW_LINE  + sch.getPartlist().toString());
 			sch.setSwlist(ScheduleWeekList.ListFactory(_pro, _db, sch));
-			LOGGER.info("ScheduleWeekList is " + ContextManager.NEW_LINE  + sch.getSwlist().toString());
-			LOGGER.info("Adding schedule " + sch + " to the list...");
+			//LOGGER.info("ScheduleWeekList is " + ContextManager.NEW_LINE  + sch.getSwlist().toString());
+			//LOGGER.info("Adding schedule " + sch + " to the list...");
 		}
 		rs.close();
 		ps.close();

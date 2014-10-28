@@ -51,7 +51,9 @@ public class ScheduleWeekList extends ListDataModel<ScheduleWeek> implements Ser
 	public static ScheduleWeekList ListFactory (Profile _pro, ScahaDatabase _db, Schedule _sch) throws SQLException {
 		
 		List<ScheduleWeek> data = new ArrayList<ScheduleWeek>();
-
+		
+		LOGGER.info("Loading Schdule Weeks for schedule " + _sch);
+		
 		PreparedStatement ps = _db.prepareStatement("call scaha.getScheduleWeeks(?,?)");
 		ps.setInt(1,_sch.ID);
 		ps.setString(2,_sch.getScheduleweektag());
@@ -67,7 +69,7 @@ public class ScheduleWeekList extends ListDataModel<ScheduleWeek> implements Ser
 			sw.setFromDate(rs.getString(i++));
 			sw.setToDate(rs.getString(i++));
 			
-			LOGGER.info("Found new Schedule Week for schedule " + _sch + ". " + sw);
+			//LOGGER.info("Found new Schedule Week for schedule " + _sch + ". " + sw);
 			data.add(sw);
 			sw.setSchedule(_sch);
 		}
