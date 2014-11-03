@@ -56,7 +56,7 @@ public class LiveGameList extends ListDataModel<LiveGame> implements Serializabl
 		while (rs.next()) {
 			int i = 1;
 			LiveGame live = new LiveGame(rs.getInt(i++),_pro);
-			LOGGER.info("Found a live.." + live);
+			//LOGGER.info("Found a live.." + live);
 			live.setTypetag(rs.getString(i++));
 			live.setStatetag(rs.getString(i++));
 			live.setHometeam(_tl.getScahaTeamAt(rs.getInt(i++)));
