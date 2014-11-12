@@ -34,7 +34,7 @@ import com.scaha.objects.Schedule;
 import com.scaha.objects.ScheduleList;
 
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class LeaderboardBean implements Serializable,  MailableObject {
 
 	@ManagedProperty(value="#{scahaBean}")
