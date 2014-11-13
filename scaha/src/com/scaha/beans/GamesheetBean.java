@@ -2064,6 +2064,7 @@ public SogList refreshHomeSog() {
 		this.livegame.setStartdate(this.lgdate);
 		this.livegame.setStarttime(this.lgtime);
 		this.livegame.setVenuetag(this.lgvenueval);
+		this.livegame.setVenueshortname(this.lgvenue);
 		this.livegame.setSheetname(this.lgsheet);
 		this.livegame.setStatetag(this.lgstateval);
 		this.livegame.setTypetag(this.lgtypeval);
