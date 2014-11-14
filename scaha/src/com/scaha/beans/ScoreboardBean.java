@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
@@ -88,6 +89,11 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		 LOGGER.info(" *************** FINISH :POST INIT FOR SCOREBOARD BEAN *****************");
 	 }
 	
+	 
+	 @PreDestroy
+	 public void cleanup() {
+		 LOGGER.info(" *************** PRE DESTROY FOR SCOREBOARD BEAN *****************");
+	 }
 	public String refreshScoreboard() {
 		if (this.getPartlist() != null) {
 			ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");

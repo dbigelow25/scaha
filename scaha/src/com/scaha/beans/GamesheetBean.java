@@ -712,7 +712,7 @@ public SogList refreshHomeSog() {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		 	
 		db.free();
 		
 		spot.setMia(!spot.isMia());

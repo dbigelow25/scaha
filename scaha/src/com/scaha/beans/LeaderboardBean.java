@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
@@ -91,8 +92,10 @@ public class LeaderboardBean implements Serializable,  MailableObject {
 		 LOGGER.info(" *************** FINISH :POST INIT FOR LEADERBOARD BEAN *****************");
 	 }
 	
-	
-	
+	 @PreDestroy 
+	 public void cleanup() {
+		 LOGGER.info(" *************** START :PRE DESTROY FOR LEADERBOARD BEAN *****************");
+	 }
 	
 	/**
 	 * Recalc schedule for season..
