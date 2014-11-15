@@ -54,6 +54,11 @@ public class Schedule extends ScahaObject implements Serializable {
 		setProfile(_pro);
 		this.ID = _id;
 	}
+	
+	//adding this interface to support showing playoff schedules where we don't attach to a session
+	public Schedule (int _id) {
+		this.ID = _id;
+	}
 	/**
 	 * @param args
 	 */

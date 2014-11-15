@@ -64,7 +64,13 @@ public class GeneralSeason extends ScahaObject implements Serializable {
 
 	}
 
-
+	/** 
+	 * A Generic Constructor - this will be used to populate the seasonlist for playoffs
+	 * @param _pro
+	 */
+	public GeneralSeason () {
+		
+	}
 
 	/**
 	 * @return the membershipType
