@@ -41,7 +41,7 @@
 			  				#{scoreboardBean.refreshScoreboard()}
 			  
 				<div class="NewsTitle">Standings:</div>	
-				<p:dataTable  id= "parts" var="part" value="#{scoreboardBean.getPartlist()}"
+				<p:dataTable  style="width:70%" id= "parts" var="part" value="#{scoreboardBean.getPartlist()}"
 				sortBy="place" 				
 				rowStyleClass="#{part.isHasdropped() ? 'rostermia' : null}"
 				>
@@ -51,12 +51,12 @@
     		      <p:column headerText="Team Name " style="font-size: 10px;">
    	    	         <h:outputText style="font-size: 10px;" value="#{part.getTeam().getTeamname()} " />
 	         	  </p:column >
-    	          <p:column  styleClass="mtrxColumn" width="8%" headerText="Games " style="font-size: 10px;">
+    	          <!-- <p:column  styleClass="mtrxColumn" width="8%" headerText="Games " style="font-size: 10px;">
    	    	         <h:outputText style="font-size: 10px;" value="#{part.getGames()} " />
 	         	   </p:column >
     	          <p:column  styleClass="mtrxColumn" width="8%" headerText="Ex Games " style="font-size: 10px;">
    	    	         <h:outputText style="font-size: 10px;" value="#{part.getExgames()} " />
-	         	   </p:column >
+	         	   </p:column > -->
     	          <p:column  styleClass="mtrxColumn" width="8%" headerText="Games Played" style="font-size: 10px;">
    	    	         <h:outputText style="font-size: 10px;" value="#{part.getGamesplayed()} " />
 	         	   </p:column >
