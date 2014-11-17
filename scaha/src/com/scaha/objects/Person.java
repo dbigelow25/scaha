@@ -82,6 +82,8 @@ public class Person extends ScahaObject implements Serializable {
 					LOGGER.info("Successfully Created the person: " + this);
 
 				}
+				
+				rs.close();
 			}
 		} catch (SQLException ex) {
 				ex.printStackTrace();

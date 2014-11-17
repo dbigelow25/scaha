@@ -176,8 +176,11 @@ public class statsBean implements Serializable{
     				
 				}
 				LOGGER.info("We have results for goal leaders:");
+				rs.close();
 			}
 	
+			
+			cs.close();
 			this.setPlayergoals(tempgoals);
 			
 			
@@ -205,7 +208,10 @@ public class statsBean implements Serializable{
     				
 				}
 				LOGGER.info("We have results for leaders:");
+				rs.close();
 			}
+			
+			cs.close();
 			
 			this.setPlayerpoints(tempresult);
 			
@@ -233,8 +239,10 @@ public class statsBean implements Serializable{
     				
 				}
 				LOGGER.info("We have results for leaders:");
+				rs.close();
 			}
 			
+			cs.close();
 			this.setPlayerassists(tempassists);
 			
 			
@@ -264,8 +272,11 @@ public class statsBean implements Serializable{
     				
 				}
 				LOGGER.info("We have results for leaders:");
+				
+				rs.close();
 			}
 			
+			cs.close();
 			this.setPlayergaa(tempgaa);
 			
 			//get sv % leaders
@@ -292,12 +303,12 @@ public class statsBean implements Serializable{
     				
 				}
 				LOGGER.info("We have results for leaders:");
+				rs.close();
 			}
-			
+
+			cs.close();
 			this.setPlayersavepercentage(tempsave);
 			
-			
-			rs.close();
     		
 			
 			
@@ -341,7 +352,7 @@ public class statsBean implements Serializable{
     				LOGGER.info("We have results for division list");
     			}
     			rs.close();
-    			db.cleanup();
+    			cs.close();
     		} else {
     		
     		}
