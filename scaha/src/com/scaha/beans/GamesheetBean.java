@@ -156,14 +156,20 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		 LOGGER.info(" *************** START :POST INIT FOR GAMESHEET  BEAN *****************");
 		 this.setLivegame(pb.getSelectedlivegame());
 		 LOGGER.info("/// here is selected live game.." + this.getLivegame());
-		 this.setHometeam(this.refreshHomeRoster());
-		 this.setAwayteam(this.refreshAwayRoster());
-		 this.setAwayscoring(this.refreshAwayScoring());
-		 this.setHomescoring(this.refreshHomeScoring());
-		 this.setHomepenalties(this.refreshHomePenalty());
-		 this.setAwaypenalties(this.refreshAwayPenalty());
-		 this.setHomesogs(this.refreshHomeSog());
-		 this.setAwaysogs(this.refreshAwaySog());
+		 
+		 if (this.getLivegame() != null) {
+			 this.setHometeam(this.refreshHomeRoster());
+			 this.setAwayteam(this.refreshAwayRoster());
+			 this.setAwayscoring(this.refreshAwayScoring());
+			 this.setHomescoring(this.refreshHomeScoring());
+			 this.setHomepenalties(this.refreshHomePenalty());
+			 this.setAwaypenalties(this.refreshAwayPenalty());
+			 this.setHomesogs(this.refreshHomeSog());
+			 this.setAwaysogs(this.refreshAwaySog());
+		 } else {
+			 LOGGER.info(" ##### NO LIVE GAME PASSED... IT WAS NULL #####");
+			 
+		 }
 		 
 		 this.penalties.put("15 Team Penalties","15 Team Penalties");
 		 this.penalties.put("2 Majors","2 Majors");
@@ -385,9 +391,10 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			
+			db.free();
 		}
-		
-		db.free();
 		
 		return list;
 	}
@@ -401,9 +408,11 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			
+			db.free();
 		}
 		
-		db.free();
 		
 		return list;
 	}
@@ -418,10 +427,12 @@ public SogList refreshHomeSog() {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			
+			db.free();
 		}
 		
-		db.free();
-		
+	
 		return list;
 	}
 
@@ -435,9 +446,10 @@ public SogList refreshHomeSog() {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			
+			db.free();
 		}
-		
-		db.free();
 		return list;
 	}
 
@@ -451,9 +463,11 @@ public SogList refreshHomeSog() {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			
+			db.free();
 		}
 		
-		db.free();
 		
 		return list;
 	}
@@ -467,9 +481,10 @@ public SogList refreshHomeSog() {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} finally {
 		
-		db.free();
+			db.free();
+		}
 		
 		return list;
 	}
@@ -482,9 +497,10 @@ public SogList refreshHomeSog() {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			
+			db.free();
 		}
-		
-		db.free();
 		
 		return list;
 	}
@@ -497,9 +513,9 @@ public SogList refreshHomeSog() {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			db.free();
 		}
-		
-		db.free();
 		
 		return list;
 	}
