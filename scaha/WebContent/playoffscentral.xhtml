@@ -24,16 +24,32 @@
 	        Copyright 2014.  Website maintained by <a href="mailto:lahockeyfan2@yahoo.com;dbigelow@the-rinks.com?subject=SCAHA Website">Rob Foster/Dave Bigelow</a>
 	    </f:facet>
 	<h:form id="form">
-	<p:selectOneMenu value="#{playoffsBean.selectedseasonid}" style="min-width:200px;overflow:hidden !important;">
-	   <f:selectItem itemLabel="Select One" itemValue="0"/>
-	   <f:selectItems value="#{playoffsBean.getSeasonlist()}" var="season"  itemLabel="#{season.getDescription()}" itemValue="#{season.getTag()}"/>
-	   <p:ajax process="@this" listener="#{playoffsBean.loadDivisions()}" event="change" update=":form"  />
-	</p:selectOneMenu>
-	<p:selectOneMenu styleClass="ddlistbox"  id="myschedules" value="#{playoffsBean.selectedschedule}" >
-    	<f:selectItem style="font-size:10pt;" itemLabel="Select a Playoff Schedule..." itemValue="0" />
-      	<f:selectItems  value="#{playoffsBean.getSchedulelist()}" var="schedule" itemLabel="#{schedule.getDescription()}" itemValue="#{schedule.getKey()}" />
-      	<p:ajax listener="#{playoffsBean.onScheduleChange()}" process="@this" update="@this @form"/>
-    </p:selectOneMenu>
+	<h:panelGrid columns="8" cellpadding="5">
+				<!-- <f:facet name="header">
+						<h:column colspan="2"><b>Club Information</b></h:column>
+				</f:facet> -->	
+		<h:column style="width:100px;">
+			<p:selectOneMenu value="#{playoffsBean.selectedseasonid}" style="min-width:200px;overflow:hidden !important;">
+			   <f:selectItem itemLabel="Select a Playoff Season" itemValue="0"/>
+			   <f:selectItems value="#{playoffsBean.getSeasonlist()}" var="season"  itemLabel="#{season.getDescription()}" itemValue="#{season.getTag()}"/>
+			   <p:ajax process="@this" listener="#{playoffsBean.loadDivisions()}" event="change" update=":form"  />
+			</p:selectOneMenu>
+		</h:column>
+		<h:column style="width:100px;">
+			<p:selectOneMenu styleClass="ddlistbox"  id="myschedules" value="#{playoffsBean.selectedschedule}" >
+		    	<f:selectItem style="font-size:10pt;" itemLabel="Select a Playoff Schedule..." itemValue="0" />
+		      	<f:selectItems  value="#{playoffsBean.getSchedulelist()}" var="schedule" itemLabel="#{schedule.getDescription()}" itemValue="#{schedule.getKey()}" />
+		      	<p:ajax listener="#{playoffsBean.onScheduleChange()}" process="@this" update="@this @form"/>
+		    </p:selectOneMenu>
+    	</h:column>
+    	<h:column style="width:100px;font-size:120%;"><p:spacer width="200" /></h:column>
+		<h:column style="width:70px;font-size:200%;"><b>Champions:</b></h:column>
+		<h:column style="width:70px;font-size:120%;"><i><h:outputText value="#{playoffsBean.getChampion()}"/></i></h:column>
+		<h:column style="width:100px;font-size:120%;"><p:spacer width="100" /></h:column>
+		<h:column style="width:70px;font-size:120%;"><b>Runner Up:</b></h:column>
+		<h:column style="width:70px;font-size:120%;"><i><h:outputText value="#{playoffsBean.getRunnerup()}" /></i></h:column>
+	</h:panelGrid>
+			
     <p:layout id="layout" style="min-height:600px;overflow:hidden !important;">
  		<p:layoutUnit id="left" position="west" size="525" resizable="false" closable="false" collapsible="false" >
 			<p:dataTable id="playoffinformation" var="playoff" value="#{playoffsBean.getPlayoffdetails()}" >

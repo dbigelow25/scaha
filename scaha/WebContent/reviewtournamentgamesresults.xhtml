@@ -26,11 +26,13 @@
 			<ui:fragment id="edit-transfers" >
 					<p:panel id ="tournamentgamepanel" header="Tournament Games">
 					<h:form id="tournamentgameform">
+
+						
 					<p:dataTable id="tournamentgames" var="tournamentgame" value="#{reviewtournamentresultsBean.getTournamentgamedatamodel()}" selection="#{reviewtournamentresultsBean.selectedtournamentgame}" paginator="true" rows="10" autoupdate="false">
 			            <f:facet name="header">  
 				        	2014-2015 TOURNAMENT GAMES
 				        </f:facet> 
-				        <p:column headerText="Requesting Team">  
+				        <p:column filterBy="requestingteam" filterMatchMode="contains" filterStyle="width:100px" headerText="Requesting Team">  
 				            <h:outputText value="#{tournamentgame.getRequestingteam()}" />  
 				        </p:column>
 				        <p:column headerText="Tournament Name">  

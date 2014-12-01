@@ -61,6 +61,8 @@ public class playoffsBean implements Serializable{
     private TempGame selectedgame = null;
     private Integer selectedschedule = null;
     private String selectedseasonid = null;
+    private String Champion = null;
+    private String Runnerup = null;
     
    
 	@PostConstruct
@@ -80,7 +82,21 @@ public class playoffsBean implements Serializable{
         
     }  
     
+    public String getChampion() {
+		return Champion;
+	}
+
+    public void setChampion(String value){
+    	Champion = value;
+    }
     
+    public String getRunnerup() {
+		return Runnerup;
+	}
+
+    public void setRunnerup(String value){
+    	Runnerup = value;
+    }
     /**
 	 * @return the selectedseasonid
 	 */
@@ -185,6 +201,19 @@ public class playoffsBean implements Serializable{
     				String awayscore = rs.getString("awayscore");
     				if (awayscore.equals("-1")){
     					awayscore = "";
+    				}
+    				
+    				if (!(homescore=="") && !(awayscore=="")){
+	    				if (Integer.parseInt(homescore) > Integer.parseInt(awayscore)){
+	    					this.setChampion(hometeam);
+	    					this.setRunnerup(awayteam);
+	    				} else {
+	    					this.setChampion(awayteam);
+	    					this.setRunnerup(hometeam);
+	    				}
+    				} else {
+    					this.setChampion("");
+    					this.setRunnerup("");
     				}
     				
     				String dates = rs.getString("date");
