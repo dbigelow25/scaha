@@ -55,9 +55,18 @@ public class Player extends ScahaObject implements Serializable {
 	private String division = null;
 	private String teamid = null;
 	private String rostertype = null;
+	private String gp = null;
 	
 	public Player (){ 
 		
+	}
+	
+	public String getGp(){
+		return gp;
+	}
+	
+	public void setGp(String value){
+		gp=value;
 	}
 	
 	public String getRostertype(){
