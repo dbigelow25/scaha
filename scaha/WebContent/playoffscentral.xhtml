@@ -50,7 +50,7 @@
 		</tr>
 	</table>
 			
-    <p:layout id="layout" style="min-height:600px;overflow:hidden !important;">
+    <p:layout id="layout" style="min-height:700px;overflow:hidden !important;">
  		<p:layoutUnit id="left" position="west" size="525" resizable="false" closable="false" collapsible="false" >
 			<p:dataTable id="playoffinformation" var="playoff" value="#{playoffsBean.getPlayoffdetails()}" >
                 <f:facet name="header">
@@ -76,6 +76,88 @@
 		        
 		     </p:dataTable>
 			 <br></br>
+			<!-- lets put playoff bracket1 here -->
+			<p:dataTable id="playoffbracket1" var="playoffbracket" value="#{playoffsBean.getPlayoffbrackets1()}" >
+                <f:facet name="header">
+			        Bracket 1
+			    </f:facet>
+                <p:column headerText="Team Name" style="width:80px;">  
+	                <h:outputText value="#{playoffbracket.getTeamname()}" />
+	            </p:column>  
+		        <p:column headerText="Game 1" style="width:40px;">  
+		        	<h:outputText value="#{playoffbracket.getGame1()}" />  
+		        </p:column>
+		        <p:column headerText="Game 2" style="width:40px;">  
+		        	<h:outputText value="#{playoffbracket.getGame2()}" />  
+		        </p:column>
+		        <p:column headerText="Game 3" style="width:40px;">  
+		        	<h:outputText value="#{playoffbracket.getGame3()}" />  
+		        </p:column>
+		        <p:column headerText="Total" style="width:40px;">  
+		        	<h:outputText value="#{playoffbracket.getGametotal()}" />  
+		        </p:column>
+		        <p:column headerText="Place" style="width:40px;">  
+		        	<h:outputText value="#{playoffbracket.getPlace()}" />  
+		        </p:column>
+		        
+		     </p:dataTable>
+			 <br></br>
+			<!-- lets put playoff bracket2 here -->
+			<p:dataTable id="playoffbracket2" var="playoffbracket" value="#{playoffsBean.getPlayoffbrackets2()}" >
+                <f:facet name="header">
+			        Bracket 2
+			    </f:facet>
+                <p:column headerText="Team Name" style="width:80px;">  
+	                <h:outputText value="#{playoffbracket.getTeamname()}" />
+	            </p:column>  
+		        <p:column headerText="Game 1" style="width:40px;">  
+		        	<h:outputText value="#{playoffbracket.getGame1()}" />  
+		        </p:column>
+		        <p:column headerText="Game 2" style="width:40px;">  
+		        	<h:outputText value="#{playoffbracket.getGame2()}" />  
+		        </p:column>
+		        <p:column headerText="Game 3" style="width:40px;">  
+		        	<h:outputText value="#{playoffbracket.getGame3()}" />  
+		        </p:column>
+		        <p:column headerText="Total" style="width:40px;">  
+		        	<h:outputText value="#{playoffbracket.getGametotal()}" />  
+		        </p:column>
+		        <p:column headerText="Place" style="width:40px;">  
+		        	<h:outputText value="#{playoffbracket.getPlace()}" />  
+		        </p:column>
+		        
+		     </p:dataTable>
+			
+			
+	    </p:layoutUnit>
+		<p:layoutUnit id="center" position="center" >
+			<p:dataTable id="playoffgames" var="TempGame" value="#{playoffsBean.getTempGamedatamodel()}" paginator="true" rows="10" autoupdate="false" >
+		        <f:facet name="header">
+			        Game Results
+			    </f:facet>
+                <p:column headerText="Date">  
+		            <h:outputText value="#{TempGame.getDate()}" />  
+		        </p:column>  
+		        <p:column headerText="Visiting Team">  
+		        	<h:outputText value="#{TempGame.getVisitor()}" />  
+		        </p:column>
+		        <p:column headerText="Score">
+		           <h:outputText value="#{TempGame.awayscore}" />  
+	            </p:column>
+		        <p:column headerText="Home Team">  
+		        	<h:outputText value="#{TempGame.getHome()}" />  
+		        </p:column>
+		        <p:column headerText="Score">  
+		        	<h:outputText value="#{TempGame.homescore}" />
+		        </p:column>
+		        <p:column headerText="Time">  
+		            <h:outputText value="#{TempGame.getTime()}" />  
+		        </p:column>
+		        <p:column headerText="Location">  
+		            <h:outputText value="#{TempGame.getLocation()}" />  
+		        </p:column>
+		    </p:dataTable>
+			<br></br>	
 			<p:dataTable  id= "parts" var="part" value="#{playoffsBean.getPartlist()}"
 				sortBy="place" 				
 				rowStyleClass="#{part.isHasdropped() ? 'rostermia' : null}"
@@ -114,35 +196,6 @@
    	    	         <h:outputText style="font-size: 10px;" value="#{part.getGd()} " />
 	         	   </p:column >
 				</p:dataTable>
-	    </p:layoutUnit>
-		<p:layoutUnit id="center" position="center" >
-			<p:dataTable id="playoffgames" var="TempGame" value="#{playoffsBean.getTempGamedatamodel()}" paginator="true" rows="10" autoupdate="false" >
-		        <f:facet name="header">
-			        Game Results
-			    </f:facet>
-                <p:column headerText="Date">  
-		            <h:outputText value="#{TempGame.getDate()}" />  
-		        </p:column>  
-		        <p:column headerText="Visiting Team">  
-		        	<h:outputText value="#{TempGame.getVisitor()}" />  
-		        </p:column>
-		        <p:column headerText="Score">
-		           <h:outputText value="#{TempGame.awayscore}" />  
-	            </p:column>
-		        <p:column headerText="Home Team">  
-		        	<h:outputText value="#{TempGame.getHome()}" />  
-		        </p:column>
-		        <p:column headerText="Score">  
-		        	<h:outputText value="#{TempGame.homescore}" />
-		        </p:column>
-		        <p:column headerText="Time">  
-		            <h:outputText value="#{TempGame.getTime()}" />  
-		        </p:column>
-		        <p:column headerText="Location">  
-		            <h:outputText value="#{TempGame.getLocation()}" />  
-		        </p:column>
-		    </p:dataTable>
-				
 		</p:layoutUnit>
 		
 		

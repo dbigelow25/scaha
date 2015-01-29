@@ -19,8 +19,8 @@ import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.Participant;
-import com.scaha.objects.ParticipantList;
 import com.scaha.objects.Playoff;
+import com.scaha.objects.Playoffbracket;
 import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.Schedule;
 import com.scaha.objects.TempGame;
@@ -50,6 +50,8 @@ public class playoffsBean implements Serializable{
 	private List<Schedule> schedulelist =  null;
 	private List<Playoff> playoffdetails = null;
 	private List<Participant> partlist = null;
+	private List<Playoffbracket> playoffbrackets1 = null;
+	private List<Playoffbracket> playoffbrackets2 = null;
     
 	//bean level properties used by multiple methods
 	private Integer profileid = 0;
@@ -139,6 +141,22 @@ public class playoffsBean implements Serializable{
 	
 	public List<Playoff> getPlayoffdetails(){
 		return playoffdetails;
+	}
+	
+	public void setPlayoffbrackets1(List<Playoffbracket> list){
+		playoffbrackets1 = list;
+	}
+	
+	public List<Playoffbracket> getPlayoffbrackets1(){
+		return playoffbrackets1;
+	}
+	
+	public void setPlayoffbrackets2(List<Playoffbracket> list){
+		playoffbrackets2 = list;
+	}
+	
+	public List<Playoffbracket> getPlayoffbrackets2(){
+		return playoffbrackets2;
 	}
 	
     public Integer getProfid(){
@@ -345,10 +363,17 @@ public class playoffsBean implements Serializable{
     	}
 		
     	setSchedulelist(tempresult);
+    	games = new ArrayList<TempGame>();  
+        TempGameDataModel = new TempGameDataModel(games);
+        playoffdetails = new ArrayList<Playoff>();
+        setPlayoffbrackets1(new ArrayList<Playoffbracket>());
+    	setPlayoffbrackets2(new ArrayList<Playoffbracket>());
+    	this.setPartlist(new ArrayList<Participant>());
+    	
     }
     
     public void onScheduleChange(){
-    	//need to load standings, schedule, and division details
+    	//need to load standings, schedule, brackets, and division details
     	
     	List<Playoff> tempresult = new ArrayList<Playoff>();
     	
@@ -410,6 +435,8 @@ public class playoffsBean implements Serializable{
     	loadScahaGames();
     	//now let's load regular season division standings
     	loadStandings();
+    	//now let's load playoff brackets;
+    	loadBrackets();
     }
     
     public TempGameDataModel getTempGamedatamodel(){
@@ -543,5 +570,93 @@ public class playoffsBean implements Serializable{
 	public void setPartlist(List<Participant> partlist) {
 		this.partlist = partlist;
 	}
+	
+	public void loadBrackets(){
+    	List<Playoffbracket> tempresult1 = new ArrayList<Playoffbracket>();
+    	List<Playoffbracket> tempresult2 = new ArrayList<Playoffbracket>();
+    	
+    	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	
+    	try{
+    		//first get team name
+    		CallableStatement cs = db.prepareCall("CALL scaha.getPlayoffBrackets(?,?)");
+			cs.setInt("scheduleid", this.selectedschedule);
+			cs.setInt("displaybracket", 1);
+			rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					String teamname = rs.getString("teamname");
+    				String game1 = rs.getString("game1");
+    				String game2 = rs.getString("game2");
+    				String game3 = rs.getString("game3");
+    				String gametotal = rs.getString("gametotal");
+    				String place = rs.getString("place");
+    				
+    				Playoffbracket obracket = new Playoffbracket();
+    				obracket.setTeamname(teamname);
+    				obracket.setGame1(game1);
+    				obracket.setGame2(game2);
+    				obracket.setGame3(game3);
+    				obracket.setGametotal(gametotal);
+    				obracket.setPlace(place);
+    				tempresult1.add(obracket);
+    				
+				}
+				LOGGER.info("We have results for playoff bracket one:" + this.selectedschedule);
+			}
+			
+			
+			rs.close();
+			
+			cs = db.prepareCall("CALL scaha.getPlayoffBrackets(?,?)");
+			cs.setInt("scheduleid", this.selectedschedule);
+			cs.setInt("displaybracket", 2);
+			rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					String teamname = rs.getString("teamname");
+					String game1 = rs.getString("game1");
+    				String game2 = rs.getString("game2");
+    				String game3 = rs.getString("game3");
+    				String gametotal = rs.getString("gametotal");
+    				String place = rs.getString("place");
+    				
+    				Playoffbracket obracket = new Playoffbracket();
+    				obracket.setTeamname(teamname);
+    				obracket.setGame1(game1);
+    				obracket.setGame2(game2);
+    				obracket.setGame3(game3);
+    				obracket.setGametotal(gametotal);
+    				obracket.setPlace(place);
+    				tempresult2.add(obracket);
+    				
+				}
+				LOGGER.info("We have results for playoff bracket 2:" + this.selectedschedule);
+			}
+			
+			
+			rs.close();
+			db.cleanup();
+    		
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN getting playoff brackets:" + this.selectedschedule);
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+		
+    	this.setPlayoffbrackets1(tempresult1);
+    	this.setPlayoffbrackets2(tempresult2);
+    	
+    }
 }
 
