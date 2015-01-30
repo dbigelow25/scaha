@@ -8,27 +8,51 @@
      xmlns:p="http://primefaces.org/ui" 
      xmlns:c="http://java.sun.com/jsp/jstl/core"
 >
-<ui:composition >
+<f:view contentType="text/html">
+<h:head>
+	 <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+     </f:facet>
+	
+</h:head>
+<h:body >	
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
 <ui:define name="content">
-	<games>
-	    <week><h:outputText value="#{mobileBean.getWeeklabel()}" /></week>
-	    <ui:repeat value="#{mobileBean.getGames()}" var="tempgame">
-		    <game>
-		        <id><h:outputText value="#{tempgame.getID()}" /></id>
-		        <date><h:outputText value="#{tempgame.getDate()}" /></date>
-		        <time><h:outputText value="#{tempgame.getTime()}" /></time>
-		        <home><h:outputText value="#{tempgame.getHometeam()}" /></home>
-		        <away><h:outputText value="#{tempgame.getAwayteam()}" /></away>
-		        <location><h:outputText value="#{tempgame.getLocation()}" /></location>
-		        <locationaddress><h:outputText value="#{tempgame.getRinkaddress()}" /></locationaddress>
-		        <awayscore><h:outputText value="#{tempgame.getAwayscore()}" /></awayscore>
-		        <homescore><h:outputText value="#{tempgame.getHomescore()}" /></homescore>
-		        <hometeamimage><h:outputText value="#{tempgame.getHometeamimage()}" /></hometeamimage>
-		        <awayteamimage><h:outputText value="#{tempgame.getAwayteamimage()}" /></awayteamimage>
-		        <submitstatus><h:outputText value="#{tempgame.getStatus()}" /></submitstatus>
-		    </game>
-    	</ui:repeat>
-    </games>
+	<p:panel header="Coaches Certification" >
+		<f:facet name="footer">
+	        Copyright 2014.  Website maintained by <a href="mailto:lahockeyfan2@yahoo.com;dbigelow@the-rinks.com?subject=SCAHA Website">Rob Foster/Dave Bigelow</a>
+	    </f:facet>
+			<p:dataTable id="coachcertification" var="link" value="#{coachlinksBean.getCertificationslinklist()}" >
+                <f:facet name="header">
+			        Certification Information
+			    </f:facet>
+                <p:column style="width:80px;">  
+	               <a href="#{link.getLinkurl()}" target="_blank">#{link.getLinklabel()}</a> 
+	            </p:column>  
+		     </p:dataTable>
+		     <br></br>
+		     <p:dataTable id="coachinformation" var="link" value="#{coachlinksBean.getInformationlinklist()}" >
+                <f:facet name="header">
+			        General Information
+			    </f:facet>
+                <p:column style="width:80px;">  
+	               <a href="#{link.getLinkurl()}" target="_blank">#{link.getLinklabel()}</a> 
+	            </p:column>  
+		     </p:dataTable>
+		     <br></br>
+		     <p:dataTable id="coachscreening" var="link" value="#{coachlinksBean.getScreeningslinklist()}" >
+                <f:facet name="header">
+			        Screening Information
+			    </f:facet>
+                <p:column style="width:80px;">  
+	               <a href="#{link.getLinkurl()}" target="_blank">#{link.getLinklabel()}</a> 
+	            </p:column>  
+		     </p:dataTable>
+	</p:panel>
+	
 </ui:define>
 </ui:composition>
+</h:body>
+</f:view>
 </html>
