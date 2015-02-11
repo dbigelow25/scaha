@@ -61,6 +61,7 @@ public class PenaltyPusher  implements Serializable,  MailableObject {
 		
 		List<String> myTokens = new ArrayList<String>();
 		myTokens.add("SCHEDULE|" + this.livegame.getSched().getDescription());
+		myTokens.add("DATE|" + this.livegame.getStartdate());
 		myTokens.add("HOMETEAM|" + this.livegame.getHometeamname());
 		myTokens.add("AWAYTEAM|" + this.livegame.getAwayteamname());
 		myTokens.add("GAMENUMBER|" + this.livegame.ID+"");

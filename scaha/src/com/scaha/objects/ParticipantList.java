@@ -79,7 +79,8 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 			part.setGf(rs.getInt(i++));
 			part.setGa(rs.getInt(i++));
 			part.setHasdropped((rs.getInt(i++) == 0 ? false : true));
-			part.setGd(part.getGf()- part.getGa());
+			i++;
+			part.setGd(rs.getInt(i++));
 			
 			part.setSchedule(_sch);
 			part.setPlace(y++);
@@ -215,7 +216,8 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 				part.setGf(rs.getInt(i++));
 				part.setGa(rs.getInt(i++));
 				part.setHasdropped((rs.getInt(i++) == 0 ? false : true));
-				part.setGd(part.getGf()- part.getGa());
+				i++;
+				part.setGd(rs.getInt(i++));
 				part.setPlace(y++);
 				part.setSchedule(_sch);
 			//	LOGGER.info("Found Participant for schedule " + _sch + ". " + part);
