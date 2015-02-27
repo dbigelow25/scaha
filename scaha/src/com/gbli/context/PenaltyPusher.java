@@ -18,6 +18,7 @@ import com.scaha.objects.Club;
 import com.scaha.objects.LiveGame;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Penalty;
+import com.scaha.objects.PenaltyList;
 import com.scaha.objects.ScahaTeam;
 
 public class PenaltyPusher  implements Serializable,  MailableObject {
@@ -31,6 +32,7 @@ public class PenaltyPusher  implements Serializable,  MailableObject {
 	private static String mail_penaltypush_body = Utils.getMailTemplateFromFile("/mail/penaltypush.html");
 	private Penalty penalty;
 	private LiveGame livegame=null;
+	private PenaltyList penaltylist = null;
 	
 	public PenaltyPusher (Penalty _pen) {
 		penalty = _pen;
@@ -140,5 +142,5 @@ public class PenaltyPusher  implements Serializable,  MailableObject {
 		this.livegame = livegame;
 	}
 	
-
+	
 }

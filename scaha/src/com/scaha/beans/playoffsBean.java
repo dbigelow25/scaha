@@ -528,7 +528,13 @@ public class playoffsBean implements Serializable{
     			part.setGf(rs.getInt(i++));
     			part.setGa(rs.getInt(i++));
     			part.setHasdropped((rs.getInt(i++) == 0 ? false : true));
-    			part.setGd(part.getGf()- part.getGa());
+    			
+    			if (this.selectedschedule<350){
+	    			part.setGd(part.getGf()- part.getGa());
+    			}
+    			else {
+    				part.setGd(rs.getInt(i++));
+    			}
     			
     			part.setSchedule(null);
     			part.setPlace(y++);

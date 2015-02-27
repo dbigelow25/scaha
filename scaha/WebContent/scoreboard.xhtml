@@ -40,7 +40,9 @@
 			  <p:outputPanel id="testContainer">
 			  				#{scoreboardBean.refreshScoreboard()}
 			  
-				<div class="NewsTitle">Standings:</div>	
+				<div class="NewsTitle">Standings:</div>
+				<b>Note:</b> Standings listed do not reflect all the tie-breaker rules correctly.
+				Final standings for the playoffs will be determined by the SCAHA Statistician.	
 				<p:dataTable  style="width:70%" id= "parts" var="part" value="#{scoreboardBean.getPartlist()}"
 				sortBy="place" 				
 				rowStyleClass="#{part.isHasdropped() ? 'rostermia' : null}"
