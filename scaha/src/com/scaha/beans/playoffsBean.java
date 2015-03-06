@@ -21,6 +21,7 @@ import com.scaha.objects.GeneralSeason;
 import com.scaha.objects.Participant;
 import com.scaha.objects.Playoff;
 import com.scaha.objects.Playoffbracket;
+import com.scaha.objects.PlayoffbracketDataModel;
 import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.Schedule;
 import com.scaha.objects.TempGame;
@@ -52,13 +53,16 @@ public class playoffsBean implements Serializable{
 	private List<Participant> partlist = null;
 	private List<Playoffbracket> playoffbrackets1 = null;
 	private List<Playoffbracket> playoffbrackets2 = null;
+	
     
 	//bean level properties used by multiple methods
 	private Integer profileid = 0;
 	
 	//datamodels for all of the lists on the page
 	private TempGameDataModel TempGameDataModel = null;
-    
+	private PlayoffbracketDataModel Bracket1DataModel = null;
+	private PlayoffbracketDataModel Bracket2DataModel = null;
+	
     //properties for storing the selected row of each of the datatables or drop downs
     private TempGame selectedgame = null;
     private Integer selectedschedule = null;
@@ -73,6 +77,7 @@ public class playoffsBean implements Serializable{
         TempGameDataModel = new TempGameDataModel(games);
         seasonlist = new ArrayList<GeneralSeason>();
         playoffdetails = new ArrayList<Playoff>();
+        
         
         //Load Default Lists Seasons, Standing, and Games
         loadSeasonlist();
@@ -222,14 +227,14 @@ public class playoffsBean implements Serializable{
     				}
     				
     				if (!(homescore=="") && !(awayscore=="")){
-	    				if (Integer.parseInt(homescore) > Integer.parseInt(awayscore)){
-	    					this.setChampion(hometeam);
-	    					this.setRunnerup(awayteam);
-	    				} else {
-	    					this.setChampion(awayteam);
-	    					this.setRunnerup(hometeam);
-	    				}
-    				} else {
+	    					if (Integer.parseInt(homescore) > Integer.parseInt(awayscore)){
+		    					this.setChampion(hometeam);
+		    					this.setRunnerup(awayteam);
+		    				} else {
+		    					this.setChampion(awayteam);
+		    					this.setRunnerup(hometeam);
+		    				}
+	    			} else {
     					this.setChampion("");
     					this.setRunnerup("");
     				}
@@ -447,6 +452,22 @@ public class playoffsBean implements Serializable{
     	TempGameDataModel = odatamodel;
     }
 
+    public PlayoffbracketDataModel getPlayoffbracket1datamodel(){
+    	return Bracket1DataModel;
+    }
+    
+    public void setPlayoffbracket1datamodel(PlayoffbracketDataModel odatamodel){
+    	Bracket1DataModel = odatamodel;
+    }
+    
+    public PlayoffbracketDataModel getPlayoffbracket2datamodel(){
+    	return Bracket2DataModel;
+    }
+    
+    public void setPlayoffbracket2datamodel(PlayoffbracketDataModel odatamodel){
+    	Bracket2DataModel = odatamodel;
+    }
+    
     public void closePage(){
     	FacesContext context = FacesContext.getCurrentInstance();
     	try{
@@ -593,6 +614,7 @@ public class playoffsBean implements Serializable{
 			if (rs != null){
 				
 				while (rs.next()) {
+					Integer idbracket = rs.getInt("idplayoffsbrackets");
 					String teamname = rs.getString("teamname");
     				String game1 = rs.getString("game1");
     				String game2 = rs.getString("game2");
@@ -601,13 +623,18 @@ public class playoffsBean implements Serializable{
     				String place = rs.getString("place");
     				
     				Playoffbracket obracket = new Playoffbracket();
+    				obracket.setIdbracket(idbracket);
     				obracket.setTeamname(teamname);
     				obracket.setGame1(game1);
+    				obracket.setNewgame1(game1);
     				obracket.setGame2(game2);
+    				obracket.setNewgame2(game2);
     				obracket.setGame3(game3);
+    				obracket.setNewgame3(game3);
     				obracket.setGametotal(gametotal);
+    				obracket.setNewgametotal(gametotal);
     				obracket.setPlace(place);
-    				tempresult1.add(obracket);
+    				obracket.setNewplace(place);tempresult1.add(obracket);
     				
 				}
 				LOGGER.info("We have results for playoff bracket one:" + this.selectedschedule);
@@ -624,6 +651,7 @@ public class playoffsBean implements Serializable{
 			if (rs != null){
 				
 				while (rs.next()) {
+					Integer idbracket = rs.getInt("idplayoffsbrackets");
 					String teamname = rs.getString("teamname");
 					String game1 = rs.getString("game1");
     				String game2 = rs.getString("game2");
@@ -632,12 +660,18 @@ public class playoffsBean implements Serializable{
     				String place = rs.getString("place");
     				
     				Playoffbracket obracket = new Playoffbracket();
+    				obracket.setIdbracket(idbracket);
     				obracket.setTeamname(teamname);
     				obracket.setGame1(game1);
+    				obracket.setNewgame1(game1);
     				obracket.setGame2(game2);
+    				obracket.setNewgame2(game2);
     				obracket.setGame3(game3);
+    				obracket.setNewgame3(game3);
     				obracket.setGametotal(gametotal);
+    				obracket.setNewgametotal(gametotal);
     				obracket.setPlace(place);
+    				obracket.setNewplace(place);
     				tempresult2.add(obracket);
     				
 				}
@@ -660,6 +694,8 @@ public class playoffsBean implements Serializable{
     		db.free();
     	}
 		
+    	Bracket1DataModel = new PlayoffbracketDataModel(tempresult1);
+    	Bracket2DataModel = new PlayoffbracketDataModel(tempresult2);
     	this.setPlayoffbrackets1(tempresult1);
     	this.setPlayoffbrackets2(tempresult2);
     	
