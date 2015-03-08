@@ -226,6 +226,8 @@ public class playoffsBean implements Serializable{
     					awayscore = "";
     				}
     				
+    				
+    				
     				if (!(homescore=="") && !(awayscore=="")){
 	    					if (Integer.parseInt(homescore) > Integer.parseInt(awayscore)){
 		    					this.setChampion(hometeam);
@@ -239,6 +241,21 @@ public class playoffsBean implements Serializable{
     					this.setRunnerup("");
     				}
     				
+    				if (this.selectedschedule>349){
+    					this.setChampion("");
+    					this.setRunnerup("");
+    				}
+    				
+    				String otinfo = rs.getString("otinfo");
+    				String othomeaway = rs.getString("othomeaway");
+    				
+    				if (otinfo != null){
+	    				if (othomeaway.equals("home")){
+	    					homescore=homescore+otinfo;
+	    				}else {
+	    					awayscore=awayscore+otinfo;
+	    				}
+    				}
     				String dates = rs.getString("date");
     				String time = rs.getString("time");
     				String location = rs.getString("location");
