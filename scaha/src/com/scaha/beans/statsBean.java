@@ -53,7 +53,7 @@ public class statsBean implements Serializable{
     public void init() {
 	    this.selectedcount="25";
 	    this.selectedgametype="2";
-    	this.selecteddivision="5";
+    	this.selecteddivision="0";
     	this.selectedyear="2014";
     	
     	//load divisions to select from
