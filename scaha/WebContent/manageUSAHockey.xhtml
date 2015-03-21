@@ -41,8 +41,8 @@
 <p:messages id="growl" showDetail="true" autoUpdate="true"  global="true"/>
 </div>
         
-<p:wizard id = "wizard" widgetVar="myWizard"  flowListener="#{memberBean.onFlowProcess}" showNavBar="false">  
-<p:tab id="usahockey" style="font-size:12px;" title="Step 1: USA Hockey >>">  	 
+<p:wizard id = "wizard" widgetVar="myWizard"  style="width:1000px;" flowListener="#{memberBean.onFlowProcess}" showNavBar="false">  
+<p:tab id="usahockey" title="Step 1: USA Hockey >>">  	 
 	<p/>
 	<div class="NewsTitle" style="margin-top:10px;margin-bottom:10px;">Please Enter The  USA Hockey Confirmation Number:
 	</div>
@@ -165,11 +165,46 @@
 	<p:fieldset toggleable="false" toggleSpeed="500">  
  	<p:commandButton update="form:growl" value="Back" icon="ui-icon-arrow-1-w" iconPos="right" type="button" onclick="myWizard.back();" />
 	<p:spacer height="20px" width="20px" />
-	<p:commandButton update="form:growl" value="Confirm" icon="ui-icon-arrow-1-e" iconPos="left" type="button" onclick="myWizard.next();" />
+	<p:commandButton update="form:growl" value="Next" icon="ui-icon-arrow-1-e" iconPos="left" type="button" onclick="myWizard.next();" />
 	</p:fieldset> 
         
 </p:tab>
-<p:tab id="finish" title="Step 4: Confirm">
+<p:tab id="concussion" title="Step 4: Concussion >>">
+	<p/>
+	
+		<div class="NewsTitle">Review and acknowledge the CAHA/SCAHA Concussion Policy.</div>
+	<p:fieldset style="font-size:10pt;" toggleable="false" toggleSpeed="500">
+		<ul>
+			<li>I understand that the California Amateur Hockey Association has adopted concussion-related education and awareness into their Guidebook and Rules of Play.</li>
+			<li>I understand the following guidelines exist and will respect them if they must be instituted with the above named player:</li>
+			<ul>
+				<li>An athlete who is suspected of sustaining a concussion or head injury in an athletic activity shall be immediately removed from the activity for the remainder of the day. Removal from play can be at the request of a coach, official, team manager, parent/guardian, or the player</li>
+				<li>Athlete shall not be permitted to return to the activity until he/she is evaluated by a licensed health care provider, who is trained in the management of concussions, acting within the scope of his/her practice.</li>
+				<li>The athlete shall not be permitted to return to the activity until he or she receives written clearance to return to the activity from that licensed health care provider.</li>
+			</ul>
+			<li>Should it be determined that the above named player needs to be removed from play, I/we understand that the protocol outlined herein shall be followed for the safety of the player. Further, I/we understand that the above named player will receive concussion education during the course of the season</li>
+			<li>I understand that if a suspected concussion has occurred and protocol has been enacted for the above named player, there is no review period or negotiation as to the course of action and return to play outside of the recommendations of the licensed healthcare provider that I/we have selected to treat the above named player.</li>
+			<li>I understand that if/we suspect the above named player has experienced a concussion or exhibits behavior that suggests concussion-like symptoms, I/we have the authority to remove the player from play and begin the concussion protocol with a licensed healthcare provider of my/your selection.</li>
+		</ul>
+	</p:fieldset>
+	<p:fieldset style="font-size:10pt;" toggleable="false" toggleSpeed="500">
+		 <h:selectBooleanCheckbox id="confirmconcussion" value="#{memberBean.concussion}" >
+		 	<f:ajax execute="confirmconcussion" render="nextstep" event="change" />
+		 </h:selectBooleanCheckbox>
+		 <b><h:outputText value="I have read and acknowledge CAHA/SCAHA's concussion policy." /></b>
+	</p:fieldset>
+	<p/>
+	<p:spacer height="20px" width="20px" />
+	  
+ 		
+	<p:fieldset toggleable="false" toggleSpeed="500">  
+ 	<p:commandButton update="form:growl" value="Back" icon="ui-icon-arrow-1-w" iconPos="right" type="button" onclick="myWizard.back();" />
+	<p:spacer height="20px" width="20px" />
+	<p:commandButton id="nextstep" value="Confirm" icon="ui-icon-arrow-1-e" update="form:growl" ajax="false" iconPos="left" type="button" onclick="myWizard.next();" disabled="#{!memberBean.concussion}"/>
+	</p:fieldset>
+	 
+</p:tab>
+<p:tab id="finish" title="Step 5: Confirm">
 	<p/>
 	<div class="NewsTitle">Choose the Options That Best Describe #{memberBean.getUsar().getFirstName()} #{memberBean.getUsar().getLastName()}</div>
 	<p/>
@@ -179,7 +214,7 @@
     </ul>
     General Comments:<ul>
     <li>If an EXISTING Member in your account - last year's information will be pre-checked.  You should not have to change much.</li> 
-    <li>If an EXISTING Member NOT in your account.  You can Register them non the less.   In this case, the option exists to capture the person and place them under your account. (See check-box below)</li>
+    <li>If an EXISTING Member NOT in your account.  You can Register them none the less.   In this case, the option exists to capture the person and place them under your account. (See check-box below)</li>
     <li>If a NEW member to SCAHA - please select the options that best match the player.</li>
     </ul>
 	Once, you are set with all the information, simply click the <b>Create Membership button</b>.  You will receive a confirmation e-mail that contains all the 

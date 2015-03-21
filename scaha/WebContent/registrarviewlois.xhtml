@@ -78,14 +78,14 @@
 			        </p:column>  
 			        <p:column filterBy="currentteam" filterMatchMode="contains" filterStyle="width:50px" sortBy="currentteam">  
 			            <f:facet name="header">
-		            		<h:outputText value="2014 Team" />
+		            		<h:outputText value="#{registrarloiBean.getCurrentyear()} Team" />
 				        </f:facet>
 			            
 			            <h:outputText value="#{player.getCurrentteam()}" />  
 			        </p:column>
 			        <p:column >  
 			            <f:facet name="header">
-		            		<h:outputText value="2013 Team" />
+		            		<h:outputText value="#{registrarloiBean.getPrioryear()} Team" />
 				        </f:facet>
 			            
 			            <h:outputText value="#{player.getPreviousteam()}" />  

@@ -54,6 +54,7 @@ public class MemberBean implements Serializable, MailableObject {
 	private String regnumber = null;
 	private List<String> membertype;  
 	private String relationship = null;
+	private boolean concussion = false;
 	private boolean datagood = false;
 	
 	private PersonList Persons = null;
@@ -62,6 +63,7 @@ public class MemberBean implements Serializable, MailableObject {
 	private boolean fastforward = false;
 	private boolean restart = false;
 	private boolean stealme = false;
+	
 	
 	private transient UIComponent mcomponent;
 	
@@ -103,7 +105,8 @@ public class MemberBean implements Serializable, MailableObject {
 		 membertype = new ArrayList<String>(); 
 	 }
 	 
-	/**
+	 	 
+	 /**
 	 * @return the usar
 	 */
 	public UsaHockeyRegistration getUsar() {
@@ -286,6 +289,19 @@ public class MemberBean implements Serializable, MailableObject {
 		this.relationship = regtype;
 	}
 	
+	/**
+	 * @return the concussion
+	 */
+	public Boolean getConcussion() {
+		return concussion;
+	}
+
+	/**
+	 * @param regtype the regtype to set
+	 */
+	public void setConcussion(Boolean regtype) {
+		this.concussion = regtype;
+	}
 
 	/**
 	 * @return the datagood
@@ -536,7 +552,7 @@ public class MemberBean implements Serializable, MailableObject {
         LOGGER.info("Current wizard step:" + event.getOldStep());  
         LOGGER.info("Next step:" + event.getNewStep());  
 
-        if (this.fastforward) {
+        if (this.fastforward && !event.getOldStep().equals("concussion")) {
         	this.fastforward = false;
         	return "usahockey";
         }
@@ -578,7 +594,7 @@ public class MemberBean implements Serializable, MailableObject {
     				
    				this.relationship = selectedPerson.getXRelType();
 
-   				if (fastforward) return "finish";
+   				if (fastforward) return "concussion";
    			} else {
    				//
    				// stay put..
@@ -591,17 +607,40 @@ public class MemberBean implements Serializable, MailableObject {
         	// Nothing really here
         	
 
-		}  else if (event.getNewStep().equals("finish")) {
+        }  else if (event.getNewStep().equals("concussion")) {
 
-
-			this.selectedPerson = this.findPersonByID(selectedPerson.ID);
+        	if (event.getOldStep().equals("choose")){
+        		this.selectedPerson = this.findPersonByID(selectedPerson.ID);
+        		return "concussion";
+        	} else {
+				this.selectedPerson = this.findPersonByID(selectedPerson.ID);
+				return "finish";
+        	}
 			
-			this.membertype = new ArrayList<String>();
-			if (selectedPerson.getGenatt().get("ISPLAYER").equals("Y") && selectedPerson.getGenatt().get("ISGOALIE").equals("Y")) membertype.add("Player-Goalie");
-			if (selectedPerson.getGenatt().get("ISPLAYER").equals("Y") && !selectedPerson.getGenatt().get("ISGOALIE").equals("Y")) membertype.add("Player-Skater");
-			if (selectedPerson.getGenatt().get("ISMANAGER").equals("Y")) membertype.add("Manager");
-			if (selectedPerson.getGenatt().get("ISCOACH").equals("Y")) membertype.add("Coach");
-			this.relationship = selectedPerson.getXRelType();
+		} else if (event.getNewStep().equals("finish")) {
+
+
+			if (this.concussion){
+				
+			
+				//need to add saving the concussion confirmation
+				
+				this.selectedPerson = this.findPersonByID(selectedPerson.ID);
+				
+				this.membertype = new ArrayList<String>();
+				if (selectedPerson.getGenatt().get("ISPLAYER").equals("Y") && selectedPerson.getGenatt().get("ISGOALIE").equals("Y")) membertype.add("Player-Goalie");
+				if (selectedPerson.getGenatt().get("ISPLAYER").equals("Y") && !selectedPerson.getGenatt().get("ISGOALIE").equals("Y")) membertype.add("Player-Skater");
+				if (selectedPerson.getGenatt().get("ISMANAGER").equals("Y")) membertype.add("Manager");
+				if (selectedPerson.getGenatt().get("ISCOACH").equals("Y")) membertype.add("Coach");
+				this.relationship = selectedPerson.getXRelType();
+				
+				
+			} else {
+				
+				//this should never happen with the disabling of the next button until the 
+				//the checkbox is selected.
+				return "concussion";
+			}
 			
 		}
         return event.getNewStep();  

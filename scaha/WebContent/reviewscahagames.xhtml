@@ -43,7 +43,7 @@
 		<p:separator />
 		<p:dataTable id="scahagames" var="TempGame" value="#{reviewscahagamesBean.getTempGamedatamodel()}" selection="#{reviewscahagamesBean.selectedgame}" editable="true" editMode="cell" selectionMode="single" paginator="true" rows="10" autoupdate="false">
 	           <f:facet name="header">  
-	        	2014-2015 SCAHA GAMES
+	        	SCAHA GAMES
 	        </f:facet> 
 	         <p:column headerText="Date">  
 	            <h:outputText value="#{TempGame.getDate()}" />  

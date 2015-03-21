@@ -241,10 +241,10 @@ public class playoffsBean implements Serializable{
     					this.setRunnerup("");
     				}
     				
-    				if (this.selectedschedule>349){
+    				/*if (this.selectedschedule>349){
     					this.setChampion("");
     					this.setRunnerup("");
-    				}
+    				}*/
     				
     				String otinfo = rs.getString("otinfo");
     				String othomeaway = rs.getString("othomeaway");

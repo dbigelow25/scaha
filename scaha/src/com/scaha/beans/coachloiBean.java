@@ -18,6 +18,7 @@ import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +41,12 @@ public class coachloiBean implements Serializable, MailableObject {
 	private static String mail_reg_body = Utils.getMailTemplateFromFile("/mail/coachloireceipt.html");
 	private static String mail_reg_manager_body = Utils.getMailTemplateFromFile("/mail/managerloireceipt.html");
 	private static String sendingnote_reg_body = Utils.getMailTemplateFromFile("/mail/sendingcoachnote.html");
+	
+	@ManagedProperty(value="#{scahaBean}")
+    private ScahaBean scaha;
+	
 	transient private ResultSet rs = null;
+	
 	private List<String> selectedteams = null;
 	private List<String> selectedgirlsteams = null;
 	private List<String> cepmodulesselected = null;
@@ -88,6 +94,7 @@ public class coachloiBean implements Serializable, MailableObject {
 	private String notes = null;
 	private Boolean sendingnote = null;
 	private String origin = null;
+	private String currentyear = null;
 	
 	@PostConstruct
     public void init() {
@@ -118,6 +125,16 @@ public class coachloiBean implements Serializable, MailableObject {
     	
     	loadCoachProfile(selectedcoach);
 
+    	//need to add scaha session object
+		ValueExpression scahaexpression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{scahaBean}", Object.class );
+
+		scaha = (ScahaBean) scahaexpression.getValue( context.getELContext() );
+		
+		//need to set current year and prior year
+		String cyear = scaha.getScahaSeasonList().getCurrentSeason().getFromDate().substring(0,4);
+		this.setCurrentyear(cyear);
+		
     }
     
     public coachloiBean() {  
@@ -143,6 +160,13 @@ public class coachloiBean implements Serializable, MailableObject {
     	notes=value;
     }
     
+    public String getCurrentyear(){
+		return currentyear;
+}
+
+	public void setCurrentyear(String cyear){
+		currentyear=cyear;
+	}
     
     public Boolean getDisplaycoachcredentials() {
 		// TODO Auto-generated method stub
@@ -222,9 +246,24 @@ public class coachloiBean implements Serializable, MailableObject {
     	subject = ssubject;
     }
     
+    /**
+	 * @return the scaha
+	 */
+	public ScahaBean getScaha() {
+		return scaha;
+	}
+
+	/**
+	 * @param scaha the scaha to set
+	 */
+	public void setScaha(ScahaBean scaha) {
+		this.scaha = scaha;
+	}
+	
 	public String getTextBody() {
 		// TODO Auto-generated method stub
 		List<String> myTokens = new ArrayList<String>();
+		myTokens.add(":CURRENTYEAR:" + this.scaha.getScahaSeasonList().getCurrentSeason().getFromDate().substring(0,4));
 		myTokens.add("LOIDATE: " + this.currentdate);
 		myTokens.add("FIRSTNAME: " + this.firstname);
 		myTokens.add("LASTNAME: " + this.lastname);

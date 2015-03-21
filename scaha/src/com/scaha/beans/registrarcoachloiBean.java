@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 
 import com.gbli.connectors.ScahaDatabase;
@@ -30,6 +31,10 @@ public class registrarcoachloiBean implements Serializable {
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	
+	@ManagedProperty(value="#{scahaBean}")
+    private ScahaBean scaha;
+	
 	transient private ResultSet rs = null;
 	private List<Coach> coaches = null;
     private CoachDataModel CoachDataModel = null;
@@ -41,6 +46,7 @@ public class registrarcoachloiBean implements Serializable {
 	private String selectedcoachid = null;
 	private Integer profileid = 0;
 	private Integer clubid = 0;
+	private String currentyear = null;
 	
 	@PostConstruct
     public void init() {
@@ -59,9 +65,27 @@ public class registrarcoachloiBean implements Serializable {
         CoachDataModel = new CoachDataModel(coaches);
         this.setSelectedtabledisplay("1");
         
+        //need to add scaha session object
+		ValueExpression scahaexpression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{scahaBean}", Object.class );
+
+		scaha = (ScahaBean) scahaexpression.getValue( context.getELContext() );
+		
+		//need to set current year and prior year
+		String cyear = scaha.getScahaSeasonList().getCurrentSeason().getFromDate().substring(0,4);
+		this.setCurrentyear(cyear);
+        
         coachesDisplay(); 
     }  
     
+	public String getCurrentyear(){
+		return currentyear;
+}
+
+	public void setCurrentyear(String cyear){
+		currentyear=cyear;
+	}
+	
 	public Integer getProfid(){
     	return profileid;
     }

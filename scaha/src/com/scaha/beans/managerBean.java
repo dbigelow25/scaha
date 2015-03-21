@@ -118,7 +118,7 @@ public class managerBean implements Serializable, MailableObject {
 	private Boolean addingtournament = null;
 	private Boolean addingtournamentgame = null;
 	private Boolean addingexhibitiongame = null;
-	
+	private String currentseason = null;
 		
 	
 	@PostConstruct
@@ -137,6 +137,8 @@ public class managerBean implements Serializable, MailableObject {
         teamid = pb.getProfile().getManagerteamid();
         this.setTeamid(teamid);
         
+        //need to get the current season for display
+        this.setCurrentseason(pb.getCurrentSCAHAHockeySeason());
         
         //Load team roster
         getRoster();
@@ -260,6 +262,14 @@ public class managerBean implements Serializable, MailableObject {
 		cc = scc;
 	}
 	
+	public String getCurrenseason() {
+		// TODO Auto-generated method stub
+		return currentseason;
+	}
+	
+	public void setCurrentseason(String scc){
+		currentseason = scc;
+	}
 	
 	
 	public String getToMailAddress() {

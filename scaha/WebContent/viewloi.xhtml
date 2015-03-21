@@ -24,14 +24,14 @@
 		<ui:fragment id="edit-loi">
 		<h:form>
 			<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">
-				<p:panel id ="panel" header="SCAHA LETTER OF INTENT AND MEMBERSHIP REGISTRATION 2014-2015">
+				<p:panel id ="panel" header="SCAHA LETTER OF INTENT AND MEMBERSHIP REGISTRATION #{loiBean.getCurrentyear()}">
 					<h:panelGrid columns="2" cellpadding="5" width="50%" >
 						<f:facet name="header">
 								<h:column colspan="2"><b>Club Information</b></h:column>
 						</f:facet>	
-						<h:column><b>2014 Boys Team:</b></h:column>
+						<h:column><b>#{loiBean.getCurrentyear()}" Boys Team:</b></h:column>
 						<h:column><h:outputText value="#{loiBean.getThisYearBoysTeam()}" /></h:column>
-						<h:column><b><h:outputText value="2014 Girls Team:" rendered="#{loiBean.displaygirlteam}"/></b></h:column>
+						<h:column><b><h:outputText value="#{loiBean.getCurrentyear()}" Girls Team:" rendered="#{loiBean.displaygirlteam}"/></b></h:column>
 						<h:column ><h:outputText value="#{loiBean.getThisYearGirlsTeam()}" rendered="#{loiBean.displaygirlteam}"/></h:column>
 					</h:panelGrid>
 					<p:spacer width="10" height="10" />
@@ -64,7 +64,7 @@
 							<td><h:outputText value="#{loiBean.zip}" /></td>
 						</tr>
 						<tr>
-							<td><b>2013-2014 Club:</b></td>
+							<td><b>#{loiBean.getPrioryear()}" Club:</b></td>
 							<td colspan="2"><h:outputText value="#{loiBean.lastyearclub}" /></td>
 							<td><b>Team:</b></td>
 							<td colspan="2"><h:outputText value="#{loiBean.lastyearteam}" /></td>

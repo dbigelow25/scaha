@@ -21,17 +21,17 @@
 		<p:messages id="loicodemessage" showDetail="true" autoUpdate="true" closable="false" />
 		<ui:fragment id="edit-loi">
 			<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">
-				<p:panel id ="panel" header="SCAHA LETTER OF INTENT AND MEMBERSHIP REGISTRATION 2014-2015">
+				<p:panel id ="panel" header="SCAHA LETTER OF INTENT AND MEMBERSHIP REGISTRATION #{loiBean.getCurrentyear()}">
 					<table cellpadding="5" cellspacing="0" width="90%">
 						<tr>
 							<th colspan="2" align="center"><b>Club Information</b></th>
 						</tr>
 						<tr>
-							<td width="20%"><b>2014 Club:</b></td>
+							<td width="20%"><b><h:outputText value="#{loiBean.getCurrentyear()}"/> Club:</b></td>
 							<td align="left" colspan="5"><h:outputText value="#{loiBean.getClubName()}"/></td>
 						</tr>
 						<tr>
-							<td><b>2014 Boys Team:</b></td>
+							<td><b><h:outputText value="#{loiBean.getCurrentyear()}"/> Boys Team:</b></td>
 							<td>
 								<p:selectOneMenu value="#{loiBean.selectedteam}">
 							    	<f:selectItem itemLabel="Select One" itemValue="0"/>
@@ -41,7 +41,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td><b><h:outputText value="2014 Girls Team:" rendered="#{loiBean.displaygirlteam}"/></b></td>
+							<td><b><h:outputText value="#{loiBean.getCurrentyear()} Girls Team:" rendered="#{loiBean.displaygirlteam}"/></b></td>
 							<td>
 								<p:selectOneMenu value="#{loiBean.selectedgirlsteam}" rendered="#{loiBean.displaygirlteam}">
 							    	<f:selectItem itemLabel="Select One" itemValue="0"/>
@@ -81,7 +81,7 @@
 							<td><p:inputText id="zip" style="width:50px;" value="#{loiBean.zip}" required = "true" requiredMessage="Zip cannot be blank."/></td>
 						</tr>
 						<tr>
-							<td><b>2013-2014 Club:</b></td>
+							<td><b>#{loiBean.getPrioryear()} Club:</b></td>
 							<td colspan="2"><h:outputText value="#{loiBean.lastyearclub}" /></td>
 							<td><b>Team:</b></td>
 							<td colspan="2"><h:outputText value="#{loiBean.lastyearteam}" /></td>
@@ -138,7 +138,7 @@
 								<li>Resolution of disputes shall be in accordance with and subject to the applicable SCAHA, CAHA and USA Hockey bylaws, rules and regulations.</li>
 								<li>Any deposit paid and submitted with this Letter of Intent is non-refundable.</li>
 								<li>Any failure to comply with these conditions could subject the undersigned to immediate suspension from SCAHA subject to a hearing.</li>
-								<li>I understand that the California Amateur Hockey Association has adopted concussion-related education and awareness into their Guidebook and Rules of Play.</li>
+								<!-- <li>I understand that the California Amateur Hockey Association has adopted concussion-related education and awareness into their Guidebook and Rules of Play.</li>
 								<li>I understand the following guidelines exist and will respect them if they must be instituted with the above named player:</li>
 								<ul>
 									<li>An athlete who is suspected of sustaining a concussion or head injury in an athletic activity shall be immediately removed from the activity for the remainder of the day. Removal from play can be at the request of a coach, official, team manager, parent/guardian, or the player</li>
@@ -147,7 +147,7 @@
 								</ul>
 								<li>Should it be determined that the above named player needs to be removed from play, I/we understand that the protocol outlined herein shall be followed for the safety of the player. Further, I/we understand that the above named player will receive concussion education during the course of the season</li>
 								<li>I understand that if a suspected concussion has occurred and protocol has been enacted for the above named player, there is no review period or negotiation as to the course of action and return to play outside of the recommendations of the licensed healthcare provider that I/we have selected to treat the above named player.</li>
-								<li>I understand that if/we suspect the above named player has experienced a concussion or exhibits behavior that suggests concussion-like symptoms, I/we have the authority to remove the player from play and begin the concussion protocol with a licensed healthcare provider of my/your selection.</li>
+								<li>I understand that if/we suspect the above named player has experienced a concussion or exhibits behavior that suggests concussion-like symptoms, I/we have the authority to remove the player from play and begin the concussion protocol with a licensed healthcare provider of my/your selection.</li>-->
 							</ul>
 						</h:column>
 			    	</h:panelGrid>

@@ -23,14 +23,14 @@
 		<ui:fragment id="edit-loi">
 			<p:fieldset id="fs1" toggleable="false" toggleSpeed="500">
 		
-				<p:panel id ="panel" header="SCAHA COACH/MANAGER LETTER OF INTENT AND MEMBERSHIP REGISTRATION 2014-2015">
+				<p:panel id ="panel" header="SCAHA COACH/MANAGER LETTER OF INTENT AND MEMBERSHIP REGISTRATION #{coachloiBean.getCurrentyear()}">
 					<p:fieldset>
 					<table cellpadding="5" cellspacing="0" width="90%">
 						<tr>
 							<th colspan="6" align="center"><b>Club Information</b></th>
 						</tr>
 						<tr>
-							<td valign="top"><b>2014 Boys Team(s):</b></td>
+							<td valign="top"><b>#{coachloiBean.getCurrentyear()} Boys Team(s):</b></td>
 							<style type="text/css">
 								.datalist-noborder .ui-widget-content {
 								border: none;
@@ -43,7 +43,7 @@
 								</p:dataList>
 								</div>
 							</td>
-							<td valign="top"><b>2014 Girls Team(s):</b></td>
+							<td valign="top"><b>#{coachloiBean.getCurrentyear()} Girls Team(s):</b></td>
 							<td colspan="2" align="left" valign="top">
 								<div class="datalist-noborder">
 								<p:dataList value="#{coachloiBean.girlsteams}" var="team" >

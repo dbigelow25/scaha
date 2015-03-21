@@ -48,7 +48,7 @@ public class lahoaBean implements Serializable  {
 		 int idclub = 0;
 		 try {
 			 PreparedStatement ps = db.prepareStatement("call scaha.getlivegamesforLahoa(?)");
-			 ps.setString(1,"SCAHA-1415");
+			 ps.setString(1,scaha.getScahaSeasonList().getCurrentSeason().getTag());
 			 ResultSet rs = ps.executeQuery();
 			 setMydata(ReturnDataResultSet.NewReturnDataResultSetFactory(rs));
 			 rs.close();

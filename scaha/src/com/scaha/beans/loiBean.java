@@ -18,6 +18,7 @@ import javax.annotation.PostConstruct;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +43,12 @@ public class loiBean implements Serializable, MailableObject {
 	private static String girlsmail_reg_body = Utils.getMailTemplateFromFile("/mail/girlsloireceipt.html");
 	private static String playerupmail_reg_body = Utils.getMailTemplateFromFile("/mail/playeruploireceipt.html");
 	private static String sendingnote_reg_body = Utils.getMailTemplateFromFile("/mail/sendingnote.html");
+	
+	@ManagedProperty(value="#{scahaBean}")
+    private ScahaBean scaha;
+	
 	transient private ResultSet rs = null;
+	
 	private String selectedteam = null;
 	private String selectedgirlsteam = null;
 	private Integer selectedplayer = 0;
@@ -79,6 +85,8 @@ public class loiBean implements Serializable, MailableObject {
 	private String notes = null;
 	private Boolean sendingnote = null;
 	private Integer rosteridforconfirm = null;
+	private String currentyear = null;
+	private String prioryear = null;
 	
 	@PostConstruct
     public void init() {
@@ -112,6 +120,19 @@ public class loiBean implements Serializable, MailableObject {
 	      {
 	  		rosteridforconfirm = Integer.parseInt(hsr.getParameter("rid").toString());
 	      }
+		
+		//need to add scaha session object
+		ValueExpression scahaexpression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{scahaBean}", Object.class );
+
+		scaha = (ScahaBean) scahaexpression.getValue( context.getELContext() );
+		
+		//need to set current year and prior year
+		String cyear = scaha.getScahaSeasonList().getCurrentSeason().getFromDate().substring(0,4);
+		this.setCurrentyear(cyear);
+		
+		Integer pyear = Integer.parseInt(cyear) - 1;
+		this.setPrioryear(pyear.toString());
     }
 	
 	
@@ -137,7 +158,24 @@ public class loiBean implements Serializable, MailableObject {
     }
     
 	
-	public String getNotes(){
+    public String getCurrentyear(){
+    		return currentyear;
+    }
+    
+    public void setCurrentyear(String cyear){
+    	currentyear=cyear;
+    }
+    
+    public String getPrioryear(){
+			return prioryear;
+	}
+	
+	public void setPrioryear(String cyear){
+		prioryear=cyear;
+	}
+    
+    
+    public String getNotes(){
     	return notes;
     }
     
@@ -186,10 +224,24 @@ public class loiBean implements Serializable, MailableObject {
     public void setSubject(String ssubject){
     	subject = ssubject;
     }
-    
+    /**
+	 * @return the scaha
+	 */
+	public ScahaBean getScaha() {
+		return scaha;
+	}
+
+	/**
+	 * @param scaha the scaha to set
+	 */
+	public void setScaha(ScahaBean scaha) {
+		this.scaha = scaha;
+	}
+	
     public String getTextBody() {
 		// TODO Auto-generated method stub
 		List<String> myTokens = new ArrayList<String>();
+		myTokens.add(":CURRENTYEAR:" + this.scaha.getScahaSeasonList().getCurrentSeason().getFromDate().substring(0,4));
 		myTokens.add("LOIDATE:" + this.currentdate);
 		myTokens.add("FIRSTNAME:" + this.firstname);
 		myTokens.add("LASTNAME:" + this.lastname);

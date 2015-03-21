@@ -72,7 +72,7 @@
 					<p:messages id="scahagamesmessages" escape="true" showDetail="true" autoUpdate="true" closable="false" />
 					<p:dataTable id="scahagames" var="TempGame" value="#{managerBean.getTempGamedatamodel()}" selection="#{managerBean.selectedgame}" selectionMode="single" paginator="true" rows="10" autoupdate="false">
 			            <f:facet name="header">  
-				        	2014-2015 SCAHA GAMES
+				        	#{profileBean.getCurrentSCAHAHockeySeason().toUpperCase()} SCAHA GAMES
 				        </f:facet> 
 				         <p:column headerText="Date">  
 				            <h:outputText value="#{TempGame.getDate()}" />  
@@ -167,7 +167,7 @@
 					<br></br>
 					<p:dataTable id="tournaments" var="tournament" value="#{managerBean.getTournamentdatamodel()}" selection="#{managerBean.selectedtournament}" rows="5" autoupdate="false">
 			            <f:facet name="header">  
-				        	2014-2015 TOURNAMENTS PLAYING IN
+				        	#{profileBean.getCurrentSCAHAHockeySeason().toUpperCase()} TOURNAMENTS PLAYING IN
 				        </f:facet> 
 				         <p:column headerText="Tournament Name">  
 				            <h:outputText value="#{tournament.getTournamentname()}" />  
@@ -240,7 +240,7 @@
 					<br></br>
 					<p:dataTable id="tournamentgames" var="tournamentgame" value="#{managerBean.getTournamentgamedatamodel()}" selection="#{managerBean.selectedtournamentgame}" paginator="true" rows="5" autoupdate="false">
 			            <f:facet name="header">  
-				        	2014-2015 TOURNAMENT GAMES
+				        	#{profileBean.getCurrentSCAHAHockeySeason().toUpperCase()} TOURNAMENT GAMES
 				        </f:facet> 
 				         <p:column headerText="Tournament Name">  
 				            <h:outputText value="#{tournamentgame.getTournamentname()}" />  
@@ -311,7 +311,7 @@
 					<br></br>
 					<p:dataTable id="exhibitiongames" var="exhibitiongame" value="#{managerBean.getExhibitiongamedatamodel()}" selection="#{managerBean.selectedexhibitiongame}" paginator="true" rows="5" autoupdate="false">
 			            <f:facet name="header">  
-				        	2014-2015 Exhibition GAMES
+				        	#{profileBean.getCurrentSCAHAHockeySeason().toUpperCase()} EXHIBITION GAMES
 				        </f:facet> 
 				         <p:column headerText="Date">  
 				            <h:outputText value="#{exhibitiongame.getDate()}" />  

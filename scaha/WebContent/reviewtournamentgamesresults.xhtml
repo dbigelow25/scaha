@@ -30,7 +30,7 @@
 						
 					<p:dataTable id="tournamentgames" var="tournamentgame" value="#{reviewtournamentresultsBean.getTournamentgamedatamodel()}" selection="#{reviewtournamentresultsBean.selectedtournamentgame}" paginator="true" rows="10" autoupdate="false">
 			            <f:facet name="header">  
-				        	2014-2015 TOURNAMENT GAMES
+				        	TOURNAMENT GAMES
 				        </f:facet> 
 				        <p:column filterBy="requestingteam" filterMatchMode="contains" filterStyle="width:100px" headerText="Requesting Team">  
 				            <h:outputText value="#{tournamentgame.getRequestingteam()}" />  

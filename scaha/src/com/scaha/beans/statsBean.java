@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 
 import org.primefaces.model.LazyDataModel;
@@ -28,6 +29,9 @@ public class statsBean implements Serializable{
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 
+	@ManagedProperty(value="#{scahaBean}")
+    private ScahaBean scaha;
+	
 	transient private ResultSet rs = null;
 	//list for divisions to select from
 	private List<Division> divisions = null;
@@ -54,7 +58,9 @@ public class statsBean implements Serializable{
 	    this.selectedcount="25";
 	    this.selectedgametype="2";
     	this.selecteddivision="0";
-    	this.selectedyear="2014";
+    	this.selectedyear=scaha.getScahaSeasonList().getCurrentSeason().getFromDate().substring(0,4);
+    			
+    			
     	
     	//load divisions to select from
     	getListofDivisions();
@@ -412,6 +418,20 @@ public class statsBean implements Serializable{
 	
 	public void setSelectedyear(String value){
 		selectedyear=value;
+	}
+	
+	/**
+	 * @return the scaha
+	 */
+	public ScahaBean getScaha() {
+		return scaha;
+	}
+
+	/**
+	 * @param scaha the scaha to set
+	 */
+	public void setScaha(ScahaBean scaha) {
+		this.scaha = scaha;
 	}
 	
 	public void loadCompletePlayerStats(String sortby){

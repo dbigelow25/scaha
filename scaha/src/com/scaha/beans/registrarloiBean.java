@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 
 import com.gbli.connectors.ScahaDatabase;
@@ -30,7 +31,12 @@ public class registrarloiBean implements Serializable {
 	// Class Level Variables
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
+	
+	@ManagedProperty(value="#{scahaBean}")
+    private ScahaBean scaha;
+	
 	transient private ResultSet rs = null;
+	
 	private List<Player> players = null;
     private PlayerDataModel PlayerDataModel = null;
     private Player selectedplayer = null;
@@ -41,6 +47,8 @@ public class registrarloiBean implements Serializable {
 	private String selectedplayerid = null;
 	private Integer clubid = 0;
 	private Integer profileid = 0;
+	private String currentyear = null;
+	private String prioryear = null;
 	
 	
     public registrarloiBean() {  
@@ -58,6 +66,20 @@ public class registrarloiBean implements Serializable {
     	players = new ArrayList<Player>();  
         PlayerDataModel = new PlayerDataModel(players);
         this.setSelectedtabledisplay("1");
+        
+      //need to add scaha session object
+  		ValueExpression scahaexpression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+  				"#{scahaBean}", Object.class );
+
+  		scaha = (ScahaBean) scahaexpression.getValue( context.getELContext() );
+  		
+  		//need to set current year and prior year
+  		String cyear = scaha.getScahaSeasonList().getCurrentSeason().getFromDate().substring(0,4);
+  		this.setCurrentyear(cyear);
+  		
+  		Integer pyear = Integer.parseInt(cyear) - 1;
+  		this.setPrioryear(pyear.toString());
+        
         
         playersDisplay(); 
     }  
@@ -78,7 +100,23 @@ public class registrarloiBean implements Serializable {
     	clubid = idclub;
     }
     
-    public String getSelectedteam(){
+    public String getCurrentyear(){
+		return currentyear;
+	}
+	
+	public void setCurrentyear(String cyear){
+		currentyear=cyear;
+	}
+	
+	public String getPrioryear(){
+			return prioryear;
+	}
+	
+	public void setPrioryear(String cyear){
+		prioryear=cyear;
+	}
+    
+	public String getSelectedteam(){
     	return selectedteam;
     }
     
