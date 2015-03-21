@@ -155,6 +155,27 @@ public class ScahaMember extends ScahaObject implements Serializable {
 
 	}
 	
-
+	/**
+	 *  This guy really just cranks out a membership record.
+	 *  The membership object should really never be updated progromatically.
+	 *  Because the number has to be unique.. we need to:
+	 *  
+	 *  1) Lock the table
+	 *  2) Genereate the Unique Number (by gen and check against DB)
+	 *  3) then create the table
+	 *  4) The unlock the table.
+	 */
+	public void logConcussion(ScahaDatabase _db, Integer profileid, Integer personid) throws SQLException {
+	
+		CallableStatement cs = _db.prepareCall("call scaha.logconcussionacknowledgement(?,?)");
+		
+		//we need to track who confirmed the concussion policy and who did they confirm it for.
+		cs.setInt("inprofileid", profileid);
+		cs.setInt("inpersonid",personid);			
+		cs.execute();
+		
+		cs.close();
+		_db.cleanup();
+	}
 }
 

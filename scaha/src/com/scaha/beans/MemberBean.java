@@ -465,6 +465,8 @@ public class MemberBean implements Serializable, MailableObject {
 			//
 			tper.setFam(new Family(db, tper));
 
+			//now lets log confirmation of concussion policy
+			mem.logConcussion(db, pro.ID, per.ID);
 			
 			this.buildMailBody(db, tper, per, usar, mem);
 			SendMailSSL mail = new SendMailSSL(this);
