@@ -37,15 +37,53 @@
 						<tr>
 							<td valign="top"><b>#{coachloiBean.getCurrentyear()} Boys Team(s):</b></td>
 							<td colspan="2">
-								<p:selectManyMenu showCheckbox="true" value="#{coachloiBean.selectedteams}" style="width:285px;height:125px">
+								<p:dataTable id="boysteamsgrid" var="team" value="#{coachloiBean.getBoysteamdatamodel()}" selection="#{coachloiBean.selectedteam}"  editable="true" editMode="cell" paginator="true" >
+									<p:column headerText="team" >  
+						               	<h:outputText value="#{team.teamname}" />  
+						            </p:column>  
+							        <p:column headerText="Role">  
+							        	<p:cellEditor>
+							        		<f:facet name="output"><h:outputText value="#{team.coachrole}" /></f:facet>
+								        	<f:facet name="input" >
+									        	<p:selectOneMenu  style="width: 100%;" value="#{team.coachrole}">
+											    	<f:selectItem itemLabel="No Role" itemValue="No Role"/>
+											    	<f:selectItem itemLabel="Head Coach" itemValue="Head Coach"/>
+											    	<f:selectItem itemLabel="Coach" itemValue="Coach"/>
+											    	<f:selectItem itemLabel="Assistant Coach/Manager" itemValue="Assistant Coach/Manager"/>
+											    	<f:selectItem itemLabel="Manager" itemValue="Manager"/>
+											    </p:selectOneMenu>
+											 </f:facet>
+									    </p:cellEditor>
+							        </p:column>
+		        				</p:dataTable>
+								<!-- <p:selectManyMenu showCheckbox="true" value="#{coachloiBean.selectedteams}" style="width:285px;height:125px">
 							    	<f:selectItems value="#{coachloiBean.getListofTeams('M')}" var="team" itemLabel="#{team.getTeamname()}" itemValue="#{team.getIdteam()}"/>
-							    </p:selectManyMenu>
+							    </p:selectManyMenu>   -->
 							</td>
 							<td valign="top"><b>#{coachloiBean.getCurrentyear()} Girls Team(s):</b></td>
 							<td colspan="2" align="left">
-								<p:selectManyMenu value="#{coachloiBean.selectedgirlsteams}" showCheckbox="true" style="width:285px;height:125px">
+								<p:dataTable id="girlsteamsgrid" var="team" value="#{coachloiBean.getGirlsteamdatamodel()}" selection="#{coachloiBean.selectedteam}"  editable="true" editMode="cell" paginator="true" rows="5">
+									<p:column headerText="team" >  
+						               	<h:outputText value="#{team.teamname}" />  
+						            </p:column>  
+							        <p:column headerText="Role">  
+							        	<p:cellEditor>
+							        		<f:facet name="output"><h:outputText value="#{team.coachrole}" /></f:facet>
+								        	<f:facet name="input" >
+									        	<p:selectOneMenu  style="width: 100%;" value="#{team.coachrole}">
+											    	<f:selectItem itemLabel="No Role" itemValue="No Role"/>
+											    	<f:selectItem itemLabel="Head Coach" itemValue="Head Coach"/>
+											    	<f:selectItem itemLabel="Coach" itemValue="Coach"/>
+											    	<f:selectItem itemLabel="Assistant Coach/Manager" itemValue="Assistant Coach/Manager"/>
+											    	<f:selectItem itemLabel="Manager" itemValue="Manager"/>
+											    </p:selectOneMenu>
+											 </f:facet>
+									    </p:cellEditor>
+							        </p:column>
+		        				</p:dataTable>
+								<!-- <p:selectManyMenu value="#{coachloiBean.selectedgirlsteams}" showCheckbox="true" style="width:285px;height:125px">
 							    	<f:selectItems value="#{coachloiBean.getListofTeams('F')}" var="team" itemLabel="#{team.getTeamname()}" itemValue="#{team.getIdteam()}"/>
-							    </p:selectManyMenu>
+							    </p:selectManyMenu> -->
 							</td>
 						</tr>
 					
@@ -94,7 +132,7 @@
 						<tr>
 							<th colspan="6" align="center"><b>Coach/Manager Credentials</b></th>
 						</tr>
-						<tr>
+						<!-- <tr>
 							<td width="20%"><b>Team Role:</b></td>
 							<td align="left" colspan="5">
 								<p:selectOneMenu value="#{coachloiBean.coachrole}">
@@ -106,7 +144,7 @@
 							    	<p:ajax process="@this" listener="#{coachloiBean.checkRole()}" event="change" update="coachcredentials"  />
 							    </p:selectOneMenu>
 							</td>
-						</tr>
+						</tr> -->
 						<tr >
 							<td><b><h:outputText value="CEP#:" rendered="#{coachloiBean.displaycoachcredentials}"/></b></td>
 							<td align="left"><p:inputText id="cepnumber" style="width:100px;" value="#{coachloiBean.cepnumber}" rendered="#{coachloiBean.displaycoachcredentials}"/></td>

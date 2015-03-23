@@ -24,10 +24,22 @@ public class Team extends ScahaObject implements Serializable {
 	private String totalplayercount = null;
 	private String totalcoachescount = null;
 	
+	//this is used for assigning coach role to teams on the coach loi process.
+	private String coachrole = null;
+	
 	public Team (String sName, String teamid){ 
 		teamname = sName;
 		IDteam = teamid;
 	}
+	
+	public String getCoachrole(){
+		return coachrole;
+	}
+	
+	public void setCoachrole(String sName){
+		coachrole = sName;
+	}
+	
 	
 	public String getTotalcoachescount(){
 		return totalcoachescount;

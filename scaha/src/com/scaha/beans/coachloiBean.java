@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -27,8 +26,11 @@ import com.gbli.common.SendMailSSL;
 import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
+import com.scaha.objects.CalendarItem;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Team;
+import com.scaha.objects.TeamDataModel;
+import com.scaha.objects.TempGameDataModel;
 
 //import com.gbli.common.SendMailSSL;
 
@@ -95,6 +97,11 @@ public class coachloiBean implements Serializable, MailableObject {
 	private Boolean sendingnote = null;
 	private String origin = null;
 	private String currentyear = null;
+	private Team selectedteam = null;
+	
+	//these are used for creating the team select role tables.
+	private TeamDataModel boysteamdatamodel = null;
+	private TeamDataModel girlsteamdatamodel = null;
 	
 	@PostConstruct
     public void init() {
@@ -135,6 +142,14 @@ public class coachloiBean implements Serializable, MailableObject {
 		String cyear = scaha.getScahaSeasonList().getCurrentSeason().getFromDate().substring(0,4);
 		this.setCurrentyear(cyear);
 		
+		//lets load the list of boys and girls teams from whic hto select from
+		this.getListofTeams("M");
+		boysteamdatamodel = new TeamDataModel(getTeams());
+		
+		this.getListofTeams("F");
+		girlsteamdatamodel = new TeamDataModel(getTeams());
+		
+		
     }
     
     public coachloiBean() {  
@@ -142,6 +157,22 @@ public class coachloiBean implements Serializable, MailableObject {
     	
     	//doing anything else right here
     }  
+    
+    public TeamDataModel getBoysteamdatamodel(){
+    	return boysteamdatamodel;
+    }
+    
+    public void setBoysteamdatamodel(TeamDataModel odatamodel){
+    	boysteamdatamodel = odatamodel;
+    }
+    
+    public TeamDataModel getGirlsteamdatamodel(){
+    	return girlsteamdatamodel;
+    }
+    
+    public void setGirlsteamdatamodel(TeamDataModel odatamodel){
+    	girlsteamdatamodel = odatamodel;
+    }
     
     public Boolean getSendingnote(){
     	return sendingnote;
@@ -168,6 +199,14 @@ public class coachloiBean implements Serializable, MailableObject {
 		currentyear=cyear;
 	}
     
+	public Team getSelectedteam(){
+    	return selectedteam;
+    }
+    
+    public void setSelectedteam(Team name){
+    	selectedteam=name;
+    }
+	
     public Boolean getDisplaycoachcredentials() {
 		// TODO Auto-generated method stub
 		return displaycoachcredentials;
@@ -616,7 +655,7 @@ public class coachloiBean implements Serializable, MailableObject {
 		selectedgirlsteams = selectedTeams;
 	}
 	
-	public List<Team> getListofTeams(String gender){
+	public void getListofTeams(String gender){
 		List<Team> templist = new ArrayList<Team>();
 		
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
@@ -642,6 +681,7 @@ public class coachloiBean implements Serializable, MailableObject {
         				String teamname = rs.getString("teamname");
         				
         				Team team = new Team(teamname,idteam);
+        				team.setCoachrole("No Role");
         				templist.add(team);
     				}
     				LOGGER.info("We have results for team list by club");
@@ -666,7 +706,7 @@ public class coachloiBean implements Serializable, MailableObject {
 		
     	setTeams(templist);
 		
-		return getTeams();
+		//return templist;
 	}
 	
 	public List<Team> getTeams(){
@@ -803,18 +843,18 @@ public class coachloiBean implements Serializable, MailableObject {
     				rs = db.getResultSet();
     				
     				while (rs.next()) {
-    					coachrole = rs.getString("rostertype");
+    					String newcoachrole = rs.getString("rostertype");
     					teamname = rs.getString("teamname");
     					if (displayselectedteam==null){
-    						displayselectedteam = teamname;
+    						displayselectedteam = teamname + " - " + newcoachrole;
     					} else {
     						if (displayselectedteam.equals("")){
-	    						displayselectedteam = teamname;
+	    						displayselectedteam = teamname + " - " + newcoachrole;
 	    					} else {
-	    						displayselectedteam = displayselectedteam + "," + teamname;
+	    						displayselectedteam = displayselectedteam + "," + teamname + " - " + newcoachrole;
 	    					}
     					}
-    					tempteams.add(teamname);
+    					tempteams.add(teamname + ", " + newcoachrole);
     				}
     				LOGGER.info("We have results for teams for the coach");
     			}
@@ -839,20 +879,18 @@ public class coachloiBean implements Serializable, MailableObject {
     				rs = db.getResultSet();
     				
     				while (rs.next()) {
+    					String newcoachrole = rs.getString("rostertype");
     					teamname = rs.getString("teamname");
-    					if (displayselectedgirlsteam==null){
-    						displayselectedgirlsteam = teamname;
+    					if (displayselectedteam==null){
+    						displayselectedteam = teamname + " - " + newcoachrole;
     					} else {
-    						if (displayselectedgirlsteam.equals("")){
-    							displayselectedgirlsteam = teamname;
+    						if (displayselectedteam.equals("")){
+	    						displayselectedteam = teamname + " - " + newcoachrole;
 	    					} else {
-	    						displayselectedgirlsteam = displayselectedgirlsteam + "," + teamname;
+	    						displayselectedteam = displayselectedteam + "," + teamname + " - " + newcoachrole;
 	    					}
     					}
-    					
-    					
-    					
-    					tempgirlteams.add(teamname);
+    					tempgirlteams.add(teamname + ", " + newcoachrole);
     				}
     				LOGGER.info("We have results for teams for the coach");
     			}
@@ -905,7 +943,7 @@ public class coachloiBean implements Serializable, MailableObject {
     				while (rs.next()) {
     					resultcount = rs.getInt("idmember");
     				}
-    				LOGGER.info("We have player up code validation results for player details by player id");
+    				LOGGER.info("We have coach season pass code validation results for coach details by coach id");
     			}
     		    rs.close();
     		    db.cleanup();
@@ -924,57 +962,134 @@ public class coachloiBean implements Serializable, MailableObject {
 	    		    rs = cs.executeQuery();
 	    			rs.close();
 	    			
-	    			if (!this.coachrole.equals("Manager")) {
-	    				//need to save coaches screening and cep stuff
-		    			LOGGER.info("updating coach record");
-		 				cs = db.prepareCall("CALL scaha.updateCoach(?,?,?,?,?,?,?,?,?,?,?,?)");
-		    		    cs.setInt("coachid", this.selectedcoach);
-		    		    cs.setString("screenexpires", this.screeningexpires);
-		    		    cs.setString("cepnum", this.cepnumber);
-		    		    cs.setString("levelcep", this.ceplevel.toString());
-		    		    cs.setString("cepexpire", this.cepexpires);
-		    		    
-		    		    //need to set values for modules
-		    		    Integer u8 = 0;
-		    		    Integer u10 = 0;
-		    		    Integer u12 = 0;
-		    		    Integer u14 = 0;
-		    		    Integer u18 = 0;
-		    		    Integer ugirls = 0;
-		    		    		
-		    		    for (int i = 0; i < this.cepmodulesselected.size(); i++) {
-		    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("8U")){
-		    		    		u8 = 1;
-		    		    	}
-		    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("10U")){
-		    		    		u10 = 1;
-		    		    	}
-		    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("12U")){
-		    		    		u12 = 1;
-		    		    	}
-		    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("14U")){
-		    		    		u14 = 1;
-		    		    	}
-		    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("18U")){
-		    		    		u18 = 1;
-		    		    	}
-		    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("Girls")){
-		    		    		ugirls = 1;
-		    		    	}
-						}
-		    		    
-		    		    cs.setInt("u8", u8);
-		    		    cs.setInt("u10", u10);
-		    		    cs.setInt("u12", u12);
-		    		    cs.setInt("u14", u14);
-		    		    cs.setInt("u18", u18);
-		    		    cs.setInt("ugirls", ugirls);
-		    		    cs.setInt("insafesport", this.safesport);
-		    		    this.setDisplaysafesport(this.safesport.toString());
-		    		    rs = cs.executeQuery();
-		    			rs.close();
+	    			//need to add a roster record for each team a role is assigned.  If No role is assigned then we ignore that team
+	    			//if any of the team have a role of manager or assistant coach/manager call the update manager
+	    			cs = db.prepareCall("CALL scaha.addCoachRoster(?,?,?,?)");
+	    			
+	    			//need to add to the coach roster table for each boys team
+	    			for(Team team : this.boysteamdatamodel) {  
+	    				if (!team.getCoachrole().equals("No Role")){
+    						LOGGER.info("updating coach roster record for:" + team.getIdteam());
+    						cs.setInt("ipersonid", this.selectedcoach);
+    		    		    cs.setInt("iteamid", Integer.parseInt(team.getIdteam()));
+    		    		    cs.setInt("setyear", 2014);
+    		    		    cs.setString("inrostertype", team.getCoachrole());
+    		    		    rs = cs.executeQuery();
+    		    		    rs.close();
+    		    		    
+    		    		    if (this.listofboysteams==null){
+	    						this.listofboysteams = team.getTeamname() + "-" + team.getCoachrole();
+	    					} else {
+	    						this.listofboysteams = this.listofboysteams + "<br>" + team.getTeamname() + "-" + team.getCoachrole();
+	    					}
+    		    		    
+    		    		    //not sure if we need to iterate through recordset anymore for retrieving team name since we have in the team object.
+    		    		    /*if (rs != null){
+    		    				while (rs.next()) {
+    		    					if (this.listofboysteams==null){
+    		    						this.listofboysteams = rs.getString("teamname");
+    		    					} else {
+    		    						this.listofboysteams = this.listofboysteams + "<br>" + rs.getString("teamname");
+    		    					}
+    		    				}
+    		    				LOGGER.info("We have player up code validation results for player details by player id");
+    		    			}*/
+	    		    		
+    		    		    
+    		    		    //now lets set the coach/manager flag.  If they are a manager we will only add the 
+    		    		    //safesport and caha screening values, if not we add all.
+    		    		    if (team.getCoachrole().equals("Manager")){
+    		    		    	this.coachrole="Manager";
+    		    		    }
+	    				}
+	    			} 
+	    			
+	    			//need to add to the coach roster table for each boys team
+	    			for(Team team : this.girlsteamdatamodel) {  
+	    				if (!team.getCoachrole().equals("No Role")){
+	    					LOGGER.info("updating coach roster record for:" + team.getIdteam());
+    						cs.setInt("ipersonid", this.selectedcoach);
+    		    		    cs.setInt("iteamid", Integer.parseInt(team.getIdteam()));
+    		    		    cs.setInt("setyear", 2014);
+    		    		    cs.setString("inrostertype", team.getCoachrole());
+    		    		    rs = cs.executeQuery();
+    		    		    rs.close();
+    		    		    
+    		    		    if (this.listofgirlsteams==null){
+	    						this.listofgirlsteams = team.getTeamname();
+	    					} else {
+	    						this.listofgirlsteams = this.listofgirlsteams + "<br>" + team.getTeamname();
+	    					}
+    		    		    
+    		    		    //not sure if we need to iterate through recordset anymore for retrieving team name since we have in the team object.
+    		    		    /*if (rs != null){
+    		    				while (rs.next()) {
+    		    					if (this.listofboysteams==null){
+    		    						this.listofboysteams = rs.getString("teamname");
+    		    					} else {
+    		    						this.listofboysteams = this.listofboysteams + "<br>" + rs.getString("teamname");
+    		    					}
+    		    				}
+    		    				LOGGER.info("We have player up code validation results for player details by player id");
+    		    			}*/
+	    		    		
+    		    		    
+    		    		    
+	    				}
+	    			}
+	    			
+	    			//we don't need to differentiate anymore.
+	    			//if (!this.coachrole.equals("Manager")) {
+    				//need to save coaches screening and cep stuff
+	    			LOGGER.info("updating coach record");
+	 				cs = db.prepareCall("CALL scaha.updateCoach(?,?,?,?,?,?,?,?,?,?,?,?)");
+	    		    cs.setInt("coachid", this.selectedcoach);
+	    		    cs.setString("screenexpires", this.screeningexpires);
+	    		    cs.setString("cepnum", this.cepnumber);
+	    		    cs.setString("levelcep", this.ceplevel.toString());
+	    		    cs.setString("cepexpire", this.cepexpires);
+	    		    
+	    		    //need to set values for modules
+	    		    Integer u8 = 0;
+	    		    Integer u10 = 0;
+	    		    Integer u12 = 0;
+	    		    Integer u14 = 0;
+	    		    Integer u18 = 0;
+	    		    Integer ugirls = 0;
+	    		    		
+	    		    for (int i = 0; i < this.cepmodulesselected.size(); i++) {
+	    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("8U")){
+	    		    		u8 = 1;
+	    		    	}
+	    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("10U")){
+	    		    		u10 = 1;
+	    		    	}
+	    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("12U")){
+	    		    		u12 = 1;
+	    		    	}
+	    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("14U")){
+	    		    		u14 = 1;
+	    		    	}
+	    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("18U")){
+	    		    		u18 = 1;
+	    		    	}
+	    		    	if (this.cepmodulesselected.get(i).equalsIgnoreCase("Girls")){
+	    		    		ugirls = 1;
+	    		    	}
+					}
+	    		    
+	    		    cs.setInt("u8", u8);
+	    		    cs.setInt("u10", u10);
+	    		    cs.setInt("u12", u12);
+	    		    cs.setInt("u14", u14);
+	    		    cs.setInt("u18", u18);
+	    		    cs.setInt("ugirls", ugirls);
+	    		    cs.setInt("insafesport", this.safesport);
+	    		    this.setDisplaysafesport(this.safesport.toString());
+	    		    rs = cs.executeQuery();
+	    			rs.close();
 		    			
-	    			} else {
+	    			/*} else {
 	    				cs = db.prepareCall("CALL scaha.updateCoachManager(?,?,?)");
 		    		    cs.setInt("coachid", this.selectedcoach);
 		    		    cs.setString("screenexpires", this.screeningexpires);
@@ -982,10 +1097,11 @@ public class coachloiBean implements Serializable, MailableObject {
 		    		    this.setDisplaysafesport(this.safesport.toString());
 		    		    rs = cs.executeQuery();
 		    			rs.close();
-		    		}
+		    			cs.close();
+		    		}*/
 	    			
 	    			
-	    		    cs = db.prepareCall("CALL scaha.addCoachRoster(?,?,?,?)");
+	    		    /*cs = db.prepareCall("CALL scaha.addCoachRoster(?,?,?,?)");
 	    		    //need to add to the coach roster table for each boys team
 	    			for (int i = 0; i < this.selectedteams.size(); i++) {
 	    		    	LOGGER.info("updating coach roster record for:" + this.selectedteams.get(i));
@@ -1031,7 +1147,7 @@ public class coachloiBean implements Serializable, MailableObject {
 		    			}
 		    		}
 	    			rs.close();
-	    		    
+	    		    */
 	    			to = "";
 	    			LOGGER.info("Sending email to club registrar, family, and scaha registrar");
 	    			cs = db.prepareCall("CALL scaha.getClubRegistrarEmail(?)");
@@ -1293,11 +1409,13 @@ public class coachloiBean implements Serializable, MailableObject {
 	
 	public void checkRole(){
 		//need to set coach credential fields to hide when manager is selected.  For all others display.
-		if (this.coachrole.equals("Manager")){
+		this.displaycoachcredentials=false;
+		
+		/*if (this.coachrole.equals("Manager")){
 			this.displaycoachcredentials=false;
 		}else {
 			this.displaycoachcredentials=true;
-		}
+		}*/
 	}
 	
 	public void SendNote(){
