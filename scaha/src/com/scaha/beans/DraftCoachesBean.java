@@ -183,6 +183,64 @@ public class DraftCoachesBean implements Serializable {
     }
 
     
+  //retrieves list of coaches for adding to teams after they have been loid.  To return in the results they must have 
+    //been loid previously
+    public ResultDataModel loidcoachSearch(){
+    
+    	LOGGER.info("************WE HAVE A REQUEST TO RUN COACH SEARCH ******************");
+    	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	List<Result> tempresult = new ArrayList<Result>();
+    	
+    	try{
+			Vector<String> v = new Vector<String>();
+			v.add(this.searchcriteria);
+			db.getData("CALL scaha.coachloidsearch(?)", v);
+			ResultSet rs = db.getResultSet();
+				
+			while (rs.next()) {
+				String idperson = rs.getString("idperson");
+				String coachname = rs.getString("fname") + " " + db.getResultSet().getString("lname");
+				String address = rs.getString("address");
+				String city = db.getResultSet().getString("city");
+				String state = db.getResultSet().getString("state");
+				String zip = db.getResultSet().getString("zipcode");
+    				
+				if (address == null){
+					address = "";
+				}
+				if (city != null){
+					address = address + ", " + city;
+				}
+				if (state != null){
+					address = address + ", " + state;
+				}
+				if (zip != null){
+					address = address + " " + zip;
+				}
+    				
+				Result res = new Result("",idperson,address,"");
+				res.setCoachname(coachname);
+				res.setIdcoach(idperson);
+				tempresult.add(res);
+			}
+				
+			LOGGER.info("We have results for search criteria " + this.searchcriteria);
+			rs.close();
+
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN Searching FOR " + this.searchcriteria);
+    		e.printStackTrace();
+    	} finally {
+
+    		db.free();
+    	}
+    	
+    	listofcoaches = new ResultDataModel(tempresult);
+    	
+    	return listofcoaches;
+    }
+    
     //Generates the loi for family to confirm info and add registration code.  
     //If player is on delinquency or has previously loi'd message will be displayed.
     public void generateLOI(){
@@ -252,4 +310,21 @@ public class DraftCoachesBean implements Serializable {
 	public void setListofcoaches(ResultDataModel listofcoaches) {
 		this.listofcoaches = listofcoaches;
 	}
+	
+	//Generates the loi for family to confirm info and add registration code.  
+    //If player is on delinquency or has previously loi'd message will be displayed.
+    public void AddtoTeam(){
+    	Result tempResult = selectedcoach;
+    	String selectedCoachid = tempResult.getIdcoach();
+    	String selectedCoachname = tempResult.getCoachname();
+    	
+    	FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"", selectedCoachname + "'s being added to teams after loi is done..."));
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		try{
+			context.getExternalContext().redirect("addcoachtoteams.xhtml?coachid=" + selectedCoachid);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
 }
