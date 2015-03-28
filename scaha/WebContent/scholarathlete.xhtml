@@ -10,7 +10,7 @@
 <ui:define name="content">
 <h:body>
 <div id="calendar-div">
-    <p:panel header="SCAHA Scholar Athletes Program 2014-2015" footer="brought to you by iScaha">  
+    <p:panel header="SCAHA Scholar Athletes Program #{scahaBean.getScahaSeasonList().getCurrentSeason().getDescription()}" footer="brought to you by iScaha">  
  		<table id="subpage" style="border-collapse: collapse;">
 			<tr>
 				<td>

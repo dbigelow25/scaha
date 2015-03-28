@@ -125,7 +125,14 @@ public class ParticipantList extends ListDataModel<Participant> implements Seria
 			part.setGf(rs.getInt(i++));
 			part.setGa(rs.getInt(i++));
 			part.setHasdropped((rs.getInt(i++) == 0 ? false : true));
-			part.setGd(part.getGf()- part.getGa());
+			Integer tempgd = rs.getInt(i++);
+			if (tempgd.equals(-1)){
+				tempgd = part.getGf()- part.getGa();
+			}
+			part.setGd(tempgd);
+			
+			
+			//part.setGd(part.getGf()- part.getGa());
 			
 			part.setSchedule(null);
 			part.setPlace(y++);

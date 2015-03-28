@@ -158,7 +158,7 @@
 						<p:menuitem style="font-size: 10pt;width:225px;" 
 							value="Manage Your Teams"
 							url="addteams.xhtml"
-							rendered="#{profileBean.isSuperUser()}" />
+							rendered="#{profileBean.hasRoleList('C-REG;C-ICE;C-PRES')}" />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Create Player LOI"
 							url="addplayerstoteam.xhtml"
