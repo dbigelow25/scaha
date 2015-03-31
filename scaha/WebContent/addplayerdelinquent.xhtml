@@ -24,7 +24,7 @@
 			<p:panel id ="panel" header="Search for Player to Add to the Delinquency List:">
 				<h:panelGrid columns="2" cellpadding="5">
 					<p:inputText id="searchforplayer" style="width:150px;" value="#{draftplayersBean.searchcriteria}" required="false" requiredMessage="Enter a minimum of 5 characters to execute search."/>
-					<p:commandButton id="executesearch" value="Search" actionListener="#{draftplayersBean.playerSearch()}" ajax="true" update="playersearchresult"/>
+					<p:commandButton id="executesearch" value="Search" actionListener="#{draftplayersBean.delinquentplayerSearch()}" ajax="true" update="playersearchresult"/>
 					<p:tooltip for="searchforplayer" value="Enter at least 5 characters to generate a list of matching players" showEffect="fade" hideEffect="fade" />  
 					<p:message id="m_searchforplayer" for="searchforplayer" />
 					

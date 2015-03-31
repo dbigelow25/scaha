@@ -75,6 +75,12 @@
 		        </f:facet>
 	            <h:outputText value="#{player.getDob()}" />  
 	        </p:column>
+	        <p:column>  
+		        <f:facet name="header">
+            		<h:outputText value="Delinquency Year" />
+		        </f:facet>
+	            <h:outputText value="#{player.getEligibility()}" />  
+	        </p:column>
 	    </p:dataTable>
 		</p:panel>
 		<p:separator id="customSeparator" style="width:800px;height:2px" />    

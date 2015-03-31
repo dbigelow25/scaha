@@ -33,6 +33,7 @@ public class DelinquencyBean implements Serializable {
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
 
     private PlayerDataModel playerlist = null;
+    private PlayerDataModel clubplayerlist = null;
     private Player selectedplayer = null;
 	private String selectedtabledisplay = null;
 	private Boolean displayclublist = null;
@@ -80,7 +81,8 @@ public class DelinquencyBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		LOGGER.info("**************** DelinquencyBean Has Been Init-ed ********************");
-		playersDisplay(); 
+		playersDisplay();
+		clubplayersDisplay();
     }  
     
 	public Integer getTotalrecordcount(){
@@ -175,6 +177,7 @@ public class DelinquencyBean implements Serializable {
 				String slastname = rs.getString("lname");
 				String scurrentteam = rs.getString("currentteam");
 				String sdob = rs.getString("dob");
+				String delyear = rs.getString("year");
 				
 				Player oplayer = new Player();
 				oplayer.setIdplayer(idplayer);
@@ -182,6 +185,7 @@ public class DelinquencyBean implements Serializable {
 				oplayer.setLastname(slastname);
 				oplayer.setCurrentteam(scurrentteam);
 				oplayer.setDob(sdob);
+				oplayer.setEligibility(delyear);
 				
 				tempresult.add(oplayer);
 				
@@ -201,6 +205,57 @@ public class DelinquencyBean implements Serializable {
     	setPlayerlist(new PlayerDataModel(tempresult));
     }
 
+    public void clubplayersDisplay(){
+    	LOGGER.info("Refreshing the list of delinquent players..");
+    	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	List<Player> tempresult = new ArrayList<Player>();
+    	Integer recordcount = 0;
+    	
+    	//need to set default record count and list format boolean for displaying the list either in pagination format
+        //or long list printable format
+        this.displayshortlist = true;
+        this.displayrecordcount = 10;
+        this.totalrecordcount = 0;
+        
+    	
+    	try{
+
+			CallableStatement cs = db.prepareCall("CALL scaha.getClubviewDelinquencyList()");
+			ResultSet rs = cs.executeQuery();
+    			
+			while (rs.next()) {
+				String idplayer = rs.getString("idplayer");
+				String sfirstname = rs.getString("fname");
+				String slastname = rs.getString("lname");
+				String scurrentteam = rs.getString("currentteam");
+				String sdob = rs.getString("dob");
+				String delyear = rs.getString("year");
+				
+				Player oplayer = new Player();
+				oplayer.setIdplayer(idplayer);
+				oplayer.setFirstname(sfirstname);
+				oplayer.setLastname(slastname);
+				oplayer.setCurrentteam(scurrentteam);
+				oplayer.setDob(sdob);
+				oplayer.setEligibility(delyear);
+				
+				tempresult.add(oplayer);
+				
+				recordcount++;
+			}
+    				
+   			this.totalrecordcount=recordcount;
+   			rs.close();	
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN Searching FOR delinquency list");
+    		e.printStackTrace();
+    	} finally {
+    		db.free();
+    	}
+    	
+    	setClubplayerlist(new PlayerDataModel(tempresult));
+    }
     public void closePage(){
     	FacesContext context = FacesContext.getCurrentInstance();
     	try{
@@ -263,7 +318,21 @@ public class DelinquencyBean implements Serializable {
     	this.displayrecordcount=10;
     }
 
+    /**
+	 * @return the playerlist
+	 */
+	public PlayerDataModel getClubplayerlist() {
+		return clubplayerlist;
+	}
+
 	/**
+	 * @param playerlist the playerlist to set
+	 */
+	public void setClubplayerlist(PlayerDataModel playerlist) {
+		this.clubplayerlist = playerlist;
+	}
+    
+    /**
 	 * @return the playerlist
 	 */
 	public PlayerDataModel getPlayerlist() {

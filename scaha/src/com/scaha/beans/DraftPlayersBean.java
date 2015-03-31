@@ -221,6 +221,60 @@ public class DraftPlayersBean implements Serializable {
     	listofplayers = new ResultDataModel(tempresult);
     }
 
+    public void delinquentplayerSearch(){
+        
+    	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	List<Result> tempresult = new ArrayList<Result>();
+    	
+    	try{
+
+   			Vector<String> v = new Vector<String>();
+   			v.add(this.searchcriteria);
+   			db.getData("CALL scaha.delinquentplayerloisearch(?)", v);
+   			ResultSet rs = db.getResultSet();
+   
+   			while (rs.next()) {
+   				String idperson = rs.getString("idperson");
+        		String playername = rs.getString("fname") + " " + db.getResultSet().getString("lname");
+        		String address = rs.getString("address");
+        		String city = db.getResultSet().getString("city");
+        		String state = db.getResultSet().getString("state");
+        		String zip = db.getResultSet().getString("zipcode");
+        				
+        		if (address == null){
+        			address = "";
+        		}
+        		if (city != null){
+        			address = address + ", " + city;
+        		}
+        		if (state != null){
+        			address = address + ", " + state;
+        		}
+        		if (zip != null){
+        			address = address + " " + zip;
+        		}
+        				
+        		String dob = rs.getString("dob");
+        		
+        		Result result = new Result(playername,idperson,address,dob);
+        		tempresult.add(result);
+    		}
+    				
+    		LOGGER.info("We have results for search criteria " + this.searchcriteria);
+    		rs.close();
+    		db.cleanup();
+    		
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN Searching FOR " + this.searchcriteria);
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		db.free();
+    	}
+    	
+    	listofplayers = new ResultDataModel(tempresult);
+    }
    
     
     //Generates the loi for family to confirm info and add registration code.  
