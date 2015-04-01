@@ -1516,7 +1516,8 @@ public class coachloiBean implements Serializable, MailableObject {
     			}
 				rs.close();
 	    		    
-	    			
+	    		//change to send to registrar and coach.
+				
 		        cs = db.prepareCall("CALL scaha.getSCAHARegistrarEmail()");
     		    rs = cs.executeQuery();
     		    if (rs != null){

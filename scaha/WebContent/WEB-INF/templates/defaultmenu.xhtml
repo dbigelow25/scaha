@@ -278,13 +278,13 @@
 				<p:toolbarGroup align="right"
 					rendered="#{empty profileBean.getProfile()}">
 					<h:inputText style="width:175px;font-size: 10px;"
-						value="#{profileBean.name}"></h:inputText>
+						value="#{profileBean.name}" tabindex="1"></h:inputText>
 					<h:outputText value="/"></h:outputText>
 					<h:inputSecret style="width:100px;font-size: 10px;"
-						value="#{profileBean.password}"></h:inputSecret>
+						value="#{profileBean.password}" tabindex="2"></h:inputSecret>
 					<p:separator />
 					<p:commandButton value="login"
-						actionListener="#{profileBean.login}" ajax="false" tabindex="1" />
+						actionListener="#{profileBean.login}" ajax="false" tabindex="3" />
 					<br />
 				</p:toolbarGroup>
 			</p:toolbar>

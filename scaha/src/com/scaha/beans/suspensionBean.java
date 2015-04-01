@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.el.ValueExpression;
+import javax.faces.application.Application;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -312,7 +314,14 @@ public class suspensionBean implements Serializable {
 		this.setServed(0);
 		this.setSuspdate("");
 		this.setNumberofgames("");
-		
+		FacesContext context = FacesContext.getCurrentInstance();
+    	Application app = context.getApplication();
+
+		ValueExpression expression = app.getExpressionFactory().createValueExpression( context.getELContext(),
+				"#{playerhistoryBean}", Object.class );
+
+		playerhistoryBean pb = (playerhistoryBean) expression.getValue( context.getELContext() );
+		pb.setSearchcriteria("");
 	}
 	
 	public void manageSuspension(Suspension suspension){

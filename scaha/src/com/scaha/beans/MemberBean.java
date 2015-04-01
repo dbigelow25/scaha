@@ -507,6 +507,7 @@ public class MemberBean implements Serializable, MailableObject {
 		this.selectedPerson = null;
 		this.fastforward = false;
 		this.restart = true;
+		this.concussion = false;
 		System.gc();
 	}
 	
