@@ -1500,7 +1500,8 @@ public class coachloiBean implements Serializable, MailableObject {
     			
     			
     		        
-    		    to = "";
+    		    to = this.email;
+    		    
     			LOGGER.info("Sending email to club registrar, and scaha registrar");
     			cs = db.prepareCall("CALL scaha.getClubRegistrarEmailByPersonID(?)");
     		    cs.setInt("personid", this.selectedcoach);
@@ -1516,7 +1517,7 @@ public class coachloiBean implements Serializable, MailableObject {
     			}
 				rs.close();
 	    		    
-	    		//change to send to registrar and coach.
+	    		
 				
 		        cs = db.prepareCall("CALL scaha.getSCAHARegistrarEmail()");
     		    rs = cs.executeQuery();
