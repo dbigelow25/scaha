@@ -58,7 +58,7 @@ public class DraftPlayersBean implements Serializable {
      	this.setProfid(pb.getProfile().ID);
         getClubID();
         isClubHighSchool();
-        playerSearch(); 
+        //playerSearch(); 
   
 	}
 	
