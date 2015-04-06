@@ -33,6 +33,7 @@ public class editrosterBean implements Serializable {
 	private Player selectedplayer = null;
 	private Integer teamid = null;
 	private String teamname = null;
+	private String enteredrosterdate = null;
 	
 	@PostConstruct
     public void init() {
@@ -52,6 +53,15 @@ public class editrosterBean implements Serializable {
     	    	
 		
     }  
+    
+    public String getEnteredrosterdate(){
+    	return enteredrosterdate;
+    }
+    
+    public void setEnteredrosterdate(String name){
+    	enteredrosterdate=name;
+    }
+    
     
     public String getTeamname(){
     	return teamname;
@@ -113,6 +123,7 @@ public class editrosterBean implements Serializable {
 					String fname = rs.getString("fname");
 					String lname = rs.getString("lname");
 					String eligibility = rs.getString("eligibility");
+					String loidate = rs.getString("loidate");
 					String drop = rs.getString("dropped");
 					String added = rs.getString("added");
 					String active = rs.getString("active");
@@ -125,7 +136,8 @@ public class editrosterBean implements Serializable {
 					player.setIdplayer(playerid);
 					player.setFirstname(fname);
 					player.setLastname(lname);
-					player.setEligibility(eligibility);
+					player.setEligibility(loidate);
+					player.setRosterdate(eligibility);
 					player.setDrop(drop);
 					player.setAdded(added);
 					player.setActive(active);
@@ -154,6 +166,7 @@ public class editrosterBean implements Serializable {
 					String cfname = rs.getString("fname");
 					String clname = rs.getString("lname");
 					String celigibility = rs.getString("eligibility");
+					String cloidate = rs.getString("loidate");
 					String cdrop = rs.getString("dropped");
 					String cadded = rs.getString("added");
 					String cactive = rs.getString("active");
@@ -166,6 +179,7 @@ public class editrosterBean implements Serializable {
 					coach.setFirstname(cfname);
 					coach.setLastname(clname);
 					coach.setEligibility(celigibility);
+					coach.setLoidate(cloidate);
 					coach.setDrop(cdrop);
 					coach.setAdded(cadded);
 					coach.setActive(cactive);
@@ -238,5 +252,138 @@ public class editrosterBean implements Serializable {
 		}
 	}
 	
+	public void updateTeamRostereffectivedate(){
+		
+		//lets first update the entire active roster with the new effective date aka roster date
+		//then lets reload the objects
+		
+		List<Player> templist = new ArrayList<Player>();
+		List<Coach> tempcoachlist = new ArrayList<Coach>();
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	
+    	try{
+    		//first update team
+    		CallableStatement cs = db.prepareCall("CALL scaha.updateTeamrosterdate(?,?)");
+			cs.setInt("teamid", this.teamid);
+			cs.setString("srosterdate", this.enteredrosterdate);
+		    cs.executeQuery();
+    		cs.close();
+		    
+    		//first get team name
+    		cs = db.prepareCall("CALL scaha.getTeamByTeamId(?)");
+			cs.setInt("teamid", this.teamid);
+		    rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					this.teamname = rs.getString("teamname");
+				}
+				LOGGER.info("We have results for team name");
+			}
+			rs.close();
+			db.cleanup();
+    		
+    		//next get player roster
+//TODO			cs = db.prepareCall("CALL scaha.getRosterByTeamId(?)");
+			cs = db.prepareCall("CALL scaha.getRosterPlayersByTeamId(?)");
+			cs.setInt("teamid", this.teamid);
+		    rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					String playerid = rs.getString("idroster");
+					String fname = rs.getString("fname");
+					String lname = rs.getString("lname");
+					String eligibility = rs.getString("eligibility");
+					String loidate = rs.getString("loidate");
+					String drop = rs.getString("dropped");
+					String added = rs.getString("added");
+					String active = rs.getString("active");
+					String updated = rs.getString("updated");
+					String jerseynumber = rs.getString("jerseynumber");
+					String dob = rs.getString("dob");
+					String gp = rs.getString("gp");
+					
+					Player player = new Player();
+					player.setIdplayer(playerid);
+					player.setFirstname(fname);
+					player.setLastname(lname);
+					player.setEligibility(loidate);
+					player.setRosterdate(eligibility);
+					player.setDrop(drop);
+					player.setAdded(added);
+					player.setActive(active);
+					player.setUpdated(updated);
+					player.setJerseynumber(jerseynumber);
+					player.setDob(dob);
+					player.setGp(gp);
+					
+					templist.add(player);
+				}
+				LOGGER.info("We have results for team roster");
+			}
+			rs.close();
+			db.cleanup();
+    		
+			//next get coach roster
+			//TODO			cs = db.prepareCall("CALL scaha.getRosterByTeamId(?)");
+			cs = db.prepareCall("CALL scaha.getRosterCoachesByTeamId(?)");
+			cs.setInt("teamid", this.teamid);
+		    rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					String coachid = rs.getString("idroster");
+					String cfname = rs.getString("fname");
+					String clname = rs.getString("lname");
+					String celigibility = rs.getString("eligibility");
+					String cloidate = rs.getString("loidate");
+					String cdrop = rs.getString("dropped");
+					String cadded = rs.getString("added");
+					String cactive = rs.getString("active");
+					String cupdated = rs.getString("updated");
+					String teamrole = rs.getString("teamrole");
+					
+					
+					Coach coach = new Coach();
+					coach.setIdcoach(coachid);
+					coach.setFirstname(cfname);
+					coach.setLastname(clname);
+					coach.setEligibility(celigibility);
+					coach.setLoidate(cloidate);
+					coach.setDrop(cdrop);
+					coach.setAdded(cadded);
+					coach.setActive(cactive);
+					coach.setUpdated(cupdated);
+					coach.setTeamrole(teamrole);
+					
+					tempcoachlist.add(coach);
+				}
+				LOGGER.info("We have results for team roster");
+			}
+			rs.close();
+			db.cleanup();
+			    		
+			
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN loading teams");
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+		
+    	setPlayers(templist);
+    	setCoaches(tempcoachlist);
+	
+	}
 }
 

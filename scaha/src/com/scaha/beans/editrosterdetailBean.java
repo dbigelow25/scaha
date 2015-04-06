@@ -39,6 +39,7 @@ public class editrosterdetailBean implements Serializable {
 	private String teamid = null;
 	private String playername = null;
 	private String eligibility = null;
+	private String loidate = null;
 	private String dropdate = null;
 	private String selectedrelation = null;
 	private String active = null;
@@ -75,6 +76,14 @@ public class editrosterdetailBean implements Serializable {
     public editrosterdetailBean() {  
     	
     }  
+    
+    public void setLoidate(String date){
+    	loidate=date;
+    }
+    
+    public String getLoidate(){
+    	return loidate;
+    }
     
     public void setSelectedteam(String date){
     	selectedteam=date;
@@ -276,6 +285,7 @@ public class editrosterdetailBean implements Serializable {
 				
 				while (rs.next()) {
 					this.eligibility = rs.getString("eligibility");
+					this.loidate = rs.getString("loidate");
 					this.selectedrelation = rs.getString("rostertype");
 					this.active = rs.getString("active");
 					if (this.active.equals("0")){

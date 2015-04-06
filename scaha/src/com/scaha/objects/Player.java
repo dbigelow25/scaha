@@ -56,6 +56,7 @@ public class Player extends ScahaObject implements Serializable {
 	private String teamid = null;
 	private String rostertype = null;
 	private String gp = null;
+	private String rosterdate = null;
 	
 	public Player (){ 
 		
@@ -77,6 +78,13 @@ public class Player extends ScahaObject implements Serializable {
 		rostertype=value;
 	}
 	
+	public String getRosterdate(){
+		return rosterdate;
+	}
+	
+	public void setRosterdate(String value){
+		rosterdate=value;
+	}
 	
 	public String getDivision(){
 		return division;
