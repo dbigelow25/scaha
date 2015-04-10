@@ -91,10 +91,9 @@
 						 <p:menuitem style="font-size: 10pt;width:225px;"
 							value="Register For Scaha" icon="ui-icon-extlink"
 							url="manageUSAHockey.xhtml"
-							rendered="#{profileBean.isSuperUser()}"
+							rendered="#{not empty profileBean.getProfile()}"
 							 /> 
-							 <!-- use this value when we go live
-							 rendered="#{not empty profileBean.getProfile()}" -->
+							 
 						<p:separator />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Admin Portal" 
@@ -228,13 +227,13 @@
 				</p:toolbarGroup>
 				<p:toolbarGroup align="left" rendered="#{profileBean.hasRoleList('C-REG')}">
 					<p:menuButton id="cregistrars" style="width:125px;" value="Registrar Support" type="button">
-						<p:menuitem style="font-size: 10pt;width:225px;"
+						<!-- <p:menuitem style="font-size: 10pt;width:225px;"
 							icon="ui-icon-arrowthickstop-1-s"
 							value="Training Video"
 							url="http://www.scaha.com/downloads/ISCAHA_Registrar_Training.wmv"
 							rendered="#{profileBean.hasRoleList('C-REG')}"
 							target="_blank"
-							/>
+							/> -->
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							icon="ui-icon-arrowthickstop-1-s"
 							value="Authorization Form"
@@ -259,10 +258,10 @@
 							style="font-size:9pt;width:225px;"
 							value="Manage Profile" url="manageprofile.xhtml"
 							icon="ui-icon-extlink"  />
-						<!-- <p:menuitem 
+						<p:menuitem 
 							style="font-size:9pt;width:225px;"
 							value="Register For Scaha" icon="ui-icon-extlink"
-							url="manageUSAHockey.xhtml" /> -->
+							url="manageUSAHockey.xhtml" /> 
 						<p:menuitem 
 						 	style="font-size:9pt;width:225px;" 
 							value="Change Password"
