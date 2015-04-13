@@ -107,7 +107,11 @@
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Player History" 
 							url="viewplayerspenaltyhistory.xhtml"
-							rendered="#{profileBean.isSuperUser()}" />
+							rendered="#{profileBean.hasRoleList('S-STATS;S-VICE;S-PRES')}" />
+						<p:menuitem style="font-size: 10pt;width:225px;"
+							value="Team Penalty Counts" 
+							url="viewteampenaltycount.xhtml"
+							rendered="#{profileBean.hasRoleList('S-STATS;S-VICE;S-PRES')}" />
 						<p:separator />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Manager Portal" 
