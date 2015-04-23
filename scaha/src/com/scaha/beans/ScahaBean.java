@@ -46,6 +46,7 @@ import com.scaha.objects.Profile;
 import com.scaha.objects.ScahaTeam;
 import com.scaha.objects.Schedule;
 import com.scaha.objects.ScheduleList;
+import com.scaha.objects.StatsList;
 import com.scaha.objects.TeamGameInfo;
 import com.scaha.objects.TeamList;
 import com.scaha.objects.YearList;
@@ -70,6 +71,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 	private MemberList scahaprogramdirectorlist = null;
 	private ScheduleList scahaschedule = null;
 	private YearList scahayearlist = null;
+	private StatsList scahastatslist = null;
 	
 	private Profile DefaultProfile = null;
 	
@@ -114,6 +116,9 @@ public class ScahaBean implements Serializable,  MailableObject {
 			loadTeamLists(db);
 			setScahaschedule(ScheduleList.ListFactory(this.DefaultProfile, db, this.getScahaSeasonList().getCurrentSeason(),this.getScahaTeamList()));
 			setScahaLiveGameList(LiveGameList.NewListFactory(this.DefaultProfile,db,this.getScahaSeasonList().getCurrentSeason(), this.getScahaTeamList(), this.getScahaschedule()));
+			
+			//this is where we will add the loading of the stats 
+			//setScahastatslist(loadStats(db));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -458,6 +463,22 @@ public class ScahaBean implements Serializable,  MailableObject {
 		scahayearlist = List;
 	}
 	
+	
+	/**
+	 * @return the scahaYearList
+	 */
+	public StatsList getScahastatslist() {
+		return scahastatslist;
+	}
+
+
+	
+	/**
+	 * @param scahaSeasonList the scahaSeasonList to set
+	 */
+	public void setScahastatslist(StatsList List) {
+		scahastatslist = List;
+	}
 
 	/**
 	 * @return the defaultProfile
@@ -780,5 +801,15 @@ public class ScahaBean implements Serializable,  MailableObject {
 			return new DefaultStreamedContent();
 
 		}
+	}
+	
+	private StatsList loadStats(ScahaDatabase _db) throws SQLException {
+		
+		LOGGER.info("loading Stats Lists for SCAHA Application");
+		
+		StatsList templist = new StatsList();
+		templist.NewStatListFactory(_db);
+		
+		return templist;			
 	}
 }

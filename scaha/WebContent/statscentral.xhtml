@@ -181,12 +181,12 @@
 			 </p:dataTable> -->
 			 <p:dialog id="dialog" header="Complete Leaders" widgetVar="peepdlg" resizable="false"  
               width="700" height="400" showEffect="clip" hideEffect="fold">
-           			Select Game Type:
+           			<!-- Select Game Type:
            			<p:selectOneMenu value="#{statsBean.selectedgametype}" >
 					   <f:selectItem itemLabel="Regular" itemValue="2"/>
 					   <f:selectItem itemLabel="Playoff" itemValue="4"/>
 					   <p:ajax process="@this" listener="#{statsBean.loadCompletePlayerStats('Points')}" event="change" update="detailedplayers"  />
-					</p:selectOneMenu>
+					</p:selectOneMenu> -->
 		 			Number of Players to Display:	
 	 				<p:selectOneMenu value="#{statsBean.selectedcount}" >
 					   <f:selectItem itemLabel="10" itemValue="10"/>
@@ -232,13 +232,13 @@
               
               <p:dialog id="goaliedialog" header="Complete Leaders" widgetVar="goaliepeepdlg" resizable="false"  
               width="700" height="410" showEffect="clip" hideEffect="fold">
-             		Select Game Type:
+             		<!-- Select Game Type:
            			<p:selectOneMenu value="#{statsBean.selectedgametype}" >
 					   <f:selectItem itemLabel="Regular" itemValue="2"/>
 					   <f:selectItem itemLabel="Playoff" itemValue="4"/>
 					   <p:ajax process="@this" listener="#{statsBean.loadCompleteGoalieStats('Percentage')}" event="change" update="detailedgoalies"  />
-					</p:selectOneMenu>
-		 			Number of Players to Display:	
+					</p:selectOneMenu>-->
+		 			Number of Players to Display: 
 	 				<p:selectOneMenu value="#{statsBean.selectedcount}" >
 					   <f:selectItem itemLabel="10" itemValue="10"/>
 					   <f:selectItem itemLabel="25" itemValue="25"/>
