@@ -2011,25 +2011,49 @@ public SogList refreshHomeSog() {
 		// or matches..
 		//
 		PenaltyPusher pp = new PenaltyPusher();
-		
+		String temppenaltyrows = "";
 		for (Penalty p : this.getAwaypenalties()) {
 			
 			if (p.getPenaltytype().equals("Game Misconduct") || 
 				p.getPenaltytype().equals("Match Penalty")) {
+				
+				//need to add to the penalty row string so we send all suspensions in one email, not multiple emails
+				temppenaltyrows = temppenaltyrows + "<tr><td>&nbsp;" + p.getRosterspot().getFname() + " " + p.getRosterspot().getLname() +"&nbsp;</td><td>&nbsp;" + p.getRosterspot().getJerseynumber() + "&nbsp;</td><td>&nbsp;" + p.getPenaltytype() + "&nbsp;</td></tr>";
+				
 				pp.setPenalty(p);
 				pp.setLivegame(this.livegame);
-				pp.pushPenalty();
+				
 			}
+			
+			
 		}
+		
+		pp.setPenaltyrows(temppenaltyrows);
+		pp.pushPenalty();
+		
+		//need to reset for away teams
+		temppenaltyrows = "";
+		
 		for (Penalty p : this.getHomepenalties()) {
 			
 			if (p.getPenaltytype().equals("Game Misconduct") || 
 				p.getPenaltytype().equals("Match Penalty")) {
+				
+				//need to add to the penalty row string so we send all suspensions in one email, not multiple emails
+				temppenaltyrows = temppenaltyrows + "<tr><td>&nbsp;" + p.getRosterspot().getFname() + " " + p.getRosterspot().getLname() +"&nbsp;</td><td>&nbsp;" + p.getRosterspot().getJerseynumber() + "&nbsp;</td><td>&nbsp;" + p.getPenaltytype() + "&nbsp;</td></tr>";
+				
 				pp.setPenalty(p);
 				pp.setLivegame(this.livegame);
-				pp.pushPenalty();
+				
 			}
 		}
+		
+		pp.setPenaltyrows(temppenaltyrows);
+		pp.pushPenalty();
+		
+		//need to reset for away teams
+		temppenaltyrows = "";
+		
 	}
 	public void saveScheduleInfo() {
 		

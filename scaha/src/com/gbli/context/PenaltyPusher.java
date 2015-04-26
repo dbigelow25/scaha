@@ -33,6 +33,7 @@ public class PenaltyPusher  implements Serializable,  MailableObject {
 	private Penalty penalty;
 	private LiveGame livegame=null;
 	private PenaltyList penaltylist = null;
+	private String penaltyrows = null;
 	
 	public PenaltyPusher (Penalty _pen) {
 		penalty = _pen;
@@ -67,9 +68,7 @@ public class PenaltyPusher  implements Serializable,  MailableObject {
 		myTokens.add("HOMETEAM|" + this.livegame.getHometeamname());
 		myTokens.add("AWAYTEAM|" + this.livegame.getAwayteamname());
 		myTokens.add("GAMENUMBER|" + this.livegame.ID+"");
-		myTokens.add("NUMBER|" + this.penalty.getRosterspot().getJerseynumber());
-		myTokens.add("PENALTYTYPE|" + this.penalty.getPenaltytype());
-		myTokens.add("PLAYERNAME|" + this.penalty.getRosterspot().getFname() + " " + this.penalty.getRosterspot().getLname());
+		myTokens.add("PENALTYROWS|" + this.getPenaltyrows());
 		myTokens.add("CLUBNAME|" + club.getClubname());
 		myTokens.add("TEAMNAME|" + team.getTeamname());
 		return Utils.mergeTokens(PenaltyPusher.mail_penaltypush_body,myTokens,"\\|");
@@ -142,5 +141,11 @@ public class PenaltyPusher  implements Serializable,  MailableObject {
 		this.livegame = livegame;
 	}
 	
+	public String getPenaltyrows(){
+		return penaltyrows;
+	}
 	
+	public void setPenaltyrows(String value){
+		penaltyrows=value;
+	}
 }
