@@ -180,7 +180,7 @@
 			        </p:column>  
 			        <p:column sortBy="teamname" filterBy="teamname" filterMatchMode="contains" filterStyle="width:50px">  
 			            <f:facet name="header">
-		            		<h:outputText value="2014 Team" />
+		            		<h:outputText value="#{registrarcoachloiBean.getCurrentyear()} Team" />
 				        </f:facet>
 			            <h:outputText value="#{coach.getTeamname()}" />  
 			        </p:column>
