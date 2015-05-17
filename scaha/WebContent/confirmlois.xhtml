@@ -56,7 +56,7 @@
 					</h:column>
 				</h:panelGrid>
 				<br></br>
-				<p:dataTable id="listofplayers" var="player" rowKey="#{player.IDplayer}" value="#{reviewloiBean.getPlayerdatamodel()}" selection="#{reviewloiBean.selectedplayer}" paginator="true" rows="10" autoupdate="false">
+				<p:dataTable id="listofplayers" var="player" rowKey="#{player.IDplayer}" value="#{reviewloiBean.getPlayerdatamodel()}" selection="#{reviewloiBean.selectedplayer}"  autoupdate="false">
                 	<!--  <p:column headerText="Player ID">  
 			            <h:outputText value="#{player.getIdplayer()}" />  
 			        </p:column>-->  

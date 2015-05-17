@@ -47,7 +47,7 @@
 					</h:column>
 				</h:panelGrid>
 				<br></br>
-				<p:dataTable id="listofcoaches" var="coach" rowKey="#{coach.IDcoach}" value="#{reviewcoachloiBean.getCoachdatamodel()}" selection="#{reviewcoachloiBean.selectedcoach}" paginator="true" rows="10" autoupdate="false">
+				<p:dataTable id="listofcoaches" var="coach" rowKey="#{coach.IDcoach}" value="#{reviewcoachloiBean.getCoachdatamodel()}" selection="#{reviewcoachloiBean.selectedcoach}"  autoupdate="false">
                 	<!--  <p:column headerText="Player ID">  
 			            <h:outputText value="#{player.getIdplayer()}" />  
 			        </p:column>-->  
