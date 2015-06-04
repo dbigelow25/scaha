@@ -10,7 +10,7 @@
   <env-entry>
     <env-entry-name>scaha/dbpoolcount</env-entry-name>
     <env-entry-type>java.lang.Integer</env-entry-type>
-    <env-entry-value>25</env-entry-value>
+    <env-entry-value>20</env-entry-value>
   </env-entry>
    <env-entry>
     <env-entry-name>scaha/emailauth</env-entry-name>
@@ -89,6 +89,11 @@
 <context-param>
     <param-name>javax.faces.PARTIAL_STATE_SAVING</param-name>
     <param-value>false</param-value>
+</context-param>
+<!-- to handle date issues from different time zone -->
+<context-param>
+    <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
+    <param-value>true</param-value>
 </context-param>
 <!-- To enable encryption -->
 <context-param>

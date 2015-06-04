@@ -246,6 +246,7 @@ public class loiBean implements Serializable, MailableObject {
 		myTokens.add("FIRSTNAME:" + this.firstname);
 		myTokens.add("LASTNAME:" + this.lastname);
 		myTokens.add("CLUBNAME:" + this.getClubName());
+		myTokens.add("CURRENTYTEAR:" + this.getCurrentyear());
 		if (this.sendingnote){
 			if (this.displaygirlteam){
 				myTokens.add("SELECTEDBOYSTEAM:" + this.getThisYearGirlsTeam() + " ");

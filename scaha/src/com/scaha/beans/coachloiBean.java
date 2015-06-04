@@ -302,7 +302,7 @@ public class coachloiBean implements Serializable, MailableObject {
 	public String getTextBody() {
 		// TODO Auto-generated method stub
 		List<String> myTokens = new ArrayList<String>();
-		myTokens.add(":CURRENTYEAR:" + this.scaha.getScahaSeasonList().getCurrentSeason().getFromDate().substring(0,4));
+		myTokens.add("CURRENTYEAR:" + this.getCurrentyear());
 		myTokens.add("LOIDATE: " + this.currentdate);
 		myTokens.add("FIRSTNAME: " + this.firstname);
 		myTokens.add("LASTNAME: " + this.lastname);
@@ -336,7 +336,7 @@ public class coachloiBean implements Serializable, MailableObject {
 		myTokens.add("SAFESPORT: " + this.displaysafesport);
 		myTokens.add("HOMENUMBER: " + this.homenumber);
 		myTokens.add("EMAIL: " + this.email);
-		myTokens.add("COACHROLE: " + this.coachrole);
+		/*myTokens.add("COACHROLE: " + this.coachrole);*/
 		myTokens.add("NOTES: " + this.notes);
 		if (this.sendingnote){
 			return Utils.mergeTokens(coachloiBean.sendingnote_reg_body, myTokens);
@@ -1000,6 +1000,8 @@ public class coachloiBean implements Serializable, MailableObject {
     		    		    //safesport and caha screening values, if not we add all.
     		    		    if (team.getCoachrole().equals("Manager")){
     		    		    	this.coachrole="Manager";
+    		    		    } else {
+    		    		    	this.coachrole=team.getCoachrole().toString();
     		    		    }
 	    				}
 	    			} 

@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui" 
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+<f:view contentType="text/html">
+<h:head>
+	 <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+     </f:facet>
+</h:head>
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+<ui:define name="content">
+<!-- <p:carousel value="#{gamecentralBean.listofgames}" var="game" itemStyle="width:100%">
+	<h:outputText style="font-size: 10px;" value="#{game.getAwayteam()}" /> <h:outputText style="font-size: 10px;" value="#{game.getAwayscore()}" />
+	<h:outputText style="font-size: 10px;" value="#{game.getHometeam()}" /> <h:outputText style="font-size: 10px;" value="#{game.getHomescore()}" />
+</p:carousel> -->
+<p:separator />
+		<h:form id="scheduleform">
+			  <p:outputPanel id="testContainer">
+			  				<!-- we may need something like this for the gamecenter -->
+			  				<!-- #{scoreboardBean.refreshScoreboard()} -->
+			  
+					
+					<table cellpadding="0" cellspacing="0" border="0" width="100%">
+						<tr>
+							<td><div style="float:left;vertical-align: top;">
+									<!-- the days of the week option for the scoreboard -->
+									<table cellpadding="5" cellspacing="0" border="0" width="600" >
+										<tr bgcolor="#fcfcfc">
+											<td width="100"><div class="NewsTitle">Scoreboard:</div></td>
+											<td>
+												<p:selectOneMenu styleClass="ddlistbox" id="myseasons" value="#{scoreboardBean.selectedseasonid}" >
+								       	   			<f:selectItem style="font-size:10pt;" itemLabel="Select a Season..." itemValue="0" />
+								           			<f:selectItems value="#{scoreboardBean.getSeasonlist()}"  var="season"  itemLabel="#{season.getDescription()}" itemValue="#{season.getKey()}"/>
+								           			<p:ajax listener="#{scoreboardBean.onSeasonChange()}" process="@this" update="myschedules"/>
+								       			</p:selectOneMenu>
+								  				<p:selectOneMenu styleClass="ddlistbox"  id="myschedules" value="#{scoreboardBean.selectedscheduleid}" >
+								         			<f:selectItem style="font-size:10pt;" itemLabel="Select a Schedule..." itemValue="0" />
+								          			<f:selectItems  value="#{scoreboardBean.getSchedulelist()}" var="schedule" itemLabel="#{schedule.getDescription()}" itemValue="#{schedule.getKey()}" />
+								          			<p:ajax listener="#{scoreboardBean.onScheduleChange()}" process="@this" update="@this"/>
+								        		</p:selectOneMenu>	
+												 &nbsp;&nbsp;for <h:outputText value="#{gamecentralBean.getDisplayDate()}" />
+								       		</td>
+										</tr>
+										<tr>
+											<td colspan="2">
+												<table cellpadding="5" cellspacing="0" border="0">
+													<tr>
+														<td><p:commandLink id="monday" actionListener="#{gamecentralBean.loadDate('Monday')}" update="@form">
+														        <h:outputText value="#{gamecentralBean.mondaylink}" />
+														    </p:commandLink></td>
+														<td>|</td>
+														<td><p:commandLink id="tuesday" actionListener="#{gamecentralBean.loadDate('Tuesday')}" update="@form">
+														        <h:outputText value="#{gamecentralBean.tuesdaylink}" />
+														    </p:commandLink></td>
+														<td>|</td>
+														<td><p:commandLink id="wednesday" actionListener="#{gamecentralBean.loadDate('Wednesday')}" update="@form">
+														        <h:outputText value="#{gamecentralBean.wednesdaylink}" />
+														    </p:commandLink></td>
+														<td>|</td>
+														<td><p:commandLink id="thursday" actionListener="#{gamecentralBean.loadDate('Thursday')}" update="@form">
+														        <h:outputText value="#{gamecentralBean.thursdaylink}" />
+														    </p:commandLink></td>
+														<td>|</td>
+														<td><p:commandLink id="friday" actionListener="#{gamecentralBean.loadDate('Friday')}" update="@form">
+														        <h:outputText value="#{gamecentralBean.fridaylink}" />
+														    </p:commandLink></td>
+														<td>|</td>
+														<td><p:commandLink id="saturday" actionListener="#{gamecentralBean.loadDate('Saturday')}" update="@form">
+														        <h:outputText value="#{gamecentralBean.saturdaylink}" />
+														    </p:commandLink></td>
+														<td>|</td>
+														<td><p:commandLink id="sunday" actionListener="#{gamecentralBean.loadDate('Sunday')}" update="@form">
+														        <h:outputText value="#{gamecentralBean.sundaylink}" />
+														    </p:commandLink></td>
+												    </tr>
+											    </table>
+										    </td>
+										</tr>
+										<tr>
+											<td colspan="2"><p:spacer height="100" /></td>
+										</tr>
+										
+									</table>
+									
+								</div>
+							</td>
+							<td><div align="right" >
+								<p:calendar id="inline" value="#{gamecentralBean.selecteddate}" mode="inline" pattern="yyyy-MM-dd" style="width:1000px;">
+									<f:convertDateTime pattern="yyyy-MM-dd" />
+									<p:ajax event="dateSelect" listener="#{gamecentralBean.onDateSelect}" update="@form"  />
+								</p:calendar>
+							</div></td>
+						</tr>
+					</table>
+  				
+					
+					<table cellpadding="5" cellspacing="0" border="0" width="100%">
+					<ui:repeat var="game" value="#{gamecentralBean.getListofgames()}" varStatus="loop">
+						<h:outputText value="&lt;tr&gt;" escape="false" rendered="#{loop.index==0}"/>
+							<td >
+								<p:panel padding="0" style="width:250px">
+									<f:facet name="header">
+										<h:outputText style="font-size: 10px;float:left;" value="#{game.getGametime()} - #{game.getDisplaydivision()}" />
+										<h:outputText style="font-size: 10px;float:right;" value="#{game.getStatus()}" />
+									</f:facet>
+						            <!-- <h:panelGrid style="width:250px">
+						                <h:column style="width:30px">
+						                	<p:graphicImage value="#{clubBean.getClubLogoByParmId()}"  width="30" height="30">
+								            	<f:param id="target" name="target" value="#{game.getAwayclubid()}" />
+										 	</p:graphicImage>
+									 	</h:column>
+									 	<h:column style="width:205px">
+						                	<h:outputText style="font-size: 10px;text-align:left;" value="#{game.getAwayteam()}" />
+						                </h:column>
+						                <h:column style="width:15px">	
+						                	<h:outputText style="font-size: 10px;text-align:center;" value="#{game.getAwayscore()}" />
+						                </h:column>
+						                
+						                <h:column>
+						                	<p:graphicImage value="#{clubBean.getClubLogoByGameObject(game,'Home')}"  width="30" height="30">
+								            	<f:param id="targethome" name="targethome" value="#{game.getHomeclubid()}" />
+										 	</p:graphicImage>
+							            </h:column>
+							            <h:column >
+							            	<h:outputText style="font-size: 10px;text-align:left;" value="#{game.getHometeam()}" />
+							            </h:column>
+						                <h:column >
+						                	<h:outputText style="font-size: 10px;text-align:center;" value="#{game.getHomescore()}" />
+						                </h:column>
+						            </h:panelGrid>
+						             -->
+						             <table cellpadding="10" cellspacing="0" border="1" style="border-color:#fcfcfc;" width="100%">
+										<tr>
+											<td width="30">
+												<p:graphicImage value="#{clubBean.getClubLogoByParmId()}"  width="30" height="30">
+									            	<f:param id="target" name="target" value="#{game.getAwayclubid()}" />
+											 	</p:graphicImage> 
+											</td>
+											<th width="205" align="left"><h:outputText style="font-size: 10px;" value="#{game.getAwayteam()}" /></th>
+											<th width="15"><h:outputText style="font-size: 10px;" value="#{game.getAwayscore()}" /></th>
+										</tr>
+										<tr>
+											<td width="30">
+												<p:graphicImage value="#{clubBean.getClubLogoByGameObject(game,'Home')}"  width="30" height="30">
+									            	<f:param id="targethome" name="targethome" value="#{game.getHomeclubid()}" />
+											 	</p:graphicImage> 
+											</td>
+											<th width="205" align="left"><h:outputText style="font-size: 10px;" value="#{game.getHometeam()}" /></th>
+											<th width="15"><h:outputText style="font-size: 10px;" value="#{game.getHomescore()}" /></th>
+										</tr>
+									</table>
+									<f:facet name="footer">
+										<div align="center"><a href="">boxscore</a> | <a href="">gamesheet</a></div>
+									</f:facet>
+						            
+								</p:panel>
+								<br></br>
+								
+							</td>
+						<h:outputText value="&lt;/tr&gt;" escape="false" rendered="#{loop.last}"/>
+						<h:outputText value="&lt;/tr&gt;&lt;tr&gt;" escape="false" rendered="#{loop.index==1}"/>
+						<h:outputText value="&lt;/tr&gt;&lt;tr&gt;" escape="false" rendered="#{not loop.last and loop.index>1 and loop.index%3==0}"/>
+						
+						
+					</ui:repeat>
+					</table>
+				</p:outputPanel>
+		</h:form>
+</ui:define>
+</ui:composition>
+</f:view>
+</html>
