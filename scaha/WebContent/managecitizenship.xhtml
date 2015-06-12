@@ -36,11 +36,19 @@
 						<f:facet name="header">
 								<h:column colspan="2">Player Information</h:column>
 						</f:facet>	
-						<h:column><b>Birth Certificate for <h:outputText value="#{rosteractionBean.playername}"/></b></h:column>
+						<h:column><b>Birth Certificate for </b></h:column>
 					</h:panelGrid>
 				</p:fieldset>
 			    <p:fieldset id="fs2" toggleable="false" toggleSpeed="500">
 	       			<h:panelGrid columns="2" cellpadding="5" cellspacing="0" border="0" width="90%">
+						<h:column width="10%">First Name:</h:column>
+						<h:column >
+							<p:inputText id="firstname" style="width:80px;" value="#{rosteractionBean.firstname}" />
+						</h:column>
+						<h:column width="10%">Last Name:</h:column>
+						<h:column >
+							<p:inputText id="lastname" style="width:80px;" value="#{rosteractionBean.lastname}" />
+						</h:column>
 						<h:column width="10%">Birth Certificate Verified:</h:column>
 						<h:column >
 							<p:selectOneMenu id="birthcertificateverified" value="#{rosteractionBean.birthcertificate}" >

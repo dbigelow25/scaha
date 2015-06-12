@@ -42,6 +42,8 @@ public class rosteractionBean implements Serializable {
 	private String gotoTransferInformation = null;
 	private String gotoCitizenship = null;
 	private String dob = null;
+	private String firstname = null;
+	private String lastname = null;
 	
 	@PostConstruct
     public void init() {
@@ -153,7 +155,21 @@ public class rosteractionBean implements Serializable {
     	transferid = Transfer;
     }
     
-    
+    public void setFirstname(String value){
+		firstname = value;
+	}
+	
+	public String getFirstname(){
+		return firstname;
+	}
+	
+	public void setLastname(String value){
+		lastname = value;
+	}
+	
+	public String getLastname(){
+		return lastname;
+	}
     
 	//used to populate loi form with player information
 	public void loadPlayerProfile(String selectedplayer){
@@ -174,6 +190,8 @@ public class rosteractionBean implements Serializable {
     				
     				while (rs.next()) {
     					playername = rs.getString("playername");
+    					firstname = rs.getString("firstname");
+    					lastname = rs.getString("lastname");
     					transferid = rs.getInt("idcitizenshiptransfers");
         				transfer = rs.getInt("citizenshiptransfers");
         				transferindefinite = rs.getInt("indefinite");
@@ -272,10 +290,12 @@ public class rosteractionBean implements Serializable {
 			
 				//Need to provide info to the stored procedure to save or update
  				LOGGER.info("verify loi code provided");
- 				CallableStatement cs = db.prepareCall("CALL scaha.saveCertificateandDOB(?,?,?)");
+ 				CallableStatement cs = db.prepareCall("CALL scaha.saveCertificateandDOB(?,?,?,?,?)");
     		    cs.setInt("playerid", Integer.parseInt(this.selectedplayer));
     		    cs.setInt("certificate", this.birthcertificate);
     		    cs.setString("indob", this.dob);
+    		    cs.setString("firstname", this.firstname);
+    		    cs.setString("lastname", this.lastname);
     		    cs.executeQuery();
     		    
     		    db.commit();

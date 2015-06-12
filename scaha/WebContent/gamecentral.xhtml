@@ -40,14 +40,14 @@
 												<p:selectOneMenu styleClass="ddlistbox" id="myseasons" value="#{scoreboardBean.selectedseasonid}" >
 								       	   			<f:selectItem style="font-size:10pt;" itemLabel="Select a Season..." itemValue="0" />
 								           			<f:selectItems value="#{scoreboardBean.getSeasonlist()}"  var="season"  itemLabel="#{season.getDescription()}" itemValue="#{season.getKey()}"/>
-								           			<p:ajax listener="#{scoreboardBean.onSeasonChange()}" process="@this" update="myschedules"/>
+								           			<p:ajax listener="#{gamecentralBean.onSeasonChange()}" process="@this" update="@form"/>
 								       			</p:selectOneMenu>
 								  				<p:selectOneMenu styleClass="ddlistbox"  id="myschedules" value="#{scoreboardBean.selectedscheduleid}" >
 								         			<f:selectItem style="font-size:10pt;" itemLabel="Select a Schedule..." itemValue="0" />
 								          			<f:selectItems  value="#{scoreboardBean.getSchedulelist()}" var="schedule" itemLabel="#{schedule.getDescription()}" itemValue="#{schedule.getKey()}" />
-								          			<p:ajax listener="#{scoreboardBean.onScheduleChange()}" process="@this" update="@this"/>
+								          			<p:ajax listener="#{gamecentralBean.onScheduleChange()}" process="@this" update="@form"/>
 								        		</p:selectOneMenu>	
-												 &nbsp;&nbsp;for <h:outputText value="#{gamecentralBean.getDisplayDate()}" />
+												 &nbsp;&nbsp;<b>for <h:outputText value="#{gamecentralBean.getDisplayDate()}" /></b>
 								       		</td>
 										</tr>
 										<tr>
