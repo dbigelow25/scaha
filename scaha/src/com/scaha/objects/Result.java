@@ -19,6 +19,13 @@ public class Result extends ScahaObject implements Serializable {
 	private String coachname = null;
 	private String currentteam = null;
 	private String status = null;
+	private Integer idperson = null;
+	private String reportcard = null;
+	private Integer idscholarathlete = null;
+	private Boolean isapproved = null;
+	private String state = null;
+	private String city = null;
+	private String zip = null;
 	
 	
 	public Result (String sName, String playerid,String saddress, String sdob){ 
@@ -30,12 +37,44 @@ public class Result extends ScahaObject implements Serializable {
 	
 	}
 	
+	public Boolean getIsapproved(){
+		return isapproved;
+	}
+	
+	public void setIsapproved(Boolean value){
+		isapproved = value;
+	}
+	public Integer getIdperson(){
+		return idperson;
+	}
+	
+	public void setIdperson(Integer sName){
+		idperson = sName;
+	}
+	
+	public Integer getIdscholarathlete(){
+		return idscholarathlete;
+	}
+	
+	public void setIdscholarathlete(Integer sName){
+		idscholarathlete = sName;
+	}
+	
+	
+	public String getReportcard(){
+		return reportcard;
+	}
+	
+	public void setReportcard(String sName){
+		reportcard = sName;
+	}
+	
 	public String getStatus(){
 		return status;
 	}
 	
 	public void setStatus(String sName){
-		currentteam = sName;
+		status = sName;
 	}
 	
 	public String getCurrentteam(){
@@ -92,5 +131,29 @@ public class Result extends ScahaObject implements Serializable {
 	
 	public void setIdcoach(String coachid){
 		idcoach = coachid;
-	}	
+	}
+	
+	public String getCity(){
+		return city;
+	}
+	
+	public void setCity(String value){
+		city = value;
+	}
+	
+	public String getState(){
+		return state;
+	}
+	
+	public void setState(String value){
+		state = value;
+	}
+	
+	public String getZip(){
+		return zip;
+	}
+	
+	public void setZip(String value){
+		zip = value;
+	}
 }

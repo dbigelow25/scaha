@@ -93,7 +93,11 @@
 							url="manageUSAHockey.xhtml"
 							rendered="#{not empty profileBean.getProfile()}"
 							 /> 
-							 
+						  <p:menuitem style="font-size: 10pt;width:225px;"
+							value="Scholar Athlete Application" icon="ui-icon-extlink"
+							url="scholarathleteapplication.xhtml"
+							rendered="#{profileBean.isSuperUser()}"
+							 />
 						<p:separator />
 						<p:menuitem style="font-size: 10pt;width:225px;"
 							value="Admin Portal" 

@@ -24,6 +24,7 @@ public class FamilyMember extends Person implements Serializable {
 	private String Relationship = null;
 	private String membertypes = null;
 	private Family fam = null;
+	private Boolean scholarathletedisplay = null;
 	
 	
 	/**
@@ -45,6 +46,13 @@ public class FamilyMember extends Person implements Serializable {
 		this.fam = _fam;
 	}
 
+	public Boolean getScholarathletedisplay() {
+		return scholarathletedisplay;
+	}
+	
+	public void setScholarathletedisplay(Boolean _s) {
+		this.scholarathletedisplay = _s;
+	}
 	
 	public String getRelationship() {
 		return Relationship;
