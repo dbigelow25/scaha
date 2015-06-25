@@ -55,6 +55,7 @@
         <p:column style="font-size:10pt;width:150px;" headerText="Name"><h:outputText style="font-size:10pt;" value="#{familymember.getsFirstName()} #{familymember.getsLastName()}" /></p:column>  
 		<p:column style="font-size:10pt;width:150px;" headerText="Relationship"><h:outputText style="font-size:10pt;" value="#{familymember.getRelationship()}" /></p:column>		
 		<p:column style="font-size:10pt;width:100px;" headerText="DOB."><h:outputText style="font-size:10pt;" value="#{familymember.getDob()}" /></p:column>  
+  		<p:column style="font-size:10pt;width:100px;" headerText="Status"><h:outputText style="font-size:10pt;" value="#{familymember.getScholarathletestatus()}" /></p:column>
   		<p:column style="font-size:10pt;width:100px;" headerText="Option"><p:commandButton id="wwuploadreport" value="Upload Report Card" action="#{scholarathleteBean.uploadreportcoard(familymember)}" rendered="#{familymember.getScholarathletedisplay()}"/></p:column>
   		
     </p:dataTable>  

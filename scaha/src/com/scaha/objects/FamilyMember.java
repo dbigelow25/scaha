@@ -25,7 +25,7 @@ public class FamilyMember extends Person implements Serializable {
 	private String membertypes = null;
 	private Family fam = null;
 	private Boolean scholarathletedisplay = null;
-	
+	private String scholarathletestatus = null;
 	
 	/**
 	 * A basic constructor that glues a person to a relationship for a given family.
@@ -46,6 +46,15 @@ public class FamilyMember extends Person implements Serializable {
 		this.fam = _fam;
 	}
 
+	public String getScholarathletestatus() {
+		return scholarathletestatus;
+	}
+	
+	public void setScholarathletestatus(String _s) {
+		this.scholarathletestatus = _s;
+	}
+	
+	
 	public Boolean getScholarathletedisplay() {
 		return scholarathletedisplay;
 	}
