@@ -96,7 +96,7 @@
 						  <p:menuitem style="font-size: 10pt;width:225px;"
 							value="Scholar Athlete" icon="ui-icon-extlink"
 							url="scholarathleteapplication.xhtml"
-							rendered="#{profileBean.hasRoleList('SUSER;S-SAC')}"
+							rendered="#{not empty profileBean.getProfile()}"
 							 />
 						<p:separator />
 						<p:menuitem style="font-size: 10pt;width:225px;"

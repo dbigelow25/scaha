@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui" 
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+<f:view contentType="text/html">
+<h:head>
+	 <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+     </f:facet>
+</h:head>
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+<ui:define name="content">
+<!-- <p:carousel value="#{gamecentralBean.listofgames}" var="game" itemStyle="width:100%">
+	<h:outputText style="font-size: 10px;" value="#{game.getAwayteam()}" /> <h:outputText style="font-size: 10px;" value="#{game.getAwayscore()}" />
+	<h:outputText style="font-size: 10px;" value="#{game.getHometeam()}" /> <h:outputText style="font-size: 10px;" value="#{game.getHomescore()}" />
+</p:carousel> -->
+<p:separator />
+		<h:form id="scheduleform">
+				
+			  <p:outputPanel id="testContainer" style="width:100%">
+			  		<table border="0" width="100%"  cellpadding="0" cellspacing="0" >
+						<tr>
+							<td width="50%" align="center">
+								<!-- <p:graphicImage id="homelogo" value="#{clubBean.getClubLogoByParmId()}"  width="30" height="30">
+					            	<f:param id="target" name="target" value="#{boxscorebean.getAwayclubid()}" />
+							 	</p:graphicImage> -->
+								<br></br>		
+								<b><h:outputText style="font-size: 14px;float:left;" value="#{boxscoreBean.getAwayteam()}" /></b>
+								<br></br>
+								<b><h:outputText style="font-size: 14px;float:left;" value="#{boxscoreBean.getAwayscore()}" /></b>
+								
+							</td>
+							<td>
+								<!-- <p:graphicImage id="awaylogo" value="#{clubBean.getClubLogoByParmId()}"  width="30" height="30">
+					            	<f:param id="target2" name="target" value="#{boxscorebean.getHomeclubid()}" />
+							 	</p:graphicImage> -->
+								<br></br>
+								<h:outputText style="font-size: 10px;float:left;" value="#{boxscoreBean.getHometeam()}" />
+								<br></br>
+								<h:outputText style="font-size: 10px;float:left;" value="#{boxscoreBean.getHomescore()}" />
+							</td>
+							
+						</tr>
+					</table>
+  				
+  					<!-- shot and goal totals sections -->
+					<p:panel padding="0" style="width:100%">
+						<f:facet name="header">
+							Game Details
+						</f:facet>
+						<table cellpadding="5" cellspacing="0" border="0" width="100%">
+							<tr>
+								<!-- this column is scoring by period column -->
+								<td style="width:50%" bgcolor="#f2f2f2">
+									<b>Scoring</b>
+									<table cellpadding="5" cellspacing="0" border="1" width="100%">
+											
+											<tr>
+												<th></th>
+												<th>1</th>
+												<th>2</th>
+												<th>3</th>
+												<th>OT</th>
+												<th>Totals</th>
+											</tr>
+										<ui:repeat var="score" value="#{boxscoreBean.getGamescores()}" varStatus="loop">
+											<tr>
+												<td><h:outputText style="font-size: 10px;float:left;" value="#{score.getTeamname()}" /></td>
+												<td><h:outputText style="font-size: 10px;float:left;" value="#{score.getPeriod1goals()}" /></td>
+												<td><h:outputText style="font-size: 10px;float:left;" value="#{score.getPeriod2goals()}" /></td>
+												<td><h:outputText style="font-size: 10px;float:left;" value="#{score.getPeriod3goals()}" /></td>
+												<td><h:outputText style="font-size: 10px;float:left;" value="#{score.getPeriodOTgoals()}" /></td>
+												<td><h:outputText style="font-size: 10px;float:left;" value="#{score.getTotalgoals()}" /></td>
+											</tr>			
+										</ui:repeat>
+									</table>
+								</td>
+								<!-- this column is the shots by period column -->
+								<td style="width:50%" bgcolor="#f2f2f2">
+									<b>Shots</b>
+									<table cellpadding="5" cellspacing="0" border="1" width="100%">
+											<tr>
+												<th></th>
+												<th>1</th>
+												<th>2</th>
+												<th>3</th>
+												<th>OT</th>
+												<th>Totals</th>
+											</tr>
+										<ui:repeat var="score" value="#{boxscoreBean.getGamescores()}" varStatus="loop">
+											<tr>
+												<td><h:outputText style="font-size: 10px;float:left;" value="#{score.getTeamname()}" /></td>
+												<td><h:outputText style="font-size: 10px;float:left;" value="#{score.getPeriod1shots()}" /></td>
+												<td><h:outputText style="font-size: 10px;float:left;" value="#{score.getPeriod2shots()}" /></td>
+												<td><h:outputText style="font-size: 10px;float:left;" value="#{score.getPeriod3shots()}" /></td>
+												<td><h:outputText style="font-size: 10px;float:left;" value="#{score.getPeriod4shots()}" /></td>
+												<td><h:outputText style="font-size: 10px;float:left;" value="#{score.getTotalshots()}" /></td>
+											</tr>			
+										</ui:repeat>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</p:panel>
+					
+					<!-- power play totals -->
+					<p:panel padding="0" style="width:100%">
+						<f:facet name="header">
+							Powerplays
+						</f:facet>
+						<table cellpadding="5" cellspacing="0" border="0" width="100%">
+							<tr>
+								<!-- this column is away team-->
+								<td style="width:50%" bgcolor="#f2f2f2">
+								 	<table cellpadding="1">
+								 		<tr>
+								 			<td ><b><h:outputText style="font-size: 10px;float:left;" value="#{boxscoreBean.getAwayteam()}" /></b></td>
+								 			<td><h:outputText style="font-size: 10px;float:left;" value="#{boxscoreBean.getAwayppgoalcount()}" /></td>
+								 			<td><h:outputText style="font-size: 10px;float:left;" value="of" /></td>
+								 			<td><h:outputText style="font-size: 10px;float:left;" value="#{boxscoreBean.getAwayppcount()}" /></td>
+								 		</tr>
+								 	</table>
+								</td>
+								<!-- this column is the home team-->
+								<td style="width:50%" bgcolor="#f2f2f2">
+									<table cellpadding="1">
+								 		<tr>
+								 			<td ><b><h:outputText style="font-size: 10px;float:left;" value="#{boxscoreBean.getHometeam()}" /></b></td>
+								 			<td><h:outputText style="font-size: 10px;float:left;" value="#{boxscoreBean.getHomeppgoalcount()}" /></td>
+								 			<td><h:outputText style="font-size: 10px;float:left;" value="of" /></td>
+								 			<td><h:outputText style="font-size: 10px;float:left;" value="#{boxscoreBean.getHomeppcount()}" /></td>
+								 		</tr>
+								 	</table>
+								</td>
+							</tr>
+						</table>
+					</p:panel>
+					
+					
+										
+						
+					
+					
+				</p:outputPanel>
+		</h:form>
+</ui:define>
+</ui:composition>
+</f:view>
+</html>

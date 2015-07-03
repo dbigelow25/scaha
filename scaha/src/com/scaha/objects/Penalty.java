@@ -22,7 +22,24 @@ public class Penalty extends ScahaObject implements Serializable {
 	private int period = 0;
 	private String timeofpenalty = null;
 	private String minutes = null;
+	private String teamname = null;
+	private String playername = null;
 	
+	public String getTeamname() {
+		return teamname;
+	}
+
+	public void setTeamname(String value) {
+		this.teamname = value;
+	}
+	
+	public String getPlayername() {
+		return playername;
+	}
+
+	public void setPlayername(String value) {
+		this.playername = value;
+	}
 	
 	/**
 	 * @return the timeofpenalty
@@ -48,6 +65,11 @@ public class Penalty extends ScahaObject implements Serializable {
 	public Penalty(int _id, Profile _pro) {
 		ID = _id;		
 		this.setProfile(_pro);
+	}
+	
+	//this interface is used for the box score page
+	public Penalty(){
+		
 	}
 
 	/**

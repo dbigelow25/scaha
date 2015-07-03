@@ -23,8 +23,10 @@ import org.primefaces.event.SelectEvent;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Game;
+import com.scaha.objects.Penalty;
 import com.scaha.objects.Score;
 import com.scaha.objects.ScoreSummary;
+import com.scaha.objects.Stat;
 
 //import com.gbli.common.SendMailSSL;
 
@@ -62,24 +64,6 @@ public class gamecentralBean implements Serializable{
 	//for calendar and days of the week
 	private Date todaysdate = null;
 	
-	//variables for the box score page
-	private Integer homeclubid = null;
-	private Integer awayclubid = null;
-	private String homescore = null;
-	private String awayscore = null;
-	private String hometeam = null;
-	private String awayteam = null;
-	private String location = null;
-	private String statetag = null;
-	private String typetag = null;
-	private Score homescores;
-	private Score awayscores;
-	private List<ScoreSummary> period1;
-	private List<ScoreSummary> period2;
-	private List<ScoreSummary> period3;
-	private List<ScoreSummary> periodOT;
-	
-	
 	
 	@ManagedProperty(value="#{scahaBean}")
     private ScahaBean scaha;
@@ -112,77 +96,6 @@ public class gamecentralBean implements Serializable{
         
     }  
     
-    public void setHomeclubid(Integer value){
-    	homeclubid = value;
-    }
-    
-    public Integer getHomeclubid(){
-    	return homeclubid;
-    }
-    
-    public void setAwayclubid(Integer value){
-    	awayclubid = value;
-    }
-    
-    public Integer getAwayclubid(){
-    	return awayclubid;
-    }
-    
-    public void setHometeam(String value){
-    	hometeam = value;
-    }
-    
-    public String getHometeam(){
-    	return hometeam;
-    }
-    
-    public void setAwayteam(String value){
-    	awayteam = value;
-    }
-    
-    public String getAwayteam(){
-    	return awayteam;
-    }
-    
-    public void setHomescore(String value){
-    	homescore = value;
-    }
-    
-    public String getHomescore(){
-    	return homescore;
-    }
-    
-    public void setAwayscore(String value){
-    	awayscore = value;
-    }
-    
-    public String getAwayscore(){
-    	return awayscore;
-    }
-    
-    public void setLocation(String value){
-    	location = value;
-    }
-    
-    public String getLocation(){
-    	return location;
-    }
-    
-    public void setStatetag(String value){
-    	statetag = value;
-    }
-    
-    public String getStatetag(){
-    	return statetag;
-    }
-    
-    public void setTypetag(String value){
-    	typetag = value;
-    }
-    
-    public String getTypetag(){
-    	return typetag;
-    }
     
     public Integer getSelectedschedule(){
     	return selectedschedule;
@@ -369,6 +282,8 @@ public class gamecentralBean implements Serializable{
     public void setSundaydate(String value){
     	sundaydate=value;
     }
+    
+    
     
     public void closePage(){
     	FacesContext context = FacesContext.getCurrentInstance();
@@ -609,134 +524,6 @@ public class gamecentralBean implements Serializable{
 	}
 	
 	
-	//this method loads up the objects for the box score page
-	public void loadBoxscore(String gameid){
-		List<Score> scores = new ArrayList<Score>();
-		List<ScoreSummary> scoresummarys = new ArrayList<ScoreSummary>();
-		
-		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
-    	
-    	try{
-    		//need to load game details - score, location, date/time
-    		
-    		CallableStatement cs = db.prepareCall("CALL scaha.getScoreboardGameDetail(?)");
-    		
-    		cs.setInt("in_livegameid", Integer.parseInt(gameid));
-			rs = cs.executeQuery();
-			if (rs != null){
-				
-			}
-			rs.close();
-			
-			cs = db.prepareCall("CALL scaha.getScoreboardShotTotals(?)");
-    		cs.setInt("in_livegameid", Integer.parseInt(gameid));
-			rs = cs.executeQuery();
-			
-			if (rs != null){
-				
-				while (rs.next()) {
-					Score score = new Score();
-					score.setTeamname(rs.getString("teamname"));
-					score.setPeriod1goals(rs.getInt("period1goals"));
-					score.setPeriod1shots(rs.getInt("period1shots"));
-					score.setPeriod2goals(rs.getInt("period2goals"));
-					score.setPeriod2shots(rs.getInt("period2shots"));
-					score.setPeriod3goals(rs.getInt("period3goals"));
-					score.setPeriod3shots(rs.getInt("period3shots"));
-					score.setPeriod4shots(rs.getInt("period4goals"));
-					score.setPeriodOTgoals(rs.getInt("periodotgoals"));
-					score.setGoodpowerplays(rs.getInt("goodpowerplays"));
-					score.setTotalpowerplays(rs.getInt("totalpowerplays"));
-					score.setPowerplaypercentage(rs.getString("powerplaypercentage"));
-					score.setTotalshots(rs.getInt("totalshots"));
-					score.setTotalgoals(rs.getInt("totalgoals"));
-				
-					scores.add(score);
-				}
-				LOGGER.info("We have selected details for live game id:" + gameid);
-			}
-			
-			rs.close();
-			
-			cs = db.prepareCall("CALL scaha.getScoreboardGameScoringSummary(?)");
-    		cs.setInt("in_livegameid", Integer.parseInt(gameid));
-			rs = cs.executeQuery();
-			
-			if (rs != null){
-				
-				while (rs.next()) {
-					ScoreSummary ss = new ScoreSummary();
-					
-					ss.setAssist1(rs.getString("assist1"));
-					ss.setAssist2(rs.getString("assist2"));
-					ss.setGoalscorer(rs.getString("goalscorer"));
-					ss.setGoaltime(rs.getString("goaltime"));
-					ss.setTeamname(rs.getString("teamname"));
-					ss.setGoaltype(rs.getString("goaltype"));
-					ss.setPeriod(rs.getInt("period"));
-					
-					scoresummarys.add(ss);
-				}
-				LOGGER.info("We have selected details for live game id:" + gameid);
-			}
-			rs.close();
-			
-    		
-    		//need to load scoring by period
-			cs = db.prepareCall("CALL scaha.getScoreboardGameDetail(?)");
-    		
-    		cs.setInt("in_livegameid", Integer.parseInt(gameid));
-			rs = cs.executeQuery();
-			if (rs != null){
-				
-				while (rs.next()) {
-					this.awayclubid=rs.getInt("awayclubid");
-					this.homeclubid=rs.getInt("homeclubid");
-					this.hometeam=rs.getString("hometeam");
-					this.awayteam=rs.getString("awayteam");
-					this.homescore=rs.getString("homescore");
-					this.awayscore=rs.getString("awayscore");
-					
-				}
-				LOGGER.info("We have selected details for live game id:" + gameid);
-			}
-			rs.close();
-			
-			
-    		//need to load shots by period
-    		
-    		//need to load power plays by team
-    		
-    		//need to load scoring summary for either team by period.
-    		
-    		//need to load penalty summary by period
-    		
-    		//need to load home team player stats
-    		
-    		//need to load home team goalie stats
-    		
-    		//need to load away team player stats
-    		
-    		//need to load away team goalie stats
-    		
-			cs.close();
-			db.cleanup();
-    		
-    	} catch (SQLException e) {
-    		// TODO Auto-generated catch block
-    		LOGGER.info("ERROR IN retrieving selected date for schedule" + selectedschedule);
-    		e.printStackTrace();
-    	} finally {
-    		//
-    		// always clean up after yourself..
-    		//
-    		db.free();
-    	}
-		
-		
-		
-		
-		
-	}
+	
 }
 
