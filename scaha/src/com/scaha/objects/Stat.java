@@ -39,9 +39,18 @@ public class Stat extends ScahaObject implements Serializable {
 	private String shots=null;
 	private String saves=null;
 	private Integer id = null;
+	private String jersey = null;
 	
 	public Stat() {
 	
+	}
+	
+	public String getJersey(){
+		return jersey;
+	}
+	
+	public void setJersey(String value){
+		jersey=value;
 	}
 	
 	public Integer getId(){

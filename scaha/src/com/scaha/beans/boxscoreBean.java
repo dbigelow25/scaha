@@ -17,6 +17,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.primefaces.event.SelectEvent;
 
@@ -64,6 +65,14 @@ public class boxscoreBean implements Serializable{
 	private String awayppcount;
 	private String homeppgoalcount;
 	private String awayppgoalcount;
+	private Boolean noperiod1goals;
+	private Boolean noperiod2goals;
+	private Boolean noperiod3goals;
+	private Boolean noperiod4goals;
+	private Boolean noperiod1penalties;
+	private Boolean noperiod2penalties;
+	private Boolean noperiod3penalties;
+	private Boolean noperiod4penalties;
 	
 	
 	
@@ -78,13 +87,98 @@ public class boxscoreBean implements Serializable{
 	
 	@PostConstruct
     public void init() {
-		this.loadBoxscore("40107");
+		//set default flags for hiding some data
+		this.setNoperiod1goals(true);
+		this.setNoperiod2goals(true);
+		this.setNoperiod3goals(true);
+		this.setNoperiod4goals(true);
+		this.setNoperiod1penalties(true);
+		this.setNoperiod2penalties(true);
+		this.setNoperiod3penalties(true);
+		this.setNoperiod4penalties(true);
+		
+		
+		
+		//will need to load game detail
+		String gameid = null;
+		HttpServletRequest hsr = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+    	
+    	if(hsr.getParameter("id") != null)
+        {
+    		gameid = hsr.getParameter("id");
+        }
+		    	
+		this.loadBoxscore(gameid);
     	
 	}
 	
     public boxscoreBean() {  
         
     }  
+    
+    public void setNoperiod1goals(Boolean value){
+    	noperiod1goals=value;
+    }
+    
+    public Boolean getNoperiod1goals(){
+    	return noperiod1goals;
+    }
+    
+    public void setNoperiod2goals(Boolean value){
+    	noperiod2goals=value;
+    }
+    
+    public Boolean getNoperiod2goals(){
+    	return noperiod2goals;
+    }
+    
+    public void setNoperiod3goals(Boolean value){
+    	noperiod3goals=value;
+    }
+    
+    public Boolean getNoperiod3goals(){
+    	return noperiod3goals;
+    }
+    
+    public void setNoperiod4goals(Boolean value){
+    	noperiod4goals=value;
+    }
+    
+    public Boolean getNoperiod4goals(){
+    	return noperiod4goals;
+    }
+    
+    public void setNoperiod1penalties(Boolean value){
+    	noperiod1penalties=value;
+    }
+    
+    public Boolean getNoperiod1penalties(){
+    	return noperiod1penalties;
+    }
+    
+    public void setNoperiod2penalties(Boolean value){
+    	noperiod2penalties=value;
+    }
+    
+    public Boolean getNoperiod2penalties(){
+    	return noperiod2penalties;
+    }
+    
+    public void setNoperiod3penalties(Boolean value){
+    	noperiod3penalties=value;
+    }
+    
+    public Boolean getNoperiod3penalties(){
+    	return noperiod3penalties;
+    }
+    
+    public void setNoperiod4penalties(Boolean value){
+    	noperiod4penalties=value;
+    }
+    
+    public Boolean getNoperiod4penalties(){
+    	return noperiod4penalties;
+    }
     
     public void setGamehomestats(List<Stat> value){
     	gamehomestats = value;
@@ -326,6 +420,8 @@ public class boxscoreBean implements Serializable{
 					this.homescore=rs.getString("homescore");
 					this.awayscore=rs.getString("awayscore");
 					this.location=rs.getString("location");
+					this.statetag=rs.getString("statetag");
+					this.typetag=rs.getString("typetag");
 				}
 				LOGGER.info("We have selected details for live game id:" + gameid);
 			}
@@ -375,7 +471,9 @@ public class boxscoreBean implements Serializable{
 					ss.setGoaltime(rs.getString("goaltime"));
 					ss.setTeamname(rs.getString("teamname"));
 					ss.setGoaltype(rs.getString("goaltype"));
-					ss.setPeriod(rs.getInt("period"));
+					Integer period = rs.getInt("period");
+					setSummaryPeriodFlags(period);
+					ss.setPeriod(period);
 					
 					scoresummarys.add(ss);
 				}
@@ -410,12 +508,15 @@ public class boxscoreBean implements Serializable{
 				
 				while (rs.next()) {
 					Penalty pen = new Penalty();
-					pen.setPeriod(rs.getInt("period"));
+					Integer period = rs.getInt("period");
+					this.setSummaryPeriodPenaltyFlags(period);
+					
+					pen.setPeriod(period);
 					pen.setTeamname(rs.getString("teamname"));
-					pen.setPlayername("playername");
-					pen.setPenaltytype("penaltytype");
-					pen.setMinutes("minutes");
-					pen.setTimeofpenalty("penaltytime");
+					pen.setPlayername(rs.getString("playername"));
+					pen.setPenaltytype(rs.getString("penaltytype"));
+					pen.setMinutes(rs.getString("minutes"));
+					pen.setTimeofpenalty(rs.getString("penaltytime"));
 					
 					penalties.add(pen);
 				}
@@ -432,6 +533,7 @@ public class boxscoreBean implements Serializable{
 				
 				while (rs.next()) {
 					Stat stat = new Stat();
+					stat.setJersey(rs.getString("jerseynumber"));
 					stat.setPlayername(rs.getString("playername"));
 					stat.setGoals(rs.getString("goals"));
 					stat.setAssists(rs.getString("assists"));
@@ -454,6 +556,7 @@ public class boxscoreBean implements Serializable{
 				
 				while (rs.next()) {
 					Stat stat = new Stat();
+					stat.setJersey(rs.getString("jerseynumber"));
 					stat.setPlayername(rs.getString("playername"));
 					stat.setShots(rs.getString("shots"));
 					stat.setSaves(rs.getString("saves"));
@@ -473,6 +576,7 @@ public class boxscoreBean implements Serializable{
 				
 				while (rs.next()) {
 					Stat stat = new Stat();
+					stat.setJersey(rs.getString("jerseynumber"));
 					stat.setPlayername(rs.getString("playername"));
 					stat.setGoals(rs.getString("goals"));
 					stat.setAssists(rs.getString("assists"));
@@ -494,6 +598,7 @@ public class boxscoreBean implements Serializable{
 				
 				while (rs.next()) {
 					Stat stat = new Stat();
+					stat.setJersey(rs.getString("jerseynumber"));
 					stat.setPlayername(rs.getString("playername"));
 					stat.setShots(rs.getString("shots"));
 					stat.setSaves(rs.getString("saves"));
@@ -526,6 +631,42 @@ public class boxscoreBean implements Serializable{
 		setGamehomegoaliestats(homegoaliestats);
 		setGameawaystats(awaystats);
 		setGameawaygoaliestats(awaygoaliestats);
+	}
+	
+	public void setSummaryPeriodFlags(Integer period){
+		if (period==1){
+			this.setNoperiod1goals(false);
+		}
+		
+		if (period==2){
+			this.setNoperiod2goals(false);
+		}
+		
+		if (period==3){
+			this.setNoperiod3goals(false);
+		}
+		
+		if (period==4){
+			this.setNoperiod4goals(false);
+		}
+	}
+	
+	public void setSummaryPeriodPenaltyFlags(Integer period){
+		if (period==1){
+			this.setNoperiod1penalties(false);
+		}
+		
+		if (period==2){
+			this.setNoperiod2penalties(false);
+		}
+		
+		if (period==3){
+			this.setNoperiod3penalties(false);
+		}
+		
+		if (period==4){
+			this.setNoperiod4penalties(false);
+		}
 	}
 }
 

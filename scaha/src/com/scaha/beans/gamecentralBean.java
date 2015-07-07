@@ -60,6 +60,7 @@ public class gamecentralBean implements Serializable{
 	private String fridaydate = null;
 	private String saturdaydate = null;
 	private String sundaydate = null;
+	private String eligibledates = null;
 	
 	//for calendar and days of the week
 	private Date todaysdate = null;
@@ -90,12 +91,23 @@ public class gamecentralBean implements Serializable{
         
         //setting todays date for the calendar
         this.setTodaysdate(Calendar.getInstance().getTime());
+        
+        //lets load the dates that have games
+        setGameDays();
+        
     }
 	
     public gamecentralBean() {  
         
     }  
     
+    public void setEligibledates(String value){
+    	this.eligibledates=value;
+    }
+    
+    public String getEligibledates(){
+    	return this.eligibledates;
+    }
     
     public Integer getSelectedschedule(){
     	return selectedschedule;
@@ -303,7 +315,7 @@ public class gamecentralBean implements Serializable{
     	this.selectedschedule=0;
     	
     	loadGamesfordate();
-		
+    	setGameDays();
 	}
     
     public String getDisplayDate(){
@@ -519,11 +531,66 @@ public class gamecentralBean implements Serializable{
 		
     	
     	this.loadGamesfordate();
-		
+    	setGameDays();
 		
 	}
 	
+	public void gotoBoxscore(Game game){
+		String gameid = game.getIdlivegame().toString();
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+    	try{
+    		context.getExternalContext().redirect("boxscore.xhtml?id=" + gameid);
+    	} catch (Exception e){
+			e.printStackTrace();
+		}
+	}
 	
+	public void setGameDays(){
+		List<String> tempdates = new ArrayList<String>();
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	
+    	try{
+    		//lets get the list of game dates for the month of the date specified
+    		CallableStatement cs = db.prepareCall("CALL scaha.getGamedatesformonth(?,?,?)");
+    		
+    		DateFormat df=new SimpleDateFormat("yyyy-MM-dd");
+        	String tempdate = df.format(this.selecteddate);
+        	
+    		cs.setString("selecteddate", tempdate);
+    		cs.setInt("selectedschedule", this.selectedschedule);
+    		cs.setString("in_seasontag", this.selectedseason);
+			rs = cs.executeQuery();
+			
+			Boolean what = true;
+			if (rs != null){
+				while (rs.next()) {
+					tempdates.add("\"" + rs.getString("actdate") + "\"");
+					what = false;
+				}
+				
+			}
+			
+			if (what){
+				tempdates.add("1900-01-01");
+			}
+			
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN retrieving selected date for schedule" + selectedschedule);
+    		e.printStackTrace();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+		
+    	setEligibledates(tempdates.toString());
+    	
+    	
+	}
 	
 }
 
