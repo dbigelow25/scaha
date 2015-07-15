@@ -40,6 +40,7 @@ import com.scaha.objects.LiveGameList;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.Member;
 import com.scaha.objects.MemberList;
+import com.scaha.objects.MultiMedia;
 import com.scaha.objects.Participant;
 import com.scaha.objects.ParticipantList;
 import com.scaha.objects.Profile;
@@ -72,7 +73,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 	private ScheduleList scahaschedule = null;
 	private YearList scahayearlist = null;
 	private StatsList scahastatslist = null;
-	
+	private MultiMedia noimage = null;
 	private Profile DefaultProfile = null;
 	
 	
@@ -87,6 +88,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 		 this.setDefaultProfile(new Profile());
 		 this.setExecutiveboard();
 		 this.setMeetingminutes();
+		 this.loadNoimage();
 		 this.refreshBean();
 		 LOGGER.info("******************* FINISH: SCAHA BEAN INIT... ***********************");
 	 }
@@ -382,6 +384,7 @@ public class ScahaBean implements Serializable,  MailableObject {
 		return null;
 	}
 
+	
 	
 	/**
 	 * We return all Exhibition teams in a list
@@ -729,6 +732,14 @@ public class ScahaBean implements Serializable,  MailableObject {
 		ScahaLiveGameList = scahaLiveGameList;
 	}
 	
+	public void setNoimage(MultiMedia mm){
+		this.noimage = mm;
+	}
+	
+	public MultiMedia getNoimage(){
+		return this.noimage;
+	}
+	
 	public StreamedContent getClubLogoByParmId() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		String get = context.getExternalContext().getRequestParameterMap().get("target");
@@ -812,4 +823,25 @@ public class ScahaBean implements Serializable,  MailableObject {
 		
 		return templist;			
 	}
+	
+	public void loadNoimage(){
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		try{
+			PreparedStatement ps = db.prepareStatement("call scaha.getMultiMedia(?,?,?)");
+			MultiMedia mm = new MultiMedia(this.DefaultProfile, "CLUB", 35, "LOGO");
+			mm.get(ps);
+			this.setNoimage(mm);
+		} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN loading no image logo");
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+	}
+		
 }

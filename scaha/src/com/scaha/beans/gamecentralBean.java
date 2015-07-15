@@ -5,6 +5,7 @@ import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,16 +18,15 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.primefaces.event.SelectEvent;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.Game;
-import com.scaha.objects.Penalty;
-import com.scaha.objects.Score;
-import com.scaha.objects.ScoreSummary;
-import com.scaha.objects.Stat;
+import com.scaha.objects.Schedule;
+import com.scaha.objects.Season;
 
 //import com.gbli.common.SendMailSSL;
 
@@ -40,11 +40,14 @@ public class gamecentralBean implements Serializable{
 	transient private ResultSet rs = null;
 	//lists for generated datamodels
 	private List<Game> listofgames = null;
+	private List<Season> seasons = null;
+	private List<Schedule> schedules = null;
 	
 	//bean level properties used by multiple methods
 	private Date selecteddate = null;
 	private String selectedseason = null;
 	private Integer selectedschedule = null;
+	private Integer selectedgame = null;
 	private String mondaylink = null;
 	private String tuesdaylink = null;
 	private String wednesdaylink = null;
@@ -77,11 +80,39 @@ public class gamecentralBean implements Serializable{
 	
 	@PostConstruct
     public void init() {
-	    Date date = new Date();
-        this.setSelecteddate(date);
-        this.setTodaysdate(date);
-        this.setSelectedschedule(0);
-        this.selectedseason = scoreboard.getSelectedseason().getTag();
+		HttpServletRequest hsr = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		
+    	if(hsr.getParameter("schedule") != null)
+        {
+    		this.selectedschedule = Integer.parseInt(hsr.getParameter("schedule"));
+        } else {
+        	this.setSelectedschedule(0);
+        }
+    	
+    	if(hsr.getParameter("season") != null)
+        {
+    		this.selectedseason = hsr.getParameter("season");
+        } else {
+        	this.selectedseason = scoreboard.getSelectedseason().getTag();
+        }
+    	
+    	if(hsr.getParameter("selecteddate") != null)
+        {
+			Integer provideddate = Integer.parseInt(hsr.getParameter("selecteddate"));
+			getDatefromGame(provideddate);
+		}else{
+        	Date date = new Date();
+            this.setSelecteddate(date);
+            this.setTodaysdate(date);
+        }
+		
+		
+        //need to load the schedule list
+    	loadScheduleList();
+        
+        
+        //need to load the seasons in the menu list.
+        loadSeasons();
         
         //ok now we need to set the values for the weekday breadcrumbs
         setWeekdaybreadcrumbs();
@@ -100,6 +131,30 @@ public class gamecentralBean implements Serializable{
     public gamecentralBean() {  
         
     }  
+    
+    public void setSelectedgame(Integer value){
+    	selectedgame=value;
+    }
+    
+    public Integer getSelectedgame(){
+    	return selectedgame;
+    }
+    
+    public List<Schedule> getSchedules(){
+    	return schedules;
+    }
+    
+    public void setSchedules(List<Schedule> list){
+    	schedules=list;
+    }
+    
+    public List<Season> getSeasons(){
+    	return seasons;
+    }
+    
+    public void setSeasons(List<Season> list){
+    	seasons=list;
+    }
     
     public void setEligibledates(String value){
     	this.eligibledates=value;
@@ -308,15 +363,7 @@ public class gamecentralBean implements Serializable{
     }
     
     
-    public void onSeasonChange(){
-    	//need to execute on season change for scoreboard bean
-    	scoreboard.onSeasonChange();
-    	this.selectedseason = scoreboard.getSelectedseason().getTag();
-    	this.selectedschedule=0;
-    	
-    	loadGamesfordate();
-    	setGameDays();
-	}
+    
     
     public String getDisplayDate(){
     	DateFormat df=new SimpleDateFormat("MM/dd/yyyy");
@@ -493,8 +540,71 @@ public class gamecentralBean implements Serializable{
 	    
 	}
 	
+	public void onSeasonChange(){
+		List<Schedule> data = new ArrayList<Schedule>();
+		
+    	this.selectedschedule=0;
+    	
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	
+    	try{
+    		//lets get the list of games for the date specified.
+    		CallableStatement cs = db.prepareCall("CALL scaha.getSeasonDate(?)");
+    		
+    		cs.setString("in_seasontag", this.selectedseason);
+			rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					this.selecteddate=rs.getDate(1);
+				}
+				LOGGER.info("We have selected date for schedule:" + selectedschedule);
+			}
+			rs.close();
+			cs.close();
+			
+			cs = db.prepareCall("CALL scaha.getScoreboardSchedulesBySeasonTag(?)");
+    		cs.setString("in_SeasonTag", this.getSelectedseason());
+			rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					Schedule sch = new Schedule(rs.getInt("idschedule"));
+					sch.setDescription(rs.getString("description"));
+					
+					data.add(sch);
+				}
+				LOGGER.info("We have results for divisions");
+			}
+			rs.close();
+			cs.close();
+			db.cleanup();
+    		
+			
+		
+    		
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN retrieving selected date for schedule" + selectedschedule);
+    		e.printStackTrace();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+		
+    	
+    	setSchedules(data);
+    	this.loadGamesfordate();
+    	setGameDays();
+    		
+    	
+	}
+	
 	public void onScheduleChange(){
-		this.selectedschedule = scoreboard.getSelectedscheduleid();
 		
 		//if schedule is not from this season need to get last day of the schedule otherwise
 		//use today's date the following stored procedure determines which date to use.  this is for populating the calendar.
@@ -592,5 +702,137 @@ public class gamecentralBean implements Serializable{
     	
 	}
 	
+	public void loadSeasons(){
+		List<Season> templist = new ArrayList<Season>();
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	
+    	try{
+    		//first get team name
+    		CallableStatement cs = db.prepareCall("CALL scaha.getAllSeasonsByType('SCAHA')");
+			rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					String seasonid = rs.getString("tag");
+					String seasonname = rs.getString("Description");
+					
+					Season season = new Season();
+					season.setSeasonid(seasonid);
+					season.setSeasonname(seasonname);
+					
+					templist.add(season);
+				}
+				LOGGER.info("We have results for seasons");
+			}
+			rs.close();
+			
+			db.cleanup();
+    		
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN loading teams");
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+		
+    	setSeasons(templist);
+    	
+	}
+	
+	public void loadScheduleList(){
+		List<Schedule> data = new ArrayList<Schedule>();
+		
+    	
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	
+    	try{
+    		CallableStatement cs = db.prepareCall("CALL scaha.getScoreboardSchedulesBySeasonTag(?)");
+    		cs.setString("in_SeasonTag", this.getSelectedseason());
+			rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					Schedule sch = new Schedule(rs.getInt("idschedule"));
+					sch.setDescription(rs.getString("description"));
+					
+					data.add(sch);
+				}
+				LOGGER.info("We have results for divisions");
+			}
+			rs.close();
+			cs.close();
+			db.cleanup();
+    		
+			
+		
+    		
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN retrieving selected date for schedule" + selectedschedule);
+    		e.printStackTrace();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+		
+    	
+    	setSchedules(data);
+	}
+
+	public void getDatefromGame(Integer gameid){
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	
+    	try{
+    		CallableStatement cs = db.prepareCall("CALL scaha.getDatefromgame(?,?)");
+    		cs.setInt("in_gameid", gameid);
+    		cs.setString("in_selectedseason", this.selectedseason);
+    		
+			rs = cs.executeQuery();
+			
+			Date gamedate = null;
+			Date date = new Date();
+			this.setTodaysdate(date);
+			if (rs != null){
+				
+				while (rs.next()) {
+								
+					gamedate = rs.getDate("actdate");
+				}
+				LOGGER.info("We have results for divisions");
+			}
+			rs.close();
+			cs.close();
+			db.cleanup();
+    		
+			if (gamedate==null){
+				this.setSelecteddate(date);
+	        }else{
+	        	this.setSelecteddate(gamedate);
+			}
+		
+    		
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN retrieving selected date for schedule" + selectedschedule);
+    		e.printStackTrace();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+		
+
+	}
 }
 

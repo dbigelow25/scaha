@@ -193,14 +193,17 @@ public class ClubBean implements Serializable,  MailableObject {
 			//
 			// ok.. through some text up as a defaul ..
 			//
-				BufferedImage bufferedImg = new BufferedImage(100, 25, BufferedImage.TYPE_INT_RGB);  
+				/*BufferedImage bufferedImg = new BufferedImage(100, 25, BufferedImage.TYPE_INT_RGB);  
 	            Graphics2D g2 = bufferedImg.createGraphics();  
 	            g2.drawString("NO IMG", 10, 10);  
 	            ByteArrayOutputStream os = new ByteArrayOutputStream();  
 				ImageIO.write(bufferedImg, "png", os);
 				return new DefaultStreamedContent(new ByteArrayInputStream(os.toByteArray()), "image/png");
+				*/
+			
+				return scaha.getNoimage().getStreamedContent();
 
-            } catch (IOException e) {
+            } catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}  
@@ -214,15 +217,18 @@ public class ClubBean implements Serializable,  MailableObject {
 		FacesContext context = FacesContext.getCurrentInstance();
 		String get = context.getExternalContext().getRequestParameterMap().get("target");
 	    if (get == null) {
-    		return new DefaultStreamedContent();
+    		//return new DefaultStreamedContent();
+	    	return scaha.getNoimage().getStreamedContent();
 	    } else if (get.length() == 0) {
-    		return new DefaultStreamedContent();
+    		//return new DefaultStreamedContent();
+    		return scaha.getNoimage().getStreamedContent();
 	    }
     	int id = Integer.parseInt(get);
 	    Club myclub  = scaha.findClubByID(id);
 	    if (myclub == null) {
 			LOGGER.info("*** Could not find club... for id LOGO ID IS (" + get + ") ");
-    		return new DefaultStreamedContent();
+    		//return new DefaultStreamedContent();
+			return scaha.getNoimage().getStreamedContent();
 	    }
 	    
 	    LOGGER.info("*** club is...("+ myclub + ") for id LOGO ID IS (" + get + ") ");
@@ -240,15 +246,18 @@ public class ClubBean implements Serializable,  MailableObject {
 		}*/
 		
 		if (get == null) {
-    		return new DefaultStreamedContent();
+    		//return new DefaultStreamedContent();
+			return scaha.getNoimage().getStreamedContent();
 	    } else if (get.length() == 0) {
-    		return new DefaultStreamedContent();
+    		//return new DefaultStreamedContent();
+	    	return scaha.getNoimage().getStreamedContent();
 	    }
     	int id = Integer.parseInt(get);
 	    Club myclub  = scaha.findClubByID(id);
 	    if (myclub == null) {
 			LOGGER.info("*** Could not find club... for id LOGO ID IS (" + get + ") ");
-    		return new DefaultStreamedContent();
+    		//return new DefaultStreamedContent();
+			return scaha.getNoimage().getStreamedContent();
 	    }
 	    
 	    LOGGER.info("*** club is...("+ myclub + ") for id LOGO ID IS (" + get + ") ");

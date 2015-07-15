@@ -40,14 +40,14 @@
 										<tr bgcolor="#fcfcfc">
 											<td width="100"><div class="NewsTitle">Scoreboard:</div></td>
 											<td>
-												<p:selectOneMenu styleClass="ddlistbox" id="myseasons" value="#{scoreboardBean.selectedseasonid}" >
+												<p:selectOneMenu styleClass="ddlistbox" id="myseasons" value="#{gamecentralBean.selectedseason}" >
 								       	   			<f:selectItem style="font-size:10pt;" itemLabel="Select a Season..." itemValue="0" />
-								           			<f:selectItems value="#{scoreboardBean.getSeasonlist()}"  var="season"  itemLabel="#{season.getDescription()}" itemValue="#{season.getKey()}"/>
+								           			<f:selectItems value="#{gamecentralBean.getSeasons()}"  var="season"  itemLabel="#{season.getSeasonname()}" itemValue="#{season.getSeasonid()}"/>
 								           			<p:ajax listener="#{gamecentralBean.onSeasonChange()}" process="@this" update="@form"/>
 								       			</p:selectOneMenu>
-								  				<p:selectOneMenu styleClass="ddlistbox"  id="myschedules" value="#{scoreboardBean.selectedscheduleid}" >
+								  				<p:selectOneMenu styleClass="ddlistbox"  id="myschedules" value="#{gamecentralBean.selectedschedule}" >
 								         			<f:selectItem style="font-size:10pt;" itemLabel="Select a Schedule..." itemValue="0" />
-								          			<f:selectItems  value="#{scoreboardBean.getSchedulelist()}" var="schedule" itemLabel="#{schedule.getDescription()}" itemValue="#{schedule.getKey()}" />
+								          			<f:selectItems  value="#{gamecentralBean.getSchedules()}" var="schedule" itemLabel="#{schedule.getDescription()}" itemValue="#{schedule.getKey()}" />
 								          			<p:ajax listener="#{gamecentralBean.onScheduleChange()}" process="@this" update="@form"/>
 								        		</p:selectOneMenu>	
 												 &nbsp;&nbsp;<b>for <h:outputText value="#{gamecentralBean.getDisplayDate()}" /></b>
@@ -115,18 +115,24 @@
 							<td >
 								<p:panel padding="0" style="width:250px">
 									<f:facet name="header">
-										<h:outputText style="font-size: 10px;float:left;" value="#{game.getGametime()} - #{game.getDisplaydivision()}" />
-										<h:outputText style="font-size: 10px;float:right;" value="#{game.getStatus()}" />
+										<h:outputText style="float:left;" value="#{game.getGametime()} - #{game.getDisplaydivision()}" />
+										<h:outputText style="float:right;" value="#{game.getStatus()}" />
 									</f:facet>
-						             <table cellpadding="10" cellspacing="0" border="1" style="border-color:#fcfcfc;" width="100%">
+						             <table cellpadding="2" cellspacing="0" border="0" width="100%">
 										<tr>
-											<td width="30">
+											<td width="30" >
 												<p:graphicImage value="#{clubBean.getClubLogoByParmId()}"  width="30" height="30">
 									            	<f:param id="target" name="target" value="#{game.getAwayclubid()}" />
 											 	</p:graphicImage> 
 											</td>
-											<th width="205" align="left"><h:outputText style="font-size: 10px;" value="#{game.getAwayteam()}" /></th>
-											<th width="15"><h:outputText style="font-size: 10px;" value="#{game.getAwayscore()}" /></th>
+											<td width="205" align="left"><h:outputText  value="#{game.getAwayteam()}" /></td>
+											<td width="15"><h:outputText  value="#{game.getAwayscore()}" /></td>
+										</tr>
+										<tr>
+											<td colspan="3">
+												<p:separator style="width:100%;" />
+											</td>
+											
 										</tr>
 										<tr>
 											<td width="30">
@@ -134,13 +140,15 @@
 									            	<f:param id="targethome" name="targethome" value="#{game.getHomeclubid()}" />
 											 	</p:graphicImage> 
 											</td>
-											<th width="205" align="left"><h:outputText style="font-size: 10px;" value="#{game.getHometeam()}" /></th>
-											<th width="15"><h:outputText style="font-size: 10px;" value="#{game.getHomescore()}" /></th>
+											<td width="205" align="left"><h:outputText value="#{game.getHometeam()}" /></td>
+											<td width="15"><h:outputText  value="#{game.getHomescore()}" /></td>
 										</tr>
 									</table>
 									<f:facet name="footer">
 										<div align="center">
-											<a href="boxscore.xhtml?id=#{game.getIdlivegame().toString()}">boxscore</a> | <a href="">gamesheet</a></div>
+											<a href="boxscore.xhtml?id=#{game.getIdlivegame().toString()}&amp;selecteddate=#{gamecentralBean.getSelecteddate().toString()}&amp;schedule=#{gamecentralBean.getSelectedschedule()}&amp;season=#{gamecentralBean.getSelectedseason()}">boxscore</a>
+											| <a href="">gamesheet</a></div>
+											
 									</f:facet>
 						            
 								</p:panel>

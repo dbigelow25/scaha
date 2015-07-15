@@ -40,9 +40,17 @@ public class boxscoreBean implements Serializable{
 
 	transient private ResultSet rs = null;
 	//lists for generated datamodels
+	private List<Score> gamescores;
+	private List<ScoreSummary> summaryscoring;
+	private List<Penalty> gamepenalties;
+	private List<Stat> gamehomestats;
+	private List<Stat> gamehomegoaliestats;
+	private List<Stat> gameawaystats;
+	private List<Stat> gameawaygoaliestats;
 	
 	
 	//bean level properties used by multiple methods
+	
 	
 	//variables for the box score page
 	private Integer homeclubid = null;
@@ -54,13 +62,6 @@ public class boxscoreBean implements Serializable{
 	private String location = null;
 	private String statetag = null;
 	private String typetag = null;
-	private List<Score> gamescores;
-	private List<ScoreSummary> summaryscoring;
-	private List<Penalty> gamepenalties;
-	private List<Stat> gamehomestats;
-	private List<Stat> gamehomegoaliestats;
-	private List<Stat> gameawaystats;
-	private List<Stat> gameawaygoaliestats;
 	private String homeppcount;
 	private String awayppcount;
 	private String homeppgoalcount;
@@ -73,7 +74,10 @@ public class boxscoreBean implements Serializable{
 	private Boolean noperiod2penalties;
 	private Boolean noperiod3penalties;
 	private Boolean noperiod4penalties;
-	
+	private String selecteddate = null;
+	private String selectedseason = null;
+	private String selectedschedule = null;
+	private String selectedgame = null;
 	
 	
 	@ManagedProperty(value="#{scahaBean}")
@@ -100,21 +104,71 @@ public class boxscoreBean implements Serializable{
 		
 		
 		//will need to load game detail
-		String gameid = null;
 		HttpServletRequest hsr = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+    	
+    	if(hsr.getParameter("selecteddate") != null)
+        {
+    		this.selecteddate = hsr.getParameter("selecteddate");
+        }
+		
+    	if(hsr.getParameter("schedule") != null)
+        {
+    		this.selectedschedule = hsr.getParameter("schedule");
+        }
+    	
+    	if(hsr.getParameter("season") != null)
+        {
+    		this.selectedseason = hsr.getParameter("season");
+        }
     	
     	if(hsr.getParameter("id") != null)
         {
-    		gameid = hsr.getParameter("id");
+    		selectedgame = hsr.getParameter("id");
         }
 		    	
-		this.loadBoxscore(gameid);
+		this.loadBoxscore(selectedgame);
+    	
+    	
+		//this.loadBoxscore(gameid);
     	
 	}
 	
     public boxscoreBean() {  
         
     }  
+    
+    public String getSelectedgame(){
+    	return selectedgame;
+    }
+    
+    public void setSelectedgame(String value){
+    	selectedgame=value;
+    }
+    
+    
+    public String getSelecteddate(){
+    	return selecteddate;
+    }
+    
+    public void setSelecteddate(String value){
+    	selecteddate=value;
+    }
+    
+    public String getSelectedseason(){
+    	return selectedseason;
+    }
+    
+    public void setSelectedseason(String value){
+    	selectedseason=value;
+    }
+    
+    public String getSelectedschedule(){
+    	return selectedschedule;
+    }
+    
+    public void setSelectedschedule(String value){
+    	selectedschedule = value;
+    }
     
     public void setNoperiod1goals(Boolean value){
     	noperiod1goals=value;
@@ -382,7 +436,7 @@ public class boxscoreBean implements Serializable{
     public void closePage(){
     	FacesContext context = FacesContext.getCurrentInstance();
     	try{
-    		context.getExternalContext().redirect("Welcome.xhtml");
+    		context.getExternalContext().redirect("gamecentral.xhtml?selecteddate=" + this.selectedgame + "&schedule=" + this.selectedschedule + "&season=" + this.selectedseason);
     	} catch (Exception e){
 			e.printStackTrace();
 		}
@@ -406,9 +460,10 @@ public class boxscoreBean implements Serializable{
     	
     	try{
     		//need to load game details - score, location, date/time
-    		CallableStatement cs = db.prepareCall("CALL scaha.getScoreboardGameDetail(?)");
+    		CallableStatement cs = db.prepareCall("CALL scaha.getScoreboardGameDetail(?,?)");
     		
     		cs.setInt("in_livegameid", Integer.parseInt(gameid));
+    		cs.setString("in_selectedseason", this.selectedseason);
 			rs = cs.executeQuery();
 			if (rs != null){
 				
@@ -428,8 +483,9 @@ public class boxscoreBean implements Serializable{
 			rs.close();
 			
 			//need to load shots by period
-			cs = db.prepareCall("CALL scaha.getScoreboardShotTotals(?)");
+			cs = db.prepareCall("CALL scaha.getScoreboardShotTotals(?,?)");
     		cs.setInt("in_livegameid", Integer.parseInt(gameid));
+    		cs.setString("in_selectedseason", this.selectedseason);
 			rs = cs.executeQuery();
 			
 			if (rs != null){

@@ -22,8 +22,8 @@ import org.primefaces.event.FileUploadEvent;
 
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
+import com.scaha.objects.Family;
 import com.scaha.objects.FamilyMember;
-import com.scaha.objects.FileUploadController;
 import com.scaha.objects.Reportcard;
 import com.scaha.objects.ReportcardDataModel;
 import com.scaha.objects.ReportcardFileUploadController;
@@ -42,6 +42,7 @@ public class reportcardBean implements Serializable {
 	@ManagedProperty(value="#{profileBean}")
 	private ProfileBean pb;
 
+	
 	transient private ResultSet rs = null;
 	//lists for generated datamodels
 	private List<Reportcard> reportcards = null;
@@ -463,6 +464,7 @@ public class reportcardBean implements Serializable {
     		rs.close();
     		db.cleanup();
     		
+    		
     	} catch (SQLException e) {
     		// TODO Auto-generated catch block
     		LOGGER.info("ERROR IN getting results for scholar athletes");
@@ -473,6 +475,14 @@ public class reportcardBean implements Serializable {
     	}
     	
     	try{
+    		
+    		//lets clear out old family object
+    		pb.getProfile().getPerson().setFam(null);
+    		
+    		//lets create updated family object and add to the profile.
+    		Family fm = new Family(db,pb.getProfile().getPerson());
+    		pb.getProfile().getPerson().setFam(fm);
+    		
     		context.getExternalContext().redirect(this.redirect);
     	} catch (IOException e) {
     		// TODO Auto-generated catch block
