@@ -81,8 +81,15 @@ public class gamecentralBean implements Serializable{
 	@PostConstruct
     public void init() {
 		HttpServletRequest hsr = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		String initial = "";
+		if(hsr.getParameter("initial") != null)
+        {
+    		initial = hsr.getParameter("initial");
+        } else {
+        	this.setSelectedschedule(0);
+        }
 		
-    	if(hsr.getParameter("schedule") != null)
+		if(hsr.getParameter("schedule") != null)
         {
     		this.selectedschedule = Integer.parseInt(hsr.getParameter("schedule"));
         } else {
@@ -92,6 +99,9 @@ public class gamecentralBean implements Serializable{
     	if(hsr.getParameter("season") != null)
         {
     		this.selectedseason = hsr.getParameter("season");
+    		if (initial.equals("yes")){
+    			this.onSeasonChange();
+    		}
         } else {
         	this.selectedseason = scoreboard.getSelectedseason().getTag();
         }
@@ -101,9 +111,12 @@ public class gamecentralBean implements Serializable{
 			Integer provideddate = Integer.parseInt(hsr.getParameter("selecteddate"));
 			getDatefromGame(provideddate);
 		}else{
-        	Date date = new Date();
-            this.setSelecteddate(date);
-            this.setTodaysdate(date);
+			Date date = new Date();
+			if (initial.equals("")){
+				this.setSelecteddate(date);
+    		}
+			this.setTodaysdate(date);
+            
         }
 		
 		
@@ -410,6 +423,7 @@ public class gamecentralBean implements Serializable{
 					String displaydivision = rs.getString("displaydivision");
 					Integer homeclubid = rs.getInt("homeclubid");
 					Integer awayclubid = rs.getInt("awayclubid");
+					Boolean boxscore = rs.getBoolean("boxscore");
 					
 					
 					Game game = new Game();
@@ -425,6 +439,7 @@ public class gamecentralBean implements Serializable{
 					game.setDisplaydivision(displaydivision);
 					game.setHomeclubid(homeclubid);
 					game.setAwayclubid(awayclubid);
+					game.setRenderboxscore(boxscore);
 					templist.add(game);
 				}
 				LOGGER.info("We have game list results for the daet:" + this.selecteddate);

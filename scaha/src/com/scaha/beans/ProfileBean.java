@@ -219,6 +219,14 @@ public class ProfileBean implements Serializable,  MailableObject  {
 		}
 	}
     
+    public void scoreboard(){
+    	FacesContext context = FacesContext.getCurrentInstance();
+		try{
+			context.getExternalContext().redirect("gamecentral.xhtml?season=SCAHA-1415&initial=yes");
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+    }
     
     public void verifySU(){
  		FacesContext context = FacesContext.getCurrentInstance();

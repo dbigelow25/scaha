@@ -22,11 +22,16 @@
 	<h:outputText style="font-size: 10px;" value="#{game.getAwayteam()}" /> <h:outputText style="font-size: 10px;" value="#{game.getAwayscore()}" />
 	<h:outputText style="font-size: 10px;" value="#{game.getHometeam()}" /> <h:outputText style="font-size: 10px;" value="#{game.getHomescore()}" />
 </p:carousel> -->
-
-
+<p:separator />
+		<p:panel >
+		
+		<f:facet name="footer">
+			Copyright 2015.  Website maintained by <a href="mailto:lahockeyfan2@yahoo.com;dbigelow@the-rinks.com?subject=SCAHA Website">Rob Foster/Dave Bigelow</a>
+		</f:facet>
+	  
 		<h:form id="scheduleform">
 			<div align="center" width="100%"><p:commandButton id="closetransfers" value="Back to Scoreboard" ajax="false" actionListener="#{boxscoreBean.closePage()}"/></div>				
-			<p:separator />  
+			  
 			  <p:outputPanel id="testContainer" style="width:100%">
 			  		<table border="0" width="100%"  cellpadding="0" cellspacing="0" >
 						<tr>
@@ -459,9 +464,13 @@
 												
 						</table>
 					</p:panel>
-										
+					<f:facet name="footer">
+				        Copyright 2015.  Website maintained by <a href="mailto:lahockeyfan2@yahoo.com;dbigelow@the-rinks.com?subject=SCAHA Website">Rob Foster/Dave Bigelow</a>
+				        
+				    </f:facet>								
 				</p:outputPanel>
 		</h:form>
+		</p:panel>
 </ui:define>
 </ui:composition>
 </f:view>

@@ -15,6 +15,7 @@ public class Game extends ScahaObject {
 	private String displaydivision = null;
 	private Integer homeclubid = null;
 	private Integer awayclubid = null;
+	private Boolean renderboxscore = null;
 		
 	
 	/**
@@ -25,6 +26,13 @@ public class Game extends ScahaObject {
 
 	}
 
+	public void setRenderboxscore(Boolean value){
+		renderboxscore=value;
+	}
+	
+	public Boolean getRenderboxscore(){
+		return renderboxscore;
+	}
 	public void setIdlivegame(Integer value){
 		idlivegame = value;
 	}

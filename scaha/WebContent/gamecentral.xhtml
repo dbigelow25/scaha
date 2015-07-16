@@ -25,12 +25,17 @@
 	<h:outputText style="font-size: 10px;" value="#{game.getHometeam()}" /> <h:outputText style="font-size: 10px;" value="#{game.getHomescore()}" />
 </p:carousel> -->
 <p:separator />
-
+		<p:panel >
+		
+		<f:facet name="footer">
+			Copyright 2015.  Website maintained by <a href="mailto:lahockeyfan2@yahoo.com;dbigelow@the-rinks.com?subject=SCAHA Website">Rob Foster/Dave Bigelow</a>
+		</f:facet>
+	  
 		<h:form id="scheduleform">
 			  <p:outputPanel id="testContainer">
 			  				<!-- we may need something like this for the gamecenter -->
 			  				<!-- #{scoreboardBean.refreshScoreboard()} -->
-			  
+			  		
 					
 					<table cellpadding="0" cellspacing="0" border="0" width="100%">
 						<tr>
@@ -146,8 +151,9 @@
 									</table>
 									<f:facet name="footer">
 										<div align="center">
-											<a href="boxscore.xhtml?id=#{game.getIdlivegame().toString()}&amp;selecteddate=#{gamecentralBean.getSelecteddate().toString()}&amp;schedule=#{gamecentralBean.getSelectedschedule()}&amp;season=#{gamecentralBean.getSelectedseason()}">boxscore</a>
-											| <a href="">gamesheet</a></div>
+											<ui:fragment rendered="#{game.renderboxscore}"><a href="boxscore.xhtml?id=#{game.getIdlivegame().toString()}&amp;selecteddate=#{gamecentralBean.getSelecteddate().toString()}&amp;schedule=#{gamecentralBean.getSelectedschedule()}&amp;season=#{gamecentralBean.getSelectedseason()}">boxscore</a></ui:fragment>
+											<ui:fragment rendered="#{not game.renderboxscore}">Game details not available.</ui:fragment>
+											<!-- | <a href="">gamesheet</a>--></div> 
 											
 									</f:facet>
 						            
@@ -197,7 +203,8 @@
 				</p:outputPanel>
 				  
 		</h:form>
-
+		</p:panel>
+		
 </ui:define>
 
 </ui:composition>
