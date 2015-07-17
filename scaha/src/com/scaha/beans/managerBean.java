@@ -530,6 +530,8 @@ public class managerBean implements Serializable, MailableObject {
     				if (status.equals("Final")){
     					iscomplete=false;
     				}
+    				Boolean canreschedule = rs.getBoolean("canreschedule");
+    				
     				TempGame ogame = new TempGame();
     				ogame.setIdgame(Integer.parseInt(idgame));
     				ogame.setDate(dates);
@@ -543,6 +545,7 @@ public class managerBean implements Serializable, MailableObject {
     				ogame.setStatus(status);
     				ogame.setAwayscore(awayscore);
     				ogame.setHomescore(homescore);
+    				ogame.setRetire(canreschedule);
     				tempresult.add(ogame);
     				
 				}
@@ -1069,6 +1072,18 @@ public class managerBean implements Serializable, MailableObject {
 		
 		try{
 			context.getExternalContext().redirect("edittournamentform.xhtml?teamid=" + this.teamid + "&tournamentid=" + tourneyid);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void requestGameChange(TempGame game){
+		String gameid = game.getIdgame().toString();
+		FacesContext context = FacesContext.getCurrentInstance();
+		
+		try{
+			context.getExternalContext().redirect("requestgamechangeform.xhtml?id=" + gameid);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
