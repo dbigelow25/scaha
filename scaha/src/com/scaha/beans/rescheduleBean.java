@@ -275,7 +275,7 @@ public class rescheduleBean implements Serializable, MailableObject {
   			}
   		    rs.close();
   		    
-  		    to="";
+  		    //to="";
   		    
 			cs = db.prepareCall("CALL scaha.getSCAHAEmailForGameChangeRequest()");
   		    rs = cs.executeQuery();

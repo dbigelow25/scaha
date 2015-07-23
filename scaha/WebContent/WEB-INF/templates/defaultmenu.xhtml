@@ -76,6 +76,8 @@
 					<p:spacer width="2px" />
 					<p:menuButton id="menusched" style="width:125px;" value="Schedule Info"
 						type="button">
+						<p:menuitem style="font-size: 12px;" value="Change Request"
+							url="schedulechangerequestlist.xhtml" id="changerequest" rendered="#{profileBean.isSuperUser()}"/>
 						<p:menuitem style="font-size: 12px;" value="Schedule"
 							url="scoreboard.xhtml" id="scoreboard" />
 						<p:menuitem style="font-size: 12px;" value="Download It"
