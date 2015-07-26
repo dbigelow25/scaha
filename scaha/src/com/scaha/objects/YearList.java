@@ -57,8 +57,15 @@ public class YearList extends ListDataModel<Year> implements Serializable, Selec
 			List<Minute> mdata = new ArrayList<Minute>();
 			
 			while (rs2.next()) {
-				
+				Integer idmeetingminute = rs2.getInt("idmeetingminutes");
 				String filename = rs2.getString("filename");
+				
+				if (idmeetingminute>131){
+					filename = "/minutes/" + filename;
+				}else {
+					filename = "downloads/meetingminutes/" + filename;
+				}
+				
 				String meetingdate = rs2.getString("displaymeetingdate");
 				
 				Minute minute = new Minute();
