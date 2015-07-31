@@ -95,6 +95,7 @@ public class coachloiBean implements Serializable, MailableObject {
 	private Boolean displaycoachcredentials = null;
 	private String notes = null;
 	private Boolean sendingnote = null;
+	private Boolean updatingnoteonly = null;
 	private String origin = null;
 	private String currentyear = null;
 	private Team selectedteam = null;
@@ -172,6 +173,16 @@ public class coachloiBean implements Serializable, MailableObject {
     
     public void setGirlsteamdatamodel(TeamDataModel odatamodel){
     	girlsteamdatamodel = odatamodel;
+    }
+    
+    
+    
+    public Boolean getUpdatingnoteonly(){
+    	return updatingnoteonly;
+    }
+    
+    public void setUpdatingnoteonly(Boolean value){
+    	updatingnoteonly=value;
     }
     
     public Boolean getSendingnote(){
@@ -1560,6 +1571,49 @@ public class coachloiBean implements Serializable, MailableObject {
 			db.free();
 		}
 		this.setSendingnote(true);
+		FacesContext context = FacesContext.getCurrentInstance();
+		origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
+		try{
+			context.getExternalContext().redirect("confirmcoachlois.xhtml");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void UpdateNoteOnly(){
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
+
+			if (db.setAutoCommit(false)) {
+			
+				//Need to store note first
+ 				LOGGER.info("storing note for :" + this.selectedcoach);
+ 				CallableStatement cs = db.prepareCall("CALL scaha.saveNote(?,?)");
+ 				cs.setString("innote", this.notes);
+ 				cs.setInt("personid", this.selectedcoach);
+    		    
+    		    cs.executeQuery();
+    			cs.close();
+    		    
+    		} else {
+				//nothing to do here
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("ERROR IN Updating Note " + this.selectedcoach);
+			e.printStackTrace();
+			db.rollback();
+			this.setSendingnote(false);
+		} finally {
+			//
+			// always clean up after yourself..
+			//
+			db.free();
+		}
+		
 		FacesContext context = FacesContext.getCurrentInstance();
 		origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
 		try{

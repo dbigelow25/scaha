@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:p="http://primefaces.org/ui" 
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+<f:view contentType="text/html">
+
+<h:head>
+	 <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+     </f:facet>
+</h:head>
+<h:body >	
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+<ui:define name="content">
+	<h:form id="form1">	
+	<p:layout id="mylayout" style="height:1050px;">
+		<p:layoutUnit height="200px" id="header" position="north" header = "SCAHA GAMESHEET INFORMATION for ">
+		<p:panel id="gameinfo" styleClass="panelNoBorder">
+			<p:panelGrid columns="6">
+		    <p:outputLabel style="font-size:12pt" for="lgtype" value="Game Type:" /><h:outputText id = "lgtype" value= "#{boxscoreBean.getTypetag()}, " />
+		    <p:outputLabel style="font-size:12pt" for="lgvenue" value="Venue Is:" /><h:outputText id = "lgvenue" value= "" />
+		    <p:outputLabel style="font-size:12pt" for="lgstartdate" value="Start Date:" /><h:outputText id = "lgstartdate" value= "" />
+		    <p:outputLabel style="font-size:12pt" for="lgstate" value="Game State:" /><h:outputText id = "lgstate" value= "" />
+		    <p:outputLabel style="font-size:12pt" for="lgsheet" value="Rink Is:"/><h:outputText id = "lgsheet" value= "" />
+		    <p:outputLabel style="font-size:12pt" for="lgstarttime" value="Start Time:" /><h:outputText id = "lgstarttime" value= "" />
+		    <p:outputLabel style="font-size:12pt" for="lghteam" value="Home Team:" /><h:outputText id = "lghteam" value= "" />
+		    <p:outputLabel style="font-size:12pt" for="lgateam" value="Away Team:" /><h:outputText id = "lgateam" value= "" />
+		    </p:panelGrid>
+		</p:panel>
+		</p:layoutUnit>
+ 		<p:layoutUnit id="left" position="west" size="225" resizable="false" closable="false" collapsible="false" header="" >
+			<p:panel id = "homeside">
+			<p:dataTable 
+				id="homeroster" 
+				var="spot" 
+				value="" 
+				 >
+            	<p:column headerText="#" style="width:25px;">  
+	               <h:outputText value="#{spot.tag ne 'PL' ? spot.tag : spot.jerseynumber}" /> 
+	            </p:column>  
+		        <p:column headerText="Name">  
+		        	<h:outputText value="#{spot.lname}, #{spot.fname}" />  
+		        </p:column>
+			 </p:dataTable>
+			</p:panel>
+		</p:layoutUnit>
+		<p:layoutUnit id="right" position="east" size="225" resizable="false" closable="false" collapsible="false" header="" >
+			<p:panel id = "awayside">
+			<p:dataTable 
+				id="awayroster" 
+				var="spot" 
+				value="" 
+				 >
+            	 	<p:column headerText="#" style="width:25px;">  
+	               <h:outputText value="#{spot.tag ne 'PL' ? spot.tag : spot.jerseynumber}" /> 
+	            </p:column>   
+		        <p:column headerText="Name">  
+		        	<h:outputText value="#{spot.lname}, #{spot.fname}" />  
+		        </p:column>
+			 </p:dataTable>
+			</p:panel>
+		</p:layoutUnit>
+		<p:layoutUnit id="center" position="center"  header="Game Information"  >
+			<p:panelGrid id="guts" columns="2" columnClasses="alignTop,alignTop">
+				<p:panelGrid columns="2">
+					<h:outputText value="" /> 
+					<h:outputText value="" />
+			 		<p:graphicImage width="50" height="50" id="homelogo" value="#{scahaBean.getClubLogoByParmId()}"  >
+						<f:param name="target" value="" />
+					</p:graphicImage>
+					<h:outputText style="font-size:20pt;" value="" /> 
+				</p:panelGrid>
+				<p:panelGrid columns="2">
+					<h:outputText value="" />
+					<h:outputText value="" />
+   			 		<p:graphicImage width="50" height="50" id="vistorlogo" value="#{scahaBean.getClubLogoByParmId()}"  >
+						<f:param name="target" value="" />
+					</p:graphicImage>
+					<h:outputText style="font-size:20pt;" value="" /> 
+				</p:panelGrid>
+    			<p:dataTable 
+    				id="homescoring" 
+    				var="score" 
+    				value=""
+    				>
+                 <f:facet name="header">
+                  	<p:row>
+            			<p:column colspan="7">Home Scoring Detail
+            			</p:column>
+       				</p:row>
+                 </f:facet>
+            	<p:column headerText="No" style="width:25px;"> 	<h:outputText value="#{score.count}" /> 
+		        </p:column>  
+		        <p:column headerText="S/P" style="width:30px;"> <h:outputText value="#{score.goaltype}" /> 
+		        </p:column>
+		        <p:column headerText="Per" style="width:30px;">  <h:outputText value="#{score.period}" /> 
+		        </p:column>
+		        <p:column headerText="Time" style="width:30px;"> <h:outputText value="#{score.timescored}" />  
+		        </p:column>
+		        <p:column headerText="G" style="width:30px;"> <h:outputText value="#{score.lgrosterspotgoal.jerseynumber}" />   
+		        </p:column>
+		        <p:column headerText="A" style="width:30px;">   <h:outputText value="#{score.lgrosterspota1.jerseynumber}" />  
+		        </p:column>
+		        <p:column headerText="A" style="width:30px;">   <h:outputText value="#{score.lgrosterspota2.jerseynumber}" />  
+		        </p:column>
+			          
+			 </p:dataTable>
+    		 <p:dataTable 
+    				id="awayscoring" 
+    				var="score" 
+    				value=""
+   				>
+                 <f:facet name="header">
+                  	<p:row>
+            			<p:column colspan="7">Visiting Scoring Detail
+            			</p:column>
+       				</p:row>
+                 </f:facet>
+            	<p:column headerText="No" style="width:25px;"> 	<h:outputText value="#{score.count}" /> 
+		        </p:column>  
+		        <p:column headerText="S/P" style="width:30px;"> <h:outputText value="#{score.goaltype}" /> 
+		        </p:column>
+		        <p:column headerText="Per" style="width:30px;">  <h:outputText value="#{score.period}" /> 
+		        </p:column>
+		        <p:column headerText="Time" style="width:30px;"> <h:outputText value="#{score.timescored}" />  
+		        </p:column>
+		        <p:column headerText="G" style="width:30px;"> <h:outputText value="#{score.lgrosterspotgoal.jerseynumber}" />   
+		        </p:column>
+		        <p:column headerText="A" style="width:30px;">   <h:outputText value="#{score.lgrosterspota1.jerseynumber}" />  
+		        </p:column>
+		        <p:column headerText="A" style="width:30px;">   <h:outputText value="#{score.lgrosterspota2.jerseynumber}" />  
+		        </p:column>
+		        </p:dataTable>
+   			</p:panelGrid>
+     			
+			<p:panelGrid id="goalieguts" columns="2" style="width:100%">
+			    <f:facet name="header">
+				 Shots Of Goal      					
+				</f:facet>
+				<p:dataTable 
+    				id="homegoalie" 
+    				var="sog" 
+    				value=""
+   				>
+  				 <p:column headerText="No"><h:outputText value="#{sog.rosterspot.jerseynumber}" /></p:column>
+     				<p:column headerText="1st"><h:outputText value="#{sog.shots1}" /></p:column>
+   					<p:column headerText="2nd"><h:outputText value="#{sog.shots2}" /></p:column>
+   					<p:column headerText="3rd"><h:outputText value="#{sog.shots3}" /></p:column>
+   					<p:column headerText="OT"><h:outputText value="#{sog.getOTShots()}" /></p:column>
+   					<p:column headerText="Tot" styleClass="mtrxtotColumn"><h:outputText value="#{sog.getTotalShots()}" /></p:column>
+  				 </p:dataTable>
+    			<p:dataTable 
+    				id="awaygoalie" 
+    				var="sog" 
+    				value=""
+   					 
+ 				>
+  				   	<p:column headerText="No"><h:outputText value="#{sog.rosterspot.jerseynumber}" /></p:column>
+     				<p:column headerText="1st"><h:outputText value="#{sog.shots1}" /></p:column>
+   					<p:column headerText="2nd"><h:outputText value="#{sog.shots2}" /></p:column>
+   					<p:column headerText="3rd"><h:outputText value="#{sog.shots3}" /></p:column>
+   					<p:column headerText="OT"><h:outputText value="#{sog.getOTShots()}" /></p:column>
+   					<p:column headerText="Tot" styleClass="mtrxtotColumn"><h:outputText value="#{sog.getTotalShots()}" /></p:column>
+  				 </p:dataTable>
+               </p:panelGrid>
+               <p:panelGrid id="penaltyguts" columns="2" style="width:100%">
+			 	<p:dataTable 
+			 		id="homepenalties" 
+			 		var="pen" 
+    				value=""
+   					>
+                 <f:facet name="header">
+                  	<p:row>
+            			<p:column colspan="5">PENALTIES - HOME
+            			</p:column>
+       				</p:row>
+                 </f:facet>
+		        <p:column headerText="Per" style="width:30px;">  <h:outputText value="#{pen.period}" /> 
+		        </p:column>
+		 		<p:column headerText="Plyr"><h:outputText value="#{pen.rosterspot.jerseynumber}" />    
+		        </p:column>  
+		        <p:column headerText="Penalty" width="40%"> <h:outputText value="#{pen.penaltytype}" /> 
+		        </p:column>
+		        <p:column headerText="Min" style="width:30px;"> <h:outputText value="#{pen.minutes}" />   
+		        </p:column>
+		        <p:column headerText="Time" style="width:30px;"> <h:outputText value="#{pen.timeofpenalty}" />  
+		        </p:column>
+		     
+			 </p:dataTable>
+    		 <p:dataTable 
+			 		id="awaypenalties" 
+			 		var="pen" 
+    				value=""
+   					>
+                 <f:facet name="header">
+                  	<p:row>
+            			<p:column colspan="5">PENALTIES - AWAY
+            			</p:column>
+       				</p:row>
+                 </f:facet>
+		        <p:column headerText="Per" style="width:30px;">  <h:outputText value="#{pen.period}" /> 
+		        </p:column>
+		 		<p:column headerText="Plyr"><h:outputText value="#{pen.rosterspot.jerseynumber}" />    
+		        </p:column>  
+		        <p:column headerText="Penalty" width="40%"> <h:outputText value="#{pen.penaltytype}" /> 
+		        </p:column>
+		        <p:column headerText="Min" style="width:30px;"> <h:outputText value="#{pen.minutes}" />   
+		        </p:column>
+		        <p:column headerText="Time" style="width:30px;"> <h:outputText value="#{pen.timeofpenalty}" />  
+		        </p:column>
+		     
+			 </p:dataTable>
+              </p:panelGrid>
+		</p:layoutUnit>
+	</p:layout>
+	
+	</h:form>
+</ui:define>
+</ui:composition>
+</h:body>
+</f:view>
+</html>
