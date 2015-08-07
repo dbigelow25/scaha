@@ -135,6 +135,7 @@ public class managerBean implements Serializable, MailableObject {
     	setTodaysDate();
     	setAddingflags();
         teamid = pb.getProfile().getManagerteamid();
+        teamid = 10017;
         this.setTeamid(teamid);
         
         //need to get the current season for display

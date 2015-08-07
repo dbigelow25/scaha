@@ -151,7 +151,9 @@
 									</table>
 									<f:facet name="footer">
 										<div align="center">
+											
 											<ui:fragment rendered="#{game.renderboxscore}"><a href="boxscore.xhtml?id=#{game.getIdlivegame().toString()}&amp;selecteddate=#{gamecentralBean.getSelecteddate().toString()}&amp;schedule=#{gamecentralBean.getSelectedschedule()}&amp;season=#{gamecentralBean.getSelectedseason()}">boxscore</a></ui:fragment>
+											<ui:fragment rendered="#{game.renderboxscore}">   |   <a href="scoresheet.xhtml?id=#{game.getIdlivegame().toString()}&amp;selecteddate=#{gamecentralBean.getSelecteddate().toString()}&amp;schedule=#{gamecentralBean.getSelectedschedule()}&amp;season=#{gamecentralBean.getSelectedseason()}">scoresheet</a></ui:fragment>
 											<ui:fragment rendered="#{not game.renderboxscore}">Game details not available.</ui:fragment>
 											<!-- | <a href="">gamesheet</a>--></div> 
 											

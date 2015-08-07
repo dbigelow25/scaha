@@ -1483,5 +1483,48 @@ public void getClubID(){
 		}
 	}
 	
+	public void UpdateNote(){
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+		try{
+
+			if (db.setAutoCommit(false)) {
+			
+				//Need to store note first
+ 				LOGGER.info("storing note for :" + this.selectedplayer);
+ 				CallableStatement cs = db.prepareCall("CALL scaha.saveNote(?,?)");
+ 				cs.setString("innote", this.notes);
+ 				cs.setInt("personid", this.selectedplayer);
+    		    
+    		    cs.executeQuery();
+    			db.commit();
+				db.cleanup();
+					
+			} else {
+				this.setSendingnote(false);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("ERROR IN Updating Note " + this.selectedplayer);
+			e.printStackTrace();
+			db.rollback();
+			this.setSendingnote(false);
+		} finally {
+			//
+			// always clean up after yourself..
+			//
+			db.free();
+		}
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		origin = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURL().toString();
+		try{
+			context.getExternalContext().redirect("confirmlois.xhtml");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
 

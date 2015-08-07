@@ -9,8 +9,8 @@
 <f:view contentType="text/html">
 	<h:form>
 		<div
-			style="text-align: right; width: 1078px; font-weight: normal; font-size: 9pt; font-family: Verdana;">
-			<p:toolbar>
+			style="text-align: right; width: 100%; font-weight: normal; font-size: 9pt; font-family: Verdana;">
+			<p:toolbar >
 				<p:toolbarGroup align="left">
 					<p:button id="gohome" style="width:30px;" icon="ui-icon-home"
 						href="/" />
@@ -83,6 +83,7 @@
 						<p:menuitem style="font-size: 12px;" value="Download It"
 							url="lahoa.xhtml" />
 					</p:menuButton>
+					<p:spacer width="2px" />
 					<p:commandButton value="Scoreboard"
 						actionListener="#{profileBean.scoreboard}" ajax="false"/>
 				</p:toolbarGroup>

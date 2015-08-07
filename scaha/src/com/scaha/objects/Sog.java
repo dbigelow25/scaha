@@ -27,6 +27,7 @@ public class Sog extends ScahaObject implements Serializable {
 	private int shots7 = 0;
 	private int shots8 = 0;
 	private int shots9 = 0;
+	private String jerseynumber ="";
 	
 	
 	public Sog(int _id, Profile _pro, LiveGame _lg, ScahaTeam _tm) {
@@ -39,6 +40,10 @@ public class Sog extends ScahaObject implements Serializable {
 	public Sog(int _id, Profile _pro) {
 		ID = _id;		
 		this.setProfile(_pro);
+	}
+	
+	public Sog(){
+		
 	}
 
 	/**
@@ -154,6 +159,14 @@ public class Sog extends ScahaObject implements Serializable {
 	}
 	
 
+	public String getJerseynumber(){
+		return jerseynumber;
+	}
+	
+	public void setJerseynumber(String value){
+		jerseynumber = value;
+	}
+	
 	/**
 	 * @return the shots1
 	 */
