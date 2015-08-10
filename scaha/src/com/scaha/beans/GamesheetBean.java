@@ -2000,11 +2000,16 @@ public SogList refreshHomeSog() {
 			
 			this.livegame.update(db, false);
 			
+			//need to update stats table as game is being finalized.
+			//pass in team id and livegame id
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		db.free();
+		
+		
 		
 		//
 		// ok.. now we want to check all penalties from both sides..and report any game misconducts
