@@ -175,8 +175,10 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 			}else {
 				this.partlist = this.selectedschedule.getPartlist();
 				this.partpicklist = this.getParticipantpicklist();
-				this.setLivegamelist(scaha.getScahaLiveGameList().NewList(scaha.getDefaultProfile(),selectedschedule));
-				
+				//need to perfrom role check here for displaying schedule
+				if (pb.hasRoleList("C-PRES;C-DLIST")){
+					this.setLivegamelist(scaha.getScahaLiveGameList().NewList(scaha.getDefaultProfile(),selectedschedule));
+				}
 			}
 		}
 	}
@@ -203,11 +205,15 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		
 			this.selectedpart = this.getPartlist().getByKey(this.selectedpartid);
 			LOGGER.info("participant change request detected new id is:" + this.selectedpartid + ":" + this.selectedpart + " for sched:" + this.selectedschedule);
-			if (this.selectedpart != null) {
-					this.setLivegamelist(this.selectedschedule.getLivegamelist().NewList(scaha.getDefaultProfile(), selectedschedule, selectedpart.getTeam()));
-				
-			} else {
-				this.setLivegamelist(this.selectedschedule.getLivegamelist());
+			//need to perfrom role check here for displaying schedule
+			if (pb.hasRoleList("C-PRES;C-DLIST")){
+			
+				if (this.selectedpart != null) {
+						this.setLivegamelist(this.selectedschedule.getLivegamelist().NewList(scaha.getDefaultProfile(), selectedschedule, selectedpart.getTeam()));
+					
+				} else {
+					this.setLivegamelist(this.selectedschedule.getLivegamelist());
+				}
 			}
 		}
 	}
