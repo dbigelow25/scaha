@@ -36,7 +36,12 @@
 	<table cellpadding="2" cellspacing="0" border="0" width="100%">
 		<tr>
 			<!-- player rosters here -->
-			<td valign="top">
+			<td valign="top" width="25%">
+				
+				 <p:panel id ="pimpanel" header="Current Pim Counts">
+				 	Accumulated <b><h:outputText value="#{managerBean.getCurrentpimcount()}" /></b> penalty minutes towards the maximum <h:outputText value="#{managerBean.getMaxpimcount()}" /> penalty minutes allowed.
+				 </p:panel>
+				<br></br>
 				<h:form id="rosterform">		
 				<p:dataTable id="playersearchresult" var="rosteredit" value="#{managerBean.getRostereditdatamodel()}" selection="#{managerBean.selectedplayer}"  editable="true" editMode="cell">
 	                
@@ -66,6 +71,7 @@
 			        </p:column>
 				 </p:dataTable> 
 				 </h:form>
+				 
 			</td>
 			<!-- games and tournament forms -->
 			<td>

@@ -72,6 +72,8 @@ public class managerBean implements Serializable, MailableObject {
 	private Integer idclub = null;
 	private Integer profileid = 0;
 	private Boolean ishighschool = null;
+	private String currentpimcount = "0";
+	private String maxpimcount = "0";
 	
 	//datamodels for all of the lists on the page
 	private TempGameDataModel TempGameDataModel = null;
@@ -135,7 +137,7 @@ public class managerBean implements Serializable, MailableObject {
     	setTodaysDate();
     	setAddingflags();
         teamid = pb.getProfile().getManagerteamid();
-        //teamid = 10017;
+        //teamid = 479;
         this.setTeamid(teamid);
         
         //need to get the current season for display
@@ -161,6 +163,22 @@ public class managerBean implements Serializable, MailableObject {
     public managerBean() {  
         
     }  
+    
+    public String getCurrentpimcount(){
+    	return this.currentpimcount;
+    }
+    
+    public void setCurrentpimcount(String value){
+    	currentpimcount=value;
+    }
+    
+    public String getMaxpimcount(){
+    	return this.maxpimcount;
+    }
+    
+    public void setMaxpimcount(String value){
+    	maxpimcount=value;
+    }
     
     public Boolean getAddingtournament(){
     	return addingtournament;
@@ -1582,6 +1600,8 @@ public class managerBean implements Serializable, MailableObject {
     					Tournaments = rs.getBoolean("tournamentsflag");
     					TournamentGames = rs.getBoolean("tournamentgamesflag");
     					ExhibitionGames = rs.getBoolean("exhibitiongamesflag");
+    					this.currentpimcount = rs.getString("pimcount");
+    					this.maxpimcount = rs.getString("maxpimcount");
         			}
     				LOGGER.info("We have results for exhibition list by team:" + this.teamid);
     			}
@@ -1677,5 +1697,7 @@ public class managerBean implements Serializable, MailableObject {
 		}
 	     
 	 }
+	
+	
 }
 
