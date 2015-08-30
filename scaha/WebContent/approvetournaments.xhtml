@@ -33,13 +33,13 @@
 				        <p:column headerText="Tournament Name">  
 				            <h:outputText value="#{tournament.getTournamentname()}" />  
 				        </p:column>  
-				        <p:column headerText="Requesting Team">  
+				        <p:column headerText="Requesting Team" filterBy="requestingteam" filterMatchMode="contains" filterStyle="width:50px">  
 				            <h:outputText value="#{tournament.getRequestingteam()}" />  
 				        </p:column>  
 				        <p:column headerText="Sanction Number">  
 				            <h:outputText value="#{tournament.getSanction()}" />  
 				        </p:column>
-				        <p:column headerText="Dates">  
+				        <p:column headerText="Dates" filterBy="dates" filterMatchMode="contains" filterStyle="width:50px">  
 				            <h:outputText value="#{tournament.getDates()}" />  
 				        </p:column>
 				        <p:column headerText="Contact">  
@@ -48,7 +48,7 @@
 				        <p:column headerText="Location">  
 				        	<h:outputText value="#{tournament.getLocation()}" />  
 				        </p:column>
-				        <p:column headerText="Status">  
+				        <p:column headerText="Status" filterBy="status" filterMatchMode="contains" filterStyle="width:50px">  
 				        	<h:outputText value="#{tournament.getStatus()}" />  
 				        </p:column>
 				        <p:column headerText="">

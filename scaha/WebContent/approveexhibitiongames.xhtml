@@ -30,10 +30,10 @@
 			            <f:facet name="header">  
 				        	2014-2015 Exhibition GAMES
 				        </f:facet> 
-				        <p:column headerText="Requesting Team">  
+				        <p:column headerText="Requesting Team" filterBy="requestingteam" filterMatchMode="contains" filterStyle="width:50px">  
 				            <h:outputText value="#{exhibitiongame.getRequestingteam()}" />  
 				        </p:column>
-				        <p:column headerText="Date">  
+				        <p:column headerText="Date" filterBy="date" filterMatchMode="contains" filterStyle="width:50px">  
 				            <h:outputText value="#{exhibitiongame.getDate()}" />  
 				        </p:column>
 				        <p:column headerText="Time">  
@@ -45,7 +45,7 @@
 				        <p:column headerText="Location">  
 				        	<h:outputText value="#{exhibitiongame.getLocation()}" />  
 				        </p:column>
-				        <p:column headerText="Status">  
+				        <p:column headerText="Status" filterBy="status" filterMatchMode="contains" filterStyle="width:50px">  
 				        	<h:outputText value="#{exhibitiongame.getStatus()}" />  
 				        </p:column>
 				        <p:column headerText="">
