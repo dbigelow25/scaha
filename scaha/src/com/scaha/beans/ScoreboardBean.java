@@ -2,7 +2,11 @@ package com.scaha.beans;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +21,8 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.mail.internet.InternetAddress;
 
+import com.gbli.common.SendMailSSL;
+import com.gbli.common.Utils;
 import com.gbli.connectors.ScahaDatabase;
 import com.gbli.context.ContextManager;
 import com.scaha.objects.GeneralSeason;
@@ -39,6 +45,7 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	@ManagedProperty(value="#{profileBean}")
 	private ProfileBean pb;
 	
+	transient private ResultSet rs = null;
 	
 	private ScheduleList schedules;
 	private List<Schedule> schedulelist =  null;
@@ -53,12 +60,23 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	private int selectedseasonid;
 	private Participant selectedpart;
 	private int selectedpartid;
-
+	private List<LiveGame> selectedlivegamesforreschedule;
+	private String notes;
+	private List<String> dates;
+	
 	private ParticipantList partlist = null;
 	private LiveGameList livegamelist = null;
-	
+	private LiveGameList livegamelistbyclub = null;
 	private LiveGame selectedlivegame = null;
 
+	//email paramters
+	private String to = null;
+	private String subject = null;
+	private String cc = null;
+	private static String mail_gamechangerequest_body = Utils.getMailTemplateFromFile("/mail/clubreschedule.html");
+	private String gamelist = null;
+	private String todaysdate = null;
+	private String requestingclub = null;
 	//
 	// Class Level Variables
 	private static final long serialVersionUID = 2L;
@@ -72,6 +90,7 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 
 	 @PostConstruct
 	 public void init() {
+		 setTodaysDate();
 		 
 		 LOGGER.info(" *************** START :POST INIT FOR SCOREBOARD BEAN *****************");
 		 //
@@ -176,9 +195,8 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 				this.partlist = this.selectedschedule.getPartlist();
 				this.partpicklist = this.getParticipantpicklist();
 				//need to perfrom role check here for displaying schedule
-				if (pb.hasRoleList("C-PRES;C-DLIST")){
-					this.setLivegamelist(scaha.getScahaLiveGameList().NewList(scaha.getDefaultProfile(),selectedschedule));
-				}
+				this.setLivegamelist(scaha.getScahaLiveGameList().NewList(scaha.getDefaultProfile(),selectedschedule));
+				
 			}
 		}
 	}
@@ -206,7 +224,7 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 			this.selectedpart = this.getPartlist().getByKey(this.selectedpartid);
 			LOGGER.info("participant change request detected new id is:" + this.selectedpartid + ":" + this.selectedpart + " for sched:" + this.selectedschedule);
 			//need to perfrom role check here for displaying schedule
-			if (pb.hasRoleList("C-PRES;C-DLIST")){
+			
 			
 				if (this.selectedpart != null) {
 						this.setLivegamelist(this.selectedschedule.getLivegamelist().NewList(scaha.getDefaultProfile(), selectedschedule, selectedpart.getTeam()));
@@ -214,7 +232,7 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 				} else {
 					this.setLivegamelist(this.selectedschedule.getLivegamelist());
 				}
-			}
+			
 		}
 	}
 	
@@ -277,16 +295,34 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	@Override
 	public String getSubject() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.subject;
 	}
 
+	public String getRequestingclub(){
+    	return requestingclub;
+    }
+    
+    public void setRequestingclub(String tdate){
+    	requestingclub=tdate;
+    }
+    
+	public String getTodaysdate(){
+    	return todaysdate;
+    }
+    
+    public void setTodaysdate(String tdate){
+    	todaysdate=tdate;
+    }
+    
+	public String getGamelist(){
+		return this.gamelist;
+	}
 	
-	@Override
-	public String getTextBody() {
-		// TODO Auto-generated method stub
-		return null;
+	public void setGamelist(String value){
+		this.gamelist = value;
 	}
-
+	
+	
 	@Override
 	public String getPreApprovedCC() {
 		// TODO Auto-generated method stub
@@ -296,7 +332,7 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	@Override
 	public String getToMailAddress() {
 		// TODO Auto-generated method stub
-		return null;
+		return to;
 	}
 
 	@Override
@@ -310,7 +346,19 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	public void setPreApprovedCC(String scc){
+		cc = scc;
+	}
+	
+	public void setToMailAddress(String sto){
+    	to = sto;
+    }
+	
+	public void setSubject(String ssubject){
+    	subject = ssubject;
+    }
+	
 	/**
 	 * @return the scaha
 	 */
@@ -339,6 +387,14 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 		this.pb = pb;
 	}
 
+	public void setNotes(String value){
+		this.notes = value;
+	}
+	
+	public String getNotes(){
+		return this.notes;
+	}
+	
 	/**
 	 * @return the schedules
 	 */
@@ -470,6 +526,35 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	}
 
 	/**
+	 * @return the livegamelist for a club for reschedule request
+	 */
+	public LiveGameList getLivegamelistByClub() {
+		return this.livegamelistbyclub;
+	}
+
+	public void setLivegamelistByClub(LiveGameList lgl){
+		this.livegamelistbyclub = lgl;
+	}
+	
+	public void loadLiveGamesByClub(){
+		//need to go out and populate this livegame object and load
+		//only games for a club into this object.
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		LiveGameList lgl = null;
+		try {
+			lgl = scaha.getScahaLiveGameList().NewListFactory(db, pb.getProfile());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		} finally{
+			db.free();
+		}
+		
+		this.setLivegamelistByClub(lgl);
+	}
+	
+	/**
 	 * @return the livegamelist
 	 */
 	public LiveGameList getLivegamelist() {
@@ -531,6 +616,14 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	public LiveGame getSelectedlivegame() {
 		return selectedlivegame;
 	}
+	
+	public void setSelectedlivegamesforreschedule(List<LiveGame> lg){
+		this.selectedlivegamesforreschedule = lg;
+	}
+	
+	public List<LiveGame> getSelectedlivegamesforreschedule(){
+		return this.selectedlivegamesforreschedule;
+	}
 
 	/**
 	 * @param selectedlivegame the selectedlivegame to set
@@ -558,5 +651,144 @@ public class ScoreboardBean implements Serializable,  MailableObject {
 	     
 	 } 
 
-	
+
+	 public void sendGameChangeRequest(){
+		 //first we need to get all of the game info toinclude in the email.
+		 //second we add each games request in the database.
+		 //third send the email.
+		 Integer lgid;
+		 String hometeam;
+		 String awayteam;
+		 String startdate;
+		 String starttime;
+		 String venue;
+		 String sheet;
+		 
+		 ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		 this.gamelist = "";
+		 try{
+			 CallableStatement cs = db.prepareCall("CALL scaha.addGameChangeRequest(?,?,?,?,?)");
+	    	for (LiveGame lg : selectedlivegamesforreschedule){
+					 
+				String locallist = "";	
+	    		lgid = lg.getGameId();
+					 hometeam = lg.getHometeam().getTeamname();
+					 awayteam = lg.getAwayteam().getTeamname();
+					 startdate = lg.getStartdate();
+					 starttime = lg.getStarttime();
+					 venue = lg.getVenueshortname();
+					 sheet = lg.getSheetname();
+					 
+					//first get team name
+		    		cs.setInt("in_idlivegame", lgid);
+		    		cs.setInt("requestingteamid", 0);
+					cs.setString("reason", "");
+					cs.setString("in_notes", this.notes);
+					cs.setInt("in_idperson",pb.getProfile().getPerson().ID);
+					cs.executeQuery();
+					
+					//now build the html string for the email to convenor, club president, and statistician
+					locallist = locallist + "<tr>";
+					locallist = locallist + "<td>";
+					locallist = locallist + lgid.toString();
+					locallist = locallist + "</td>";
+					
+					locallist = locallist + "<td>";
+					locallist = locallist + hometeam;
+					locallist = locallist + "</td>";
+					
+					locallist = locallist + "<td>";
+					locallist = locallist + awayteam;
+					locallist = locallist + "</td>";
+					
+					locallist = locallist + "<td>";
+					locallist = locallist + startdate;
+					locallist = locallist + "</td>";
+					
+					locallist = locallist + "<td>";
+					locallist = locallist + starttime;
+					locallist = locallist + "</td>";
+					
+					locallist = locallist + "<td>";
+					locallist = locallist + venue;
+					locallist = locallist + "</td>";
+					
+					locallist = locallist + "<td>";
+					locallist = locallist + sheet;
+					locallist = locallist + "</td>";
+					
+					
+					locallist = locallist + "</tr>";
+					
+					this.gamelist = this.gamelist + locallist;
+					
+					LOGGER.info("game change request has been added:" + lgid);
+			}
+			 
+			db.commit();
+			db.cleanup();
+		 
+			//add ability to send email right here to scheduler and president
+			to = pb.getAltemail();
+			
+			cs = db.prepareCall("CALL scaha.getSCAHAEmailForGameChangeRequest()");
+		    rs = cs.executeQuery();
+		    if (rs != null){
+				while (rs.next()) {
+					to = to + ',' + rs.getString("usercode");
+				}
+			}
+		    rs.close();
+		    db.cleanup();
+		    
+			//to = "lahockeyfan2@yahoo.com";
+		    this.setToMailAddress(to);
+		    this.setPreApprovedCC("");
+		    this.setSubject("SCAHA Game Change Request");
+		    
+			SendMailSSL mail = new SendMailSSL(this);
+			LOGGER.info("Finished creating mail object for Game Change request for " + pb.getClubID());
+			
+			mail.sendMail();
+			
+			this.setSelectedlivegamesforreschedule(null);
+			this.setNotes("");
+			
+	 	} catch (SQLException e) {
+	 		// TODO Auto-generated catch block
+	 		LOGGER.info("ERROR IN adding game change request");
+	 		e.printStackTrace();
+	 		db.rollback();
+	 	} finally {
+	 		//
+	 		// always clean up after yourself..
+	 		//
+	 		db.free();
+	 	}	
+		 
+	 }
+	 
+	 public String getTextBody() {
+			// TODO Auto-generated method stub
+			List<String> myTokens = new ArrayList<String>();
+			String result = "";
+			
+			myTokens.add("GAMELIST:: " + this.gamelist);
+			myTokens.add("NOTES:: " + this.notes);
+			myTokens.add("REQUESTDATE::" + this.todaysdate);
+			myTokens.add("REQUESTINGCLUB::" + pb.getName());
+			
+			result = Utils.mergeTokens(this.mail_gamechangerequest_body,myTokens,"::");
+				
+			return result;
+			
+	}
+	 
+	 private void setTodaysDate(){
+		//need to set todays date for email
+		DateFormat dateFormat = new SimpleDateFormat("MM/dd/YYYY");
+		Date date = new Date();
+		this.setTodaysdate(dateFormat.format(date).toString());
+		
+	}
 }

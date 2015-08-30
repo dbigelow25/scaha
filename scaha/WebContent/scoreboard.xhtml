@@ -20,22 +20,23 @@
 <ui:define name="content">
 <p:separator />
 		<h:form id="scheduleform">
-				<p:selectOneMenu styleClass="ddlistbox" id="myseasons" value="#{scoreboardBean.selectedseasonid}" >
-       	   			<f:selectItem style="font-size:10pt;" itemLabel="Select a Season..." itemValue="0" />
-           			<f:selectItems value="#{scoreboardBean.getSeasonlist()}"  var="season"  itemLabel="#{season.getDescription()}" itemValue="#{season.getKey()}"/>
-           			<p:ajax listener="#{scoreboardBean.onSeasonChange()}" process="@this" update="myschedules myteams testContainer testContainer2 "/>
-       			</p:selectOneMenu>
-  				<p:selectOneMenu styleClass="ddlistbox"  id="myschedules" value="#{scoreboardBean.selectedscheduleid}" >
-         			<f:selectItem style="font-size:10pt;" itemLabel="Select a Schedule..." itemValue="0" />
-          			<f:selectItems  value="#{scoreboardBean.getSchedulelist()}" var="schedule" itemLabel="#{schedule.getDescription()}" itemValue="#{schedule.getKey()}" />
-          			<p:ajax listener="#{scoreboardBean.onScheduleChange()}" process="@this" update="@this myteams testContainer testContainer2"/>
-        		</p:selectOneMenu>	
-				<p:selectOneMenu styleClass="ddlistbox"  id="myteams" value="#{scoreboardBean.selectedpartid}" >
-         			<f:selectItem style="font-size:10pt;" itemLabel="Schedule For All Teams..." itemValue="0" />
-          			<f:selectItems  value="#{scoreboardBean.getPartpicklist()}" var="part" itemLabel="#{part.getTeam().getTeamname()}" itemValue="#{part.getKey()}" />
-          			<p:ajax listener="#{scoreboardBean.onPartChange()}" process="@this" update="@this testContainer2 testContainer"/>
-        		</p:selectOneMenu>	
-				<p:separator />   
+						<p:selectOneMenu styleClass="ddlistbox" id="myseasons" value="#{scoreboardBean.selectedseasonid}" >
+		       	   			<f:selectItem style="font-size:10pt;" itemLabel="Select a Season..." itemValue="0" />
+		           			<f:selectItems value="#{scoreboardBean.getSeasonlist()}"  var="season"  itemLabel="#{season.getDescription()}" itemValue="#{season.getKey()}"/>
+		           			<p:ajax listener="#{scoreboardBean.onSeasonChange()}" process="@this" update="myschedules myteams testContainer testContainer2 "/>
+		       			</p:selectOneMenu>
+		  				<p:selectOneMenu styleClass="ddlistbox"  id="myschedules" value="#{scoreboardBean.selectedscheduleid}" >
+		         			<f:selectItem style="font-size:10pt;" itemLabel="Select a Schedule..." itemValue="0" />
+		          			<f:selectItems  value="#{scoreboardBean.getSchedulelist()}" var="schedule" itemLabel="#{schedule.getDescription()}" itemValue="#{schedule.getKey()}" />
+		          			<p:ajax listener="#{scoreboardBean.onScheduleChange()}" process="@this" update="@this myteams testContainer testContainer2"/>
+		        		</p:selectOneMenu>	
+						<p:selectOneMenu styleClass="ddlistbox"  id="myteams" value="#{scoreboardBean.selectedpartid}" >
+		         			<f:selectItem style="font-size:10pt;" itemLabel="Schedule For All Teams..." itemValue="0" />
+		          			<f:selectItems  value="#{scoreboardBean.getPartpicklist()}" var="part" itemLabel="#{part.getTeam().getTeamname()}" itemValue="#{part.getKey()}" />
+		          			<p:ajax listener="#{scoreboardBean.onPartChange()}" process="@this" update="@this testContainer2 testContainer"/>
+		        		</p:selectOneMenu>	
+		        		<div align="right"><p:commandButton rendered="#{profileBean.hasRoleList('C-PRES;C-REG,C-ICE')}" id="reqschedulechnge" value="Request Schedule Change" ajax="true" actionListener="#{scoreboardBean.loadLiveGamesByClub()}"  oncomplete="PF('rescheddlg').show();" update="reschedulegames"/></div>
+        		<p:separator />   
 				
 			  <p:outputPanel id="testContainer">
 			  				#{scoreboardBean.refreshScoreboard()}
@@ -134,7 +135,56 @@
   		      </p:dataTable>
  				 </p:outputPanel>
         		</p:outputPanel>
-    
+    		 <!-- this is the reschedule dialog box -->
+    		 <p:dialog id="rescheddialog"  header="Reschedule Games Request" widgetVar="rescheddlg" modal="false" >
+			 	<h:panelGrid id="reschedulegrid" columns="1" style="margin-bottom:5px" cellpadding="2">
+					<p:outputLabel value="Select the game(s) you want to have rescheduled from the list below" />
+					<p:dataTable  
+						id= "reschedulegames" 
+						var="game" 
+						value="#{scoreboardBean.getLivegamelistByClub()}"
+						selection="#{scoreboardBean.selectedlivegamesforreschedule}" 
+	 					rowStyleClass="#{game.isCancelled() ? 'gamecancelled' : null}"
+	 					rowKey="#{game.getGameId()}"
+	 					paginator="true"
+	 					rows="10" 
+	 					widgetVar="rescheduleTable"
+						>
+	  		          <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+	  		          <p:column  styleClass="mtrxColumn" width="7%" headerText="Game #" style="font-size: 10px;">
+	   	    	         <h:outputText style="font-size: 10px;" value="#{game.getGameId()}" />
+	         	   	  </p:column >
+	   				 <p:column  width="7%" headerText="Type " style="font-size: 10px;">
+	   	    	         <h:outputText style="font-size: 10px;" value="#{game.getTypetag()}" />
+	         	   	  </p:column >
+	  		          <p:column headerText="Division" style="font-size: 10px;">
+	   	    	         <h:outputText style="font-size: 10px;" value="#{game.getGamenotes()} " />
+		         	  </p:column >
+	  		          <p:column headerText="Home Team" style="font-size: 10px;">
+	   	    	         <h:outputText style="font-size: 10px;" value="#{game.getHometeam().getTeamname()} " />
+		         	  </p:column >
+	    		      <p:column headerText="Away Team" style="font-size: 10px;">
+	   	    	         <h:outputText style="font-size: 10px;" value="#{game.getAwayteam().getTeamname()} " />
+		         	  </p:column >
+	    		      <p:column  headerText="Venue" style="font-size: 10px;">
+	   	    	         <h:outputText style="font-size: 10px;" value="#{game.getVenueshortname()} " />
+		         	   </p:column >
+	    	          <p:column  headerText="Rink" style="font-size: 10px;">
+	   	    	         <h:outputText style="font-size: 10px;" value="#{game.getSheetname()} " />
+		         	   </p:column >
+	    	          <p:column  headerText="Start Date" style="font-size: 10px;" filterBy="startdate" filterMatchMode="contains" >
+		   	    	     <h:outputText style="font-size: 10px;" value="#{game.startdate} " />
+		         	   </p:column >
+	    	          <p:column  headerText="Start Time" style="font-size: 10px;">
+	   	    	         <h:outputText style="font-size: 10px;" value="#{game.getStarttime()} " />
+		         	   </p:column >
+  		      		</p:dataTable>
+					<p:outputLabel for="notes" value="Special Notes:" />
+					<p:inputTextarea id="notes" rows="6" cols="133" value="#{scoreboardBean.notes}"/>		 
+			    </h:panelGrid>
+			    <p:separator />
+				<div align="center"><p:commandButton id="cmdschedulechangesave" ajax="true" value="Send Request" actionListener="#{scoreboardBean.sendGameChangeRequest()}" oncomplete="if (args &amp;&amp; !args.validationFailed) rescheddlg.hide()" /><p:spacer width="10px"/><p:commandButton id="cmdschedulechangeclose" ajax="true" value="Close"  oncomplete="if (args &amp;&amp; !args.validationFailed) rescheddlg.hide()" /></div>
+	   	</p:dialog>
 		</h:form>
 </ui:define>
 </ui:composition>

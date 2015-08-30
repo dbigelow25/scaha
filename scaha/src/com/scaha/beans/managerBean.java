@@ -1698,6 +1698,26 @@ public class managerBean implements Serializable, MailableObject {
 	     
 	 }
 	
-	
+	public void addScore(TempGame game){
+		Integer gameid = game.getIdgame();
+		//locate the livegame in the list.. via the above id vs creating a new one from scratch
+		//it does not have all the internal data that the one in the applevel bean does.
+		// (Scaha Bean)  ScahaBean has a master copy of all games .. that are already pointing to the teams
+		// in memory.. all hooked up..
+		LiveGame lg = scaha.getScahaLiveGameList().getByKey(gameid);
+		pb.setSelectedlivegame(lg);
+		pb.setLivegameeditreturn("managerportal.xhtml");
+		
+		 //LOGGER.info("!!!!! Real Selected Game is" + selectedlivegame);
+		  
+	     ExternalContext context = FacesContext.getCurrentInstance().getExternalContext(); 
+	     try {
+	    	 context.redirect("enterscoreforgame.xhtml");
+	     } catch (IOException e) {
+	    	 // TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
+	}
 }
 

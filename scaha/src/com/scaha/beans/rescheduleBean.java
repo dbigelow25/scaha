@@ -247,11 +247,12 @@ public class rescheduleBean implements Serializable, MailableObject {
     	
     	try{
     		//first get team name
-    		CallableStatement cs = db.prepareCall("CALL scaha.addGameChangeRequest(?,?,?,?)");
+    		CallableStatement cs = db.prepareCall("CALL scaha.addGameChangeRequest(?,?,?,?,?)");
     		cs.setInt("in_idlivegame", this.gameid);
     		cs.setInt("requestingteamid", pb.getProfile().getManagerteamid());
 			cs.setString("reason", this.selectedreason);
 			cs.setString("in_notes", this.notes);
+			cs.setInt("in_idperson", 0);
 			cs.executeQuery();
 			db.commit();
 			db.cleanup();

@@ -32,7 +32,6 @@ public class LiveGame extends ScahaObject implements Serializable {
 	private int idgame = 0;
 	private String gamenotes = null;
 	private String venueshortname = null;
-	
 	private int scheduleidstub = 0;
 	
 	public LiveGame(int _id, Profile _pro, Schedule _sc) {

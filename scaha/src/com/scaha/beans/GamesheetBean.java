@@ -64,7 +64,9 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	private Sog selectedawaysog = null;
 	
 	private LiveGameRosterSpotList awayteam = null;
+	private LiveGameRosterSpotList awayteamforpl = null;
 	private LiveGameRosterSpotList hometeam = null;
+	private LiveGameRosterSpotList hometeamforpl = null;
 	
 	private ScoringList awayscoring = null;
 	private ScoringList homescoring = null;
@@ -140,9 +142,10 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	private String lgvenueval = null;
 	private String lgtypeval = null;
 	private String lgstateval = null;
-
+ 
 	
 	private boolean editgame = false;
+	
 	
 	//
 	// lets go get it!
@@ -160,6 +163,8 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		 if (this.getLivegame() != null) {
 			 this.setHometeam(this.refreshHomeRoster());
 			 this.setAwayteam(this.refreshAwayRoster());
+			 this.setHometeamforpl(this.refreshHomeRosterforpl());
+			 this.setAwayteamforpl(this.refreshAwayRosterforpl());
 			 this.setAwayscoring(this.refreshAwayScoring());
 			 this.setHomescoring(this.refreshHomeScoring());
 			 this.setHomepenalties(this.refreshHomePenalty());
@@ -171,68 +176,9 @@ public class GamesheetBean implements Serializable,  MailableObject {
 			 
 		 }
 		 
-		 this.penalties.put("15 Team Penalties","15 Team Penalties");
-		 this.penalties.put("2 Majors","2 Majors");
-		 this.penalties.put("3rd Man in","3rd Man in");
-		 this.penalties.put("5 Penalties","5 Penalties");
-		 this.penalties.put("Abuse of Officials", "Abuse of Officials");
-		 this.penalties.put("Attempt to injure","Attempt to injure");
-		 this.penalties.put("Bench","Bench" );
-		 this.penalties.put("Boarding","Boarding");
-		 this.penalties.put("Body Checking","Body Checking");
-		 this.penalties.put("Butt-Ending", "Butt-Ending");
-		 this.penalties.put("Charging","Charging");
-		 this.penalties.put("Hooking", "Hooking");
-		 this.penalties.put("Checking from Behind", "Checking from Behind");
-		 this.penalties.put("Cross-Checking", "Cross-Checking");
-		 this.penalties.put("Delay of Game", "Delay of Game");
-		 this.penalties.put("Elbowing", "Elbowing");
-		 this.penalties.put("Fisticuffs/Fighting", "Fisticuffs/Fighting");
-		 this.penalties.put("Game Misconduct", "Game Misconduct");
-		 this.penalties.put("Head Contact", "Head Contact");
-		 this.penalties.put("High-Sticking", "High-Sticking");
-		 this.penalties.put("Holding","Holding");
-		 this.penalties.put("Holding the Facemask","Holding the Facemask");
-		 this.penalties.put("Hooking", "Hooking");
-		 this.penalties.put("Illegal Equipment", "Illegal Equipment");
-		 this.penalties.put("Interference", "Interference");
-		 this.penalties.put("Kicking", "Kicking");
-		 this.penalties.put("Kneeing", "Kneeing");
-		 this.penalties.put("Major", "Major");
-		 this.penalties.put("Match Penalty","Match Penalty");
-		 this.penalties.put("Misconduct","Misconduct");
-		 this.penalties.put("Mouthpiece","Mouthpiece");
-		 this.penalties.put("Roughing","Roughing");
-		 this.penalties.put("Slashing","Slashing");
-		 this.penalties.put("Spearing","Spearing");
-		 this.penalties.put("Too Many Men","Too Many Men");
-		 this.penalties.put("Tripping","Tripping");
-		 this.penalties.put("Unsportsmanlike","Unsportsmanlike");
+		 setPenaltiesPickList();
+		 setVenuesPickList();
 
-		 this.venues.put("The Rinks - Yorba Linda ICE","YLICE");
-		 this.venues.put("The Rinks - Anaheim ICE","AICE");
-		 this.venues.put("The Rinks - Westminster ICE","WICE");
-		 this.venues.put("The Rinks - Lakewood ICE","LAKEWOOD");
-		 this.venues.put("Bakersfield Ice Sports Center","BAKERICE");
-		 this.venues.put("Skating Edge Ice Center","BHSEIC");
-		 this.venues.put("Iceoplex Simi Valley","SIMI");
-		 this.venues.put("Valencia Ice Station","ICESTATION");
-		 this.venues.put("Pickwick Ice Arena","PICKWICK");
-		 this.venues.put("LA Kings Valley Ice Center","VALLEYICE");
-		 this.venues.put("East West Ice Palace","EWICEP");
-		 this.venues.put("Ontario Center Ice Arena","OCIA");
-		 this.venues.put("Channel Islands Ice Center","CIIC");
-		 this.venues.put("LA Kings Icetown Riverside","RIVICE");
-		 this.venues.put("Desert Ice Castle","DICE");
-		 this.venues.put("KHS Ice Arena","KHS");
-		 this.venues.put("Toyota Sports Center","TSC");
-		 this.venues.put("Lake Forest Ice Palace","LFIP");
-		 this.venues.put("Ontario Ice Skating Center","ONTICE");
-		 this.venues.put("Pasadena Skating Center","PISC");
-		 this.venues.put("Iceoplex Escondido","ESICOPLEX");
-		 this.venues.put("Kroc Center Ice Arena","KROC");
-		 this.venues.put("San Diego Ice Arena","SDIA");
-		 this.venues.put("Carlsbad  Ice Arena","CARLSBAD");
 		 
 		 this.htpick.put(this.livegame.getHometeam().getTeamname(), this.livegame.getHometeam().ID+"");
 		 this.htpick.put(this.livegame.getAwayteam().getTeamname(), this.livegame.getAwayteam().ID+"");
@@ -320,10 +266,20 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	/**
 	 * @param awayteam the awayteam to set
 	 */
+	public void setAwayteamforpl(LiveGameRosterSpotList awayteam) {
+		this.awayteamforpl = awayteam;
+	}
+
+	public LiveGameRosterSpotList getAwayteamforpl() {
+		return awayteamforpl;
+	}
+
+	/**
+	 * @param awayteam the awayteam to set
+	 */
 	public void setAwayteam(LiveGameRosterSpotList awayteam) {
 		this.awayteam = awayteam;
 	}
-
 
 	/**
 	 * @return the hometeam
@@ -335,10 +291,23 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	/**
 	 * @param hometeam the hometeam to set
 	 */
+	public void setHometeamforpl(LiveGameRosterSpotList hometeam) {
+		this.hometeamforpl = hometeam;
+	}
+
+	/**
+	 * @return the hometeam
+	 */
+	public LiveGameRosterSpotList getHometeamforpl() {
+		return hometeamforpl;
+	}
+
+	/**
+	 * @param hometeam the hometeam to set
+	 */
 	public void setHometeam(LiveGameRosterSpotList hometeam) {
 		this.hometeam = hometeam;
 	}
-
 
 	/**
 	 * @return the scaha
@@ -399,6 +368,23 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		return list;
 	}
 
+	public LiveGameRosterSpotList refreshHomeRosterforpl() {
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		LiveGameRosterSpotList list = null;
+		try {
+			list = LiveGameRosterSpotList.NewListFactoryByJerseyNumber(pb.getProfile(), db, this.getLivegame(), scaha.getScahaTeamList(), "H");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			
+			db.free();
+		}
+		
+		return list;
+	}
+	
 	public LiveGameRosterSpotList refreshAwayRoster() {
 
 		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
@@ -417,6 +403,23 @@ public class GamesheetBean implements Serializable,  MailableObject {
 		return list;
 	}
 	
+	public LiveGameRosterSpotList refreshAwayRosterforpl() {
+
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		LiveGameRosterSpotList list = null;
+		try {
+			list = LiveGameRosterSpotList.NewListFactoryByJerseyNumber(pb.getProfile(), db, this.getLivegame(), scaha.getScahaTeamList(), "A");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			
+			db.free();
+		}
+		
+		
+		return list;
+	}
 	
 public SogList refreshHomeSog() {
 		
@@ -526,12 +529,12 @@ public SogList refreshHomeSog() {
 		if (_ha.equals("H")) { 
 			this.scoringteam = this.livegame.getHometeam();
 			this.scoringroster = this.getHometeam();
-			this.scoringpicklist = (List<LiveGameRosterSpot>) this.getHometeam().getWrappedData();
+			this.scoringpicklist = (List<LiveGameRosterSpot>) this.getHometeamforpl().getWrappedData();
 			this.currentscore = new Scoring(0,pb.getProfile(),this.livegame,this.scoringteam);
 		} else {
 			this.scoringteam = this.livegame.getAwayteam();
 			this.scoringroster = this.getAwayteam();
-			this.scoringpicklist = (List<LiveGameRosterSpot>) this.getAwayteam().getWrappedData();
+			this.scoringpicklist = (List<LiveGameRosterSpot>) this.getAwayteamforpl().getWrappedData();
 			this.currentscore = new Scoring(0,pb.getProfile(),this.livegame,this.scoringteam);
 		}
 		
@@ -555,12 +558,12 @@ public SogList refreshHomeSog() {
 		if (_ha.equals("H")) { 
 			this.penteam = this.livegame.getHometeam();
 			this.penroster = this.getHometeam();
-			this.penpicklist = (List<LiveGameRosterSpot>) this.getHometeam().getWrappedData();
+			this.penpicklist = (List<LiveGameRosterSpot>) this.getHometeamforpl().getWrappedData();
 			this.currentpenalty = new Penalty(0,pb.getProfile(),this.livegame,this.penteam);
 		} else {
 			this.penteam = this.livegame.getAwayteam();
 			this.penroster = this.getAwayteam();
-			this.penpicklist = (List<LiveGameRosterSpot>) this.getAwayteam().getWrappedData();
+			this.penpicklist = (List<LiveGameRosterSpot>) this.getAwayteamforpl().getWrappedData();
 			this.currentpenalty = new Penalty(0,pb.getProfile(),this.livegame,this.penteam);
 		}
 		
@@ -582,12 +585,12 @@ public SogList refreshHomeSog() {
 		if (_ha.equals("H")) { 
 			this.scoringteam = this.livegame.getHometeam();
 			this.scoringroster = this.getHometeam();
-			this.scoringpicklist = (List<LiveGameRosterSpot>) this.getHometeam().getWrappedData();
+			this.scoringpicklist = (List<LiveGameRosterSpot>) this.getHometeamforpl().getWrappedData();
 			this.currentscore = this.homescoring.getByKey(this.selectedhomescore.ID);
 		} else {
 			this.scoringteam = this.livegame.getAwayteam();
 			this.scoringroster = this.getAwayteam();
-			this.scoringpicklist = (List<LiveGameRosterSpot>) this.getAwayteam().getWrappedData();
+			this.scoringpicklist = (List<LiveGameRosterSpot>) this.getAwayteamforpl().getWrappedData();
 			this.currentscore = this.awayscoring.getByKey(this.selectedawayscore.ID);
 		}
 
@@ -615,12 +618,12 @@ public SogList refreshHomeSog() {
 		if (_ha.equals("H")) { 
 			this.penteam = this.livegame.getHometeam();
 			this.penroster = this.getHometeam();
-			this.penpicklist = (List<LiveGameRosterSpot>) this.getHometeam().getWrappedData();
+			this.penpicklist = (List<LiveGameRosterSpot>) this.getHometeamforpl().getWrappedData();
 			this.currentpenalty = this.homepenalties.getByKey(this.selectedhomepenalty.ID);
 		} else {
 			this.penteam = this.livegame.getAwayteam();
 			this.penroster = this.getAwayteam();
-			this.penpicklist = (List<LiveGameRosterSpot>) this.getAwayteam().getWrappedData();
+			this.penpicklist = (List<LiveGameRosterSpot>) this.getAwayteamforpl().getWrappedData();
 			this.currentpenalty = this.awaypenalties.getByKey(this.selectedawaypenalty.ID);
 		}
 		
@@ -643,12 +646,12 @@ public SogList refreshHomeSog() {
 		if (_ha.equals("H")) { 
 			this.sogteam = this.livegame.getHometeam();
 			this.sogroster = this.getHometeam();
-			this.sogpicklist = (List<LiveGameRosterSpot>) this.getHometeam().getWrappedData();
+			this.sogpicklist = (List<LiveGameRosterSpot>) this.getHometeamforpl().getWrappedData();
 			this.currentsog = this.homesogs.getByKey(this.selectedhomesog.ID);
 		} else {
 			this.sogteam = this.livegame.getAwayteam();
 			this.sogroster = this.getAwayteam();
-			this.sogpicklist = (List<LiveGameRosterSpot>) this.getAwayteam().getWrappedData();
+			this.sogpicklist = (List<LiveGameRosterSpot>) this.getAwayteamforpl().getWrappedData();
 			this.currentsog = this.awaysogs.getByKey(this.selectedawaysog.ID);
 		}
 		
@@ -675,12 +678,12 @@ public SogList refreshHomeSog() {
 		if (_ha.equals("H")) { 
 			this.sogteam = this.livegame.getHometeam();
 			this.sogroster = this.getHometeam();
-			this.sogpicklist = (List<LiveGameRosterSpot>) this.getHometeam().getWrappedData();
+			this.sogpicklist = (List<LiveGameRosterSpot>) this.getHometeamforpl().getWrappedData();
 			this.currentsog = new Sog(0,pb.getProfile(),this.livegame,this.sogteam);
 		} else {
 			this.sogteam = this.livegame.getAwayteam();
 			this.sogroster = this.getAwayteam();
-			this.sogpicklist = (List<LiveGameRosterSpot>) this.getAwayteam().getWrappedData();
+			this.sogpicklist = (List<LiveGameRosterSpot>) this.getAwayteamforpl().getWrappedData();
 			this.currentsog = new Sog(0,pb.getProfile(),this.livegame,this.sogteam);
 		}
 		
@@ -2002,6 +2005,7 @@ public SogList refreshHomeSog() {
 			
 			//need to update stats table as game is being finalized.
 			//pass in team id and livegame id
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -2204,5 +2208,141 @@ public SogList refreshHomeSog() {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+    }
+    
+    public void saveScore(){
+    	
+    	//lets update the livegame with the new scores, all other details should remain the same
+    	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	
+		try {
+			this.livegame.setStatetag("Final");
+			this.livegame.update(db, true);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		db.free();
+		
+    
+    	//ok now that we saved the score lets redirect back to the manager portal
+    	FacesContext context = FacesContext.getCurrentInstance();
+		try{
+			context.getExternalContext().redirect(pb.getLivegameeditreturn());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public void setPenaltiesPickList(){
+    	
+    	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+    	try {
+			PreparedStatement ps = db.prepareCall("call scaha.getPenaltyList()");
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				this.penalties.put(rs.getString("penaltyname"),rs.getString("penaltyname"));
+			}
+			rs.close();
+			ps.close();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.free();
+		
+		
+	
+    	//need to add these to database
+		 /*this.penalties.put("15 Team Penalties","15 Team Penalties");
+		 this.penalties.put("2 Majors","2 Majors");
+		 this.penalties.put("3rd Man in","3rd Man in");
+		 this.penalties.put("5 Penalties","5 Penalties");
+		 this.penalties.put("Abuse of Officials", "Abuse of Officials");
+		 this.penalties.put("Attempt to injure","Attempt to injure");
+		 this.penalties.put("Bench","Bench" );
+		 this.penalties.put("Boarding","Boarding");
+		 this.penalties.put("Body Checking","Body Checking");
+		 this.penalties.put("Butt-Ending", "Butt-Ending");
+		 this.penalties.put("Charging","Charging");
+		 this.penalties.put("Hooking", "Hooking");
+		 this.penalties.put("Checking from Behind", "Checking from Behind");
+		 this.penalties.put("Cross-Checking", "Cross-Checking");
+		 this.penalties.put("Delay of Game", "Delay of Game");
+		 this.penalties.put("Elbowing", "Elbowing");
+		 this.penalties.put("Fisticuffs/Fighting", "Fisticuffs/Fighting");
+		 this.penalties.put("Game Misconduct", "Game Misconduct");
+		 this.penalties.put("Head Contact", "Head Contact");
+		 this.penalties.put("High-Sticking", "High-Sticking");
+		 this.penalties.put("Holding","Holding");
+		 this.penalties.put("Holding the Facemask","Holding the Facemask");
+		 this.penalties.put("Hooking", "Hooking");
+		 this.penalties.put("Illegal Equipment", "Illegal Equipment");
+		 this.penalties.put("Interference", "Interference");
+		 this.penalties.put("Kicking", "Kicking");
+		 this.penalties.put("Kneeing", "Kneeing");
+		 this.penalties.put("Major", "Major");
+		 this.penalties.put("Match Penalty","Match Penalty");
+		 this.penalties.put("Misconduct","Misconduct");
+		 this.penalties.put("Mouthpiece","Mouthpiece");
+		 this.penalties.put("Roughing","Roughing");
+		 this.penalties.put("Slashing","Slashing");
+		 this.penalties.put("Spearing","Spearing");
+		 this.penalties.put("Too Many Men","Too Many Men");
+		 this.penalties.put("Tripping","Tripping");
+		 this.penalties.put("Unsportsmanlike","Unsportsmanlike");*/
+    }
+    
+    public void setVenuesPickList(){
+    	
+    	ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+		
+    	try {
+			PreparedStatement ps = db.prepareCall("call scaha.getVenueList()");
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				this.venues.put(rs.getString("description"),rs.getString("tag"));
+			}
+			rs.close();
+			ps.close();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.free();
+   
+		//make sure all of these are in the db
+		/*this.venues.put("The Rinks - Yorba Linda ICE","YLICE");
+		 this.venues.put("The Rinks - Anaheim ICE","AICE");
+		 this.venues.put("The Rinks - Westminster ICE","WICE");
+		 this.venues.put("The Rinks - Lakewood ICE","LAKEWOOD");
+		 this.venues.put("Bakersfield Ice Sports Center","BAKERICE");
+		 this.venues.put("Skating Edge Ice Center","BHSEIC");
+		 this.venues.put("Iceoplex Simi Valley","SIMI");
+		 this.venues.put("Valencia Ice Station","ICESTATION");
+		 this.venues.put("Pickwick Ice Arena","PICKWICK");
+		 this.venues.put("LA Kings Valley Ice Center","VALLEYICE");
+		 this.venues.put("East West Ice Palace","EWICEP");
+		 this.venues.put("Ontario Center Ice Arena","OCIA");
+		 this.venues.put("Channel Islands Ice Center","CIIC");
+		 this.venues.put("LA Kings Icetown Riverside","RIVICE");
+		 this.venues.put("Desert Ice Castle","DICE");
+		 this.venues.put("KHS Ice Arena","KHS");
+		 this.venues.put("Toyota Sports Center","TSC");
+		 this.venues.put("Lake Forest Ice Palace","LFIP");
+		 this.venues.put("Ontario Ice Skating Center","ONTICE");
+		 this.venues.put("Pasadena Skating Center","PISC");
+		 this.venues.put("Iceoplex Escondido","ESICOPLEX");
+		 this.venues.put("Kroc Center Ice Arena","KROC");
+		 this.venues.put("San Diego Ice Arena","SDIA");
+		 this.venues.put("Carlsbad  Ice Arena","CARLSBAD");*/
+		 
     }
 }
