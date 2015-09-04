@@ -56,8 +56,8 @@
 						<p:menuitem style="font-size: 12px;" value="2013-2014 Guidebook"
 							url="downloads/2013-14-SCAHA-Guidebook.pdf" id="guidebook" target="_blank"/>
 						<p:separator />
-						<p:menuitem style="font-size: 12px;" value="Mite Program"
-							url="miteprogram.xhtml" />
+						<!-- <p:menuitem style="font-size: 12px;" value="Mite Program"
+							url="miteprogram.xhtml" /> -->
 						<p:menuitem style="font-size: 10pt;" value="Playoffs"
 							url="playoffscentral.xhtml" />
 						<p:menuitem style="font-size: 10pt;" value="Rosters"
@@ -76,7 +76,7 @@
 					<p:spacer width="2px" />
 					<p:menuButton id="menusched" style="width:125px;" value="Schedule Info"
 						type="button">
-						<p:menuitem style="font-size: 12px;" value="Change Request"
+						<p:menuitem style="font-size: 12px;" value="Change Request List"
 							url="schedulechangerequestlist.xhtml" id="changerequest" rendered="#{profileBean.isSuperUser()}"/>
 						<p:menuitem style="font-size: 12px;" value="Schedule"
 							url="scoreboard.xhtml" id="scoreboard" />
@@ -304,6 +304,49 @@
 					<br />
 				</p:toolbarGroup>
 			</p:toolbar>
+			<!-- #{gamecentralBean.setSelectedseason('SCAHA-1516')}
+			#{gamecentralBean.loadScrollingGamesfordate()} -->
+			<!-- #{scoreboardBean.setSelectedscheduleid(360)}
+			#{scoreboardBean.onScheduleChange()} -->
+			<!-- 
+			<p:carousel var="game" value="#{gamecentralBean.getListofgames()}" style="width:955;" responsive="true"
+				numVisible="6"
+			>
+				<p:panel padding="0" style="width:170px;height:100px;">
+					<f:facet name="header">
+						<h:outputText style="font-size: 6pt;float:left;" value="#{game.getGametime()} - #{game.getDisplaydivision()}" />
+						<h:outputText style="font-size: 6pt;float:right;" value="#{game.getStatus()}" />
+					</f:facet>
+		             <table cellpadding="2" cellspacing="0" border="0" width="100%">
+						<tr>
+							<td width="20" >
+								<p:graphicImage value="#{clubBean.getClubLogoByParmId()}"  width="20" height="20">
+					            	<f:param id="target" name="target" value="#{game.getAwayclubid()}" />
+							 	</p:graphicImage> 
+							</td>
+							<td width="205" align="left"><h:outputText style="font-size: 6pt;" value="#{game.getAwayteam().length() gt 20 ? game.getAwayteam().substring(0,20).concat('...') : game.getAwayteam()}" /></td>
+							<td width="15"><h:outputText style="font-size: 6pt;" value="#{game.getAwayscore()}" /></td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<p:separator style="width:100%;" />
+							</td>
+							
+						</tr>
+						<tr>
+							<td width="20">
+								<p:graphicImage value="#{clubBean.getClubLogoByGameObject(game,'Home')}"  width="20" height="20">
+					            	<f:param id="targethome" name="targethome" value="#{game.getHomeclubid()}" />
+							 	</p:graphicImage> 
+							</td>
+							<td width="205" align="left"><h:outputText style="font-size: 6pt;" value="#{game.getHometeam().length() gt 20 ? game.getHometeam().substring(0,20).concat('...') : game.getHometeam()}" /></td>
+							<td width="15"><h:outputText style="font-size: 6pt;" value="#{game.getHomescore()}" /></td>
+						</tr>
+					</table>
+				</p:panel>
+								
+		    </p:carousel>
+			-->
 			<ui:fragment style="font-size:9pt;font-family:Verdana;"
 				rendered="#{empty profileBean.getProfile()}">
 				<!-- <h:outputLink id="findme" value="/scaha/findme.xhtml" style="font-size:9pt;font-family:Verdana;">

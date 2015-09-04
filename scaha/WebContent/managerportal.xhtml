@@ -21,7 +21,7 @@
 <h:body >	
 <ui:composition template="/WEB-INF/templates/layout.xhtml">
 <ui:define name="content">
-
+	<h:form id="teamform">
 	<table width="100%">
 		<tr>
 			<td>
@@ -29,9 +29,15 @@
 					<f:param name="target" value="#{managerBean.getIdclub()}" />
 				</p:graphicImage>
 			</td>
-			<td valign="middle" align="left">- <h3><h:outputText value="#{managerBean.teamname}" /> - Manager Portal</h3></td>
+			<td valign="middle" align="left">- <h3>
+								<p:selectOneMenu value="#{managerBean.teamid}" rendered="#{managerBean.displaymultiple}">
+							    	<f:selectItems value="#{managerBean.getManagerteams()}" var="team" itemLabel="#{team.getTeamname()}" itemValue="#{team.getIdteam()}"/>
+							    	<p:ajax process="@this" listener="#{managerBean.loadForSelectedTeam()}" event="change" update=":rosterform :scahagameform :tournamentform :tournamentgameform :exhibitionform :teamform"  />
+							    </p:selectOneMenu>
+							    <h:outputText value="#{managerBean.teamname}" rendered="#{!managerBean.displaymultiple}"/> - Manager Portal</h3></td>
 		</tr>
 	</table>
+	</h:form>
 	<!-- <p:layout id="layout" style="min-height:2000px;overflow:hidden !important;"> -->
 	<table cellpadding="2" cellspacing="0" border="0" width="100%">
 		<tr>

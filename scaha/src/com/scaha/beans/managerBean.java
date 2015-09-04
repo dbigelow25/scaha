@@ -32,6 +32,7 @@ import com.scaha.objects.LiveGame;
 import com.scaha.objects.MailableObject;
 import com.scaha.objects.RosterEdit;
 import com.scaha.objects.RosterEditDataModel;
+import com.scaha.objects.Team;
 import com.scaha.objects.TempGame;
 import com.scaha.objects.TempGameDataModel;
 import com.scaha.objects.Tournament;
@@ -68,6 +69,7 @@ public class managerBean implements Serializable, MailableObject {
     
 	//bean level properties used by multiple methods
 	private Integer teamid = null;
+	private List<Team> managerteams = null;
 	private String teamname = null;
 	private Integer idclub = null;
 	private Integer profileid = 0;
@@ -108,6 +110,7 @@ public class managerBean implements Serializable, MailableObject {
 	private String opponent=null;
 	private String tourneygamelocation=null;
 	private String exhibitiongamelocation=null;
+	private Boolean displaymultiple = null;
 	
 	//properties for emailing to managers, scaha statistician
 	private String to = null;
@@ -137,8 +140,14 @@ public class managerBean implements Serializable, MailableObject {
     	setTodaysDate();
     	setAddingflags();
         teamid = pb.getProfile().getManagerteamid();
+        this.setManagerteams(pb.getProfile().getManagerteams());
         //teamid = 479;
         this.setTeamid(teamid);
+        
+        
+        //do we display multiple option or single option.
+        this.setDisplaymultiple(false);
+        isMultipleTeamManager();
         
         //need to get the current season for display
         this.setCurrentseason(pb.getCurrentSCAHAHockeySeason());
@@ -163,6 +172,22 @@ public class managerBean implements Serializable, MailableObject {
     public managerBean() {  
         
     }  
+    
+    public void setDisplaymultiple(Boolean value){
+    	this.displaymultiple = value;
+    }
+    
+    public Boolean getDisplaymultiple(){
+    	return this.displaymultiple;
+    }
+    
+    public void setManagerteams(List<Team> value){
+    	this.managerteams = value;
+    }
+    
+    public List<Team> getManagerteams(){
+    	return this.managerteams;
+    }
     
     public String getCurrentpimcount(){
     	return this.currentpimcount;
@@ -1718,6 +1743,33 @@ public class managerBean implements Serializable, MailableObject {
 			e.printStackTrace();
 		}
 	    
+	}
+	
+	public void loadForSelectedTeam(){
+		//Load team roster
+        getRoster();
+        
+        //Load SCAHA Games
+        loadScahaGames();
+        
+        //Load Tournament and Games
+        getTournament();
+        getTournamentGames();
+        
+        //Load Exhibition Games
+        getExhibitionGames();
+        
+        //now lets highlight the areas needing action.
+        setAlerts();
+	}
+	
+	public void isMultipleTeamManager(){
+		Integer arraysize = this.managerteams.size();
+		if (arraysize>1){
+			this.setDisplaymultiple(true);
+		}else {
+			this.setDisplaymultiple(false);
+		}
 	}
 }
 

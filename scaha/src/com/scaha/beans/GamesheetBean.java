@@ -121,7 +121,7 @@ public class GamesheetBean implements Serializable,  MailableObject {
 	
 	private static final long serialVersionUID = 2L;
 	private static final Logger LOGGER = Logger.getLogger(ContextManager.getLoggerContext());
-	private Map<String, String> penalties = new HashMap<String, String>();
+	private List<String> penalties = new ArrayList<String>();
 	private Map<String, String> venues = new HashMap<String, String>();
 	private Map<String, String> htpick = new HashMap<String, String>();
 	private Map<String, String> atpick = new HashMap<String, String>();
@@ -1416,14 +1416,14 @@ public SogList refreshHomeSog() {
 	/**
 	 * @return the penalties
 	 */
-	public Map<String, String> getPenalties() {
+	public List<String> getPenalties() {
 		return penalties;
 	}
 
 	/**
 	 * @param penalties the penalties to set
 	 */
-	public void setPenalties(Map<String, String> penalties) {
+	public void setPenalties(List<String> penalties) {
 		this.penalties = penalties;
 	}
 
@@ -2245,7 +2245,9 @@ public SogList refreshHomeSog() {
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				this.penalties.put(rs.getString("penaltyname"),rs.getString("penaltyname"));
+				String penalty = rs.getString("penaltyname");
+				
+				this.penalties.add(penalty);
 			}
 			rs.close();
 			ps.close();

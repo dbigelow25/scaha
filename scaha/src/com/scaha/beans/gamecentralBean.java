@@ -849,5 +849,78 @@ public class gamecentralBean implements Serializable{
 		
 
 	}
+	
+	public void loadScrollingGamesfordate(){
+		List<Game> templist = new ArrayList<Game>();
+		
+		ScahaDatabase db = (ScahaDatabase) ContextManager.getDatabase("ScahaDatabase");
+    	
+    	try{
+    		//lets get the list of games for the date specified.
+    		CallableStatement cs = db.prepareCall("CALL scaha.getScoreboardSchedule(?,?,?)");
+    		
+    		DateFormat df=new SimpleDateFormat("yyyy-MM-dd");
+        	String tempdate = df.format(this.selecteddate);
+        	tempdate = "2015-09-12";
+    		cs.setString("selecteddate", tempdate);
+    		cs.setInt("selectedschedule", this.selectedschedule);
+    		cs.setString("in_seasontag", this.selectedseason);
+			rs = cs.executeQuery();
+			
+			if (rs != null){
+				
+				while (rs.next()) {
+					Integer idlivegame = rs.getInt("idlivegame");
+					String hometeam = rs.getString("hometeam");
+					String awayteam = rs.getString("awayteam");
+					String typetag = rs.getString("typetag");
+					String location = rs.getString("location");
+					String gametime = rs.getString("time");
+					String hometeamscore = rs.getString("homescore");
+					String awayteamscore = rs.getString("awayscore");
+					String status = rs.getString("status");
+					String displaydivision = rs.getString("displaydivision");
+					Integer homeclubid = rs.getInt("homeclubid");
+					Integer awayclubid = rs.getInt("awayclubid");
+					Boolean boxscore = rs.getBoolean("boxscore");
+					
+					
+					Game game = new Game();
+					game.setIdlivegame(idlivegame);
+					game.setHometeam(hometeam);
+					game.setAwayteam(awayteam);
+					game.setTypetag(typetag);
+					game.setLocation(location);
+					game.setGametime(gametime);
+					game.setHomescore(hometeamscore);
+					game.setAwayscore(awayteamscore);
+					game.setStatus(status);
+					game.setDisplaydivision(displaydivision);
+					game.setHomeclubid(homeclubid);
+					game.setAwayclubid(awayclubid);
+					game.setRenderboxscore(boxscore);
+					templist.add(game);
+				}
+				LOGGER.info("We have game list results for the daet:" + this.selecteddate);
+			}
+			rs.close();
+			
+			db.cleanup();
+    		
+    	} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		LOGGER.info("ERROR IN loading games for the date:" + this.selecteddate);
+    		e.printStackTrace();
+    		db.rollback();
+    	} finally {
+    		//
+    		// always clean up after yourself..
+    		//
+    		db.free();
+    	}
+		
+    	this.setListofgames(templist);
+    	
+	}
 }
 

@@ -6,6 +6,8 @@ package com.scaha.objects;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -135,5 +137,43 @@ public class ScahaManager extends Person {
 		}
 		
 		return teamid;
+	}
+	
+	public List<Team> getManagerteams(Integer _profileid){
+		
+		ScahaDatabase db = (ScahaDatabase)ContextManager.getDatabase("ScahaDatabase");
+		this.setIsmanager(false);
+		List<Team> tempteams = new ArrayList<Team>();
+		//
+		// If this comes back true.. we have a good result set to play with and fill out the profile
+		//
+		try {
+			CallableStatement cs = db.prepareCall("CALL scaha.getTeamsForManager(?)");
+			cs.setInt("profileid", _profileid);
+
+			ResultSet rs = cs.executeQuery();
+			if (rs != null){
+				while (rs.next()) {
+					
+					Integer teamid = rs.getInt("idteam");
+					LOGGER.info("We have results for teamid:" + teamid);
+					if (teamid>0){
+						this.setIsmanager(true);
+					}
+					String teamname = rs.getString("teamname");
+					Team team = new Team(teamname,teamid.toString());
+					
+					tempteams.add(team);
+				}
+				rs.close();
+			}
+			cs.close();
+		} catch (SQLException ex) {
+				ex.printStackTrace();
+		} finally {
+			db.free();
+		}
+		
+		return tempteams;
 	}
 }

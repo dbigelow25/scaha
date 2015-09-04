@@ -39,6 +39,7 @@ public class Profile extends ScahaObject {
 	private ScahaManager m_sman = null;
 	private boolean SuperUser = false;
 	private Integer managerteamid = null;
+	private List<Team> managerteams = null;
 	
 	public Profile (int _id, ScahaDatabase _db, String _sNN, String _sUser, String _sPass, boolean _getActionRoles) {
 		
@@ -63,6 +64,7 @@ public class Profile extends ScahaObject {
 			//need to instantiate the scahamanager class to be used by when the manager is working on the managerportal
 			this.setScahamanager(new ScahaManager(this));
 			this.setManagerteamid(this.getScahamanager().getManagerteamid(this.ID));
+			this.setManagerteams((this.getScahamanager().getManagerteams(this.ID)));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -182,6 +184,14 @@ public class Profile extends ScahaObject {
 	
 	public void setLivePassword(String _sNP) {
 		this.m_sPass = _sNP;
+	}
+	
+	public void setManagerteams(List<Team> value){
+		this.managerteams = value;
+	}
+	
+	public List<Team> getManagerteams(){
+		return this.managerteams;
 	}
 	
 	/**
